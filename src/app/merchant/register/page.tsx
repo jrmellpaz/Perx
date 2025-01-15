@@ -11,7 +11,7 @@ export default function MerchantRegisterPage() {
             className="object-cover absolute h-full w-full"
         />
       </section>
-      <section className="h-full flex flex-col items-center px-20">
+      <section className="h-full flex flex-col items-center px-20 pt-8">
         <div className="w-96 flex flex-col gap-4">
           <div className="h-12 w-fit flex items-center">
             <MerchantLogo 

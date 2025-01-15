@@ -1,12 +1,11 @@
 import type { Metadata } from "next";
-import { Poppins, Space_Grotesk } from "next/font/google";
+import { Inter, Space_Grotesk } from "next/font/google";
 import "./globals.css";
 import Head from "next/head";
 
-const poppins = Poppins({
-  variable: "--font-poppins",
+const inter = ({
+  variable: "--font-inter",
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
 });
 
 const spaceGrotesk = Space_Grotesk({
@@ -30,7 +29,7 @@ export default function RootLayout({
         <meta name="apple-mobile-web-app-title" content="Perx" />
       </Head>
       <body
-        className={`${poppins.variable} ${spaceGrotesk.variable} antialiased`}
+        className={`${inter.variable} ${spaceGrotesk.variable} antialiased`}
       >
         {children}
       </body>

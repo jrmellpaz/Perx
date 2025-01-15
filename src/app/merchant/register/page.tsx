@@ -1,22 +1,27 @@
-import { MerchantRegisterForm } from "@/components/merchant/RegisterForm";
-import { Skeleton } from "@/components/ui/skeleton";
-import Image from "next/image";
+import { MerchantLogo } from "@/components/merchant/MerchantLogo";
+import MerchantRegisterForm from "@/components/merchant/RegisterForm";
 
 export default function MerchantRegisterPage() {
-    return (
-        <main className="grid min-h-svh lg:grid-cols-2">
-            <section className="relative hidden lg:block">
-                <Image
-                    src="/web-app-manifest-512x512.png"
-                    alt="Merchant Sign-up Illustration"
-                    width={500}
-                    height={500}
-                    className="object-cover absolute h-full w-full"
-                />
-            </section>
-            <section className="flex flex-col items-center justify-center p-6 lg:p-12">
-                <MerchantRegisterForm />
-            </section>
-        </main>
-    )
+  return (
+    <main className="lg:flex flex-row h-dvh">
+      <section className="relative hidden lg:block grow">
+        <img
+            src="/web-app-manifest-512x512.png"
+            alt="Merchant Sign-up Illustration"
+            className="object-cover absolute h-full w-full"
+        />
+      </section>
+      <section className="h-full flex flex-col items-center px-20">
+        <div className="w-96 flex flex-col gap-4">
+          <div className="h-12 w-fit flex items-center">
+            <MerchantLogo 
+              logoClass="text-3xl pb-2"
+              sublogoClass="text-xl"
+            />
+          </div>
+          <MerchantRegisterForm />
+        </div>
+      </section>
+    </main>
+  )
 }

@@ -6,7 +6,7 @@ export default function MerchantRegisterPage() {
     <main className="lg:flex flex-row h-dvh">
       <section className="relative hidden lg:block grow">
         <img
-            src="/web-app-manifest-512x512.png"
+            src="/merchant-reg-illustration.jpg"
             alt="Merchant Sign-up Illustration"
             className="object-cover absolute h-full w-full"
         />

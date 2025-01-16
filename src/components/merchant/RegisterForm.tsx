@@ -27,10 +27,6 @@ const steps = [
 		id: "Step 3",
 		name: "Upload your logo",
 		fields: ["logo"],
-	},
-	{
-		id: "Step 4",
-		name: "Review and submit",
 	}
 ]
 
@@ -83,7 +79,7 @@ export default function MerchantRegisterForm() {
 	}
 
 	return (
-		<section className="flex flex-col gap-8">
+		<section className="flex flex-col gap-6">
 			<h1 className="text-2xl font-bold">Register business</h1>
 			<Steps currentStep={currentStep} />
 			<RegisterForm 
@@ -100,7 +96,7 @@ export default function MerchantRegisterForm() {
 
 function Steps({ currentStep }: { currentStep: number }) {
 	return (
-		<nav aria-label="Progress" className="flex flex-col gap-4">
+		<nav aria-label="Progress" className="flex flex-col gap-3">
 			<ol role="list" className="space-x-2 flex">
 				{steps.map((step, index) => (
           <li key={step.name} className='md:flex-1 basis-full'>
@@ -156,9 +152,6 @@ function RegisterForm({
 			{currentStep === 2 && (
 				<Step3 register={register} errors={errors} />
 			)}
-			{currentStep === 3 && (
-				<Step4 />
-			)}
 		</form>
 	)
 }
@@ -171,7 +164,7 @@ function Step1({
 	errors: FieldErrors<Inputs>
 }) {
 	return (
-		<div className="flex flex-col gap-6">
+		<div className="flex flex-col gap-2">
 			<div>
 				<Label htmlFor="businessName">Business name</Label>
 				<Input 
@@ -294,11 +287,11 @@ function Step3({
 	)
 }
 
-function Step4() {
-	return (
-		<h1>Done!!</h1>
-	)
-}
+// function Step4() {
+// 	return (
+// 		<h1>Done!!</h1>
+// 	)
+// }
 
 function ErrorMessage({ message }: { message: string }) {
 	return (
@@ -329,13 +322,16 @@ function Navigation({
 						Back
 					</Button>
 				}
-				{currentStep < steps.length - 1 &&
+				{currentStep <= steps.length - 1 &&
 					<Button
 						type="button"
 						onClick={next}
-						disabled={currentStep === steps.length - 1}
+						// disabled={currentStep === steps.length - 1}
 					>
-						Next
+						{currentStep === steps.length - 1 
+							? "Register business" 
+							: "Next"
+						}
 					</Button>
 				}
 			</div>

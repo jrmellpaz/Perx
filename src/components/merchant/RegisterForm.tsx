@@ -66,7 +66,6 @@ export default function MerchantRegisterForm() {
 		}
 
 		if (currentStep < steps.length - 1) {
-			console.log("currentStep", currentStep, "steps.length", steps.length)
 			if (currentStep === steps.length - 1) {
 				await handleSubmit(processForm)()
 			}
@@ -77,8 +76,6 @@ export default function MerchantRegisterForm() {
 	}
 
 	const prev = () => {
-		console.log("currentStep", currentStep, "steps.length", steps.length)
-
 		if (currentStep > 0) {
 			setPreviousStep(currentStep)
 			setCurrentStep(step => step - 1)

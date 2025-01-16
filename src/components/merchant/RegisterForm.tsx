@@ -1,16 +1,16 @@
 "use client"
 
-import { MerchantFormDataSchema } from "@/lib/merchantSchema"
+import { Step1Schema, Step2Schema, Step3Schema, Inputs } from "@/lib/merchantSchema"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useState } from "react"
-import { FieldErrors, SubmitHandler, useForm, UseFormHandleSubmit, UseFormRegister } from "react-hook-form"
-import { z } from "zod"
+import { motion } from "framer-motion"
+import { FieldErrors, SubmitHandler, useForm, UseFormRegister } from "react-hook-form"
 import { Label } from "../ui/label"
 import { Input } from "../ui/input"
 import { Button } from "../ui/button"
 import { Textarea } from "../ui/textarea"
 
-type Inputs = z.infer<typeof MerchantFormDataSchema>
+const schemas = [Step1Schema, Step2Schema, Step3Schema];
 
 const steps = [
 	{
@@ -43,7 +43,7 @@ export default function MerchantRegisterForm() {
 		trigger,
 		formState: { errors }
 	} = useForm<Inputs>({
-		resolver: zodResolver(MerchantFormDataSchema)
+		resolver: zodResolver(schemas[currentStep])
 	})
 
 	const processForm: SubmitHandler<Inputs> = (data) => {
@@ -55,26 +55,22 @@ export default function MerchantRegisterForm() {
 
 	const next = async () => {
 		const fields = steps[currentStep].fields
-		const output = await trigger(fields as FieldName[], { shouldFocus: true })
+		const isValidData = await trigger(fields as FieldName[], { shouldFocus: true })
 
-		if (!output) {
-			return
-		}
-
-		if (currentStep < steps.length - 1) {
+		if (isValidData && currentStep < steps.length - 1) {
 			if (currentStep === steps.length - 1) {
 				await handleSubmit(processForm)()
 			}
 			
 			setPreviousStep(currentStep)
-			setCurrentStep(step => step + 1)
+			setCurrentStep(prevStep => prevStep + 1)
 		}
 	}
 
 	const prev = () => {
 		if (currentStep > 0) {
 			setPreviousStep(currentStep)
-			setCurrentStep(step => step - 1)
+			setCurrentStep(prevStep => prevStep - 1)
 		}
 	}
 
@@ -82,13 +78,11 @@ export default function MerchantRegisterForm() {
 		<section className="flex flex-col gap-6">
 			<h1 className="text-2xl font-bold">Register business</h1>
 			<Steps currentStep={currentStep} />
-			<RegisterForm 
-				handleSubmit={handleSubmit} 
-				processForm={processForm} 
-				currentStep={currentStep}
-				register={register}
-				errors={errors} 
-			/>
+			<form onSubmit={handleSubmit(processForm)}>
+				{currentStep === 0 && <Step1 register={register} errors={errors} delta={delta} />}
+        {currentStep === 1 && <Step2 register={register} errors={errors} delta={delta} />}
+        {currentStep === 2 && <Step3 register={register} errors={errors} delta={delta} />}
+			</form>
 			<Navigation next={next} prev={prev} currentStep={currentStep} />
 		</section>
 	)
@@ -126,50 +120,28 @@ function Steps({ currentStep }: { currentStep: number }) {
 	)
 }
 
-function RegisterForm({ 
-	handleSubmit, 
-	processForm,
-	currentStep,
-	register,
-	errors 
-}: { 
-	handleSubmit: UseFormHandleSubmit<Inputs>,
-	processForm: SubmitHandler<Inputs>,
-	currentStep: number,
-	register: UseFormRegister<Inputs> ,
-	errors: FieldErrors<Inputs>
-}) { 
-	return (
-		<form
-			onSubmit={handleSubmit(processForm)}
-		>
-			{currentStep === 0 && (
-				<Step1 register={register} errors={errors} />
-			)}
-			{currentStep === 1 && (
-				<Step2 register={register} errors={errors} />
-			)}
-			{currentStep === 2 && (
-				<Step3 register={register} errors={errors} />
-			)}
-		</form>
-	)
-}
-
 function Step1({ 
 	register,
-	errors 
+	errors,
+	delta 
 }: {
 	register: UseFormRegister<Inputs>,
-	errors: FieldErrors<Inputs>
+	errors: FieldErrors<Inputs>,
+	delta: number
 }) {
 	return (
-		<div className="flex flex-col gap-2">
+		<motion.div
+			initial={{ x: delta >= 0 ? '50%' : '-50%', opacity: 0 }}
+			animate={{ x: 0, opacity: 1 }}
+			transition={{ duration: 0.3, ease: 'easeInOut' }}
+			className="flex flex-col gap-2"
+		>
 			<div>
 				<Label htmlFor="businessName">Business name</Label>
 				<Input 
 					id="businessName" 
-					type="text" placeholder="Perx, Inc."
+					type="text" 
+					placeholder="Business, Inc."
 					{...register("businessName")} 
 					required 
 				/>
@@ -182,7 +154,7 @@ function Step1({
 				<Input 
 					id="email" 
 					type="email" 
-					placeholder="perx@example.com"
+					placeholder="business@example.com"
 					{...register("email")} 
 					required 
 				/>
@@ -218,19 +190,26 @@ function Step1({
 					<ErrorMessage message={errors.confirmPassword.message} />
 				)}
 			</div>
-		</div>
+		</motion.div>
 	)
 }
 
 function Step2({ 
 	register,
-	errors 
+	errors,
+	delta 
 }: {
 	register: UseFormRegister<Inputs>,
-	errors: FieldErrors<Inputs>
+	errors: FieldErrors<Inputs>,
+	delta: number
 }) {
 	return (
-		<div className="flex flex-col gap-6">
+		<motion.div
+			initial={{ x: delta >= 0 ? '50%' : '-50%', opacity: 0 }}
+			animate={{ x: 0, opacity: 1 }}
+			transition={{ duration: 0.3, ease: 'easeInOut' }}
+			className="flex flex-col gap-6"
+		>
 			<div>
 				<Label htmlFor="description">Business description</Label>
 				<Textarea 
@@ -256,19 +235,26 @@ function Step2({
 					<ErrorMessage message={errors.address.message} />
 				)}
 			</div>
-		</div>
+		</motion.div>
 	)
 }
 
 function Step3({ 
 	register,
-	errors 
+	errors,
+	delta 
 }: {
 	register: UseFormRegister<Inputs>,
-	errors: FieldErrors<Inputs>
+	errors: FieldErrors<Inputs>,
+	delta: number
 }) {
 	return (
-		<div className="flex flex-col gap-6">
+		<motion.div
+			initial={{ x: delta >= 0 ? '50%' : '-50%', opacity: 0 }}
+			animate={{ x: 0, opacity: 1 }}
+			transition={{ duration: 0.3, ease: 'easeInOut' }} 
+			className="flex flex-col gap-6"
+		>
 			<div>
 				<Label htmlFor="logo">Logo</Label>
 				<Input 
@@ -283,7 +269,7 @@ function Step3({
 					<ErrorMessage message={typeof errors.logo.message === "string" ? errors.logo.message : "Something went wrong"} />
 				)}
 			</div>
-		</div>
+		</motion.div>
 	)
 }
 
@@ -324,9 +310,8 @@ function Navigation({
 				}
 				{currentStep <= steps.length - 1 &&
 					<Button
-						type="button"
+						type={currentStep === steps.length - 1 ? "submit" : "button"}
 						onClick={next}
-						// disabled={currentStep === steps.length - 1}
 					>
 						{currentStep === steps.length - 1 
 							? "Register business" 

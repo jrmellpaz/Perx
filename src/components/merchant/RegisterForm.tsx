@@ -7,6 +7,8 @@ import { FieldErrors, SubmitHandler, useForm, UseFormHandleSubmit, UseFormRegist
 import { z } from "zod"
 import { Label } from "../ui/label"
 import { Input } from "../ui/input"
+import { Button } from "../ui/button"
+import { Textarea } from "../ui/textarea"
 
 type Inputs = z.infer<typeof MerchantFormDataSchema>
 
@@ -33,9 +35,9 @@ const steps = [
 ]
 
 export default function MerchantRegisterForm() {
-	const [previousSteps, setPreviousStep] = useState(0)
+	const [previousStep, setPreviousStep] = useState(0)
 	const [currentStep, setCurrentStep] = useState(0)
-	const delta = currentStep - previousSteps
+	const delta = currentStep - previousStep
 
 	const {
 		register,
@@ -64,7 +66,8 @@ export default function MerchantRegisterForm() {
 		}
 
 		if (currentStep < steps.length - 1) {
-			if (currentStep === steps.length - 2) {
+			console.log("currentStep", currentStep, "steps.length", steps.length)
+			if (currentStep === steps.length - 1) {
 				await handleSubmit(processForm)()
 			}
 			
@@ -74,6 +77,8 @@ export default function MerchantRegisterForm() {
 	}
 
 	const prev = () => {
+		console.log("currentStep", currentStep, "steps.length", steps.length)
+
 		if (currentStep > 0) {
 			setPreviousStep(currentStep)
 			setCurrentStep(step => step - 1)
@@ -91,6 +96,7 @@ export default function MerchantRegisterForm() {
 				register={register}
 				errors={errors} 
 			/>
+			<Navigation next={next} prev={prev} currentStep={currentStep} />
 		</section>
 	)
 }
@@ -147,6 +153,15 @@ function RegisterForm({
 			{currentStep === 0 && (
 				<Step1 register={register} errors={errors} />
 			)}
+			{currentStep === 1 && (
+				<Step2 register={register} errors={errors} />
+			)}
+			{currentStep === 2 && (
+				<Step3 register={register} errors={errors} />
+			)}
+			{currentStep === 3 && (
+				<Step4 />
+			)}
 		</form>
 	)
 }
@@ -190,11 +205,15 @@ function Step1({
 				<Input 
 					id="password" 
 					type="password" 
-					placeholder="perx@example.com" 
+					{...register("password")} 
 					required 
 				/>
-				{errors.password?.message && (
+				{errors.password?.message ? (
 					<ErrorMessage message={errors.password.message} />
+				) : (
+					<p className="font-mono mt-2 text-sm text-gray-500">
+						Password must be at least 8 characters
+					</p>
 				)}
 			</div>
 			<div>
@@ -202,7 +221,7 @@ function Step1({
 				<Input 
 					id="confirmPassword" 
 					type="password" 
-					placeholder="perx@example.com" 
+					{...register("confirmPassword")} 
 					required 
 				/>
 				{errors.confirmPassword?.message && (
@@ -213,10 +232,115 @@ function Step1({
 	)
 }
 
+function Step2({ 
+	register,
+	errors 
+}: {
+	register: UseFormRegister<Inputs>,
+	errors: FieldErrors<Inputs>
+}) {
+	return (
+		<div className="flex flex-col gap-6">
+			<div>
+				<Label htmlFor="description">Business description</Label>
+				<Textarea 
+					id="description" 
+					placeholder="Tell us about your business"
+					{...register("description")} 
+					required
+				/>
+				{errors.description?.message && (
+					<ErrorMessage message={errors.description.message} />
+				)}
+			</div>
+			<div>
+				<Label htmlFor="address">Address</Label>
+				<Input 
+					id="address" 
+					type="text" 
+					placeholder="123 Main St, Cebu City, Cebu 6000"
+					{...register("address")} 
+					required 
+				/>
+				{errors.address?.message && (
+					<ErrorMessage message={errors.address.message} />
+				)}
+			</div>
+		</div>
+	)
+}
+
+function Step3({ 
+	register,
+	errors 
+}: {
+	register: UseFormRegister<Inputs>,
+	errors: FieldErrors<Inputs>
+}) {
+	return (
+		<div className="flex flex-col gap-6">
+			<div>
+				<Label htmlFor="logo">Logo</Label>
+				<Input 
+					id="logo"
+					type="file"
+					accept="image/png, image/jpeg, image/jpg"
+					placeholder="TAttach your business logo"
+					{...register("logo")} 
+					required
+				/>
+				{errors.logo?.message && (
+					<ErrorMessage message={errors.logo.message} />
+				)}
+			</div>
+		</div>
+	)
+}
+
+function Step4() {
+	return (
+		<h1>Done!!</h1>
+	)
+}
+
 function ErrorMessage({ message }: { message: string }) {
 	return (
 		<p className="font-mono mt-2 text-sm text-red-400">
 			{message}
 		</p>
+	)
+}
+
+function Navigation({
+	next,
+	prev,
+	currentStep
+}: {
+	next: () => Promise<void>,
+	prev: () => void,
+	currentStep: number
+}) {
+	return (
+			<div className='flex justify-end gap-4'>
+				{currentStep > 0 && 
+					<Button
+						type="button"
+						onClick={prev}
+						disabled={currentStep === 0}
+						variant={"outline"}
+					>
+						Back
+					</Button>
+				}
+				{currentStep < steps.length - 1 &&
+					<Button
+						type="button"
+						onClick={next}
+						disabled={currentStep === steps.length - 1}
+					>
+						Next
+					</Button>
+				}
+			</div>
 	)
 }

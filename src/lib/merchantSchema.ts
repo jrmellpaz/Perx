@@ -12,12 +12,16 @@ export const MerchantFormDataSchema = z
     description: z.string().nonempty('Description is required'),
     address: z.string().nonempty('Address is required'),
     logo: z
-      .any()
-      .refine((files) => files[0].size < 500000, "Logo size can't exceed 5MB")
-      .refine((files) => {
-        const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png'];
-        allowedTypes.includes(files[0].type);
-      }, 'Only .jpg, .jpeg, and .png formats are supported'),
+      .instanceof(FileList)
+      .refine(
+        (files) => files?.[0]?.size < 500000,
+        "Logo size can't exceed 5MB"
+      )
+      .refine(
+        (files) =>
+          ['image/jpeg', 'image/jpg', 'image/png'].includes(files?.[0]?.type),
+        'Only .jpg, .jpeg, and .png formats are supported'
+      ),
   })
   .refine(
     (data) => {

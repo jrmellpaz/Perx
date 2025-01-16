@@ -2,9 +2,9 @@
 
 import { Step1Schema, Step2Schema, Step3Schema, Inputs } from "@/lib/merchantSchema"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { motion } from "framer-motion"
-import { FieldErrors, SubmitHandler, useForm, UseFormRegister } from "react-hook-form"
+import { FieldErrors, SubmitHandler, useForm, UseFormRegister, UseFormWatch } from "react-hook-form"
 import { Label } from "../ui/label"
 import { Input } from "../ui/input"
 import { Button } from "../ui/button"
@@ -75,14 +75,16 @@ export default function MerchantRegisterForm() {
 	}
 
 	return (
-		<section className="flex flex-col gap-6">
-			<h1 className="text-2xl font-bold">Register business</h1>
-			<Steps currentStep={currentStep} />
-			<form onSubmit={handleSubmit(processForm)}>
-				{currentStep === 0 && <Step1 register={register} errors={errors} delta={delta} />}
-        {currentStep === 1 && <Step2 register={register} errors={errors} delta={delta} />}
-        {currentStep === 2 && <Step3 register={register} errors={errors} delta={delta} />}
-			</form>
+		<section className="flex flex-col justify-between h-full">
+			<div className="flex flex-col gap-6">
+				<h1 className="text-2xl font-bold">Register business</h1>
+				<Steps currentStep={currentStep} />
+				<form onSubmit={handleSubmit(processForm)}>
+					{currentStep === 0 && <Step1 register={register} errors={errors} delta={delta} />}
+					{currentStep === 1 && <Step2 register={register} errors={errors} delta={delta} />}
+					{currentStep === 2 && <Step3 register={register} errors={errors} delta={delta} watch={watch} />}
+				</form>
+			</div>
 			<Navigation next={next} prev={prev} currentStep={currentStep} />
 		</section>
 	)
@@ -242,12 +244,31 @@ function Step2({
 function Step3({ 
 	register,
 	errors,
-	delta 
+	delta,
+	watch 
 }: {
 	register: UseFormRegister<Inputs>,
 	errors: FieldErrors<Inputs>,
-	delta: number
+	delta: number,
+	watch: UseFormWatch<Inputs>
 }) {
+	const [logoPreview, setLogoPreview] = useState<string | null>(null)
+	const logoFile = watch("logo")
+
+	useEffect(() => {
+		if (logoFile && logoFile.length > 0) {
+			const file = logoFile[0]
+			const reader = new FileReader()
+			reader.onloadend = () => {
+				setLogoPreview(reader.result as string)
+			}
+			reader.readAsDataURL(file)
+		}
+		else {
+			setLogoPreview(null)
+		}
+	}, [logoFile])
+
 	return (
 		<motion.div
 			initial={{ x: delta >= 0 ? '50%' : '-50%', opacity: 0 }}
@@ -255,6 +276,15 @@ function Step3({
 			transition={{ duration: 0.3, ease: 'easeInOut' }} 
 			className="flex flex-col gap-6"
 		>
+			<div className="flex flex-col justify-center items-center">
+				{logoPreview && (
+					<img
+						src={logoPreview}
+						alt="Your business logo"
+						className="aspect-square rounded-full size-48 object-cover border border-input"
+					/>
+				)}
+			</div>
 			<div>
 				<Label htmlFor="logo">Logo</Label>
 				<Input 
@@ -265,8 +295,12 @@ function Step3({
 					{...register("logo")} 
 					required
 				/>
-				{errors.logo?.message && (
+				{errors.logo?.message ? (
 					<ErrorMessage message={typeof errors.logo.message === "string" ? errors.logo.message : "Something went wrong"} />
+				) : (
+					<p className="font-mono mt-2 text-sm text-gray-500">
+						Logo must be in 1:1 &#40;square&#41; aspect ratio
+					</p>
 				)}
 			</div>
 		</motion.div>

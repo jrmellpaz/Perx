@@ -281,7 +281,7 @@ function Step3({
 
 function ErrorMessage({ message }: { message: string }) {
 	return (
-		<p className="font-mono mt-2 text-sm text-red-400">
+		<p className="font-mono mt-1 text-sm text-red-400">
 			{message}
 		</p>
 	)

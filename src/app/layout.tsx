@@ -2,8 +2,9 @@ import type { Metadata } from "next";
 import { Inter, Space_Grotesk } from "next/font/google";
 import "./globals.css";
 import Head from "next/head";
+import NextTopLoader from 'nextjs-toploader';
 
-const inter = ({
+const inter = Inter({
   variable: "--font-inter",
   subsets: ["latin"],
 });
@@ -31,6 +32,10 @@ export default function RootLayout({
       <body
         className={`${inter.variable} ${spaceGrotesk.variable} antialiased`}
       >
+        <NextTopLoader 
+          color="#5a051b"
+          showSpinner={false}
+        />
         {children}
       </body>
     </html>

@@ -287,7 +287,7 @@ function Step3({
 					required
 				/>
 				{errors.logo?.message && (
-					<ErrorMessage message={errors.logo.message} />
+					<ErrorMessage message={typeof errors.logo.message === "string" ? errors.logo.message : "Something went wrong"} />
 				)}
 			</div>
 		</div>

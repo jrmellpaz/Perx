@@ -9,6 +9,7 @@ import { Label } from "../ui/label"
 import { Input } from "../ui/input"
 import { Button } from "../ui/button"
 import { Textarea } from "../ui/textarea"
+import { Checkbox } from "../ui/checkbox"
 
 const schemas = [Step1Schema, Step2Schema, Step3Schema];
 
@@ -131,12 +132,18 @@ function Step1({
 	errors: FieldErrors<Inputs>,
 	delta: number
 }) {
+	const [showPassword, setShowPassword] = useState(false)
+	
+	const handleShowPassword = () => {
+		setShowPassword(prev => !prev)
+	}
+
 	return (
 		<motion.div
 			initial={{ x: delta >= 0 ? '50%' : '-50%', opacity: 0 }}
 			animate={{ x: 0, opacity: 1 }}
 			transition={{ duration: 0.3, ease: 'easeInOut' }}
-			className="flex flex-col gap-2"
+			className="flex flex-col gap-3"
 		>
 			<div>
 				<Label htmlFor="businessName">Business name</Label>
@@ -168,7 +175,8 @@ function Step1({
 				<Label htmlFor="password">Password</Label>
 				<Input 
 					id="password" 
-					type="password" 
+					type={showPassword ? "text" : "password"}
+					placeholder="••••••••" 
 					{...register("password")} 
 					required 
 				/>
@@ -184,13 +192,23 @@ function Step1({
 				<Label htmlFor="confirmPassword">Confirm password</Label>
 				<Input 
 					id="confirmPassword" 
-					type="password" 
+					type={showPassword ? "text" : "password"}
+					placeholder="••••••••" 
 					{...register("confirmPassword")} 
 					required 
 				/>
 				{errors.confirmPassword?.message && (
 					<ErrorMessage message={errors.confirmPassword.message} />
 				)}
+			</div>
+			<div className="flex items-center gap-2">
+				<Checkbox 
+					id="showPassword" 
+					className="transition-all" 
+					checked={showPassword} 
+					onCheckedChange={handleShowPassword} 
+				/>
+				<Label htmlFor="showPassword" className="text-sm mt-[1px] cursor-pointer">Show password</Label>
 			</div>
 		</motion.div>
 	)

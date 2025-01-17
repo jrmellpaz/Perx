@@ -42,13 +42,16 @@ export default function MerchantRegisterForm() {
 		watch,
 		reset,
 		trigger,
+		getValues,
 		formState: { errors }
 	} = useForm<Inputs>({
-		resolver: zodResolver(schemas[currentStep])
+		resolver: zodResolver(schemas[currentStep]),
+		mode: "onChange",
 	})
 
 	const processForm: SubmitHandler<Inputs> = (data) => {
-		console.log(data)
+		console.log("data", getValues())
+		
 		reset()
 	}
 
@@ -58,14 +61,14 @@ export default function MerchantRegisterForm() {
 		const fields = steps[currentStep].fields
 		const isValidData = await trigger(fields as FieldName[], { shouldFocus: true })
 
-		if (isValidData && currentStep < steps.length - 1) {
-			if (currentStep === steps.length - 1) {
-				await handleSubmit(processForm)()
-			}
-			
-			setPreviousStep(currentStep)
-			setCurrentStep(prevStep => prevStep + 1)
-		}
+		if (isValidData) {
+      if (currentStep < steps.length - 1) {
+        setPreviousStep(currentStep);
+        setCurrentStep((prevStep) => prevStep + 1);
+      } else {
+        await handleSubmit(processForm)();
+      }
+    }
 	}
 
 	const prev = () => {
@@ -76,17 +79,17 @@ export default function MerchantRegisterForm() {
 	}
 
 	return (
-		<section className="flex flex-col justify-between h-full">
-			<div className="flex flex-col gap-6">
-				<h1 className="text-2xl font-bold">Register business</h1>
-				<Steps currentStep={currentStep} />
-				<form onSubmit={handleSubmit(processForm)}>
+		<section className="flex flex-col gap-6 h-full">
+			<h1 className="text-2xl font-bold">Register business</h1>
+			<Steps currentStep={currentStep} />
+			<form onSubmit={handleSubmit(processForm)} className="flex flex-col h-full justify-between">
+				<div className="flex flex-col gap-6">
 					{currentStep === 0 && <Step1 register={register} errors={errors} delta={delta} />}
 					{currentStep === 1 && <Step2 register={register} errors={errors} delta={delta} />}
 					{currentStep === 2 && <Step3 register={register} errors={errors} delta={delta} watch={watch} />}
-				</form>
-			</div>
-			<Navigation next={next} prev={prev} currentStep={currentStep} />
+				</div>
+				<Navigation next={next} prev={prev} currentStep={currentStep} />
+			</form>
 		</section>
 	)
 }
@@ -311,7 +314,7 @@ function Step3({
 					accept="image/png, image/jpeg, image/jpg"
 					placeholder="TAttach your business logo"
 					{...register("logo")} 
-					required
+					required={logoPreview === null ? true : false} 
 				/>
 				{errors.logo?.message ? (
 					<ErrorMessage message={typeof errors.logo.message === "string" ? errors.logo.message : "Something went wrong"} />
@@ -324,12 +327,6 @@ function Step3({
 		</motion.div>
 	)
 }
-
-// function Step4() {
-// 	return (
-// 		<h1>Done!!</h1>
-// 	)
-// }
 
 function ErrorMessage({ message }: { message: string }) {
 	return (
@@ -360,15 +357,19 @@ function Navigation({
 						Back
 					</Button>
 				}
-				{currentStep <= steps.length - 1 &&
+				{currentStep < steps.length - 1 &&
 					<Button
-						type={currentStep === steps.length - 1 ? "submit" : "button"}
+						type="button"
 						onClick={next}
 					>
-						{currentStep === steps.length - 1 
-							? "Register business" 
-							: "Next"
-						}
+						Next
+					</Button>
+				}
+				{currentStep === steps.length - 1 &&
+					<Button
+						type="submit"
+					>
+						Register business
 					</Button>
 				}
 			</div>

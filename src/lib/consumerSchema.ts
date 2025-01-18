@@ -16,24 +16,24 @@ export const Step1Schema = z
   });
 
 export const Step2Schema = z.object({
-  code: z.string()
+  code: z.string(),
 });
 
-export const Step3Schema = z.object({
+export const Step3Schema = z
+  .object({
     interests: z
       .array(z.string())
-      .min(1, "You must select at least one interest."),
+      .min(1, 'You must select at least one interest.'),
     otherInterest: z.string().optional(),
   })
   .refine(
     (data) =>
-      !data.interests.includes("Others") || (data.otherInterest?.trim() !== ""),
+      !data.interests.includes('Others') || data.otherInterest?.trim() !== '',
     {
       message: "Please specify your custom interest if 'Others' is selected.",
-      path: ["otherInterest"], 
+      path: ['otherInterest'],
     }
   );
-
 
 export type Step1Inputs = z.infer<typeof Step1Schema>;
 export type Step2Inputs = z.infer<typeof Step2Schema>;

@@ -50,8 +50,17 @@ export const Step3Schema = z.object({
     ),
 });
 
+export const loginMerchantSchema = z.object({
+  email: z
+    .string()
+    .email('Invalid email address')
+    .nonempty('Email is required'),
+  password: z.string().nonempty('Password is required'),
+});
+
 export type Step1Inputs = z.infer<typeof Step1Schema>;
 export type Step2Inputs = z.infer<typeof Step2Schema>;
 export type Step3Inputs = z.infer<typeof Step3Schema>;
+export type LoginMerchantInputs = z.infer<typeof loginMerchantSchema>;
 
-export type Inputs = Step1Inputs & Step2Inputs & Step3Inputs;
+export type MerchantFormInputs = Step1Inputs & Step2Inputs & Step3Inputs;

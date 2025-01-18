@@ -1,22 +1,22 @@
-import type { Metadata } from "next";
-import { Inter, Space_Grotesk } from "next/font/google";
-import "./globals.css";
-import Head from "next/head";
+import type { Metadata } from 'next';
+import { Inter, Space_Grotesk } from 'next/font/google';
+import './globals.css';
+import Head from 'next/head';
 import NextTopLoader from 'nextjs-toploader';
 
 const inter = Inter({
-  variable: "--font-inter",
-  subsets: ["latin"],
+  variable: '--font-inter',
+  subsets: ['latin'],
 });
 
 const spaceGrotesk = Space_Grotesk({
-  variable: "--font-space-grotesk",
-  subsets: ["latin"],
+  variable: '--font-space-grotesk',
+  subsets: ['latin'],
 });
 
 export const metadata: Metadata = {
-  title: "Perx",
-  description: "A coupon collection app",
+  title: 'Perx',
+  description: 'A coupon collection app',
 };
 
 export default function RootLayout({
@@ -32,10 +32,7 @@ export default function RootLayout({
       <body
         className={`${inter.variable} ${spaceGrotesk.variable} antialiased`}
       >
-        <NextTopLoader 
-          color="#5a051b"
-          showSpinner={false}
-        />
+        <NextTopLoader color="#5a051b" showSpinner={false} />
         {children}
       </body>
     </html>

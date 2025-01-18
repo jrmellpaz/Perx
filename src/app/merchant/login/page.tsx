@@ -1,7 +1,7 @@
+import MerchantLoginForm from '@/components/merchant/MerchantLogin';
 import { MerchantLogo } from '@/components/merchant/MerchantLogo';
-import MerchantRegisterForm from '@/components/merchant/RegisterForm';
 
-export default function MerchantRegisterPage() {
+export default function MerchantLoginPage() {
   return (
     <main className="lg:flex flex-row h-dvh overflow-x-hidden font-sans">
       <section className="relative hidden lg:block grow">
@@ -19,7 +19,7 @@ export default function MerchantRegisterPage() {
               sublogoClass="text-2xl"
             />
           </div>
-          <MerchantRegisterForm />
+          <MerchantLoginForm />
         </div>
       </section>
     </main>

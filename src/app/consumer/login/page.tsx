@@ -1,7 +1,7 @@
 import { ConsumerLogo } from '@/components/consumer/ConsumerLogo';
-import ConsumerRegisterForm from '@/components/consumer/register/ConsumerRegisterForm';
+import { ConsumerLoginForm } from '@/components/consumer/login/ConsumerLoginForm';
 
-export default function ConsumerRegisterPage() {
+export default function ConsumerLoginPage() {
   return (
     <main className="lg:flex flex-row h-dvh overflow-hidden font-sans">
       <section className="relative hidden lg:block grow">
@@ -16,7 +16,7 @@ export default function ConsumerRegisterPage() {
           <div className="h-12 w-fit flex items-center">
             <ConsumerLogo logoClass="text-3xl pb-2" sublogoClass="text-xl" />
           </div>
-          <ConsumerRegisterForm />
+          <ConsumerLoginForm />
         </div>
       </section>
     </main>

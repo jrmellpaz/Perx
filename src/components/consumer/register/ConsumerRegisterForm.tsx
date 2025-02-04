@@ -16,11 +16,10 @@ import {
   UseFormRegister,
   UseFormWatch,
 } from 'react-hook-form';
-import { Label } from '../ui/label';
-import { Input } from '../ui/input';
-import { Button } from '../ui/button';
-import { Textarea } from '../ui/textarea';
-import { Checkbox } from '../ui/checkbox';
+import { Label } from '../../ui/label';
+import { Input } from '../../ui/input';
+import { Button } from '../../ui/button';
+import { Checkbox } from '../../ui/checkbox';
 
 const schemas = [Step1Schema, Step2Schema, Step3Schema];
 

@@ -2,16 +2,17 @@ import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import SignInWithGoogle from './SignInWithGoogle';
 
-export function MerchantRegisterForm({
+export function ConsumerLoginForm({
   className,
   ...props
 }: React.ComponentPropsWithoutRef<'form'>) {
   return (
     <form className={cn('flex flex-col gap-6', className)} {...props}>
-      <div className="flex flex-col items-center gap-2 text-center">
+      {/* <div className="flex flex-col items-center gap-2 text-center">
         <h1 className="text-2xl font-bold">Create a merchant account</h1>
-      </div>
+      </div> */}
       <div className="grid gap-6">
         <div className="grid gap-2">
           <Label htmlFor="email">Email</Label>
@@ -46,6 +47,7 @@ export function MerchantRegisterForm({
           </svg>
           Login with GitHub
         </Button>
+        <SignInWithGoogle />
       </div>
       <div className="text-center text-sm">
         Don&apos;t have an account?{' '}

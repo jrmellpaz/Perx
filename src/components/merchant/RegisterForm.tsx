@@ -22,6 +22,8 @@ import { Button } from '../ui/button';
 import { Textarea } from '../ui/textarea';
 import { Checkbox } from '../ui/checkbox';
 import Link from 'next/link';
+import PerxInput from '../custom/PerxInput';
+import PerxTextarea from '../custom/PerxTextarea';
 
 const schemas = [Step1Schema, Step2Schema, Step3Schema];
 
@@ -63,6 +65,7 @@ export default function MerchantRegisterForm() {
 
   const processForm: SubmitHandler<MerchantFormInputs> = async () => {
     const data = getValues();
+    console.log(data);
     // TODO: Send form data to the server
     reset();
   };
@@ -93,12 +96,12 @@ export default function MerchantRegisterForm() {
   };
 
   return (
-    <section className="flex flex-col gap-6 h-full">
+    <section className="flex h-full flex-col gap-6">
       <h1 className="text-2xl font-bold">Register business</h1>
       <Steps currentStep={currentStep} />
       <form
         onSubmit={handleSubmit(processForm)}
-        className="flex flex-col h-full justify-between"
+        className="flex h-full flex-col justify-between"
       >
         <div className="flex flex-col gap-6">
           {currentStep === 0 && (
@@ -125,24 +128,24 @@ export default function MerchantRegisterForm() {
 function Steps({ currentStep }: { currentStep: number }) {
   return (
     <nav aria-label="Progress" className="flex flex-col gap-3">
-      <ol role="list" className="space-x-2 flex">
+      <ol role="list" className="flex space-x-2">
         {steps.map((step, index) => (
-          <li key={step.name} className="md:flex-1 basis-full">
+          <li key={step.name} className="basis-full md:flex-1">
             {currentStep > index ? (
-              <div className="group flex w-full flex-col h-2 rounded-full bg-sky-600 transition-colors"></div>
+              <div className="group bg-perx-blue flex h-2 w-full flex-col rounded-full transition-colors"></div>
             ) : currentStep === index ? (
               <div
-                className="group flex w-full flex-col h-2 rounded-full bg-sky-600 transition-colors"
+                className="group bg-perx-blue flex h-2 w-full flex-col rounded-full transition-colors"
                 aria-current="step"
               ></div>
             ) : (
-              <div className="group flex w-full flex-col h-2 rounded-full bg-gray-200 transition-colors"></div>
+              <div className="group flex h-2 w-full flex-col rounded-full bg-gray-200 transition-colors"></div>
             )}
           </li>
         ))}
       </ol>
       <div className="flex flex-col">
-        <span className="text-sm font-medium text-sky-600">
+        <span className="text-perx-blue text-sm font-medium">
           {steps[currentStep].id}
         </span>
         <span className="text-xl font-medium">{steps[currentStep].name}</span>
@@ -171,59 +174,55 @@ function Step1({
       initial={{ x: delta >= 0 ? '50%' : '-50%', opacity: 0 }}
       animate={{ x: 0, opacity: 1 }}
       transition={{ duration: 0.3, ease: 'easeInOut' }}
-      className="flex flex-col gap-3"
+      className="flex flex-col gap-5"
     >
       <div>
-        <Label htmlFor="businessName">Business name</Label>
-        <Input
-          id="businessName"
+        <PerxInput
+          label="Business name"
           type="text"
           placeholder="Business, Inc."
-          {...register('businessName')}
           required
+          {...register('businessName')}
         />
         {errors.businessName?.message && (
           <ErrorMessage message={errors.businessName.message} />
         )}
       </div>
       <div>
-        <Label htmlFor="email">Email address</Label>
-        <Input
-          id="email"
+        <PerxInput
+          label="Email address"
           type="email"
           placeholder="business@example.com"
-          {...register('email')}
           required
+          {...register('email')}
         />
         {errors.email?.message && (
           <ErrorMessage message={errors.email.message} />
         )}
       </div>
       <div>
-        <Label htmlFor="password">Password</Label>
-        <Input
-          id="password"
+        <PerxInput
+          label="Password"
           type={showPassword ? 'text' : 'password'}
           placeholder="••••••••"
-          {...register('password')}
           required
+          {...register('password')}
         />
         {errors.password?.message ? (
           <ErrorMessage message={errors.password.message} />
         ) : (
-          <p className="font-mono mt-2 text-sm text-gray-500">
+          <p className="mt-2 font-mono text-sm text-gray-500">
             Password must be at least 8 characters
           </p>
         )}
       </div>
       <div>
-        <Label htmlFor="confirmPassword">Confirm password</Label>
-        <Input
-          id="confirmPassword"
+        <PerxInput
+          label="Confirm password"
           type={showPassword ? 'text' : 'password'}
           placeholder="••••••••"
-          {...register('confirmPassword')}
           required
+          {...register('confirmPassword')}
         />
         {errors.confirmPassword?.message && (
           <ErrorMessage message={errors.confirmPassword.message} />
@@ -238,7 +237,7 @@ function Step1({
         />
         <Label
           htmlFor="showPassword"
-          className="text-sm mt-[1px] cursor-pointer"
+          className="mt-[1px] cursor-pointer text-sm"
         >
           Show password
         </Label>
@@ -261,28 +260,26 @@ function Step2({
       initial={{ x: delta >= 0 ? '50%' : '-50%', opacity: 0 }}
       animate={{ x: 0, opacity: 1 }}
       transition={{ duration: 0.3, ease: 'easeInOut' }}
-      className="flex flex-col gap-6"
+      className="flex flex-col gap-5"
     >
       <div>
-        <Label htmlFor="description">Business description</Label>
-        <Textarea
-          id="description"
+        <PerxTextarea
+          label="Business description"
           placeholder="Tell us about your business"
-          {...register('description')}
           required
+          {...register('description')}
         />
         {errors.description?.message && (
           <ErrorMessage message={errors.description.message} />
         )}
       </div>
       <div>
-        <Label htmlFor="address">Address</Label>
-        <Input
-          id="address"
+        <PerxInput
+          label="Address"
           type="text"
           placeholder="123 Main St, Cebu City, Cebu 6000"
-          {...register('address')}
           required
+          {...register('address')}
         />
         {errors.address?.message && (
           <ErrorMessage message={errors.address.message} />
@@ -326,12 +323,12 @@ function Step3({
       transition={{ duration: 0.3, ease: 'easeInOut' }}
       className="flex flex-col gap-6"
     >
-      <div className="flex flex-col justify-center items-center">
+      <div className="flex flex-col items-center justify-center">
         {logoPreview && (
           <img
             src={logoPreview}
             alt="Your business logo"
-            className="aspect-square rounded-full size-48 object-cover border border-input"
+            className="border-input aspect-square size-48 rounded-full border object-cover"
           />
         )}
       </div>
@@ -354,7 +351,7 @@ function Step3({
             }
           />
         ) : (
-          <p className="font-mono mt-2 text-sm text-gray-500">
+          <p className="mt-2 font-mono text-sm text-gray-500">
             Logo must be in 1:1 &#40;square&#41; aspect ratio
           </p>
         )}
@@ -364,7 +361,7 @@ function Step3({
 }
 
 function ErrorMessage({ message }: { message: string }) {
-  return <p className="font-mono mt-1 text-sm text-red-400">{message}</p>;
+  return <p className="mt-1 font-mono text-sm text-red-400">{message}</p>;
 }
 
 function Navigation({

@@ -63,6 +63,7 @@ export default function ConsumerRegisterForm() {
 
   const processForm: SubmitHandler<Inputs> = (data) => {
     console.log(data);
+    // TODO: Submit form data to the server
     reset();
   };
 

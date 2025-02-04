@@ -22,7 +22,6 @@ import { Button } from '../ui/button';
 import { Textarea } from '../ui/textarea';
 import { Checkbox } from '../ui/checkbox';
 import Link from 'next/link';
-import { registerMerchant } from '@/action/merchant';
 
 const schemas = [Step1Schema, Step2Schema, Step3Schema];
 
@@ -64,7 +63,7 @@ export default function MerchantRegisterForm() {
 
   const processForm: SubmitHandler<MerchantFormInputs> = async () => {
     const data = getValues();
-    await registerMerchant(data);
+    // TODO: Send form data to the server
     reset();
   };
 

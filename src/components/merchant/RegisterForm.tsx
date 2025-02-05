@@ -24,7 +24,6 @@ import Link from 'next/link';
 import PerxInput from '../custom/PerxInput';
 import PerxTextarea from '../custom/PerxTextarea';
 import { signupMerchant } from '@/actions/merchant/auth';
-import { set } from 'zod';
 import PerxAlert from '../custom/PerxAlert';
 import { LoaderCircle } from 'lucide-react';
 
@@ -423,12 +422,20 @@ function Navigation({
         </Button>
       )}
       {currentStep < steps.length - 1 && (
-        <Button type="button" onClick={next}>
+        <Button
+          type="button"
+          onClick={next}
+          className="bg-perx-blue transition-all"
+        >
           Next
         </Button>
       )}
       {currentStep === steps.length - 1 && (
-        <Button type="submit" disabled={isLoading} className="transition-all">
+        <Button
+          type="submit"
+          disabled={isLoading}
+          className="bg-perx-blue transition-all"
+        >
           {isLoading ? (
             <>
               <LoaderCircle

@@ -32,7 +32,7 @@ export default function RootLayout({
       <body
         className={`${inter.variable} ${spaceGrotesk.variable} antialiased`}
       >
-        <NextTopLoader color="#5a051b" showSpinner={false} />
+        <NextTopLoader color="#A50000" showSpinner={false} height={4} />
         {children}
       </body>
     </html>

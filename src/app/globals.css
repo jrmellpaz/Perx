@@ -9,8 +9,29 @@
   --font-sans: "Inter", sans-serif;
   --font-mono: "Space Grotesk", sans-serif;
 
+  /* main brand colors */
+  --color-perx-red:  #A50000;
+  --color-perx-white: #F7F5F2;
+  --color-perx-black: #1E1919;
+
+  /* accent brand colors */
   --color-perx-blue: #0061FE;
-  --color-perx-red:  hsl(var(--text-red-700));
+  --color-perx-azalea: #CD2F7B;
+  --color-perx-pink: #FFAFA5;
+  --color-perx-crimson: #9B0032;
+  --color-perx-sunset: #FA551E;
+  --color-perx-rust: #BE4B0A;
+  --color-perx-orange: #FF8C19;
+  --color-perx-gold: #9B6400;
+  --color-perx-yellow: #FAD24B;
+  --color-perx-canopy: #0F503C;
+  --color-perx-lime: #B4DC19;
+  --color-perx-ocean: #007891;
+  --color-perx-zen: #14C8EB;
+  --color-perx-navy: #283750;
+  --color-perx-cloud: #B4C8E1;
+  --color-perx-plum: #78286E;
+  --color-perx-orchid: #C8AFF0;
 
   --color-background: hsl(var(--background));
   --color-foreground: hsl(var(--foreground));

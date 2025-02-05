@@ -15,9 +15,11 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import PerxInput from '../custom/PerxInput';
 import { loginMerchant } from '@/actions/merchant/auth';
 import PerxAlert from '../custom/PerxAlert';
+import { LoaderCircle } from 'lucide-react';
 
 export default function MerchantLoginForm() {
   const [submitError, setSubmitError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const {
     register,
@@ -29,6 +31,7 @@ export default function MerchantLoginForm() {
   });
 
   const onSubmit = async (data: LoginMerchantInputs) => {
+    setIsLoading(true);
     try {
       await loginMerchant(data);
       reset();
@@ -39,6 +42,8 @@ export default function MerchantLoginForm() {
       } else {
         setSubmitError('An unknown error occurred');
       }
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -57,7 +62,7 @@ export default function MerchantLoginForm() {
         className="flex h-full flex-col justify-between"
       >
         <InputFields register={register} errors={errors} />
-        <ButtonGroup />
+        <ButtonGroup isLoading={isLoading} />
       </form>
     </section>
   );
@@ -135,7 +140,7 @@ function InputFields({
   );
 }
 
-function ButtonGroup() {
+function ButtonGroup({ isLoading }: { isLoading: boolean }) {
   return (
     <div className="flex justify-end gap-4">
       <Link href="/merchant/register">
@@ -143,7 +148,21 @@ function ButtonGroup() {
           Register business instead
         </Button>
       </Link>
-      <Button type="submit">Log in</Button>
+      <Button type="submit" disabled={isLoading} className="transition-all">
+        {isLoading ? (
+          <>
+            <LoaderCircle
+              className="-ms-1 animate-spin"
+              size={16}
+              strokeWidth={2}
+              aria-hidden="true"
+            />
+            Logging in...
+          </>
+        ) : (
+          'Log in'
+        )}
+      </Button>
     </div>
   );
 }

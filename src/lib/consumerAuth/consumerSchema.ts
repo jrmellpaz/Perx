@@ -16,7 +16,7 @@ export const Step1Schema = z
   });
 
 export const Step2Schema = z.object({
-  code: z.string(),
+  referralCode: z.string(),
 });
 
 export const Step3Schema = z
@@ -24,19 +24,27 @@ export const Step3Schema = z
     interests: z
       .array(z.string())
       .min(1, 'You must select at least one interest.'),
-    otherInterest: z.string().optional(),
+    otherInterests: z.array(z.string().min(1, 'Custom interest cannot be empty')).optional(),
   })
   .refine(
-    (data) =>
-      !data.interests.includes('Others') || data.otherInterest?.trim() !== '',
+    (data) => !data.interests.includes('Others') || (data.otherInterests && data.otherInterests.length > 0),
     {
-      message: "Please specify your custom interest if 'Others' is selected.",
-      path: ['otherInterest'],
+      message: "Please specify at least one custom interest if 'Others' is selected.",
+      path: ['otherInterests'],
     }
   );
+
+  export const loginConsumerSchema = z.object({
+    email: z
+      .string()
+      .email('Invalid email address')
+      .nonempty('Email is required'),
+    password: z.string().nonempty('Password is required'),
+  });
 
 export type Step1Inputs = z.infer<typeof Step1Schema>;
 export type Step2Inputs = z.infer<typeof Step2Schema>;
 export type Step3Inputs = z.infer<typeof Step3Schema>;
+export type LoginConsumerInputs = z.infer<typeof loginConsumerSchema>;
 
-export type Inputs = Step1Inputs & Step2Inputs & Step3Inputs;
+export type ConsumerFormInputs = Step1Inputs & Step2Inputs & Step3Inputs;

@@ -6,8 +6,7 @@ interface ConsumerLogoProps {
 }
 
 export function ConsumerLogo({
-  logoClass = 'text-xl pb-1',
-  sublogoClass = 'text-[14px]',
+  logoClass = 'text-xl pb-1'
 }: ConsumerLogoProps) {
   return (
     <div className="h-full flex items-center gap-1">
@@ -18,9 +17,6 @@ export function ConsumerLogo({
       />
       <h1 className={cn('lowercase font-bold tracking-tighter', logoClass)}>
         perx
-      </h1>
-      <h1 className={cn('uppercase font-mono font-semibold', sublogoClass)}>
-        CONSUMER
       </h1>
     </div>
   );

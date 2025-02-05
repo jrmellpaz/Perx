@@ -4,11 +4,11 @@ import {
   Step1Schema,
   Step2Schema,
   Step3Schema,
-  Inputs,
-} from '@/lib/consumerSchema';
+  ConsumerFormInputs,
+} from '@/lib/consumerAuth/consumerSchema';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
+import { useEffect, useState } from 'react';
 import {
   FieldErrors,
   SubmitHandler,
@@ -20,6 +20,12 @@ import { Label } from '../../ui/label';
 import { Input } from '../../ui/input';
 import { Button } from '../../ui/button';
 import { Checkbox } from '../../ui/checkbox';
+import Link from 'next/link';
+import PerxInput from '../../custom/PerxInput';
+import PerxTextarea from '../../custom/PerxTextarea';
+import { signupConsumer } from '@/actions/consumer/auth';
+import PerxAlert from '../../custom/PerxAlert';
+import { LoaderCircle } from 'lucide-react';
 
 const schemas = [Step1Schema, Step2Schema, Step3Schema];
 
@@ -32,18 +38,20 @@ const steps = [
   {
     id: 'Step 2',
     name: 'Referral Code',
-    fields: ['code'],
+    fields: ['referralCode'],
   },
   {
     id: 'Step 3',
-    name: 'Choose your interests',
-    fields: ['interests'],
+    name: 'Upload your logo',
+    fields: ['logo'],
   },
 ];
 
 export default function ConsumerRegisterForm() {
-  const [previousStep, setPreviousStep] = useState(0);
-  const [currentStep, setCurrentStep] = useState(0);
+  const [previousStep, setPreviousStep] = useState<number>(0);
+  const [currentStep, setCurrentStep] = useState<number>(0);
+  const [submitError, setSubmitError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const delta = currentStep - previousStep;
 
   const {
@@ -52,21 +60,32 @@ export default function ConsumerRegisterForm() {
     watch,
     reset,
     trigger,
+    getValues,
     formState: { errors },
-  } = useForm<Inputs>({
+  } = useForm<ConsumerFormInputs>({
     resolver: zodResolver(schemas[currentStep]),
-    defaultValues: {
-      interests: [], // Default value as an empty array
-    },
   });
 
-  const processForm: SubmitHandler<Inputs> = (data) => {
-    console.log(data);
-    // TODO: Submit form data to the server
-    reset();
+  const processForm: SubmitHandler<ConsumerFormInputs> = async () => {
+    setIsLoading(true);
+    try {
+      const data = getValues();
+      console.log(data);
+      await signupConsumer(data);
+      reset();
+      setSubmitError(null);
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        setSubmitError(error.message);
+      } else {
+        setSubmitError('An unknown error occurred');
+      }
+    } finally {
+      setIsLoading(false);
+    }
   };
 
-  type FieldName = keyof Inputs;
+  type FieldName = keyof ConsumerFormInputs;
 
   const next = async () => {
     const fields = steps[currentStep].fields;
@@ -74,13 +93,13 @@ export default function ConsumerRegisterForm() {
       shouldFocus: true,
     });
 
-    if (isValidData && currentStep < steps.length - 1) {
-      if (currentStep === steps.length - 1) {
+    if (isValidData) {
+      if (currentStep < steps.length - 1) {
+        setPreviousStep(currentStep);
+        setCurrentStep((prevStep) => prevStep + 1);
+      } else {
         await handleSubmit(processForm)();
       }
-
-      setPreviousStep(currentStep);
-      setCurrentStep((prevStep) => prevStep + 1);
     }
   };
 
@@ -92,11 +111,21 @@ export default function ConsumerRegisterForm() {
   };
 
   return (
-    <section className="flex flex-col justify-between h-full">
-      <div className="flex flex-col gap-6">
-        <h1 className="text-2xl font-bold">Sign Up</h1>
-        <Steps currentStep={currentStep} />
-        <form onSubmit={handleSubmit(processForm)}>
+    <section className="flex h-full flex-col gap-6">
+      <h1 className="text-2xl font-bold">Sign up</h1>
+      {submitError && (
+        <PerxAlert
+          heading={submitError}
+          message="Make sure your email and password are correct."
+          variant="error"
+        />
+      )}
+      <Steps currentStep={currentStep} />
+      <form
+        onSubmit={handleSubmit(processForm)}
+        className="flex h-full flex-col justify-between"
+      >
+        <div className="flex flex-col gap-6">
           {currentStep === 0 && (
             <Step1 register={register} errors={errors} delta={delta} />
           )}
@@ -111,9 +140,14 @@ export default function ConsumerRegisterForm() {
               watch={watch}
             />
           )}
-        </form>
-      </div>
-      <Navigation next={next} prev={prev} currentStep={currentStep} />
+        </div>
+        <Navigation
+          next={next}
+          prev={prev}
+          currentStep={currentStep}
+          isLoading={isLoading}
+        />
+      </form>
     </section>
   );
 }
@@ -121,24 +155,24 @@ export default function ConsumerRegisterForm() {
 function Steps({ currentStep }: { currentStep: number }) {
   return (
     <nav aria-label="Progress" className="flex flex-col gap-3">
-      <ol role="list" className="space-x-2 flex">
+      <ol role="list" className="flex space-x-2">
         {steps.map((step, index) => (
-          <li key={step.name} className="md:flex-1 basis-full">
+          <li key={step.name} className="basis-full md:flex-1">
             {currentStep > index ? (
-              <div className="group flex w-full flex-col h-2 rounded-full bg-sky-600 transition-colors"></div>
+              <div className="group bg-perx-blue flex h-2 w-full flex-col rounded-full transition-colors"></div>
             ) : currentStep === index ? (
               <div
-                className="group flex w-full flex-col h-2 rounded-full bg-sky-600 transition-colors"
+                className="group bg-perx-blue flex h-2 w-full flex-col rounded-full transition-colors"
                 aria-current="step"
               ></div>
             ) : (
-              <div className="group flex w-full flex-col h-2 rounded-full bg-gray-200 transition-colors"></div>
+              <div className="group flex h-2 w-full flex-col rounded-full bg-gray-200 transition-colors"></div>
             )}
           </li>
         ))}
       </ol>
       <div className="flex flex-col">
-        <span className="text-sm font-medium text-sky-600">
+        <span className="text-perx-blue text-sm font-medium">
           {steps[currentStep].id}
         </span>
         <span className="text-xl font-medium">{steps[currentStep].name}</span>
@@ -152,8 +186,8 @@ function Step1({
   errors,
   delta,
 }: {
-  register: UseFormRegister<Inputs>;
-  errors: FieldErrors<Inputs>;
+  register: UseFormRegister<ConsumerFormInputs>;
+  errors: FieldErrors<ConsumerFormInputs>;
   delta: number;
 }) {
   const [showPassword, setShowPassword] = useState(false);
@@ -167,57 +201,55 @@ function Step1({
       initial={{ x: delta >= 0 ? '50%' : '-50%', opacity: 0 }}
       animate={{ x: 0, opacity: 1 }}
       transition={{ duration: 0.3, ease: 'easeInOut' }}
-      className="flex flex-col gap-3"
+      className="flex flex-col gap-5"
     >
       <div>
-        <Label htmlFor="name">Name</Label>
-        <Input
-          id="name"
+        <PerxInput
+          label="Name"
           type="text"
-          placeholder="Juan Dela Cruz"
-          {...register('name')}
+          placeholder="Lorem ipsum"
           required
+          {...register('name')}
         />
-        {errors.name?.message && <ErrorMessage message={errors.name.message} />}
+        {errors.name?.message && (
+          <ErrorMessage message={errors.name.message} />
+        )}
       </div>
       <div>
-        <Label htmlFor="email">Email address</Label>
-        <Input
-          id="email"
+        <PerxInput
+          label="Email address"
           type="email"
-          placeholder="juandelacruz@example.com"
-          {...register('email')}
+          placeholder="ipsum@example.com"
           required
+          {...register('email')}
         />
         {errors.email?.message && (
           <ErrorMessage message={errors.email.message} />
         )}
       </div>
       <div>
-        <Label htmlFor="password">Password</Label>
-        <Input
-          id="password"
+        <PerxInput
+          label="Password"
           type={showPassword ? 'text' : 'password'}
           placeholder="••••••••"
-          {...register('password')}
           required
+          {...register('password')}
         />
         {errors.password?.message ? (
           <ErrorMessage message={errors.password.message} />
         ) : (
-          <p className="font-mono mt-2 text-sm text-gray-500">
+          <p className="mt-2 font-mono text-sm text-gray-500">
             Password must be at least 8 characters
           </p>
         )}
       </div>
       <div>
-        <Label htmlFor="confirmPassword">Confirm password</Label>
-        <Input
-          id="confirmPassword"
+        <PerxInput
+          label="Confirm password"
           type={showPassword ? 'text' : 'password'}
           placeholder="••••••••"
-          {...register('confirmPassword')}
           required
+          {...register('confirmPassword')}
         />
         {errors.confirmPassword?.message && (
           <ErrorMessage message={errors.confirmPassword.message} />
@@ -232,7 +264,7 @@ function Step1({
         />
         <Label
           htmlFor="showPassword"
-          className="text-sm mt-[1px] cursor-pointer"
+          className="mt-[1px] cursor-pointer text-sm"
         >
           Show password
         </Label>
@@ -246,8 +278,8 @@ function Step2({
   errors,
   delta,
 }: {
-  register: UseFormRegister<Inputs>;
-  errors: FieldErrors<Inputs>;
+  register: UseFormRegister<ConsumerFormInputs>;
+  errors: FieldErrors<ConsumerFormInputs>;
   delta: number;
 }) {
   return (
@@ -255,15 +287,14 @@ function Step2({
       initial={{ x: delta >= 0 ? '50%' : '-50%', opacity: 0 }}
       animate={{ x: 0, opacity: 1 }}
       transition={{ duration: 0.3, ease: 'easeInOut' }}
-      className="flex flex-col gap-3"
+      className="flex flex-col gap-5"
     >
       <div>
-        <Label htmlFor="code">Referral code</Label>
-        <Input
-          id="code"
-          type="text"
-          placeholder="Enter your referral code"
-          {...register('code')}
+        <PerxTextarea
+          label="Enter Code "
+          placeholder="IpSuM123"
+          required
+          {...register('referralCode')}
         />
       </div>
     </motion.div>
@@ -276,21 +307,27 @@ function Step3({
   delta,
   watch,
 }: {
-  register: UseFormRegister<Inputs>;
-  errors: FieldErrors<Inputs>;
+  register: UseFormRegister<ConsumerFormInputs>;
+  errors: FieldErrors<ConsumerFormInputs>;
   delta: number;
-  watch: UseFormWatch<Inputs>;
+  watch: UseFormWatch<ConsumerFormInputs>;
 }) {
-  const interests = [
-    'Shopping',
-    'Coffee',
-    'Shoes',
-    'Clothes',
-    'Food',
-    'Others',
-  ];
-  const selectedInterests = watch('interests', []); // Dynamically track selected interests
-  const showOtherInput = selectedInterests.includes('Others');
+  const [customInterests, setCustomInterests] = useState<string[]>([]);
+  const selectedInterests = watch('interests') || [];
+
+  const addCustomInterest = () => {
+    setCustomInterests([...customInterests, '']);
+  };
+
+  const removeCustomInterest = (index: number) => {
+    setCustomInterests(customInterests.filter((_, i) => i !== index));
+  };
+
+  const handleCustomInterestChange = (index: number, value: string) => {
+    const newCustomInterests = [...customInterests];
+    newCustomInterests[index] = value;
+    setCustomInterests(newCustomInterests);
+  };
 
   return (
     <motion.div
@@ -299,77 +336,67 @@ function Step3({
       transition={{ duration: 0.3, ease: 'easeInOut' }}
       className="flex flex-col gap-6"
     >
-      <h2 className="text-xl font-bold text-center">Choose your Interests</h2>
-      <div className="flex flex-col gap-4">
-        {interests.map((interest) => (
-          <label
-            key={interest}
-            className="flex items-center gap-2 cursor-pointer"
-          >
-            <input
-              type="checkbox"
-              value={interest}
-              {...register('interests')}
-              className="w-4 h-4 accent-primary"
-            />
-            <span className="text-base">{interest}</span>
-          </label>
-        ))}
-
-        {showOtherInput && (
-          <div className="mt-2">
-            <label
-              htmlFor="otherInterest"
-              className="block text-sm font-medium"
-            >
-              Specify your interest:
+      <div>
+        <Label>Interests</Label>
+        <div className="flex flex-wrap gap-2">
+          {['Technology', 'Sports', 'Music', 'Others'].map((interest) => (
+            <label key={interest} className="flex items-center gap-2">
+              <input
+                type="checkbox"
+                value={interest}
+                {...register('interests')}
+              />
+              {interest}
             </label>
-            <input
-              id="otherInterest"
-              type="text"
-              placeholder="Enter your interest"
-              {...register('otherInterest')}
-              className="w-full border rounded-md p-2 mt-1"
-            />
-            {errors.otherInterest && (
-              <p className="text-red-500 text-sm mt-1">
-                {errors.otherInterest.message?.toString()}
-              </p>
-            )}
+          ))}
+        </div>
+        {selectedInterests.includes('Others') && (
+          <div className="mt-2">
+            {customInterests.map((interest, index) => (
+              <div key={index} className="flex items-center gap-2">
+                <Input
+                  type="text"
+                  value={interest}
+                  onChange={(e) => handleCustomInterestChange(index, e.target.value)}
+                />
+                <button type="button" onClick={() => removeCustomInterest(index)}>X</button>
+              </div>
+            ))}
+            <button type="button" onClick={addCustomInterest}>+ Add More</button>
           </div>
         )}
+        {errors.interests?.message && (
+          <ErrorMessage message={errors.interests.message} />
+        )}
       </div>
-      {errors.interests && (
-        <p className="text-red-500 text-sm">
-          {errors.interests.message?.toString() ||
-            'Please select at least one interest.'}
-        </p>
-      )}
     </motion.div>
   );
 }
 
-// function Step4() {
-// 	return (
-// 		<h1>Done!!</h1>
-// 	)
-// }
-
 function ErrorMessage({ message }: { message: string }) {
-  return <p className="font-mono mt-1 text-sm text-red-400">{message}</p>;
+  return <p className="mt-1 font-mono text-sm text-red-400">{message}</p>;
 }
 
 function Navigation({
   next,
   prev,
   currentStep,
+  isLoading,
 }: {
   next: () => Promise<void>;
   prev: () => void;
   currentStep: number;
+  isLoading: boolean;
 }) {
   return (
     <div className="flex justify-end gap-4">
+      {currentStep === 0 && (
+        <Link href="/login">
+          <Button type="button" variant="link">
+            Log in instead
+          </Button>
+        </Link>
+      )}
       {currentStep > 0 && (
         <Button
           type="button"
@@ -380,12 +407,34 @@ function Navigation({
           Back
         </Button>
       )}
-      {currentStep <= steps.length - 1 && (
+      {currentStep < steps.length - 1 && (
         <Button
-          type={currentStep === steps.length - 1 ? 'submit' : 'button'}
+          type="button"
           onClick={next}
+          className="bg-perx-blue transition-all"
         >
-          {currentStep === steps.length - 1 ? 'Sign up' : 'Next'}
+          Next
+        </Button>
+      )}
+      {currentStep === steps.length - 1 && (
+        <Button
+          type="submit"
+          disabled={isLoading}
+          className="bg-perx-blue transition-all"
+        >
+          {isLoading ? (
+            <>
+              <LoaderCircle
+                className="-ms-1 animate-spin"
+                size={16}
+                strokeWidth={2}
+                aria-hidden="true"
+              />
+              Registering...
+            </>
+          ) : (
+            'Register'
+          )}
         </Button>
       )}
     </div>

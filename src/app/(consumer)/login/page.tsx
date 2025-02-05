@@ -1,5 +1,5 @@
 import { ConsumerLogo } from '@/components/consumer/ConsumerLogo';
-import { ConsumerLoginForm } from '@/components/consumer/login/ConsumerLoginForm';
+import ConsumerLoginForm from '@/components/consumer/login/ConsumerLogin';
 
 export default function ConsumerLoginPage() {
   return (

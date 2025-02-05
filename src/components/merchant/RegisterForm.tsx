@@ -24,6 +24,9 @@ import Link from 'next/link';
 import PerxInput from '../custom/PerxInput';
 import PerxTextarea from '../custom/PerxTextarea';
 import { signupMerchant } from '@/actions/merchant/auth';
+import { set } from 'zod';
+import PerxAlert from '../custom/PerxAlert';
+import { LoaderCircle } from 'lucide-react';
 
 const schemas = [Step1Schema, Step2Schema, Step3Schema];
 
@@ -46,8 +49,10 @@ const steps = [
 ];
 
 export default function MerchantRegisterForm() {
-  const [previousStep, setPreviousStep] = useState(0);
-  const [currentStep, setCurrentStep] = useState(0);
+  const [previousStep, setPreviousStep] = useState<number>(0);
+  const [currentStep, setCurrentStep] = useState<number>(0);
+  const [submitError, setSubmitError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const delta = currentStep - previousStep;
 
   const {
@@ -63,10 +68,22 @@ export default function MerchantRegisterForm() {
   });
 
   const processForm: SubmitHandler<MerchantFormInputs> = async () => {
-    const data = getValues();
-    console.log(data);
-    await signupMerchant(data);
-    reset();
+    setIsLoading(true);
+    try {
+      const data = getValues();
+      console.log(data);
+      await signupMerchant(data);
+      reset();
+      setSubmitError(null);
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        setSubmitError(error.message);
+      } else {
+        setSubmitError('An unknown error occurred');
+      }
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   type FieldName = keyof MerchantFormInputs;
@@ -97,6 +114,13 @@ export default function MerchantRegisterForm() {
   return (
     <section className="flex h-full flex-col gap-6">
       <h1 className="text-2xl font-bold">Register business</h1>
+      {submitError && (
+        <PerxAlert
+          heading={submitError}
+          message="Make sure your email and password are correct."
+          variant="error"
+        />
+      )}
       <Steps currentStep={currentStep} />
       <form
         onSubmit={handleSubmit(processForm)}
@@ -118,7 +142,12 @@ export default function MerchantRegisterForm() {
             />
           )}
         </div>
-        <Navigation next={next} prev={prev} currentStep={currentStep} />
+        <Navigation
+          next={next}
+          prev={prev}
+          currentStep={currentStep}
+          isLoading={isLoading}
+        />
       </form>
     </section>
   );
@@ -367,10 +396,12 @@ function Navigation({
   next,
   prev,
   currentStep,
+  isLoading,
 }: {
   next: () => Promise<void>;
   prev: () => void;
   currentStep: number;
+  isLoading: boolean;
 }) {
   return (
     <div className="flex justify-end gap-4">
@@ -397,7 +428,21 @@ function Navigation({
         </Button>
       )}
       {currentStep === steps.length - 1 && (
-        <Button type="submit">Register business</Button>
+        <Button type="submit" disabled={isLoading} className="transition-all">
+          {isLoading ? (
+            <>
+              <LoaderCircle
+                className="-ms-1 animate-spin"
+                size={16}
+                strokeWidth={2}
+                aria-hidden="true"
+              />
+              Registering...
+            </>
+          ) : (
+            'Register business'
+          )}
+        </Button>
       )}
     </div>
   );

@@ -19,11 +19,11 @@ import {
 import { Label } from '../ui/label';
 import { Input } from '../ui/input';
 import { Button } from '../ui/button';
-import { Textarea } from '../ui/textarea';
 import { Checkbox } from '../ui/checkbox';
 import Link from 'next/link';
 import PerxInput from '../custom/PerxInput';
 import PerxTextarea from '../custom/PerxTextarea';
+import { signupMerchant } from '@/actions/merchant/auth';
 
 const schemas = [Step1Schema, Step2Schema, Step3Schema];
 
@@ -60,13 +60,12 @@ export default function MerchantRegisterForm() {
     formState: { errors },
   } = useForm<MerchantFormInputs>({
     resolver: zodResolver(schemas[currentStep]),
-    mode: 'onChange',
   });
 
   const processForm: SubmitHandler<MerchantFormInputs> = async () => {
     const data = getValues();
     console.log(data);
-    // TODO: Send form data to the server
+    await signupMerchant(data);
     reset();
   };
 

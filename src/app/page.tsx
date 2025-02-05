@@ -14,7 +14,7 @@ export default function Home() {
         repudiandae commodi fugit nam. Amet?
       </p>
       <Link href="/merchant/register">Go to merchant</Link>
-      <Link href="/consumer/login">Go to consumer</Link>
+      <Link href="/login">Go to consumer</Link>
     </div>
   );
 }

@@ -10,6 +10,7 @@
   --font-mono: "Space Grotesk", sans-serif;
 
   --color-perx-blue: #0061FE;
+  --color-perx-red:  hsl(var(--text-red-700));
 
   --color-background: hsl(var(--background));
   --color-foreground: hsl(var(--foreground));

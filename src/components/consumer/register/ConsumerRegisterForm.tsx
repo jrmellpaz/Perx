@@ -22,7 +22,6 @@ import { Button } from '../../ui/button';
 import { Checkbox } from '../../ui/checkbox';
 import Link from 'next/link';
 import PerxInput from '../../custom/PerxInput';
-import PerxTextarea from '../../custom/PerxTextarea';
 import { signupConsumer } from '@/actions/consumer/auth';
 import PerxAlert from '../../custom/PerxAlert';
 import { LoaderCircle } from 'lucide-react';
@@ -42,8 +41,8 @@ const steps = [
   },
   {
     id: 'Step 3',
-    name: 'Upload your logo',
-    fields: ['logo'],
+    name: 'Choose your interests',
+    fields: ['interests'],
   },
 ];
 
@@ -130,7 +129,7 @@ export default function ConsumerRegisterForm() {
             <Step1 register={register} errors={errors} delta={delta} />
           )}
           {currentStep === 1 && (
-            <Step2 register={register} errors={errors} delta={delta} />
+            <Step2 register={register}  delta={delta} />
           )}
           {currentStep === 2 && (
             <Step3
@@ -207,7 +206,7 @@ function Step1({
         <PerxInput
           label="Name"
           type="text"
-          placeholder="Lorem ipsum"
+          placeholder="Juan Dela Cruz"
           required
           {...register('name')}
         />
@@ -219,7 +218,7 @@ function Step1({
         <PerxInput
           label="Email address"
           type="email"
-          placeholder="ipsum@example.com"
+          placeholder="juandelacruz@example.com"
           required
           {...register('email')}
         />
@@ -275,11 +274,8 @@ function Step1({
 
 function Step2({
   register,
-  errors,
   delta,
-}: {
-  register: UseFormRegister<ConsumerFormInputs>;
-  errors: FieldErrors<ConsumerFormInputs>;
+}: {  register: UseFormRegister<ConsumerFormInputs>;
   delta: number;
 }) {
   return (
@@ -290,10 +286,10 @@ function Step2({
       className="flex flex-col gap-5"
     >
       <div>
-        <PerxTextarea
+        <PerxInput
           label="Enter Code "
+          type = "text"
           placeholder="IpSuM123"
-          required
           {...register('referralCode')}
         />
       </div>
@@ -314,7 +310,14 @@ function Step3({
 }) {
   const [customInterests, setCustomInterests] = useState<string[]>([]);
   const selectedInterests = watch('interests') || [];
-
+  const interests = [
+    'Shopping',
+    'Coffee',
+    'Shoes',
+    'Clothes',
+    'Food',
+    'Others',
+  ];
   const addCustomInterest = () => {
     setCustomInterests([...customInterests, '']);
   };
@@ -337,9 +340,8 @@ function Step3({
       className="flex flex-col gap-6"
     >
       <div>
-        <Label>Interests</Label>
-        <div className="flex flex-wrap gap-2">
-          {['Technology', 'Sports', 'Music', 'Others'].map((interest) => (
+        <div className="flex flex-col gap-2">
+          {interests.map((interest) => (
             <label key={interest} className="flex items-center gap-2">
               <input
                 type="checkbox"

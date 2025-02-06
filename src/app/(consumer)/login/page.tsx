@@ -1,7 +1,16 @@
 import { ConsumerLogo } from '@/components/consumer/ConsumerLogo';
 import ConsumerLoginForm from '@/components/consumer/login/ConsumerLogin';
+import { createClient } from '@/utils/supabase/server';
+import { redirect } from 'next/navigation';
 
-export default function ConsumerLoginPage() {
+export default async function ConsumerLoginPage() {
+  const supabase = await createClient();
+  const { data } = await supabase.auth.getUser();
+
+  if (data?.user) {
+    redirect('/home');
+  }
+
   return (
     <main className="lg:flex flex-row h-dvh overflow-hidden font-sans">
       <section className="relative hidden lg:block grow">

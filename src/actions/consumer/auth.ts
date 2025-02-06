@@ -57,5 +57,5 @@ export async function logoutConsumer() {
   }
 
   revalidatePath('/', 'layout');
-  redirect('/home');
+  redirect('/login');
 }

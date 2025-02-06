@@ -34,7 +34,7 @@ export default function ConsumerLoginForm() {
   const onSubmit = async (data: LoginConsumerInputs) => {
     setIsLoading(true);
     try {
-      await loginConsumer(data); // Fixed function name
+      await loginConsumer(data);
       reset();
       setSubmitError(null);
     } catch (error: unknown) {
@@ -54,7 +54,7 @@ export default function ConsumerLoginForm() {
           variant="error"
         />
       )}
-      <form onSubmit={handleSubmit(onSubmit)} className="flex h-full flex-col justify-between">
+      <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col justify-between">
         <InputFields register={register} errors={errors} />
         <ButtonGroup isLoading={isLoading} />
       </form>
@@ -79,7 +79,7 @@ function InputFields({
       className="flex flex-col gap-5"
     >
       <div className="flex flex-col gap-2">
-        <PerxInput label="Email address" type="email" placeholder="business@example.com" required {...register('email')} />
+        <PerxInput label="Email address" type="email" placeholder="juandelacruz@example.com" required {...register('email')} />
         {errors.email?.message && <ErrorMessage message={errors.email.message} />}
       </div>
       <div>
@@ -104,13 +104,8 @@ function InputFields({
 function ButtonGroup({ isLoading }: { isLoading: boolean }) {
   return (
     <div className="flex flex-col gap-4">
-      <div className="flex justify-end gap-4">
-        <Link href="/register">
-          <Button type="button" variant="link">
-            Sign up instead
-          </Button>
-        </Link>
-        <Button type="submit" disabled={isLoading} className="transition-all">
+      <div className="flex justify-end w-full mt-8">
+        <Button type="submit" disabled={isLoading} className="w-full text-center transition-all">
           {isLoading ? (
             <>
               <LoaderCircle className="-ms-1 animate-spin" size={16} strokeWidth={2} aria-hidden="true" />
@@ -121,14 +116,16 @@ function ButtonGroup({ isLoading }: { isLoading: boolean }) {
           )}
         </Button>
       </div>
-      
-      {/* OR separator */}
+      <Link href="/register">
+        <Button type="button" variant="link" className="w-full text-center mt-[-8px]">
+          Sign up instead
+        </Button>
+      </Link>
       <div className="relative text-center text-sm">
-        <span className="relative z-10 bg-background px-2 text-muted-foreground">Or continue with</span>
+        <span className="relative z-14 bg-background px-2 text-muted-foreground">Or continue with</span>
         <div className="absolute inset-0 flex items-center border-t border-border top-1/2"></div>
       </div>
 
-      {/* OAuth buttons */}
       <Button variant="outline" className="w-full">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" className="w-5 h-5 mr-2">
           <path

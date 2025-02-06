@@ -58,9 +58,19 @@ export const loginMerchantSchema = z.object({
   password: z.string().nonempty('Password is required'),
 });
 
+export const changePasswordSchema = z
+  .object({
+    password: z.string().min(8, 'Password must be at least 8 characters'),
+    confirmPassword: z.string().nonempty('Confirm password is required'),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: 'Passwords do not match',
+    path: ['confirmPassword'],
+  });
+
 export type Step1Inputs = z.infer<typeof Step1Schema>;
 export type Step2Inputs = z.infer<typeof Step2Schema>;
 export type Step3Inputs = z.infer<typeof Step3Schema>;
-export type LoginMerchantInputs = z.infer<typeof loginMerchantSchema>;
-
 export type MerchantFormInputs = Step1Inputs & Step2Inputs & Step3Inputs;
+export type LoginMerchantInputs = z.infer<typeof loginMerchantSchema>;
+export type ChangePasswordInputs = z.infer<typeof changePasswordSchema>;

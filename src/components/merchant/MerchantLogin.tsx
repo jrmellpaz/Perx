@@ -38,7 +38,7 @@ export default function MerchantLoginForm() {
       setSubmitError(null);
     } catch (error: unknown) {
       if (error instanceof Error) {
-        setSubmitError(error.message);
+        setSubmitError('Invalid credentials');
       } else {
         setSubmitError('An unknown error occurred');
       }
@@ -157,7 +157,7 @@ function ButtonGroup({ isLoading }: { isLoading: boolean }) {
               strokeWidth={2}
               aria-hidden="true"
             />
-            Logging in...
+            Log in
           </>
         ) : (
           'Log in'

@@ -66,9 +66,30 @@ export async function logoutMerchant() {
 export async function recoverPassword(email: string) {
   const supabase = await createClient();
   const url = `${process.env.NEXT_PUBLIC_URL}/merchant/change-password`;
-  console.log('url', url);
 
   const { data, error } = await supabase.auth.resetPasswordForEmail(email, {
     redirectTo: url,
   });
+
+  if (data) {
+    console.log(data);
+  }
+  if (error) {
+    throw new Error(error.message);
+  }
+}
+
+export async function changePassword(password: string) {
+  console.log('hereee');
+  const supabase = await createClient();
+  const { data, error } = await supabase.auth.updateUser({
+    password,
+  });
+
+  if (data) {
+    console.log(data);
+  }
+  if (error) {
+    throw new Error(error.message);
+  }
 }

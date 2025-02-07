@@ -94,6 +94,7 @@ function InputFields({
           type="email"
           placeholder="business@example.com"
           required
+          autofocus={true}
           {...register('email')}
         />
         {errors.email?.message && (

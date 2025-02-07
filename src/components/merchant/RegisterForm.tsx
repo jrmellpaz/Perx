@@ -209,6 +209,7 @@ function Step1({
           type="text"
           placeholder="Business, Inc."
           required
+          autofocus
           {...register('businessName')}
         />
         {errors.businessName?.message && (
@@ -294,6 +295,7 @@ function Step2({
           label="Business description"
           placeholder="Tell us about your business"
           required
+          autofocus
           {...register('description')}
         />
         {errors.description?.message && (
@@ -444,7 +446,7 @@ function Navigation({
                 strokeWidth={2}
                 aria-hidden="true"
               />
-              Registering...
+              Registering
             </>
           ) : (
             'Register business'

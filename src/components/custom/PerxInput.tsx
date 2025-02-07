@@ -8,6 +8,7 @@ interface InputTextProps {
   placeholder: string;
   required?: boolean;
   name?: string;
+  autofocus?: boolean;
 }
 
 export default function PerxInput({
@@ -16,6 +17,7 @@ export default function PerxInput({
   placeholder,
   required,
   name,
+  autofocus,
   ...props
 }: InputTextProps) {
   const id = useId();
@@ -33,6 +35,7 @@ export default function PerxInput({
         placeholder={placeholder}
         required={required}
         name={name}
+        autoFocus={autofocus}
         className="placeholder:opacity-0 focus:placeholder:opacity-100"
         {...props}
       />

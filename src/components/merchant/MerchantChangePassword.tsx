@@ -12,6 +12,7 @@ import {
   changePasswordSchema,
 } from '@/lib/merchantAuth/merchantSchema';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { changePassword } from '@/actions/merchant/auth';
 
 export default function MerchantChangePassword() {
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -25,10 +26,16 @@ export default function MerchantChangePassword() {
     resolver: zodResolver(changePasswordSchema),
   });
 
-  const onSubmit = (data: ChangePasswordInputs) => {
+  const onSubmit = async (data: ChangePasswordInputs) => {
     setIsLoading(true);
     try {
-      console.log(data);
+      const { password, confirmPassword } = data;
+
+      if (password !== confirmPassword) {
+        throw new Error('Passwords do not match');
+      }
+
+      await changePassword(confirmPassword);
       reset();
     } catch (error: unknown) {
       throw new Error(error as string);

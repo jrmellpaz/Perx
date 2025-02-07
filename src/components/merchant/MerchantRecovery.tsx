@@ -6,18 +6,30 @@ import { Button } from '../ui/button';
 import { motion } from 'framer-motion';
 import { useState } from 'react';
 import PerxAlert from '../custom/PerxAlert';
-import { createClient } from '@/utils/supabase/server';
 import { recoverPassword } from '@/actions/merchant/auth';
+import { LoaderCircle } from 'lucide-react';
 
 export default function MerchantPasswordRecovery() {
   const [success, setSuccess] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  const handlePasswordRecovery = async (formData: FormData) => {
-    const email = formData.get('email') as string;
-    await recoverPassword(email);
-    console.log(email);
-    // Implement password recovery logic here
-    setSuccess(true);
+  const handlePasswordRecovery = async (
+    event: React.FormEvent<HTMLFormElement>
+  ) => {
+    event.preventDefault();
+    setIsLoading(true);
+
+    try {
+      const formData = new FormData(event.currentTarget);
+      const email = formData.get('email') as string;
+      await recoverPassword(email);
+      console.log(email);
+      setSuccess(true);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -25,7 +37,7 @@ export default function MerchantPasswordRecovery() {
       <h1 className="text-2xl font-bold">Recover password</h1>
       <form
         className="flex h-full flex-col justify-between"
-        action={handlePasswordRecovery}
+        onSubmit={handlePasswordRecovery}
       >
         <motion.div
           initial={{ x: '50%', opacity: 0 }}
@@ -50,13 +62,28 @@ export default function MerchantPasswordRecovery() {
             placeholder="business@example.com"
             name="email"
             required
+            autofocus={true}
           />
         </motion.div>
         <div className="flex w-full justify-end">
           <Link href="/merchant/login">
             <Button variant={'link'}>Return to login</Button>
           </Link>
-          <Button type="submit">Proceed</Button>
+          <Button type="submit" disabled={isLoading}>
+            {isLoading ? (
+              <>
+                <LoaderCircle
+                  className="-ms-1 animate-spin"
+                  size={16}
+                  strokeWidth={2}
+                  aria-hidden="true"
+                />
+                Processing
+              </>
+            ) : (
+              'Proceed'
+            )}
+          </Button>
         </div>
       </form>
     </section>

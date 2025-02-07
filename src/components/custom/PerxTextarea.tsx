@@ -6,12 +6,14 @@ interface TextareaProps {
   label: string;
   placeholder: string;
   required?: boolean;
+  autofocus?: boolean;
 }
 
 export default function PerxTextarea({
   label,
   placeholder,
   required,
+  autofocus,
   ...props
 }: TextareaProps) {
   const id = useId();
@@ -27,6 +29,7 @@ export default function PerxTextarea({
         id={id}
         placeholder={placeholder}
         required={required}
+        autoFocus={autofocus}
         className="placeholder:opacity-0 focus:placeholder:opacity-100"
         {...props}
       />

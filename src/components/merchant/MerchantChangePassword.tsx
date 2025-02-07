@@ -14,9 +14,11 @@ import {
 import { zodResolver } from '@hookform/resolvers/zod';
 import { changePassword } from '@/actions/merchant/auth';
 import { LoaderCircle } from 'lucide-react';
+import PerxAlert from '../custom/PerxAlert';
 
 export default function MerchantChangePassword() {
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [success, setSuccess] = useState<boolean>(false);
 
   const {
     register,
@@ -52,6 +54,13 @@ export default function MerchantChangePassword() {
         onSubmit={handleSubmit(onSubmit)}
         className="flex h-full flex-col justify-between"
       >
+        {success && (
+          <PerxAlert
+            variant="success"
+            heading="Successfully changed password 🔐"
+            message="You're all set. Go to dashboard to continue."
+          />
+        )}
         <InputGroup register={register} errors={errors} />
         <div className="flex w-full justify-end">
           <Button type="submit" disabled={isLoading}>

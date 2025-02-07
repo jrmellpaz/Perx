@@ -92,4 +92,6 @@ export async function changePassword(password: string) {
   if (error) {
     throw new Error(error.message);
   }
+
+  await logoutMerchant();
 }

@@ -15,10 +15,12 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { changePassword } from '@/actions/merchant/auth';
 import { LoaderCircle } from 'lucide-react';
 import PerxAlert from '../custom/PerxAlert';
+import { set } from 'zod';
 
 export default function MerchantChangePassword() {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [success, setSuccess] = useState<boolean>(false);
+  const [isError, setIsError] = useState<boolean>(false);
 
   const {
     register,
@@ -31,6 +33,7 @@ export default function MerchantChangePassword() {
 
   const onSubmit = async (data: ChangePasswordInputs) => {
     setIsLoading(true);
+    setIsError(false);
     try {
       const { password, confirmPassword } = data;
 
@@ -42,6 +45,7 @@ export default function MerchantChangePassword() {
       reset();
       setSuccess(true);
     } catch (error: unknown) {
+      setIsError(true);
       throw new Error(error as string);
     } finally {
       setIsLoading(false);
@@ -55,14 +59,23 @@ export default function MerchantChangePassword() {
         onSubmit={handleSubmit(onSubmit)}
         className="flex h-full flex-col justify-between"
       >
-        {success && (
-          <PerxAlert
-            variant="success"
-            heading="Successfully changed password 🔐"
-            message="You're all set. Go to dashboard to continue."
-          />
-        )}
-        <InputGroup register={register} errors={errors} />
+        <div className="flex flex-col gap-6">
+          {isError && (
+            <PerxAlert
+              variant="error"
+              heading="An error occurred"
+              message="New password should be different from the old password."
+            />
+          )}
+          {success && (
+            <PerxAlert
+              variant="success"
+              heading="Successfully changed password 🔐"
+              message="You're all set. Go to dashboard to continue."
+            />
+          )}
+          <InputGroup register={register} errors={errors} />
+        </div>
         <div className="flex w-full justify-end">
           <Button type="submit" disabled={isLoading}>
             {isLoading ? (

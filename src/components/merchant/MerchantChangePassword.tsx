@@ -13,6 +13,7 @@ import {
 } from '@/lib/merchantAuth/merchantSchema';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { changePassword } from '@/actions/merchant/auth';
+import { LoaderCircle } from 'lucide-react';
 
 export default function MerchantChangePassword() {
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -53,7 +54,21 @@ export default function MerchantChangePassword() {
       >
         <InputGroup register={register} errors={errors} />
         <div className="flex w-full justify-end">
-          <Button type="submit">Change password</Button>
+          <Button type="submit" disabled={isLoading}>
+            {isLoading ? (
+              <>
+                <LoaderCircle
+                  className="-ms-1 animate-spin"
+                  size={16}
+                  strokeWidth={2}
+                  aria-hidden="true"
+                />
+                Change password
+              </>
+            ) : (
+              'Change password'
+            )}
+          </Button>
         </div>
       </form>
     </section>

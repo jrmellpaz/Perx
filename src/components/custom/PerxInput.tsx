@@ -7,6 +7,7 @@ interface InputTextProps {
   type: 'text' | 'password' | 'email' | 'search' | 'file';
   placeholder: string;
   required?: boolean;
+  name?: string;
 }
 
 export default function PerxInput({
@@ -14,6 +15,7 @@ export default function PerxInput({
   type,
   placeholder,
   required,
+  name,
   ...props
 }: InputTextProps) {
   const id = useId();
@@ -30,6 +32,7 @@ export default function PerxInput({
         type={type}
         placeholder={placeholder}
         required={required}
+        name={name}
         className="placeholder:opacity-0 focus:placeholder:opacity-100"
         {...props}
       />

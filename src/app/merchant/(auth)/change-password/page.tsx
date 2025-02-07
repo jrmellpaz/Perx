@@ -3,13 +3,13 @@ import { MerchantLogo } from '@/components/merchant/MerchantLogo';
 import { createClient } from '@/utils/supabase/server';
 import { redirect } from 'next/navigation';
 
-export default async function MerchantRecoverPasswordPage() {
-  const supabase = await createClient();
-  const { data } = await supabase.auth.getUser();
+export default async function MerchantChangePasswordPage() {
+  // const supabase = await createClient();
+  // const { data } = await supabase.auth.getUser();
 
-  if (data?.user) {
-    redirect('/merchant/dashboard');
-  }
+  // if (data?.user) {
+  //   redirect('/merchant/dashboard');
+  // }
 
   return (
     <div className="flex h-full w-4/5 flex-col gap-4">

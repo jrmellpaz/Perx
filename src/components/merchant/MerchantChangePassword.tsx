@@ -40,6 +40,7 @@ export default function MerchantChangePassword() {
 
       await changePassword(confirmPassword);
       reset();
+      setSuccess(true);
     } catch (error: unknown) {
       throw new Error(error as string);
     } finally {

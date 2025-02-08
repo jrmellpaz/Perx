@@ -2,7 +2,6 @@ import { cn } from '@/lib/utils';
 
 interface ConsumerLogoProps {
   logoClass?: string;
-  sublogoClass?: string;
 }
 
 export function ConsumerLogo({

@@ -16,15 +16,17 @@ export default function SignInWithGoogle() {
 
   const next = searchParams.get("next");
 
+  const auth_callback_url = `${process.env.NEXT_PUBLIC_SITE_URL}/auth/callback${
+    next ? `?next=${encodeURIComponent(next)}` : ""
+  }`;
+
   async function signInWithGoogle() {
     setIsGoogleLoading(true);
     try {
       const { error } = await supabase.auth.signInWithOAuth({
         provider: "google",
         options: {
-          redirectTo: `${window.location.origin}/auth/callback${
-            next ? `?next=${encodeURIComponent(next)}` : ""
-          }`,
+          redirectTo: auth_callback_url,
         },
       });
 

@@ -12,15 +12,38 @@ import {
 export async function loginConsumer(data: LoginConsumerInputs) {
   const supabase = await createClient();
 
-  const { error } = await supabase.auth.signInWithPassword(data);
+  const { data: authData, error: authError } = await supabase.auth.signInWithPassword(data);
 
-  if (error) {
-    throw new Error(error.message);
+  if (authError) {
+    throw new Error(authError.message);
   }
+
+  const userId = authData?.user?.id;
+  if (!userId) {
+    throw new Error("Failed to retrieve user ID.");
+  }
+
+  const { data: userData, error: userError } = await supabase
+    .from('users')
+    .select('role')
+    .eq('id', userId)
+    .single();
+
+  if (userError || !userData) {
+    await supabase.auth.signOut();
+    throw new Error("Please log in with a consumer account.")
+  }
+
+  // if (userData.role !== 'consumer') {
+  //   await supabase.auth.signOut(); 
+  //   throw new Error("Unauthorized: Only consumers can log in.");
+  // }
 
   revalidatePath('/home');
   redirect('/home');
 }
+
+
 
 export async function signupConsumer(data: ConsumerFormInputs) {
   const supabase = await createClient();
@@ -34,13 +57,28 @@ export async function signupConsumer(data: ConsumerFormInputs) {
     otherInterests,
   } = data;
 
-  const { error } = await supabase.auth.signUp({
+  const { data: authData, error: authError } = await supabase.auth.signUp({
     email,
     password,
   });
 
-  if (error) {
-    throw new Error(error.message);
+  if (authError) {
+    throw new Error(authError.message);
+  }
+
+  const userId = authData?.user?.id;
+  if (!userId) {
+    throw new Error("Failed to retrieve user ID.");
+  }
+
+  const { error: dbError } = await supabase.from('users').insert([
+    {
+      id: userId,
+    },
+  ]);
+
+  if (dbError) {
+    throw new Error(dbError.message);
   }
 
   revalidatePath('/home');

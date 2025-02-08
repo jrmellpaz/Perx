@@ -35,17 +35,64 @@ export async function signupMerchant(data: MerchantFormInputs) {
     logo,
   } = data;
 
-  console.log(logo);
+  if (password !== confirmPassword) {
+    throw new Error('Passwords do not match.');
+  }
 
-  const { error } = await supabase.auth.signUp({
+  // Supabase auth
+  const { data: merchantData, error: authError } = await supabase.auth.signUp({
     email,
     password,
   });
 
-  if (error) {
-    throw new Error(error.message);
+  if (authError) {
+    throw new Error(authError.message);
   }
 
+  // Insert in public.users table
+  const merchantId = merchantData?.user?.id;
+  if (!merchantId) {
+    throw new Error('Failed to retrieve merchant ID.');
+  }
+
+  const { error: usersTableError } = await supabase
+    .from('users')
+    .insert({ id: merchantId, role: 'merchant' });
+
+  if (usersTableError) {
+    throw new Error(usersTableError.message);
+  }
+
+  // Store logo in storage and retrieve link
+  const { data: logoData, error: logoError } = await supabase.storage
+    .from('perx')
+    .upload(`logo/${merchantId}`, logo[0]);
+
+  if (logoError) {
+    throw new Error(logoError.message);
+  }
+
+  const { data: logoURL } = await supabase.storage
+    .from('perx')
+    .getPublicUrl(`logo/${merchantId}`);
+
+  // Insert merchant details in public.merchants table
+  const { error: merchantsTableError } = await supabase
+    .from('merchants')
+    .insert({
+      email,
+      name: businessName,
+      bio: description,
+      address,
+      logo: logoURL.publicUrl,
+      id: merchantId,
+    });
+
+  if (merchantsTableError) {
+    throw new Error(merchantsTableError.message);
+  }
+
+  // Redirect to dashboard
   revalidatePath('/merchant/dashboard');
   redirect('/merchant/dashboard');
 }
@@ -71,24 +118,17 @@ export async function recoverPassword(email: string) {
     redirectTo: url,
   });
 
-  if (data) {
-    console.log(data);
-  }
   if (error) {
     throw new Error(error.message);
   }
 }
 
 export async function changePassword(password: string) {
-  console.log('hereee');
   const supabase = await createClient();
   const { data, error } = await supabase.auth.updateUser({
     password,
   });
 
-  if (data) {
-    console.log(data);
-  }
   if (error) {
     throw new Error(error.message);
   }

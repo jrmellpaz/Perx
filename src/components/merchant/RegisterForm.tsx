@@ -70,7 +70,6 @@ export default function MerchantRegisterForm() {
     setIsLoading(true);
     try {
       const data = getValues();
-      console.log(data);
       await signupMerchant(data);
       reset();
       setSubmitError(null);
@@ -367,7 +366,7 @@ function Step3({
           id="logo"
           type="file"
           accept="image/png, image/jpeg, image/jpg"
-          placeholder="TAttach your business logo"
+          placeholder="Attach your business logo"
           {...register('logo')}
           required={logoPreview === null ? true : false}
         />

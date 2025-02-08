@@ -31,10 +31,10 @@ export const Step3Schema = z.object({
     .refine(
       (files) => {
         const file = files[0];
-        return file.size < 5000000;
+        return file.size < 3000000;
       },
       {
-        message: 'Logo must be less than 5MB',
+        message: 'Logo must be less than 3MB',
         path: ['logo'],
       }
     )

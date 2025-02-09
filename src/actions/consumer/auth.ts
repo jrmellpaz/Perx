@@ -34,16 +34,9 @@ export async function loginConsumer(data: LoginConsumerInputs) {
     throw new Error("Please log in with a consumer account.")
   }
 
-  // if (userData.role !== 'consumer') {
-  //   await supabase.auth.signOut(); 
-  //   throw new Error("Unauthorized: Only consumers can log in.");
-  // }
-
   revalidatePath('/home');
   redirect('/home');
 }
-
-
 
 export async function signupConsumer(data: ConsumerFormInputs) {
   const supabase = await createClient();
@@ -79,6 +72,19 @@ export async function signupConsumer(data: ConsumerFormInputs) {
 
   if (dbError) {
     throw new Error(dbError.message);
+  }
+
+  const { error: db2Error } = await supabase.from('consumers').insert([
+    {
+      id: userId,
+      email: email,
+      referralCode,
+      interests,
+    },
+  ]);
+
+  if (db2Error) {
+    throw new Error(db2Error.message);
   }
 
   revalidatePath('/home');

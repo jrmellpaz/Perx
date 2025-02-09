@@ -1,12 +1,12 @@
-"use client";
+'use client';
 
-import { useState } from "react";
+import { useState } from 'react';
 import { useSearchParams } from "next/navigation";
 
-import { createClient } from "@/utils/supabase/client";
-import { Button } from "@/components/ui/button";
-import { Loader2 } from "lucide-react";
-import Image from "next/image";
+import { createClient } from '@/utils/supabase/client';
+import { Button } from '@/components/ui/button';
+import { Loader2 } from 'lucide-react';
+import Image from 'next/image';
 
 export default function SignInWithGoogle() {
   const [isGoogleLoading, setIsGoogleLoading] = useState<boolean>(false);
@@ -16,17 +16,17 @@ export default function SignInWithGoogle() {
 
   const next = searchParams.get("next");
 
-  const auth_callback_url = `${process.env.NEXT_PUBLIC_SITE_URL}/auth/callback${
-    next ? `?next=${encodeURIComponent(next)}` : ""
-  }`;
-
   async function signInWithGoogle() {
     setIsGoogleLoading(true);
     try {
       const { error } = await supabase.auth.signInWithOAuth({
         provider: "google",
         options: {
-          redirectTo: auth_callback_url,
+          redirectTo: `${window.location.origin}/auth/callback${
+            next ? `?next=${encodeURIComponent(next)}` : ""
+          }`,
+          scopes: "openid profile email",
+          queryParams: { prompt: "select_account" }
         },
       });
 
@@ -34,6 +34,7 @@ export default function SignInWithGoogle() {
         throw error;
       }
     } catch (error) {
+      console.error("Error during sign-in:", error); // Log the error
       setIsGoogleLoading(false);
     }
   }

@@ -103,3 +103,27 @@ export async function logoutConsumer() {
   revalidatePath('/', 'layout');
   redirect('/login');
 }
+
+export async function recoverPassword(email: string) {
+  const supabase = await createClient();
+  const url = `${process.env.NEXT_PUBLIC_URL}/change-password`;
+
+  const { data, error } = await supabase.auth.resetPasswordForEmail(email, {
+    redirectTo: url,
+  });
+
+  if (error) {
+    throw new Error(error.message);
+  }
+}
+
+export async function changePassword(password: string) {
+  const supabase = await createClient();
+  const { data, error } = await supabase.auth.updateUser({
+    password,
+  });
+
+  if (error) {
+    throw new Error(error.message);
+  }
+}

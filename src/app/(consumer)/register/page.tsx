@@ -1,5 +1,5 @@
 import { ConsumerLogo } from '@/components/consumer/ConsumerLogo';
-import ConsumerRegisterForm from '@/components/consumer/register/ConsumerRegisterForm';
+import ConsumerRegisterForm from '@/components/consumer/ConsumerRegisterForm';
 
 export default function ConsumerRegisterPage() {
   return (

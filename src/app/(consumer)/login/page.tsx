@@ -1,5 +1,5 @@
 import { ConsumerLogo } from '@/components/consumer/ConsumerLogo';
-import ConsumerLoginForm from '@/components/consumer/login/ConsumerLogin';
+import ConsumerLoginForm from '@/components/consumer/ConsumerLogin';
 import { createClient } from '@/utils/supabase/server';
 import { redirect } from 'next/navigation';
 

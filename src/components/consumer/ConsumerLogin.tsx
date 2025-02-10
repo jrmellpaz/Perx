@@ -1,10 +1,10 @@
 'use client';
 
 import Link from 'next/link';
-import { Button } from '../../ui/button';
-import { Label } from '../../ui/label';
+import { Button } from '../ui/button';
+import { Label } from '../ui/label';
 import { useState } from 'react';
-import { Checkbox } from '../../ui/checkbox';
+import { Checkbox } from '../ui/checkbox';
 import { motion } from 'framer-motion';
 import {
   LoginConsumerInputs,
@@ -12,9 +12,9 @@ import {
 } from '@/lib/consumerAuth/consumerSchema';
 import { FieldErrors, useForm, UseFormRegister } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import PerxInput from '../../custom/PerxInput';
+import PerxInput from '../custom/PerxInput';
 import { loginConsumer } from '@/actions/consumer/auth'; // Fixed import
-import PerxAlert from '../../custom/PerxAlert';
+import PerxAlert from '../custom/PerxAlert';
 import { LoaderCircle } from 'lucide-react';
 import SignInWithGoogle from './SignInWithGoogle';
 import SignInWithFacebook from './SignInWithFacebook';

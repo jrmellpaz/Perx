@@ -8,56 +8,70 @@ import { Button } from '@/components/ui/button';
 import { Loader2 } from 'lucide-react';
 import Image from 'next/image';
 
+import FacebookLogin, { SuccessResponse } from "@greatsumini/react-facebook-login";
+
 export default function SignInWithFacebook() {
+  const [message, setMessage] = useState<{ text: string, severity: "error" | "success" }>();
   const [isFacebookLoading, setIsFacebookLoading] = useState<boolean>(false);
-  const supabase = createClient();
 
-  const searchParams = useSearchParams();
-
-  const next = searchParams.get("next");
-
-  async function signInWithFacebook() {
+  const onSuccessHandler = async (response: SuccessResponse) => {
     setIsFacebookLoading(true);
     try {
-      const { error } = await supabase.auth.signInWithOAuth({
-        provider: "facebook",
-        options: {
-          redirectTo: `${window.location.origin}/auth/callback${
-            next ? `?next=${encodeURIComponent(next)}` : ""
-          }`,
-          scopes: "public_profile email",
-          queryParams: { auth_type: "rerequest" }
-        },
+      const apiResponse = await fetch("/api/facebook-login", {
+        method: "POST",
+        body: JSON.stringify({ userId: response.userID, accessToken: response.accessToken })
       });
-
-      if (error) {
-        throw error;
+      const data = await apiResponse.json();
+      if (data.success) {
+        setMessage({ text: "Login Successful.", severity: "success" });
+      } else {
+        setMessage({ text: "Login Failed.", severity: "error" });
       }
     } catch (error) {
-      console.error("Error during sign-in:", error); // Log the error
+      setMessage({ text: "Error occurred", severity: "error" });
+    } finally {
       setIsFacebookLoading(false);
     }
-  }
+  };
 
   return (
-    <Button
-      type="button"
-      variant="outline"
-      onClick={signInWithFacebook}
-      disabled={isFacebookLoading}
-    >
-      {isFacebookLoading ? (
-        <Loader2 className="mr-2 size-4 animate-spin" />
-      ) : (
-        <Image
-          src="https://authjs.dev/img/providers/facebook.svg"
-          alt="Facebook logo"
-          width={20}
-          height={20}
-          className="mr-2"
-        />
-      )}{" "}
-      Sign in with Facebook
-    </Button>
+    <div>
+      <FacebookLogin
+        appId={process.env.NEXT_PUBLIC_FACEBOOK_APP_ID || ""}
+        onSuccess={onSuccessHandler}
+        onFail={(error) => {
+          setMessage({ text: "Error occurred", severity: "error" });
+        }}
+        render={({ onClick }) => (
+          <Button
+            type="button"
+            variant="outline"
+            onClick={onClick}
+            disabled={isFacebookLoading}
+            className="w-full"
+          >
+            {isFacebookLoading ? (
+              <Loader2 className="mr-2 size-4 animate-spin" />
+            ) : (
+              <Image
+                src="https://authjs.dev/img/providers/facebook.svg"
+                alt="Facebook logo"
+                width={20}
+                height={20}
+                className="mr-2"
+              />
+            )}{" "}
+            Sign in with Facebook
+          </Button>
+        )}
+      />
+      {/* {message &&
+        <div className={`${message.severity === "error" ? "text-red-600" : "text-green-600"}`}>
+          {message.text}
+        </div>
+      } */}
+    </div>
   );
 }
+
+

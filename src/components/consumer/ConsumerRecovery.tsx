@@ -66,7 +66,7 @@ export default function ConsumerPasswordRecovery() {
           />
         </motion.div>
         <div className="flex w-full justify-end">
-          <Link href="/merchant/login">
+          <Link href="/login">
             <Button variant={'link'}>Return to login</Button>
           </Link>
           <Button type="submit" disabled={isLoading}>

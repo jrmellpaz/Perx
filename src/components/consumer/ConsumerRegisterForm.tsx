@@ -308,29 +308,13 @@ function Step3({
   delta: number;
   watch: UseFormWatch<ConsumerFormInputs>;
 }) {
-  const [customInterests, setCustomInterests] = useState<string[]>([]);
-  const selectedInterests = watch('interests') || [];
   const interests = [
     'Shopping',
     'Coffee',
     'Shoes',
     'Clothes',
-    'Food',
-    'Others',
+    'Food'
   ];
-  const addCustomInterest = () => {
-    setCustomInterests([...customInterests, '']);
-  };
-
-  const removeCustomInterest = (index: number) => {
-    setCustomInterests(customInterests.filter((_, i) => i !== index));
-  };
-
-  const handleCustomInterestChange = (index: number, value: string) => {
-    const newCustomInterests = [...customInterests];
-    newCustomInterests[index] = value;
-    setCustomInterests(newCustomInterests);
-  };
 
   return (
     <motion.div
@@ -352,24 +336,6 @@ function Step3({
             </label>
           ))}
         </div>
-        {selectedInterests.includes('Others') && (
-          <div className="mt-2">
-            {customInterests.map((interest, index) => (
-              <div key={index} className="flex items-center gap-2">
-                <Input
-                  type="text"
-                  value={interest}
-                  onChange={(e) => handleCustomInterestChange(index, e.target.value)}
-                />
-                <button type="button" onClick={() => removeCustomInterest(index)}>X</button>
-              </div>
-            ))}
-            <button type="button" onClick={addCustomInterest}>+ Add More</button>
-          </div>
-        )}
-        {errors.interests?.message && (
-          <ErrorMessage message={errors.interests.message} />
-        )}
       </div>
     </motion.div>
   );

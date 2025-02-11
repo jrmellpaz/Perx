@@ -12,6 +12,7 @@ import { LoaderCircle } from 'lucide-react';
 export default function ConsumerPasswordRecovery() {
   const [success, setSuccess] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
 
   const handlePasswordRecovery = async (
     event: React.FormEvent<HTMLFormElement>
@@ -25,8 +26,10 @@ export default function ConsumerPasswordRecovery() {
       await recoverPassword(email);
       console.log(email);
       setSuccess(true);
+      setError(null);
     } catch (error) {
       console.error(error);
+      setError((error as Error).message);
     } finally {
       setIsLoading(false);
     }
@@ -56,6 +59,13 @@ export default function ConsumerPasswordRecovery() {
               A recovery link will be sent to your email.
             </p>
           )}
+            {error && (
+            <PerxAlert
+              variant="error"
+              heading="User does not exist."
+              message="Please check the email address and try again."
+            />
+            )}
           <PerxInput
             label="Email address"
             type="email"

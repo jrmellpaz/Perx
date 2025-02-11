@@ -34,7 +34,7 @@ export default function SignInWithGoogle() {
         throw error;
       }
     } catch (error) {
-      console.error("Error during sign-in:", error); // Log the error
+      console.error("Error during sign-in:", error); 
       setIsGoogleLoading(false);
     }
   }
@@ -57,7 +57,7 @@ export default function SignInWithGoogle() {
           className="mr-2"
         />
       )}{" "}
-      Sign in with Google
+      Continue with Google
     </Button>
   );
 }

@@ -47,7 +47,6 @@ export async function signupConsumer(data: ConsumerFormInputs) {
     confirmPassword,
     referralCode,
     interests,
-    otherInterests,
   } = data;
 
   const { data: authData, error: authError } = await supabase.auth.signUp({
@@ -108,12 +107,19 @@ export async function recoverPassword(email: string) {
   const supabase = await createClient();
   const url = `${process.env.NEXT_PUBLIC_URL}/change-password`;
 
+  const { data: userData, error: userError } = await supabase
+    .from('consumers')
+    .select('id')
+    .eq('email', email)
+
+  if (userData) {
   const { data, error } = await supabase.auth.resetPasswordForEmail(email, {
     redirectTo: url,
   });
 
-  if (error) {
-    throw new Error(error.message);
+  }
+  else {
+    throw new Error(userError.message);
   }
 }
 

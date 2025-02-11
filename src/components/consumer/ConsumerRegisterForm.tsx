@@ -25,6 +25,7 @@ import PerxInput from '../custom/PerxInput';
 import { signupConsumer } from '@/actions/consumer/auth';
 import PerxAlert from '../custom/PerxAlert';
 import { LoaderCircle } from 'lucide-react';
+import PerxCheckbox from '../custom/PerxCheckbox';
 
 const schemas = [Step1Schema, Step2Schema, Step3Schema];
 
@@ -327,12 +328,7 @@ function Step3({
         <div className="flex flex-col gap-2">
           {interests.map((interest) => (
             <label key={interest} className="flex items-center gap-2">
-              <input
-                type="checkbox"
-                value={interest}
-                {...register('interests')}
-              />
-              {interest}
+              <PerxCheckbox label={interest} {...register('interests')} />
             </label>
           ))}
         </div>

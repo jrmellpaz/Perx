@@ -16,14 +16,14 @@ import {
   UseFormRegister,
   UseFormWatch,
 } from 'react-hook-form';
-import { Label } from '../../ui/label';
-import { Input } from '../../ui/input';
-import { Button } from '../../ui/button';
-import { Checkbox } from '../../ui/checkbox';
+import { Label } from '../ui/label';
+import { Input } from '../ui/input';
+import { Button } from '../ui/button';
+import { Checkbox } from '../ui/checkbox';
 import Link from 'next/link';
-import PerxInput from '../../custom/PerxInput';
+import PerxInput from '../custom/PerxInput';
 import { signupConsumer } from '@/actions/consumer/auth';
-import PerxAlert from '../../custom/PerxAlert';
+import PerxAlert from '../custom/PerxAlert';
 import { LoaderCircle } from 'lucide-react';
 
 const schemas = [Step1Schema, Step2Schema, Step3Schema];

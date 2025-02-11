@@ -1,28 +1,64 @@
-import { NextResponse } from "next/server";
-// The client you created from the Server-Side Auth instructions
-import { createClient } from "@/utils/supabase/server";
+import { NextResponse } from 'next/server';
+import { createClient } from '@/utils/supabase/server';
 
 export async function GET(request: Request) {
   const { searchParams, origin } = new URL(request.url);
   const code = searchParams.get("code");
-  const next = searchParams.get("next") ?? "/home"; // Default to /home
+  const next = searchParams.get("next") ?? "/home"; 
 
   if (code) {
     const supabase = await createClient();
-    const { error } = await supabase.auth.exchangeCodeForSession(code);
-    if (!error) {
-      const forwardedHost = request.headers.get("x-forwarded-host"); // original origin before load balancer
-      const isLocalEnv = process.env.NODE_ENV === "development";
-      if (isLocalEnv) {
-        return NextResponse.redirect(`${origin}${next}`);
-      } else if (forwardedHost) {
-        return NextResponse.redirect(`https://${forwardedHost}${next}`);
-      } else {
-        return NextResponse.redirect(`${origin}${next}`);
+    const { data: tokenData, error: tokenError } = await supabase.auth.exchangeCodeForSession(code);
+
+    if (tokenError) {
+      console.error("Error exchanging code for session:", tokenError); 
+      return NextResponse.redirect(`${origin}/auth/auth-code-error`);
+    }
+
+    const { data: sessionData, error: sessionError } = await supabase.auth.getSession();
+    if (sessionError) {
+      console.error("Error fetching session:", sessionError);
+      return NextResponse.redirect(`${origin}/auth/auth-code-error`);
+    }
+
+    if (sessionData?.session?.user) {
+      const { user } = sessionData.session;
+      const { error: dbError } = await supabase
+        .from('users') 
+        .insert([{
+          id: user.id
+        }]);
+
+      if (dbError) {
+        return NextResponse.redirect(`${origin}/auth/auth-code-error`);
       }
+
+      const { error: db2Error } = await supabase.from('consumers').insert([
+        {
+          id: user.id,
+          email: user.email
+        },
+      ]);
+    
+      if (db2Error) {
+        throw new Error(db2Error.message);
+      }
+
+      console.log("User inserted successfully"); // Log successful insert
+    } else {
+      console.error("No user data found in session"); // Log missing user data
+      return NextResponse.redirect(`${origin}/auth/auth-code-error`);
+    }
+
+    const forwardedHost = request.headers.get("x-forwarded-host"); // original origin before load balancer
+    const isLocalEnv = process.env.NODE_ENV === "development";
+    if (isLocalEnv) {
+      return NextResponse.redirect(`${origin}${next}`);
+    } else if (forwardedHost) {
+      return NextResponse.redirect(`https://${forwardedHost}${next}`);
+    } else {
+      return NextResponse.redirect(`${origin}${next}`);
     }
   }
-
-  // return the user to an error page with instructions
   return NextResponse.redirect(`${origin}/auth/auth-code-error`);
 }

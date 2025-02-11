@@ -34,16 +34,9 @@ export async function loginConsumer(data: LoginConsumerInputs) {
     throw new Error("Please log in with a consumer account.")
   }
 
-  // if (userData.role !== 'consumer') {
-  //   await supabase.auth.signOut(); 
-  //   throw new Error("Unauthorized: Only consumers can log in.");
-  // }
-
   revalidatePath('/home');
   redirect('/home');
 }
-
-
 
 export async function signupConsumer(data: ConsumerFormInputs) {
   const supabase = await createClient();
@@ -81,6 +74,19 @@ export async function signupConsumer(data: ConsumerFormInputs) {
     throw new Error(dbError.message);
   }
 
+  const { error: db2Error } = await supabase.from('consumers').insert([
+    {
+      id: userId,
+      email: email,
+      referralCode,
+      interests,
+    },
+  ]);
+
+  if (db2Error) {
+    throw new Error(db2Error.message);
+  }
+
   revalidatePath('/home');
   redirect('/home');
 }
@@ -96,4 +102,28 @@ export async function logoutConsumer() {
 
   revalidatePath('/', 'layout');
   redirect('/login');
+}
+
+export async function recoverPassword(email: string) {
+  const supabase = await createClient();
+  const url = `${process.env.NEXT_PUBLIC_URL}/change-password`;
+
+  const { data, error } = await supabase.auth.resetPasswordForEmail(email, {
+    redirectTo: url,
+  });
+
+  if (error) {
+    throw new Error(error.message);
+  }
+}
+
+export async function changePassword(password: string) {
+  const supabase = await createClient();
+  const { data, error } = await supabase.auth.updateUser({
+    password,
+  });
+
+  if (error) {
+    throw new Error(error.message);
+  }
 }

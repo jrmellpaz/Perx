@@ -14,7 +14,7 @@ export default function SignInWithGoogle() {
 
   const searchParams = useSearchParams();
 
-  const next = searchParams.get("next");
+  const next = searchParams ? searchParams.get("next") : null;
 
   async function signInWithGoogle() {
     setIsGoogleLoading(true);

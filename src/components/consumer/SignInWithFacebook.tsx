@@ -1,77 +1,62 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { useSearchParams } from 'next/navigation';
+import { useState, useCallback } from "react";
+import { useSearchParams } from "next/navigation";
+import { createClient } from "@/utils/supabase/client";
+import { Button } from "@/components/ui/button";
+import { Loader2 } from "lucide-react";
+import Image from "next/image";
 
-import { createClient } from '@/utils/supabase/client';
-import { Button } from '@/components/ui/button';
-import { Loader2 } from 'lucide-react';
-import Image from 'next/image';
-
-import FacebookLogin, { SuccessResponse } from "@greatsumini/react-facebook-login";
+const supabase = createClient(); // Move outside the component
 
 export default function SignInWithFacebook() {
-  const [message, setMessage] = useState<{ text: string, severity: "error" | "success" }>();
-  const [isFacebookLoading, setIsFacebookLoading] = useState<boolean>(false);
+  const [isFacebookLoading, setIsFacebookLoading] = useState(false);
+  const searchParams = useSearchParams();
+  const next = searchParams ? searchParams.get("next") : null;
 
-  const onSuccessHandler = async (response: SuccessResponse) => {
+  const signInWithFacebook = useCallback(async () => {
     setIsFacebookLoading(true);
     try {
-      const apiResponse = await fetch("/api/facebook-login", {
-        method: "POST",
-        body: JSON.stringify({ userId: response.userID, accessToken: response.accessToken })
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: "facebook",
+        options: {
+          redirectTo: `${window.location.origin}/auth/callback${
+            next ? `?next=${encodeURIComponent(next)}` : ""
+          }`,
+          scopes: "public_profile email",
+          queryParams: { auth_type: "rerequest" },
+        },
       });
-      const data = await apiResponse.json();
-      if (data.success) {
-        setMessage({ text: "Login Successful.", severity: "success" });
-      } else {
-        setMessage({ text: "Login Failed.", severity: "error" });
+
+      if (error) {
+        console.error("Error during sign-in:", error);
       }
     } catch (error) {
-      setMessage({ text: "Error occurred", severity: "error" });
+      console.error("Unexpected error:", error);
     } finally {
-      setIsFacebookLoading(false);
+      setIsFacebookLoading(false); // Ensure loading state resets
     }
-  };
+  }, [next]);
 
   return (
-    <div>
-      <FacebookLogin
-        appId={process.env.NEXT_PUBLIC_FACEBOOK_APP_ID || ""}
-        onSuccess={onSuccessHandler}
-        onFail={(error) => {
-          setMessage({ text: "Error occurred", severity: "error" });
-        }}
-        render={({ onClick }) => (
-          <Button
-            type="button"
-            variant="outline"
-            onClick={onClick}
-            disabled={isFacebookLoading}
-            className="w-full"
-          >
-            {isFacebookLoading ? (
-              <Loader2 className="mr-2 size-4 animate-spin" />
-            ) : (
-              <Image
-                src="https://authjs.dev/img/providers/facebook.svg"
-                alt="Facebook logo"
-                width={20}
-                height={20}
-                className="mr-2"
-              />
-            )}{" "}
-            Sign in with Facebook
-          </Button>
-        )}
-      />
-      {/* {message &&
-        <div className={`${message.severity === "error" ? "text-red-600" : "text-green-600"}`}>
-          {message.text}
-        </div>
-      } */}
-    </div>
+    <Button
+      type="button"
+      variant="outline"
+      onClick={signInWithFacebook}
+      disabled={isFacebookLoading}
+    >
+      {isFacebookLoading ? (
+        <Loader2 className="mr-2 size-4 animate-spin" />
+      ) : (
+        <Image
+          src="https://authjs.dev/img/providers/facebook.svg"
+          alt="Facebook logo"
+          width={20}
+          height={20}
+          className="mr-2"
+        />
+      )}{" "}
+      Sign in with Facebook
+    </Button>
   );
 }
-
-

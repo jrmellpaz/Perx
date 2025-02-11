@@ -7,11 +7,12 @@ import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
 import Image from "next/image";
 
-const supabase = createClient(); // Move outside the component
+
 
 export default function SignInWithFacebook() {
   const [isFacebookLoading, setIsFacebookLoading] = useState(false);
   const searchParams = useSearchParams();
+  const supabase = createClient(); 
   const next = searchParams ? searchParams.get("next") : null;
 
   const signInWithFacebook = useCallback(async () => {
@@ -20,7 +21,7 @@ export default function SignInWithFacebook() {
       const { error } = await supabase.auth.signInWithOAuth({
         provider: "facebook",
         options: {
-          redirectTo: "https://eeuryrrobjlaprfmkhah.supabase.co/auth/v1/callback",
+          redirectTo: `${window.location.origin}/auth/callback${next ? `?next=${encodeURIComponent(next)}` : ""}`,
           scopes: "public_profile email",
           queryParams: { auth_type: "rerequest" },
         },

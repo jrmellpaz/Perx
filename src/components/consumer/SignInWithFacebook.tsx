@@ -20,9 +20,7 @@ export default function SignInWithFacebook() {
       const { error } = await supabase.auth.signInWithOAuth({
         provider: "facebook",
         options: {
-          redirectTo: `${window.location.origin}/auth/callback${
-            next ? `?next=${encodeURIComponent(next)}` : ""
-          }`,
+          redirectTo: "https://eeuryrrobjlaprfmkhah.supabase.co/auth/v1/callback",
           scopes: "public_profile email",
           queryParams: { auth_type: "rerequest" },
         },

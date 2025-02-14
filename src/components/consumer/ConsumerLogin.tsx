@@ -34,9 +34,12 @@ export default function ConsumerLoginForm() {
   const onSubmit = async (data: LoginConsumerInputs) => {
     setIsLoading(true);
     try {
-      await loginConsumer(data);
-      reset();
-      setSubmitError(null);
+      const result = await loginConsumer(data);
+      if (result?.error) {
+        setSubmitError(result.error); 
+      } else {
+        reset();
+      }
     } catch (error: unknown) {
       setSubmitError(error instanceof Error ? error.message : 'An unknown error occurred');
     } finally {

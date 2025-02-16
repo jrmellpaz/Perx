@@ -16,6 +16,7 @@ export async function GET(request: Request) {
     }
 
     const { data: sessionData, error: sessionError } = await supabase.auth.getSession();
+    
     if (sessionError) {
       console.error("Error fetching session:", sessionError);
       return NextResponse.redirect(`${origin}/auth/auth-code-error`);
@@ -23,28 +24,39 @@ export async function GET(request: Request) {
 
     if (sessionData?.session?.user) {
       const { user } = sessionData.session;
-      const { error: dbError } = await supabase
-        .from('users') 
-        .insert([{
-          id: user.id
-        }]);
+      const { data: existingUser, error: checkError } = await supabase
+        .from('users')
+        .select('id')
+        .eq('id', user.id)
+        .single();
 
-      if (dbError) {
+      if (checkError) {
+        console.error("Error checking user existence:", checkError);
         return NextResponse.redirect(`${origin}/auth/auth-code-error`);
       }
 
-      const { error: db2Error } = await supabase.from('consumers').insert([
-        {
-          id: user.id,
-          email: user.email
-        },
-      ]);
-    
-      if (db2Error) {
-        throw new Error(db2Error.message);
-      }
+      if (!existingUser) {
+        const { error: dbError } = await supabase
+          .from('users')
+          .insert([{
+            id: user.id
+          }]);
 
-      console.log("User inserted successfully"); // Log successful insert
+        if (dbError) {
+          return NextResponse.redirect(`${origin}/auth/auth-code-error`);
+        }
+
+        const { error: db2Error } = await supabase.from('consumers').insert([
+          {
+            id: user.id,
+            email: user.email
+          },
+        ]);
+
+        if (db2Error) {
+          throw new Error(db2Error.message);
+        }
+      } 
     } else {
       console.error("No user data found in session"); // Log missing user data
       return NextResponse.redirect(`${origin}/auth/auth-code-error`);

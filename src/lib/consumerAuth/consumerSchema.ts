@@ -23,16 +23,7 @@ export const Step3Schema = z
   .object({
     interests: z
       .array(z.string())
-      .min(1, 'You must select at least one interest.'),
-    otherInterests: z.array(z.string().min(1, 'Custom interest cannot be empty')).optional(),
-  })
-  .refine(
-    (data) => !data.interests.includes('Others') || (data.otherInterests && data.otherInterests.length > 0),
-    {
-      message: "Please specify at least one custom interest if 'Others' is selected.",
-      path: ['otherInterests'],
-    }
-  );
+  });
 
   export const loginConsumerSchema = z.object({
     email: z

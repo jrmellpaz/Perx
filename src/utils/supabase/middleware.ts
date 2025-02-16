@@ -37,6 +37,61 @@ export async function updateSession(request: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser();
 
+  const consumerAuthPages = [
+    '/login',
+    '/register',
+    '/recover-password',
+    '/change-password',
+  ];
+
+  const merchantAuthPages = [
+    '/merchant/login',
+    '/merchant/register',
+    '/merchant/recover-password',
+    '/merchant/change-password',
+  ];
+
+  // Redirect unauthenticated users to login page
+  if (
+    !user &&
+    ![...consumerAuthPages, ...merchantAuthPages].includes(
+      request.nextUrl.pathname
+    )
+  ) {
+    const url = request.nextUrl.clone();
+
+    if (request.nextUrl.pathname.startsWith('/merchant')) {
+      url.pathname = '/merchant/login';
+    } else {
+      url.pathname = '/login';
+    }
+
+    return NextResponse.redirect(url);
+  }
+
+  if (user && consumerAuthPages.includes(request.nextUrl.pathname)) {
+    const { data, error } = await supabase
+      .from('users')
+      .select('role')
+      .eq('id', user.id)
+      .single();
+
+    if (error) {
+      throw new Error(error.message);
+    }
+
+    const url = request.nextUrl.clone();
+    if (data.role === 'merchant') {
+      url.pathname = '/merchant/dashboard';
+    } else if (data.role === 'consumer') {
+      url.pathname = '/home';
+    } else {
+      throw new Error('MIDDDLEWARE: Invalid user role');
+    }
+
+    return NextResponse.redirect(url);
+  }
+
   // if (
   //   !user &&
   //   !request.nextUrl.pathname.startsWith("/login") &&

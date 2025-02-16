@@ -37,40 +37,45 @@ export async function updateSession(request: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser();
 
-  const consumerAuthPages = [
-    '/login',
-    '/register',
-    '/recover-password',
-    '/change-password',
-  ];
+  const consumerPages = {
+    auth: ['/login', '/register', '/recover-password', '/change-password'],
+    public: ['home'],
+    private: ['/profile', '/settings'],
+  };
 
-  const merchantAuthPages = [
-    '/merchant/login',
-    '/merchant/register',
-    '/merchant/recover-password',
-    '/merchant/change-password',
-  ];
+  const merchantPages = {
+    auth: [
+      '/merchant/login',
+      '/merchant/register',
+      '/merchant/recover-password',
+      '/merchant/change-password',
+    ],
+    private: [
+      '/merchant/dashboard',
+      '/merchant/profile',
+      '/merchant/settings',
+      '/merchant/scan-qr',
+    ],
+  };
 
-  // Redirect unauthenticated users to login page
-  if (
-    !user &&
-    ![...consumerAuthPages, ...merchantAuthPages].includes(
-      request.nextUrl.pathname
-    )
-  ) {
-    const url = request.nextUrl.clone();
+  const authPages = [...consumerPages.auth, ...merchantPages.auth];
+  const privatePages = [...consumerPages.private, ...merchantPages.private];
 
-    if (request.nextUrl.pathname.startsWith('/merchant')) {
-      url.pathname = '/merchant/login';
-    } else {
-      url.pathname = '/login';
+  type UserRole = 'merchant' | 'consumer';
+
+  if (!user) {
+    // Redirect unauthenticated users to login page
+    if (privatePages.includes(request.nextUrl.pathname)) {
+      const url = request.nextUrl.clone();
+      if (request.nextUrl.pathname.startsWith('/merchant')) {
+        url.pathname = '/merchant/login';
+      } else {
+        url.pathname = '/login';
+      }
+      return NextResponse.redirect(url);
     }
-
-    return NextResponse.redirect(url);
-  }
-
-  // Redirect authenticated users to dashboard / home page
-  if (user && consumerAuthPages.includes(request.nextUrl.pathname)) {
+  } else {
+    // Fetch user role from database
     const { data, error } = await supabase
       .from('users')
       .select('role')
@@ -81,16 +86,41 @@ export async function updateSession(request: NextRequest) {
       throw new Error(error.message);
     }
 
-    const url = request.nextUrl.clone();
-    if (data.role === 'merchant') {
-      url.pathname = '/merchant/dashboard';
-    } else if (data.role === 'consumer') {
-      url.pathname = '/home';
-    } else {
-      throw new Error('MIDDDLEWARE: Invalid user role');
+    const userRole: UserRole = data.role;
+    console.log('role:', userRole);
+
+    // Redirect authenticated users to dashboard / home page
+    if (authPages.includes(request.nextUrl.pathname)) {
+      const url = request.nextUrl.clone();
+      if (userRole === 'merchant') {
+        url.pathname = '/merchant/dashboard';
+      } else if (userRole === 'consumer') {
+        url.pathname = '/home';
+      } else {
+        throw new Error('MIDDLEWARE: Invalid user role');
+      }
+      return NextResponse.redirect(url);
     }
 
-    return NextResponse.redirect(url);
+    // Restrict access to private merchant pages for non-merchants
+    if (
+      userRole !== 'merchant' &&
+      merchantPages.private.includes(request.nextUrl.pathname)
+    ) {
+      const url = request.nextUrl.clone();
+      url.pathname = '/login';
+      return NextResponse.redirect(url);
+    }
+
+    // Restrict access to private consumer pages for non-consumers
+    if (
+      userRole !== 'consumer' &&
+      consumerPages.private.includes(request.nextUrl.pathname)
+    ) {
+      const url = request.nextUrl.clone();
+      url.pathname = '/merchant/login';
+      return NextResponse.redirect(url);
+    }
   }
 
   // IMPORTANT: You *must* return the supabaseResponse object as it is. If you're

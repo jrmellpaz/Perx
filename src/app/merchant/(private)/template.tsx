@@ -57,7 +57,7 @@ export default function MerchantTemplate({
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   return (
-    <main className="bg-perx-white flex h-dvh w-dvw flex-col-reverse gap-2 md:flex-row">
+    <main className="bg-perx-white flex h-dvh w-dvw flex-col-reverse md:flex-row md:gap-2">
       <nav className="bg-perx-white h-18 w-dvw md:h-dvh md:w-64">
         <div className="hidden h-full p-2 md:flex md:flex-col md:justify-between">
           <div>

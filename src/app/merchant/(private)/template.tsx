@@ -57,7 +57,7 @@ export default function MerchantTemplate({
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   return (
-    <main className="bg-perx-white flex h-dvh w-dvw flex-col-reverse md:flex-row">
+    <main className="bg-perx-white flex h-dvh w-dvw flex-col-reverse gap-2 md:flex-row">
       <nav className="bg-perx-white h-18 w-dvw md:h-dvh md:w-64">
         <div className="hidden h-full p-2 md:flex md:flex-col md:justify-between">
           <div>
@@ -72,7 +72,7 @@ export default function MerchantTemplate({
           <HorizontalNav />
         </div>
       </nav>
-      <main className="grow bg-white p-4 shadow-xs md:rounded-l-xl">
+      <main className="grow bg-white p-4 shadow-xs md:rounded-l-xl md:p-6">
         {children}
       </main>
     </main>
@@ -83,7 +83,7 @@ function VerticalNav() {
   const pathname = usePathname();
 
   return (
-    <ul className="flex h-full w-full flex-col">
+    <ul className="flex h-full w-full flex-col gap-1">
       {navItems.map((item, index) => {
         const isActive: boolean = pathname === item.link;
 

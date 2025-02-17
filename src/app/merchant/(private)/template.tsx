@@ -58,7 +58,7 @@ export default function MerchantTemplate({
 
   return (
     <main className="bg-perx-white flex h-dvh w-dvw flex-col-reverse md:flex-row">
-      <nav className="bg-perx-white h-20 w-dvw md:h-dvh md:w-64">
+      <nav className="bg-perx-white h-18 w-dvw md:h-dvh md:w-64">
         <div className="hidden h-full p-2 md:flex md:flex-col md:justify-between">
           <div>
             <div className="my-4 ml-2 h-10">

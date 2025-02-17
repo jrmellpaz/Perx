@@ -33,7 +33,7 @@ export default function AddCouponForm() {
   };
 
   return (
-    <section className="mt-8 md:max-w-[800px]">
+    <section className="mt-8 w-full max-w-[800px]">
       {submitError && (
         <PerxAlert
           heading={'Something went wrong 😢'}
@@ -75,7 +75,18 @@ function Inputs({
           <ErrorMessage message={errors.title.message} />
         )}
       </div>
-      <div></div>
+      <div className="flex flex-col gap-2">
+        <PerxInput
+          label="Price"
+          type="number"
+          placeholder="0.00"
+          required
+          {...register('price')}
+        />
+        {errors.price?.message && (
+          <ErrorMessage message={errors.price.message} />
+        )}
+      </div>
     </motion.div>
   );
 }

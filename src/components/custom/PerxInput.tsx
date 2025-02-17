@@ -4,7 +4,7 @@ import { Label } from '../ui/label';
 
 interface InputTextProps {
   label: string;
-  type: 'text' | 'password' | 'email' | 'search' | 'file';
+  type: 'text' | 'password' | 'email' | 'search' | 'file' | 'number';
   placeholder: string;
   required?: boolean;
   name?: string;

@@ -46,7 +46,7 @@ export async function signupMerchant(data: MerchantFormInputs) {
   });
 
   if (authError) {
-    throw new Error(authError.message);
+    throw new Error(`AUTH ERROR: ${authError.message}`);
   }
 
   // Insert in public.users table
@@ -60,7 +60,7 @@ export async function signupMerchant(data: MerchantFormInputs) {
     .insert({ id: merchantId, role: 'merchant' });
 
   if (usersTableError) {
-    throw new Error(usersTableError.message);
+    throw new Error(`USERS TABLE ERROR: ${usersTableError.message}`);
   }
 
   // Store logo in storage and retrieve link
@@ -69,7 +69,7 @@ export async function signupMerchant(data: MerchantFormInputs) {
     .upload(`logo/${merchantId}`, logo[0]);
 
   if (logoError) {
-    throw new Error(logoError.message);
+    throw new Error(`LOGO ERROR: ${logoError.message}`);
   }
 
   const { data: logoURL } = await supabase.storage
@@ -89,7 +89,7 @@ export async function signupMerchant(data: MerchantFormInputs) {
     });
 
   if (merchantsTableError) {
-    throw new Error(merchantsTableError.message);
+    throw new Error(`MERCHANT TABLE ERROR: ${merchantsTableError.message}`);
   }
 
   // Redirect to dashboard

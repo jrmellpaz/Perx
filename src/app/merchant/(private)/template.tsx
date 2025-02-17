@@ -91,7 +91,7 @@ function VerticalNav() {
           <Link
             href={item.link}
             key={index}
-            className={`hover:bg-perx-cloud/10 h-fit rounded-md px-4 py-3 ${isActive && 'bg-perx-crimson/20 hover:bg-perx-crimson/25'}`}
+            className={`hover:bg-perx-cloud/10 h-fit rounded-md px-4 py-3 ${isActive && 'bg-perx-crimson/10 hover:bg-perx-crimson/15'}`}
           >
             <li
               className={`flex w-full items-center gap-4 ${isActive && 'text-perx-crimson'}`}

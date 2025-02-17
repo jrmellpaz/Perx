@@ -7,7 +7,7 @@ import { createClient } from '@/utils/supabase/server';
 import {
   LoginMerchantInputs,
   MerchantFormInputs,
-} from '@/lib/merchantAuth/merchantSchema';
+} from '@/lib/merchant/merchantSchema';
 
 export async function loginMerchant(data: LoginMerchantInputs) {
   const supabase = await createClient();

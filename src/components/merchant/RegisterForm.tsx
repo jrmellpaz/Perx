@@ -5,7 +5,7 @@ import {
   Step2Schema,
   Step3Schema,
   MerchantFormInputs,
-} from '@/lib/merchantAuth/merchantSchema';
+} from '@/lib/merchant/merchantSchema';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { motion } from 'framer-motion';
 import { useEffect, useState } from 'react';
@@ -114,8 +114,8 @@ export default function MerchantRegisterForm() {
       <h1 className="text-2xl font-bold">Register business</h1>
       {submitError && (
         <PerxAlert
-          heading={submitError}
-          message="Make sure your email and password are correct."
+          heading={'Something went wrong'}
+          message="Make sure your inputs are correct."
           variant="error"
         />
       )}

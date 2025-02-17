@@ -5,7 +5,7 @@ import {
   Step2Schema,
   Step3Schema,
   ConsumerFormInputs,
-} from '@/lib/consumerAuth/consumerSchema';
+} from '@/lib/consumer/consumerSchema';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { motion } from 'framer-motion';
 import { useEffect, useState } from 'react';
@@ -129,9 +129,7 @@ export default function ConsumerRegisterForm() {
           {currentStep === 0 && (
             <Step1 register={register} errors={errors} delta={delta} />
           )}
-          {currentStep === 1 && (
-            <Step2 register={register}  delta={delta} />
-          )}
+          {currentStep === 1 && <Step2 register={register} delta={delta} />}
           {currentStep === 2 && (
             <Step3
               register={register}
@@ -211,9 +209,7 @@ function Step1({
           required
           {...register('name')}
         />
-        {errors.name?.message && (
-          <ErrorMessage message={errors.name.message} />
-        )}
+        {errors.name?.message && <ErrorMessage message={errors.name.message} />}
       </div>
       <div>
         <PerxInput
@@ -276,7 +272,8 @@ function Step1({
 function Step2({
   register,
   delta,
-}: {  register: UseFormRegister<ConsumerFormInputs>;
+}: {
+  register: UseFormRegister<ConsumerFormInputs>;
   delta: number;
 }) {
   return (
@@ -289,7 +286,7 @@ function Step2({
       <div>
         <PerxInput
           label="Enter Code "
-          type = "text"
+          type="text"
           placeholder="IpSuM123"
           {...register('referralCode')}
         />
@@ -309,13 +306,7 @@ function Step3({
   delta: number;
   watch: UseFormWatch<ConsumerFormInputs>;
 }) {
-  const interests = [
-    'Shopping',
-    'Coffee',
-    'Shoes',
-    'Clothes',
-    'Food'
-  ];
+  const interests = ['Shopping', 'Coffee', 'Shoes', 'Clothes', 'Food'];
 
   return (
     <motion.div

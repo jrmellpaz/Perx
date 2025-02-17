@@ -7,12 +7,13 @@ import { createClient } from '@/utils/supabase/server';
 import {
   LoginConsumerInputs,
   ConsumerFormInputs,
-} from '@/lib/consumerAuth/consumerSchema';
+} from '@/lib/consumer/consumerSchema';
 
 export async function loginConsumer(data: LoginConsumerInputs) {
   const supabase = await createClient();
 
-  const { data: authData, error: authError } = await supabase.auth.signInWithPassword(data);
+  const { data: authData, error: authError } =
+    await supabase.auth.signInWithPassword(data);
 
   if (authError) {
     return { error: authError.message };
@@ -20,7 +21,7 @@ export async function loginConsumer(data: LoginConsumerInputs) {
 
   const userId = authData?.user?.id;
   if (!userId) {
-    return { error: "No such consumer account." };
+    return { error: 'No such consumer account.' };
   }
 
   const { data: userData, error: userError } = await supabase
@@ -31,7 +32,7 @@ export async function loginConsumer(data: LoginConsumerInputs) {
 
   if (userError || !userData) {
     await supabase.auth.signOut();
-    return { error: "Please log in with a consumer account." };
+    return { error: 'Please log in with a consumer account.' };
   }
 
   revalidatePath('/home');
@@ -41,13 +42,7 @@ export async function loginConsumer(data: LoginConsumerInputs) {
 export async function signupConsumer(data: ConsumerFormInputs) {
   const supabase = await createClient();
 
-  const {
-    email,
-    password,
-    confirmPassword,
-    referralCode,
-    interests,
-  } = data;
+  const { email, password, confirmPassword, referralCode, interests } = data;
 
   const { data: authData, error: authError } = await supabase.auth.signUp({
     email,
@@ -60,7 +55,7 @@ export async function signupConsumer(data: ConsumerFormInputs) {
 
   const userId = authData?.user?.id;
   if (!userId) {
-    throw new Error("Failed to retrieve user ID.");
+    throw new Error('Failed to retrieve user ID.');
   }
 
   const { error: dbError } = await supabase.from('users').insert([
@@ -110,15 +105,13 @@ export async function recoverPassword(email: string) {
   const { data: userData, error: userError } = await supabase
     .from('consumers')
     .select('id')
-    .eq('email', email)
+    .eq('email', email);
 
   if (userData) {
-  const { data, error } = await supabase.auth.resetPasswordForEmail(email, {
-    redirectTo: url,
-  });
-
-  }
-  else {
+    const { data, error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: url,
+    });
+  } else {
     throw new Error(userError.message);
   }
 }

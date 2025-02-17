@@ -9,7 +9,7 @@ import { motion } from 'framer-motion';
 import {
   LoginMerchantInputs,
   loginMerchantSchema,
-} from '@/lib/merchantAuth/merchantSchema';
+} from '@/lib/merchant/merchantSchema';
 import { FieldErrors, useForm, UseFormRegister } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import PerxInput from '../custom/PerxInput';

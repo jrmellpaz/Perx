@@ -126,11 +126,11 @@ function HorizontalNav() {
               className={`flex h-full flex-col items-center justify-center gap-0.5 ${isActive && 'text-perx-crimson'}`}
             >
               <div
-                className={`${isActive && 'bg-perx-crimson/30'} flex w-4/5 items-center justify-center rounded-full py-1 md:w-3/5`}
+                className={`${isActive && 'bg-perx-crimson/30'} flex w-4/5 items-center justify-center rounded-full py-1 sm:w-3/5`}
               >
                 {item.icon}
               </div>
-              <span className={`text-xs ${isActive && 'font-semibold'}`}>
+              <span className={`text-[10px] ${isActive && 'font-semibold'}`}>
                 {item.name}
               </span>
             </li>

@@ -21,7 +21,7 @@ export async function loginConsumer(data: LoginConsumerInputs) {
 
   const userId = authData?.user?.id;
   if (!userId) {
-    return { error: 'No such consumer account.' };
+    return { error: "No such consumer account." };
   }
 
   const { data: userData, error: userError } = await supabase
@@ -32,7 +32,7 @@ export async function loginConsumer(data: LoginConsumerInputs) {
 
   if (userError || !userData) {
     await supabase.auth.signOut();
-    return { error: 'Please log in with a consumer account.' };
+    return { error: "Please log in with a consumer account." };
   }
 
   revalidatePath('/home');
@@ -42,7 +42,15 @@ export async function loginConsumer(data: LoginConsumerInputs) {
 export async function signupConsumer(data: ConsumerFormInputs) {
   const supabase = await createClient();
 
-  const { email, password, confirmPassword, referralCode, interests } = data;
+  const {
+    email,
+    password,
+    confirmPassword,
+    referralCode,
+    interests,
+  } = data;
+
+  console.log('Signup data:', data); // Log the signup data
 
   const { data: authData, error: authError } = await supabase.auth.signUp({
     email,
@@ -50,12 +58,14 @@ export async function signupConsumer(data: ConsumerFormInputs) {
   });
 
   if (authError) {
-    throw new Error(authError.message);
+    // console.error('Auth error:', authError); // Log the full auth error response
+    return { error: authError.message };
   }
 
   const userId = authData?.user?.id;
   if (!userId) {
-    throw new Error('Failed to retrieve user ID.');
+    // console.error('Failed to retrieve user ID'); // Log the user ID retrieval failure
+    return { error: "Failed to retrieve user ID." };
   }
 
   const { error: dbError } = await supabase.from('users').insert([
@@ -65,7 +75,8 @@ export async function signupConsumer(data: ConsumerFormInputs) {
   ]);
 
   if (dbError) {
-    throw new Error(dbError.message);
+    // console.error('DB error:', dbError.message); // Log the DB error
+    return { error: dbError.message };
   }
 
   const { error: db2Error } = await supabase.from('consumers').insert([
@@ -78,8 +89,34 @@ export async function signupConsumer(data: ConsumerFormInputs) {
   ]);
 
   if (db2Error) {
-    throw new Error(db2Error.message);
+    // console.error('DB2 error:', db2Error.message); // Log the DB2 error
+    return { error: db2Error.message };
   }
+
+  // Fetch the user's role
+  // const { data: roleData, error: roleError } = await supabase
+  //   .from('profiles')
+  //   .select('role')
+  //   .eq('user_id', userId)
+  //   .single();
+
+  // let redirectUrl;
+
+  // if (roleError) {
+  //   console.error('Error fetching user role:', roleError);
+  //   redirectUrl = '/home'; // Default to home if there's an error
+  // } else {
+  //   // Determine the redirect URL based on the user's role
+  //   if (roleData.role === 'consumer') {
+  //     redirectUrl = '/home';
+  //   } else {
+  //     redirectUrl = '/merchant/dashboard';
+  //   }
+  // }
+
+  // // Now you can use redirectUrl in your confirmation link
+  // const confirmationLink = `{{ .SiteURL }}/auth/confirm?token_hash={{ .TokenHash }}&type=signup&redirect_to=${redirectUrl}`;
+  // console.log('Confirmation link:', confirmationLink); // Log the confirmation link
 
   revalidatePath('/home');
   redirect('/home');
@@ -105,13 +142,15 @@ export async function recoverPassword(email: string) {
   const { data: userData, error: userError } = await supabase
     .from('consumers')
     .select('id')
-    .eq('email', email);
+    .eq('email', email)
 
   if (userData) {
-    const { data, error } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: url,
-    });
-  } else {
+  const { data, error } = await supabase.auth.resetPasswordForEmail(email, {
+    redirectTo: url,
+  });
+
+  }
+  else {
     throw new Error(userError.message);
   }
 }

@@ -23,15 +23,17 @@ export const Step3Schema = z
   .object({
     interests: z
       .array(z.string())
+      .optional()
+      .default([]), // Default to an empty array if not provided
   });
 
-  export const loginConsumerSchema = z.object({
-    email: z
-      .string()
-      .email('Invalid email address')
-      .nonempty('Email is required'),
-    password: z.string().nonempty('Password is required'),
-  });
+export const loginConsumerSchema = z.object({
+  email: z
+    .string()
+    .email('Invalid email address')
+    .nonempty('Email is required'),
+  password: z.string().nonempty('Password is required'),
+});
 
 export type Step1Inputs = z.infer<typeof Step1Schema>;
 export type Step2Inputs = z.infer<typeof Step2Schema>;

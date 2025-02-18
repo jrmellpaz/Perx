@@ -1,6 +1,5 @@
 import { type EmailOtpType } from '@supabase/supabase-js';
 import { NextRequest, NextResponse } from 'next/server';
-// The client you created from the Server-Side Auth instructions
 import { createClient } from '@/utils/supabase/server';
 
 export async function GET(request: NextRequest) {
@@ -23,7 +22,6 @@ export async function GET(request: NextRequest) {
     }
   }
 
-  // return the user to an error page with some instructions
   redirectTo.pathname = '/auth/auth-code-error';
   return NextResponse.redirect(redirectTo);
 }

@@ -3,7 +3,7 @@ import { ConsumerLogo } from '@/components/consumer/ConsumerLogo';
 import { createClient } from '@/utils/supabase/server';
 import { redirect } from 'next/navigation';
 
-export default async function MerchantChangePasswordPage() {
+export default async function ConsumerChangePasswordPage() {
   // const supabase = await createClient();
   // const { data } = await supabase.auth.getUser();
 

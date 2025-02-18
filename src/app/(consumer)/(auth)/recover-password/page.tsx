@@ -4,12 +4,12 @@ import { createClient } from '@/utils/supabase/server';
 import { redirect } from 'next/navigation';
 
 export default async function ConsumerRecoverPasswordPage() {
-  const supabase = await createClient();
-  const { data } = await supabase.auth.getUser();
+  // const supabase = await createClient();
+  // const { data } = await supabase.auth.getUser();
 
-  if (data?.user) {
-    redirect('/home');
-  }
+  // if (data?.user) {
+  //   redirect('/home');
+  // }
 
   return (
     <div className="flex h-full w-4/5 flex-col gap-4">

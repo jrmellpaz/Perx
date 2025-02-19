@@ -23,9 +23,9 @@ export default function PerxCheckbox({ label, defaultChecked = false }: PerxChec
           defaultChecked = {defaultChecked}
         />
         <Check
-          size={16} 
-          strokeWidth={2}          
-          className="hidden peer-data-[state=checked]:block"
+          size={16}  
+          strokeWidth={2}         
+           className="hidden peer-data-[state=checked]:block"
           aria-hidden="true"
         />
         <span className="select-none">{label}</span>

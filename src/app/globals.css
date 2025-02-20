@@ -10,7 +10,7 @@
   --font-mono: "Space Grotesk", sans-serif;
 
   /* main brand colors */
-  --color-perx-red:  #A50000;
+  --color-perx-red: #A50000;
   --color-perx-white: #F7F5F2;
   --color-perx-black: #1E1919;
 
@@ -81,6 +81,7 @@
   color utility to any element that depends on these defaults.
 */
 @layer base {
+
   *,
   ::after,
   ::before,
@@ -150,6 +151,7 @@
 
     --radius: 0.5rem
   }
+
   .dark {
 
     --background: 0 0% 3.9%;
@@ -206,7 +208,15 @@
   * {
     @apply border-border;
   }
+
   body {
     @apply bg-background text-foreground h-dvh w-dvw;
   }
 }
+
+
+/* .react-calendar {
+  width: 100% !important;
+  border: none !important;
+  font-family: "Inter", sans-serif !important;
+} */

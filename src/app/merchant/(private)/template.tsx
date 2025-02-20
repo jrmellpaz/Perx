@@ -97,7 +97,7 @@ function VerticalNav() {
               className={`flex w-full items-center gap-4 ${isActive && 'text-perx-crimson'}`}
             >
               {item.icon}
-              <span className={`${isActive && 'font-semibold'}`}>
+              <span className={`${isActive && 'font-medium'}`}>
                 {item.name}
               </span>
             </li>

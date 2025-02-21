@@ -87,6 +87,7 @@ function Inputs({
           <ErrorMessage message={errors.price.message} />
         )}
       </div>
+      <div className="flex flex-col gap-2"></div>
     </motion.div>
   );
 }

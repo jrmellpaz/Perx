@@ -4,69 +4,69 @@ import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, Responsi
 const data = [
   {
     name: 'Jan',
-    income: 4000,
-    expenses: 2400,
+    2026: 4000,
+    2025: 2400,
   },
   {
     name: 'Feb',
-    income: 3000,
-    expenses: 1398,
+    2026: 3000,
+    2025: 1398,
   },
   {
     name: 'Mar',
-    income: 2000,
-    expenses: 9800,
+    2026: 2000,
+    2025: 9800,
   },
   {
     name: 'Apr',
-    income: 2780,
-    expenses: 3908,
+    2026: 2780,
+    2025: 3908,
   },
   {
     name: 'May',
-    income: 1890,
-    expenses: 4800,
+    2026: 1890,
+    2025: 4800,
   },
   {
     name: 'Jun',
-    income: 2390,
-    expenses: 3800,
+    2026: 2390,
+    2025: 3800,
   },
   {
     name: 'Jul',
-    income: 3490,
-    expenses: 4300,
+    2026: 3490,
+    2025: 4300,
   },
   {
     name: 'Aug',
-    income: 3490,
-    expenses: 4300,
+    2026: 3490,
+    2025: 4300,
   },
   {
     name: 'Sept',
-    income: 3490,
-    expenses: 4300,
+    2026: 3490,
+    2025: 4300,
   },
   {
     name: 'Oct',
-    income: 3490,
-    expenses: 4300,
+    2026: 3490,
+    2025: 4300,
   },
   {
     name: 'Nov',
-    income: 3490,
-    expenses: 4300,
+    2026: 3490,
+    2025: 4300,
   },
   {
     name: 'Dec',
-    income: 3490,
-    expenses: 4300,
+    2026: 3490,
+    2025: 4300,
   },
 ];
 
 const lineChart = () => {
   return(
-    <div className="bg-gray-400 rounded-xl w-full h-full p-4">
+    <div className="bg-perx-crimson/15 rounded-xl w-full h-full p-4">
       <div className="flex justify-between items-center">
         <h1 className="text-lg font-semibold">Sales</h1>
       </div>
@@ -82,13 +82,13 @@ const lineChart = () => {
             bottom: 5,
           }}
         >
-          <CartesianGrid strokeDasharray="3 3"/>
+          <CartesianGrid strokeDasharray="5 5" stroke="#ccc"/>
           <XAxis dataKey="name" axisLine={false}
-            tick={{fill:"#d1d5db"}}
+            tick={{fill:"#1E1919"}}
             tickLine={false}
             tickMargin={10}/>
           <YAxis axisLine={false}
-            tick={{fill:"#d1d5db"}}
+            tick={{fill:"#1E1919"}}
             tickLine={false}
             tickMargin={20}/>
           <Tooltip />
@@ -96,8 +96,8 @@ const lineChart = () => {
             align="center"
             verticalAlign="top"
             wrapperStyle={{ paddingTop: "10px", paddingBottom: "30px"}}/>
-          <Line type="monotone" dataKey="expenses" stroke="#8884d8" strokeWidth={5} />
-          <Line type="monotone" dataKey="income" stroke="#82ca9d" strokeWidth={5}/>
+          <Line type="monotone" dataKey="2025" stroke="#9B0032" strokeWidth={5} />
+          <Line type="monotone" dataKey="2026" stroke="#82ca9d" strokeWidth={5}/>
         </LineChart>
       </ResponsiveContainer>
     </div>

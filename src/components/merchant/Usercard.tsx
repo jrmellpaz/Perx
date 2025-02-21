@@ -5,6 +5,9 @@ interface UserCardProps {
   amount: string;
   icon?: LucideIcon;
   amtIcon?: LucideIcon;
+  titleClassName?: string;
+  amtClassName?: string;
+  amtIconSize?: number;
 }
 
 const UserCard = ({
@@ -12,18 +15,21 @@ const UserCard = ({
   amount,
   icon: Icon,
   amtIcon: AmtIcon,
+  titleClassName,
+  amtClassName,
+  amtIconSize=20,
+  
 }: UserCardProps) => {
   return (
-    <div className="bg-perx-crimson min-w-[130px] flex-1 rounded-2xl p-4">
+    <div className="bg-perx-crimson/15 min-w-[130px] flex-1 rounded-2xl p-4">
       <div className="flex items-center justify-between">
-        <span className="text-[10px]">{title}</span>
+        <span className={`${titleClassName}`}>{title}</span>
         {Icon && <Icon size={20} />}
       </div>
       <div className="flex items-center">
-        {AmtIcon && <AmtIcon size={20} className="mr-2" />}
-        <h1 className="my-4 text-2xl font-semibold">{amount}</h1>
+        {AmtIcon && <AmtIcon size={amtIconSize} className="mr-2" />}
+        <h1 className={`${amtClassName}`}>{amount}</h1>
       </div>
-      {/* <h2 className="capitalize text-sm font-medium text-gray-500">{type}</h2> */}
     </div>
   );
 };

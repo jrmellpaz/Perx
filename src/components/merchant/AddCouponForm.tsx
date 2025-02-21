@@ -12,6 +12,7 @@ import {
 import PerxAlert from '../custom/PerxAlert';
 import PerxInput from '../custom/PerxInput';
 import { motion } from 'framer-motion';
+import PerxDateRange from '../custom/PerxDateRange';
 
 export default function AddCouponForm() {
   const [submitError, setSubmitError] = useState<string | null>(null);
@@ -87,7 +88,9 @@ function Inputs({
           <ErrorMessage message={errors.price.message} />
         )}
       </div>
-      <div className="flex flex-col gap-2"></div>
+      <div className="flex flex-col gap-2">
+        <PerxDateRange />
+      </div>
     </motion.div>
   );
 }

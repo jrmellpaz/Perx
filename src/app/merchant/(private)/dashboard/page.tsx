@@ -3,7 +3,14 @@ import { Button } from '@/components/ui/button';
 import { createClient } from '@/utils/supabase/server';
 import { redirect } from 'next/navigation';
 import UserCard from '@/components/merchant/Usercard';
-import { ArrowRight, Tickets, ShoppingCart, UsersRound, PhilippinePeso, EllipsisVertical } from 'lucide-react';
+import {
+  ArrowRight,
+  Tickets,
+  ShoppingCart,
+  UsersRound,
+  PhilippinePeso,
+  EllipsisVertical,
+} from 'lucide-react';
 import { profile } from 'console';
 import LineChart from '@/components/merchant/lineChart';
 import TopCouponsMonth from '@/components/merchant/TopCouponsMonth';
@@ -67,14 +74,14 @@ export default async function DashboardPage() {
         <div className="w-full h-[450px]">
           <LineChart/>
         </div>
-        </div>
-        {/* RIGHT */}
-        <div className="w-full lg:w-1/3 flex flex-col gap-8">
-          <TopCouponsMonth/>
-        </div>
       </div>
+      {/* RIGHT */}
+      <div className="flex w-full flex-col gap-8 lg:w-1/3">
+        <TopCouponsMonth />
+      </div>
+    </div>
+  );
 
-    );
 
 
 }

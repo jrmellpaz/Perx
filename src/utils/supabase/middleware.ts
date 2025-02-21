@@ -38,9 +38,19 @@ export async function updateSession(request: NextRequest) {
   } = await supabase.auth.getUser();
 
   const consumerPages = {
-    auth: ['/login', '/register', '/recover-password', '/change-password'],
+    auth: [
+      '/login', 
+      '/register', 
+      '/recover-password', 
+      '/change-password'],
     public: ['home'],
-    private: ['/profile', '/settings'],
+    private: [
+      '/explore', 
+      '/my-coupon', 
+      '/profile', 
+      '/search',
+      '/settings',
+    ],
   };
 
   const merchantPages = {

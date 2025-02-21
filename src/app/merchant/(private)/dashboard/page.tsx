@@ -27,33 +27,41 @@ export default async function DashboardPage() {
   //   </div>
   // );
 
-  // return (
-  //   <div className='p-4 flex gap-4 flex-col md:flex-row'>
-  //     {/* LEFT */}
-  //     <div className='w-full lg:w-1/3'>L</div>
-  //     {/* USER CARDS */}
-  //     <div className='flex gap-4 justify-between flex-wrap'>
-  //       <UserCard type="revenue"/>
-  //       <UserCard type="coupons Sold"/>
-  //       <UserCard type="costumers"/>
-  //       <UserCard type="extra"/>
-  //     </div>
-  //     {/* RIGHT */}
-  //     <div className='w-full lg:w-1/3'>R</div>
-  //   </div>
-
-
-  // );
-
   return (
       <div className='p-4 flex gap-4 flex-col md:flex-row'>
         {/* LEFT */}
         <div className='w-full lg:w-2/3 flex flex-col gap-4'>
           {/* USER CARDS */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            <UserCard title="REVENUE THIS MONTH" amount="5,365" icon={ArrowRight} amtIcon={PhilippinePeso}/>
-            <UserCard title="COUPONS SOLD" amount="37" amtIcon={Tickets}/>
-            <UserCard title="CUSTOMERS" amount="32" amtIcon={UsersRound}/>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-1">
+              <UserCard 
+                title="REVENUE THIS MONTH" 
+                amount="5,365" 
+                icon={ArrowRight} 
+                amtIcon={PhilippinePeso}
+                titleClassName="mx-4 text-[18px] font-mono"
+                amtClassName="my-5 text-[85px] font-mono"
+                amtIconSize={90}
+                />
+            </div>
+            <div className="flex lg:flex-col gap-4">
+              <UserCard 
+              title="COUPONS SOLD" 
+              amount="37" 
+              amtIcon={Tickets}
+              titleClassName="text-[15px] font-mono"
+              amtClassName="my-2 text-5xl font-mono"
+              amtIconSize={30}
+              />
+              <UserCard 
+              title="CUSTOMERS" 
+              amount="32" 
+              amtIcon={UsersRound}
+              titleClassName="text-[15px] font-mono"
+              amtClassName="my-2 text-5xl font-mono"
+              amtIconSize={30}
+              />
+            </div>
           </div>
           {/* LINE CHART */}
         <div className="w-full h-[450px]">
@@ -67,17 +75,6 @@ export default async function DashboardPage() {
       </div>
 
     );
-
-
-  
-  // return (
-  //   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-  //     <UserCard title="REVENUE THIS MONTH" amount="5,365" icon={ArrowRight} amtIcon={PhilippinePeso}/>
-  //     <UserCard title="COUPONS SOLD" amount="37" amtIcon={Tickets}/>
-  //     <UserCard title="CUSTOMERS" amount="32" amtIcon={UsersRound}/>
-  //     {/* <UserCard type="guest" /> */}
-  //   </div>
-  // );
 
 
 }

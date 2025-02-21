@@ -10,7 +10,7 @@ const TopCouponsMonth = () => {
         <div className="bg-amber-200 rounded-md p-4">
           <div className="flex items-center">
             <Image size={50}/>
-            <h1>Coupon 1<h2 className="text-xs">Lorem ipsum</h2></h1>
+            <h1>Coupon 1<div className="text-xs">Lorem ipsum</div></h1>
             <div className="ml-auto">
             <EllipsisVerticalIcon size={20} />
             </div>
@@ -19,7 +19,7 @@ const TopCouponsMonth = () => {
         <div className="bg-amber-200 rounded-md p-4">
           <div className="flex items-center">
             <Image size={50}/>
-            <h1>Coupon 2<h2 className="text-xs">Lorem ipsum</h2></h1>
+            <h1>Coupon 2<div className="text-xs">Lorem ipsum</div></h1>
             <div className="ml-auto">
             <EllipsisVerticalIcon size={20} />
             </div>
@@ -28,7 +28,7 @@ const TopCouponsMonth = () => {
         <div className="bg-amber-200 rounded-md p-4">
           <div className="flex items-center">
             <Image size={50}/>
-            <h1>Coupon 3<h2 className="text-xs">Lorem ipsum</h2></h1>
+            <h1>Coupon 3<div className="text-xs">Lorem ipsum</div></h1>
             <div className="ml-auto">
             <EllipsisVerticalIcon size={20} />
             </div>

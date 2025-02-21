@@ -35,20 +35,22 @@ export default async function DashboardPage() {
   // );
 
   return (
-      <div className='p-4 flex gap-4 flex-col md:flex-row'>
+      <div className='flex gap-4 flex-col md:flex-row'>
         {/* LEFT */}
         <div className='w-full lg:w-2/3 flex flex-col gap-4'>
           {/* USER CARDS */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
             <div className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-1">
               <UserCard 
                 title="REVENUE THIS MONTH" 
                 amount="5,365" 
                 icon={ArrowRight} 
                 amtIcon={PhilippinePeso}
-                titleClassName="mx-4 text-[18px] font-mono"
-                amtClassName="my-5 text-[85px] font-mono"
+                titleClassName="mx-4 my-2 text-[18px] font-mono text-perx-white"
+                amtClassName="my-5 text-[85px] font-mono text-perx-white"
                 amtIconSize={90}
+                bgColor='bg-perx-crimson'
+                color='white'
                 />
             </div>
             <div className="flex lg:flex-col gap-4">
@@ -56,17 +58,23 @@ export default async function DashboardPage() {
               title="COUPONS SOLD" 
               amount="37" 
               amtIcon={Tickets}
-              titleClassName="text-[15px] font-mono"
-              amtClassName="my-2 text-5xl font-mono"
+              titleClassName="my-2 mx-3 text-[15px] font-mono text-perx-white"
+              amtClassName="my-2 text-5xl font-mono text-perx-white"
               amtIconSize={30}
+              bgColor='bg-perx-crimson/90'
+              color='white'
+
               />
               <UserCard 
               title="CUSTOMERS" 
               amount="32" 
               amtIcon={UsersRound}
-              titleClassName="text-[15px] font-mono"
-              amtClassName="my-2 text-5xl font-mono"
+              titleClassName="my-2 mx-3 text-[15px] font-mono text-perx-white"
+              amtClassName="my-2 text-5xl font-mono text-perx-white"
               amtIconSize={30}
+              bgColor='bg-perx-crimson/90'
+              color='white'
+
               />
             </div>
           </div>

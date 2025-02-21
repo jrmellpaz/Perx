@@ -66,9 +66,9 @@ const data = [
 
 const lineChart = () => {
   return(
-    <div className="bg-perx-crimson/15 rounded-xl w-full h-full p-4">
+    <div className="bg-white border-3 border-perx-crimson rounded-xl w-full h-full p-4">
       <div className="flex justify-between items-center">
-        <h1 className="text-lg font-semibold">Sales</h1>
+        <h1 className="text-2xl font-mono-bold text-perx-black my-1 mx-1">Sales</h1>
       </div>
       <ResponsiveContainer width="100%" height="90%">
         <LineChart
@@ -82,7 +82,7 @@ const lineChart = () => {
             bottom: 5,
           }}
         >
-          <CartesianGrid strokeDasharray="5 5" stroke="#ccc"/>
+          <CartesianGrid strokeDasharray="5 5" stroke="#1E1919"/>
           <XAxis dataKey="name" axisLine={false}
             tick={{fill:"#1E1919"}}
             tickLine={false}

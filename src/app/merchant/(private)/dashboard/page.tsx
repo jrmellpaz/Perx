@@ -3,7 +3,14 @@ import { Button } from '@/components/ui/button';
 import { createClient } from '@/utils/supabase/server';
 import { redirect } from 'next/navigation';
 import UserCard from '@/components/merchant/Usercard';
-import { ArrowRight, Tickets, ShoppingCart, UsersRound, PhilippinePeso, EllipsisVertical } from 'lucide-react';
+import {
+  ArrowRight,
+  Tickets,
+  ShoppingCart,
+  UsersRound,
+  PhilippinePeso,
+  EllipsisVertical,
+} from 'lucide-react';
 import { profile } from 'console';
 import LineChart from '@/components/merchant/lineChart';
 import TopCouponsMonth from '@/components/merchant/TopCouponsMonth';
@@ -42,34 +49,35 @@ export default async function DashboardPage() {
   //     <div className='w-full lg:w-1/3'>R</div>
   //   </div>
 
-
   // );
 
   return (
-      <div className='p-4 flex gap-4 flex-col md:flex-row'>
-        {/* LEFT */}
-        <div className='w-full lg:w-2/3 flex flex-col gap-4'>
-          {/* USER CARDS */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            <UserCard title="REVENUE THIS MONTH" amount="5,365" icon={ArrowRight} amtIcon={PhilippinePeso}/>
-            <UserCard title="COUPONS SOLD" amount="37" amtIcon={Tickets}/>
-            <UserCard title="CUSTOMERS" amount="32" amtIcon={UsersRound}/>
-          </div>
-          {/* LINE CHART */}
-        <div className="w-full h-[450px]">
-          <LineChart/>
+    <div className="flex flex-col gap-4 md:flex-row">
+      {/* LEFT */}
+      <div className="flex w-full flex-col gap-4 lg:w-2/3">
+        {/* USER CARDS */}
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+          <UserCard
+            title="REVENUE THIS MONTH"
+            amount="5,365"
+            icon={ArrowRight}
+            amtIcon={PhilippinePeso}
+          />
+          <UserCard title="COUPONS SOLD" amount="37" amtIcon={Tickets} />
+          <UserCard title="CUSTOMERS" amount="32" amtIcon={UsersRound} />
         </div>
-        </div>
-        {/* RIGHT */}
-        <div className="w-full lg:w-1/3 flex flex-col gap-8">
-          <TopCouponsMonth/>
+        {/* LINE CHART */}
+        <div className="h-[450px] w-full">
+          <LineChart />
         </div>
       </div>
+      {/* RIGHT */}
+      <div className="flex w-full flex-col gap-8 lg:w-1/3">
+        <TopCouponsMonth />
+      </div>
+    </div>
+  );
 
-    );
-
-
-  
   // return (
   //   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
   //     <UserCard title="REVENUE THIS MONTH" amount="5,365" icon={ArrowRight} amtIcon={PhilippinePeso}/>
@@ -78,6 +86,4 @@ export default async function DashboardPage() {
   //     {/* <UserCard type="guest" /> */}
   //   </div>
   // );
-
-
 }

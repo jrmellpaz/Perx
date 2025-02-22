@@ -15,7 +15,10 @@ import {
   Popover,
 } from 'react-aria-components';
 
-export default function PerxDateRange() {
+export default function PerxDateRange({ onChange, value }: { 
+  onChange?: (value: { start: DateValue; end: DateValue } | null) => void,
+  value?: { start: DateValue; end: DateValue } | null 
+}) {
   const now: CalendarDate = today(getLocalTimeZone());
   const disabledRanges: CalendarDate[][] = [
     // [now, now.add({ days: 5 })],
@@ -43,6 +46,7 @@ export default function PerxDateRange() {
       className="*:not-first:mt-2"
       isDateUnavailable={isDateUnavailable}
       validate={validate}
+      onChange={onChange} // Pass the onChange prop here
     >
       <Label className="text-foreground text-sm font-medium">
         Date range picker (unavailable dates)

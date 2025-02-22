@@ -2,7 +2,9 @@
 
 import { AddCouponInputs, addCouponSchema } from '@/lib/merchant/couponSchema';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import type { DateValue } from 'react-aria-components';
+
 import {
   FieldErrors,
   SubmitHandler,
@@ -13,37 +15,92 @@ import PerxAlert from '../custom/PerxAlert';
 import PerxInput from '../custom/PerxInput';
 import { motion } from 'framer-motion';
 import PerxDateRange from '../custom/PerxDateRange';
+import PerxTextarea from '../custom/PerxTextarea';
+import { Label } from '../ui/label';
+import { Button } from '../ui/button';
+import { Input } from '../ui/input';
+import { LoaderCircle } from 'lucide-react';
+import { addCoupon } from '@/actions/merchant/coupon';
 
 export default function AddCouponForm() {
   const [submitError, setSubmitError] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [imageFile, setImageFile] = useState<File | null>(null); 
 
   const {
     register,
     handleSubmit,
     watch,
     reset,
-    trigger,
-    getValues,
+    setValue,
     formState: { errors },
   } = useForm<AddCouponInputs>({
     resolver: zodResolver(addCouponSchema),
   });
 
-  const processForm: SubmitHandler<AddCouponInputs> = async () => {
-    // Process form data
+  useEffect(() => {
+    console.log("Validation Errors:", errors);
+  }, [errors]);
+
+  const processForm: SubmitHandler<AddCouponInputs> = async (data) => {
+    console.log('Form submission started');
+    setIsSubmitting(true);
+    setSuccessMessage(null);
+    setSubmitError(null);
+    console.log('Form submitted with:', data); 
+    try {
+      console.log('Submitting data:', data);
+      console.log('Image file before submission:', imageFile);
+
+      const response = await addCoupon(data);
+      console.log('Response from addCoupon:', response);
+
+      setSuccessMessage('Coupon added successfully!');
+      reset();
+      setImagePreview(null);
+      setImageFile(null); 
+    } catch (error) {
+      console.error('Submission error:', error);
+      setSubmitError('Failed to submit coupon. Please try again.');
+    } finally {
+      console.log('Form submission finished');
+      setIsSubmitting(false);
+    }
   };
 
   return (
     <section className="mt-8 w-full max-w-[800px]">
       {submitError && (
-        <PerxAlert
-          heading={'Something went wrong 😢'}
-          message="Make sure your inputs are correct."
-          variant="error"
-        />
+        <PerxAlert heading="Error" message={submitError} variant="error" />
       )}
-      <form onSubmit={handleSubmit(processForm)}>
-        <Inputs register={register} errors={errors} />
+      {successMessage && (
+        <PerxAlert heading="Success" message={successMessage} variant="success" />
+      )}
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+          console.log("Form submission triggered!");
+
+          console.log("Calling handleSubmit...");
+          handleSubmit((data) => {
+            console.log("Inside handleSubmit callback, received data:", data);
+            processForm(data);
+          })(e);
+          console.log("After handleSubmit call."); 
+        }}
+      >
+        <Inputs
+          register={register}
+          errors={errors}
+          watch={watch}
+          setValue={setValue}
+          isSubmitting={isSubmitting}
+          setImagePreview={setImagePreview}
+          imagePreview={imagePreview}
+          setImageFile={setImageFile}
+        />
       </form>
     </section>
   );
@@ -52,10 +109,49 @@ export default function AddCouponForm() {
 function Inputs({
   register,
   errors,
+  watch,
+  setValue,
+  isSubmitting,
+  setImagePreview,
+  imagePreview,
+  setImageFile, // Receive setImageFile prop
 }: {
   register: UseFormRegister<AddCouponInputs>;
   errors: FieldErrors<AddCouponInputs>;
+  watch: (name: keyof AddCouponInputs) => any;
+  setValue: (name: keyof AddCouponInputs, value: any) => void;
+  isSubmitting: boolean;
+  setImagePreview: (value: string | null) => void;
+  imagePreview: string | null;
+  setImageFile: (file: File | null) => void;
 }) {
+  const imageFile = watch('image');
+
+  useEffect(() => {
+    if (imageFile && imageFile.length > 0) {
+      const file = imageFile[0];
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImagePreview(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    } else {
+      setImagePreview(null);
+    }
+  }, [imageFile]);
+
+  useEffect(() => {
+    register("validFrom", { required: "Required" });
+    register("validTo", { required: "Required" });
+  }, [register]);
+  
+  const handleDateChange = (value: { start: DateValue; end: DateValue } | null) => {
+    if (value) {
+      setValue("validFrom", value.start.toString()); 
+      setValue("validTo", value.end.toString()); 
+    }
+  };
+
   return (
     <motion.div
       initial={{ x: '50%', opacity: 0 }}
@@ -72,25 +168,93 @@ function Inputs({
           autofocus={true}
           {...register('title')}
         />
-        {errors.title?.message && (
-          <ErrorMessage message={errors.title.message} />
-        )}
+        {errors.title?.message && <ErrorMessage message={errors.title.message} />}
       </div>
+
+      <div className="flex flex-col gap-2">
+        <PerxInput 
+          label="Type" 
+          type="text" 
+          placeholder="Type" 
+          required 
+          {...register('type')} 
+        />
+        {errors.type?.message && <ErrorMessage message={errors.type.message} />}
+      </div>
+
+      <div className="flex flex-col gap-2">
+        <PerxTextarea
+          label="Description"
+          placeholder="Coupon description"
+          required
+          {...register('description')}
+        />
+        {errors.description?.message && <ErrorMessage message={errors.description.message} />}
+      </div>
+
+      <div className="flex flex-col gap-2">
+        <PerxInput label="Price" 
+          type="number" 
+          placeholder="0.00" 
+          required 
+          {...register('price', { valueAsNumber: true })} 
+        />
+        {errors.price?.message && <ErrorMessage message={errors.price.message} />}
+      </div>
+
+      <div className="flex flex-col gap-2">
+        <PerxDateRange onChange={handleDateChange} />
+      </div>
+
       <div className="flex flex-col gap-2">
         <PerxInput
-          label="Price"
+          label="Quantity"
           type="number"
-          placeholder="0.00"
+          placeholder="0"
           required
-          {...register('price')}
+          {...register('quantity', { valueAsNumber: true })}
         />
-        {errors.price?.message && (
-          <ErrorMessage message={errors.price.message} />
+        {errors.quantity?.message && <ErrorMessage message={errors.quantity.message} />}
+      </div>
+      <div className="flex flex-col items-center justify-center">
+        {imagePreview && (
+          <img
+            src={imagePreview}
+            alt="Your coupon image"
+            className="border-input aspect-square size-48 border object-cover"
+          />
         )}
       </div>
       <div className="flex flex-col gap-2">
-        <PerxDateRange />
+        <Label htmlFor="image">Image</Label>
+        <Input
+          id="image"
+          type="file"
+          accept="image/png, image/jpeg, image/jpg"
+          placeholder="Attach your coupon image"
+          {...register('image')}
+          required={imagePreview === null ? true : false}
+        />
+        {errors.image?.message && (
+          <ErrorMessage
+            message={
+              typeof errors.image.message === 'string'
+          ? errors.image.message
+          : 'Something went wrong'
+            }
+          />
+        )}
       </div>
+      <Button type="submit" disabled={isSubmitting} className="bg-perx-blue transition-all">
+        {isSubmitting ? (
+          <>
+            <LoaderCircle className="-ms-1 animate-spin" size={16} strokeWidth={2} aria-hidden="true" />
+            Submitting...
+          </>
+        ) : (
+          'Submit'
+        )}
+      </Button>
     </motion.div>
   );
 }

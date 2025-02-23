@@ -18,7 +18,7 @@ export const addCouponSchema = z.object({
       invalid_type_error: 'Invalid quantity',
     })
     .int('Invalid quantity')
-    .positive('Quanity must be greater than 0'),
+    .positive('Quantity must be greater than 0'),
   validFrom: z.string().date(),
   validTo: z.string().date(),
   image: z

@@ -275,10 +275,10 @@ function Inputs({
                 strokeWidth={2}
                 aria-hidden="true"
               />
-              Submitting...
+              Add coupon
             </>
           ) : (
-            'Submit'
+            'Add coupon'
           )}
         </Button>
       </div>

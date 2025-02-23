@@ -30,7 +30,7 @@ export default function PerxTextarea({
         placeholder={placeholder}
         required={required}
         autoFocus={autofocus}
-        className="placeholder:opacity-0 focus:placeholder:opacity-100"
+        className="placeholder:text-muted-foreground/70 text-sm placeholder:opacity-0 focus:placeholder:opacity-100"
         {...props}
       />
     </div>

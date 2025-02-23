@@ -165,7 +165,7 @@ function Inputs({
       transition={{ duration: 0.3, ease: 'easeInOut' }}
       className="flex flex-col gap-5"
     >
-      <div className="flex flex-col gap-2">
+      <div className="flex flex-col gap-1">
         <PerxInput
           label="Title"
           type="text"
@@ -179,7 +179,7 @@ function Inputs({
         )}
       </div>
 
-      <div className="flex flex-col gap-2">
+      <div className="flex flex-col gap-1">
         <PerxInput
           label="Type"
           type="text"
@@ -190,7 +190,7 @@ function Inputs({
         {errors.type?.message && <ErrorMessage message={errors.type.message} />}
       </div>
 
-      <div className="flex flex-col gap-2">
+      <div className="flex flex-col gap-1">
         <PerxTextarea
           label="Description"
           placeholder="Coupon description"
@@ -202,7 +202,7 @@ function Inputs({
         )}
       </div>
 
-      <div className="flex flex-col gap-2">
+      <div className="flex flex-col gap-1">
         <PerxInput
           label="Price"
           type="number"
@@ -216,11 +216,11 @@ function Inputs({
         )}
       </div>
 
-      <div className="flex flex-col gap-2">
+      <div className="flex flex-col gap-1">
         <PerxDateRange onChange={handleDateChange} />
       </div>
 
-      <div className="flex flex-col gap-2">
+      <div className="flex flex-col gap-1">
         <PerxInput
           label="Quantity"
           type="number"
@@ -241,7 +241,7 @@ function Inputs({
           />
         )}
       </div>
-      <div className="flex flex-col gap-2">
+      <div className="flex flex-col gap-1">
         <Label htmlFor="image">Image</Label>
         <Input
           id="image"
@@ -261,7 +261,7 @@ function Inputs({
           />
         )}
       </div>
-      <div className="flex justify-end">
+      <div className="mt-2 flex justify-end">
         <Button
           type="submit"
           disabled={isSubmitting}

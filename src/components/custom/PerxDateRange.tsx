@@ -15,9 +15,12 @@ import {
   Popover,
 } from 'react-aria-components';
 
-export default function PerxDateRange({ onChange, value }: { 
-  onChange?: (value: { start: DateValue; end: DateValue } | null) => void,
-  value?: { start: DateValue; end: DateValue } | null 
+export default function PerxDateRange({
+  onChange,
+  value,
+}: {
+  onChange?: (value: { start: DateValue; end: DateValue } | null) => void;
+  value?: { start: DateValue; end: DateValue } | null;
 }) {
   const now: CalendarDate = today(getLocalTimeZone());
   const disabledRanges: CalendarDate[][] = [
@@ -43,23 +46,28 @@ export default function PerxDateRange({ onChange, value }: {
 
   return (
     <DateRangePicker
-      className="*:not-first:mt-2"
+      className="group relative *:not-first:mt-2"
       isDateUnavailable={isDateUnavailable}
       validate={validate}
       onChange={onChange} // Pass the onChange prop here
     >
-      <Label className="text-foreground text-sm font-medium">
-        Date range picker (unavailable dates)
+      <Label className="text-muted-foreground/70 bg-background group-focus-within:text-perx-blue absolute top-0.5 z-20 ml-2 px-1 font-mono text-xs font-medium">
+        Date validity range
       </Label>
-      <div className="flex">
-        <Group className={cn(dateInputStyle, 'pe-9')}>
+      <div className="group flex">
+        <Group
+          className={cn(
+            dateInputStyle,
+            'group-focus-within:border-perx-blue pe-9'
+          )}
+        >
           <DateInput slot="start" unstyled />
           <span aria-hidden="true" className="text-muted-foreground/70 px-2">
             -
           </span>
           <DateInput slot="end" unstyled />
         </Group>
-        <Button className="text-muted-foreground/80 hover:text-foreground z-10 -ms-9 -me-px flex w-9 items-center justify-center rounded-e-lg outline-offset-2 transition-colors focus-visible:outline-hidden data-focus-visible:outline-2">
+        <Button className="text-muted-foreground/80 hover:text-foreground hover:bg-perx-blue/10 z-10 -ms-12 -me-px flex h-12 w-12 items-center justify-center rounded-full outline-offset-2 transition-colors focus-visible:outline-hidden data-focus-visible:outline-2">
           <CalendarIcon size={16} />
         </Button>
       </div>

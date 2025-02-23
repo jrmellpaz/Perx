@@ -27,7 +27,7 @@ export default function AddCouponForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
-  const [imageFile, setImageFile] = useState<File | null>(null); 
+  const [imageFile, setImageFile] = useState<File | null>(null);
 
   const {
     register,
@@ -41,7 +41,7 @@ export default function AddCouponForm() {
   });
 
   useEffect(() => {
-    console.log("Validation Errors:", errors);
+    console.log('Validation Errors:', errors);
   }, [errors]);
 
   const processForm: SubmitHandler<AddCouponInputs> = async (data) => {
@@ -49,7 +49,7 @@ export default function AddCouponForm() {
     setIsSubmitting(true);
     setSuccessMessage(null);
     setSubmitError(null);
-    console.log('Form submitted with:', data); 
+    console.log('Form submitted with:', data);
     try {
       console.log('Submitting data:', data);
       console.log('Image file before submission:', imageFile);
@@ -57,10 +57,10 @@ export default function AddCouponForm() {
       const response = await addCoupon(data);
       console.log('Response from addCoupon:', response);
 
-      setSuccessMessage('Coupon added successfully!');
+      setSuccessMessage('Coupon added successfully! 🥳');
       reset();
       setImagePreview(null);
-      setImageFile(null); 
+      setImageFile(null);
     } catch (error) {
       console.error('Submission error:', error);
       setSubmitError('Failed to submit coupon. Please try again.');
@@ -71,24 +71,28 @@ export default function AddCouponForm() {
   };
 
   return (
-    <section className="mt-8 w-full max-w-[800px]">
+    <section className="my-8 flex w-full max-w-[800px] flex-col gap-6">
       {submitError && (
-        <PerxAlert heading="Error" message={submitError} variant="error" />
+        <PerxAlert
+          heading="Something went wrong 😢"
+          message={submitError}
+          variant="error"
+        />
       )}
       {successMessage && (
-        <PerxAlert heading="Success" message={successMessage} variant="success" />
+        <PerxAlert heading={successMessage} variant="success" />
       )}
       <form
         onSubmit={(e) => {
           e.preventDefault();
-          console.log("Form submission triggered!");
+          console.log('Form submission triggered!');
 
-          console.log("Calling handleSubmit...");
+          console.log('Calling handleSubmit...');
           handleSubmit((data) => {
-            console.log("Inside handleSubmit callback, received data:", data);
+            console.log('Inside handleSubmit callback, received data:', data);
             processForm(data);
           })(e);
-          console.log("After handleSubmit call."); 
+          console.log('After handleSubmit call.');
         }}
       >
         <Inputs
@@ -141,14 +145,16 @@ function Inputs({
   }, [imageFile]);
 
   useEffect(() => {
-    register("validFrom", { required: "Required" });
-    register("validTo", { required: "Required" });
+    register('validFrom', { required: 'Required' });
+    register('validTo', { required: 'Required' });
   }, [register]);
-  
-  const handleDateChange = (value: { start: DateValue; end: DateValue } | null) => {
+
+  const handleDateChange = (
+    value: { start: DateValue; end: DateValue } | null
+  ) => {
     if (value) {
-      setValue("validFrom", value.start.toString()); 
-      setValue("validTo", value.end.toString()); 
+      setValue('validFrom', value.start.toString());
+      setValue('validTo', value.end.toString());
     }
   };
 
@@ -168,16 +174,18 @@ function Inputs({
           autofocus={true}
           {...register('title')}
         />
-        {errors.title?.message && <ErrorMessage message={errors.title.message} />}
+        {errors.title?.message && (
+          <ErrorMessage message={errors.title.message} />
+        )}
       </div>
 
       <div className="flex flex-col gap-2">
-        <PerxInput 
-          label="Type" 
-          type="text" 
-          placeholder="Type" 
-          required 
-          {...register('type')} 
+        <PerxInput
+          label="Type"
+          type="text"
+          placeholder="Type"
+          required
+          {...register('type')}
         />
         {errors.type?.message && <ErrorMessage message={errors.type.message} />}
       </div>
@@ -189,17 +197,23 @@ function Inputs({
           required
           {...register('description')}
         />
-        {errors.description?.message && <ErrorMessage message={errors.description.message} />}
+        {errors.description?.message && (
+          <ErrorMessage message={errors.description.message} />
+        )}
       </div>
 
       <div className="flex flex-col gap-2">
-        <PerxInput label="Price" 
-          type="number" 
-          placeholder="0.00" 
-          required 
-          {...register('price', { valueAsNumber: true })} 
+        <PerxInput
+          label="Price"
+          type="number"
+          placeholder="0.00"
+          step="any"
+          required
+          {...register('price', { valueAsNumber: true })}
         />
-        {errors.price?.message && <ErrorMessage message={errors.price.message} />}
+        {errors.price?.message && (
+          <ErrorMessage message={errors.price.message} />
+        )}
       </div>
 
       <div className="flex flex-col gap-2">
@@ -214,7 +228,9 @@ function Inputs({
           required
           {...register('quantity', { valueAsNumber: true })}
         />
-        {errors.quantity?.message && <ErrorMessage message={errors.quantity.message} />}
+        {errors.quantity?.message && (
+          <ErrorMessage message={errors.quantity.message} />
+        )}
       </div>
       <div className="flex flex-col items-center justify-center">
         {imagePreview && (
@@ -239,16 +255,25 @@ function Inputs({
           <ErrorMessage
             message={
               typeof errors.image.message === 'string'
-          ? errors.image.message
-          : 'Something went wrong'
+                ? errors.image.message
+                : 'Something went wrong'
             }
           />
         )}
       </div>
-      <Button type="submit" disabled={isSubmitting} className="bg-perx-blue transition-all">
+      <Button
+        type="submit"
+        disabled={isSubmitting}
+        className="bg-perx-blue transition-all"
+      >
         {isSubmitting ? (
           <>
-            <LoaderCircle className="-ms-1 animate-spin" size={16} strokeWidth={2} aria-hidden="true" />
+            <LoaderCircle
+              className="-ms-1 animate-spin"
+              size={16}
+              strokeWidth={2}
+              aria-hidden="true"
+            />
             Submitting...
           </>
         ) : (

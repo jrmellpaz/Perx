@@ -21,7 +21,7 @@ const alertVariants = cva(
 
 interface PerxAlertProps {
   heading: string;
-  message: string;
+  message?: string;
   variant: 'default' | 'warning' | 'success' | 'error';
 }
 

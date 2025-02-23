@@ -11,7 +11,7 @@ export const addCouponSchema = z.object({
       required_error: 'Price is required',
       invalid_type_error: 'Invalid price',
     })
-    .nonnegative('Invalid price'),
+    .positive('Invalid price'),
   quantity: z
     .number({
       required_error: 'Quantity is required',

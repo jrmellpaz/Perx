@@ -261,25 +261,27 @@ function Inputs({
           />
         )}
       </div>
-      <Button
-        type="submit"
-        disabled={isSubmitting}
-        className="bg-perx-blue transition-all"
-      >
-        {isSubmitting ? (
-          <>
-            <LoaderCircle
-              className="-ms-1 animate-spin"
-              size={16}
-              strokeWidth={2}
-              aria-hidden="true"
-            />
-            Submitting...
-          </>
-        ) : (
-          'Submit'
-        )}
-      </Button>
+      <div className="flex justify-end">
+        <Button
+          type="submit"
+          disabled={isSubmitting}
+          className="bg-perx-blue transition-all"
+        >
+          {isSubmitting ? (
+            <>
+              <LoaderCircle
+                className="-ms-1 animate-spin"
+                size={16}
+                strokeWidth={2}
+                aria-hidden="true"
+              />
+              Submitting...
+            </>
+          ) : (
+            'Submit'
+          )}
+        </Button>
+      </div>
     </motion.div>
   );
 }

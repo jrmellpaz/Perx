@@ -26,16 +26,16 @@ export async function addCoupon(couponData: AddCouponInputs) {
     if (couponData.image) {
       // const fileExt = couponData.image.name.split('.').pop();
       // const filePath = `coupons/${merchantId}/${Date.now()}.${fileExt}`;
-
+      const date = Date.now();
       const { error: uploadError } = await supabase.storage
         .from('perx')
-        .upload(`coupons/${merchantId}/${Date.now()}`, couponData.image[0]);
+        .upload(`coupons/${merchantId}-${date}`, couponData.image[0]);
 
       if (uploadError) throw new Error(`IMAGE UPLOAD ERROR: ${uploadError.message}`);
 
       const { data: imagePublicUrl } = await supabase.storage
         .from('perx')
-        .getPublicUrl(`coupons/${merchantId}/${Date.now()}`);
+        .getPublicUrl(`coupons/${merchantId}-${date}`);
 
       imageUrl = imagePublicUrl.publicUrl;
     }

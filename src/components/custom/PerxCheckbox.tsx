@@ -14,8 +14,8 @@ export default function PerxCheckbox({ label, checked, onCheckedChange }: PerxCh
 
   return (
     <Badge
-      className={`relative flex gap-2 px-4 py-1 text-sm transition-all outline-none has-focus-visible:ring-[3px] 
-        ${checked ? 'bg-perx-blue text-white' : 'bg-muted text-muted-foreground'}`}
+      className={`relative flex gap-2 px-4 py-1 text-sm transition-all shadow-none outline-none hover:bg-perx-blue/10 
+        ${checked ? 'bg-perx-blue text-white hover:bg-perx-blue/90' : 'bg-muted text-muted-foreground'}`}
     >
       <Checkbox
         id={id}

@@ -8,13 +8,14 @@ import {
 } from '@/lib/consumer/consumerSchema';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { motion } from 'framer-motion';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, ChangeEvent } from 'react';
 import {
   FieldErrors,
   SubmitHandler,
   useForm,
   UseFormRegister,
   UseFormWatch,
+  UseFormSetValue,
 } from 'react-hook-form';
 import { Label } from '../ui/label';
 import { Input } from '../ui/input';
@@ -61,9 +62,13 @@ export default function ConsumerRegisterForm() {
     reset,
     trigger,
     getValues,
+    setValue,
     formState: { errors },
   } = useForm<ConsumerFormInputs>({
     resolver: zodResolver(schemas[currentStep]),
+    defaultValues: {
+      interests: [], // Ensure interests is always an empty array initially
+    },
   });
 
   const processForm: SubmitHandler<ConsumerFormInputs> = async () => {
@@ -137,6 +142,7 @@ export default function ConsumerRegisterForm() {
               errors={errors}
               delta={delta}
               watch={watch}
+              setValue={setValue}
             />
           )}
         </div>
@@ -301,13 +307,31 @@ function Step3({
   errors,
   delta,
   watch,
+  setValue,
 }: {
   register: UseFormRegister<ConsumerFormInputs>;
   errors: FieldErrors<ConsumerFormInputs>;
   delta: number;
   watch: UseFormWatch<ConsumerFormInputs>;
+  setValue: UseFormSetValue<ConsumerFormInputs>;
 }) {
   const interests = ['Shopping', 'Coffee', 'Shoes', 'Clothes', 'Food'];
+  const selectedInterests = watch('interests', []) || [];
+
+  const handleCheckboxChange = (interest: string, checked: boolean) => {
+    if (checked) {
+      setValue('interests', [...selectedInterests, interest]);
+    } else {
+      setValue(
+        'interests',
+        selectedInterests.filter((item) => item !== interest)
+      );
+    }
+  };
+  
+  useEffect(() => {
+    setValue('interests', []);
+  }, [setValue]);
 
   return (
     <motion.div
@@ -322,8 +346,8 @@ function Step3({
             <label key={interest} className="flex items-center gap-2">
               <PerxCheckbox
                 label={interest}
-                {...register('interests')}
-                defaultChecked={false}
+                checked={selectedInterests.includes(interest)}
+                onCheckedChange={(checked) => handleCheckboxChange(interest, checked)}
               />
             </label>
           ))}

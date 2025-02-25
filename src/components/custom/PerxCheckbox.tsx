@@ -5,27 +5,28 @@ import { useId } from 'react';
 
 interface PerxCheckboxProps {
   label: string;
-  defaultChecked: boolean;
+  checked: boolean;
+  onCheckedChange: (checked: boolean) => void;
 }
 
-export default function PerxCheckbox({
-  label,
-  defaultChecked,
-  ...props
-}: PerxCheckboxProps) {
+export default function PerxCheckbox({ label, checked, onCheckedChange }: PerxCheckboxProps) {
   const id = useId();
+
   return (
-    <Badge className="has-data-[state=unchecked]:bg-muted has-data-[state=checked]:bg-perx-blue has-data-[state=unchecked]:text-muted-foreground has-focus-visible:border-ring has-focus-visible:ring-ring/50 relative flex gap-2 px-4 py-1 text-sm transition-all outline-none has-focus-visible:ring-[3px]">
+    <Badge
+      className={`relative flex gap-2 px-4 py-1 text-sm transition-all outline-none has-focus-visible:ring-[3px] 
+        ${checked ? 'bg-perx-blue text-white' : 'bg-muted text-muted-foreground'}`}
+    >
       <Checkbox
         id={id}
         className="peer sr-only after:absolute after:inset-0"
-        defaultChecked={defaultChecked}
-        {...props}
+        checked={checked}
+        onCheckedChange={onCheckedChange} // Use this instead of onChange
       />
       <CheckIcon
         size={16}
         strokeWidth={3}
-        className="hidden peer-data-[state=checked]:block"
+        className={`transition-opacity ${checked ? 'block' : 'hidden'}`}
         aria-hidden="true"
       />
       <label

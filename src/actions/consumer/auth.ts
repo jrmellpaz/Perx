@@ -43,6 +43,7 @@ export async function signupConsumer(data: ConsumerFormInputs) {
   const supabase = await createClient();
 
   const {
+    name,
     email,
     password,
     confirmPassword,
@@ -85,6 +86,7 @@ export async function signupConsumer(data: ConsumerFormInputs) {
       email: email,
       referralCode,
       interests,
+      name,
     },
   ]);
 

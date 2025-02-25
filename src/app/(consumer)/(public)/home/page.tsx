@@ -36,9 +36,9 @@ export default async function DashboardPage() {
       ) : (
         <>
           <p>Welcome, {data.user.email}</p>
-          <form action={logoutConsumer}>
+          {/* <form action={logoutConsumer}>
             <Button type="submit">Log out</Button>
-          </form>
+          </form> */}
         </>
       )}
     </div>

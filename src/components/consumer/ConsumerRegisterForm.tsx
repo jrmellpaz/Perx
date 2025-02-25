@@ -69,6 +69,7 @@ export default function ConsumerRegisterForm() {
   const processForm: SubmitHandler<ConsumerFormInputs> = async () => {
     setIsLoading(true);
     try {
+      console.log('hereee');
       const data = getValues();
       console.log(data);
       await signupConsumer(data);
@@ -316,13 +317,20 @@ function Step3({
       className="flex flex-col gap-6"
     >
       <div>
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-wrap gap-2">
           {interests.map((interest) => (
             <label key={interest} className="flex items-center gap-2">
-              <PerxCheckbox label={interest} {...register('interests')} />
+              <PerxCheckbox
+                label={interest}
+                {...register('interests')}
+                defaultChecked={false}
+              />
             </label>
           ))}
         </div>
+        {errors.interests?.message && (
+          <ErrorMessage message={errors.interests.message} />
+        )}
       </div>
     </motion.div>
   );

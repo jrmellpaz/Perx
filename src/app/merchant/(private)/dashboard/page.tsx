@@ -1,7 +1,7 @@
 import { logoutMerchant } from '@/actions/merchant/auth';
 import { Button } from '@/components/ui/button';
 import { createClient } from '@/utils/supabase/server';
-import { redirect } from 'next/navigation';
+// import { redirect } from 'next/navigation';
 import UserCard from '@/components/merchant/Usercard';
 import {
   ArrowRight,
@@ -14,6 +14,7 @@ import {
 import { profile } from 'console';
 import LineChart from '@/components/merchant/lineChart';
 import TopCouponsMonth from '@/components/merchant/TopCouponsMonth';
+import Link from 'next/link';
 // import EventCalendar from '@/components/merchant/EventCalendar';
 
 export default async function DashboardPage() {
@@ -44,14 +45,14 @@ export default async function DashboardPage() {
               <UserCard 
                 title="REVENUE THIS MONTH" 
                 amount="5,365" 
-                icon={ArrowRight} 
+                icon={ArrowRight}
                 amtIcon={PhilippinePeso}
                 titleClassName="mx-4 my-2 text-[18px] font-mono text-perx-white"
-                amtClassName="my-5 text-[85px] font-mono text-perx-white"
+                amtClassName="text-[85px] font-mono text-perx-white"
                 amtIconSize={90}
-                bgColor='bg-perx-crimson'
+                bgColor='bg-perx-canopy/85'
                 color='white'
-                />
+              />
             </div>
             <div className="flex lg:flex-col gap-4">
               <UserCard 
@@ -61,7 +62,7 @@ export default async function DashboardPage() {
               titleClassName="my-2 mx-3 text-[15px] font-mono text-perx-white"
               amtClassName="my-2 text-5xl font-mono text-perx-white"
               amtIconSize={30}
-              bgColor='bg-perx-crimson/90'
+              bgColor='bg-perx-crimson/85'
               color='white'
 
               />
@@ -72,7 +73,7 @@ export default async function DashboardPage() {
               titleClassName="my-2 mx-3 text-[15px] font-mono text-perx-white"
               amtClassName="my-2 text-5xl font-mono text-perx-white"
               amtIconSize={30}
-              bgColor='bg-perx-crimson/90'
+              bgColor='bg-perx-navy/85'
               color='white'
 
               />

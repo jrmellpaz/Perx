@@ -4,7 +4,7 @@ const TopCouponsMonth = () => {
   return (
     <div className="bg-white p-4 rounded-md">
       <div className="flex items-center justify-between">
-      <div className="text-xl font-mono-semibold my-2 border-b-5 border-b-perx-crimson">Top coupons this month</div>
+      <div className="w-full text-xl font-mono-semibold my-2 border-b-4 border-b-perx-crimson">Top coupons this month</div>
       </div>
       <div className="flex flex-col gap-1 mt 4">
         <div className="bg-white border-b-2 border-b-perx-crimson p-4">

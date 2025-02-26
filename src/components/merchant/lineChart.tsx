@@ -95,9 +95,9 @@ const lineChart = () => {
           <Legend 
             align="center"
             verticalAlign="top"
-            wrapperStyle={{ paddingTop: "10px", paddingBottom: "30px"}}/>
-          <Line type="monotone" dataKey="2025" stroke="#9B0032" strokeWidth={5} />
-          <Line type="monotone" dataKey="2026" stroke="#82ca9d" strokeWidth={5}/>
+            wrapperStyle={{ paddingTop: "10px", paddingBottom: "30px"}} className="perx-"/>
+          <Line type="monotone" dataKey="2025" stroke="#FAD24B" strokeWidth={5} />
+          <Line type="monotone" dataKey="2026" stroke="#78286E" strokeWidth={5}/>
         </LineChart>
       </ResponsiveContainer>
     </div>
@@ -105,3 +105,4 @@ const lineChart = () => {
 };
 
 export default lineChart;
+

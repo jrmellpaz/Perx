@@ -1,4 +1,5 @@
 import { LucideIcon } from 'lucide-react';
+import Link from 'next/link';
 
 interface UserCardProps {
   title: string;
@@ -28,7 +29,9 @@ const UserCard = ({
     <div className={`${bgColor} min-w-[130px] flex-1 rounded-2xl p-4}`}>
       <div className="flex items-center justify-between">
         <span className={`${titleClassName}`}>{title}</span>
-        {Icon && <Icon size={20} style={{color}} className="mr-3"/>}
+        <Link href="/merchant/monthly-records">
+        {Icon && <Icon size={30} style={{color}} className="mr-2 hover:bg-perx-canopy rounded-full p-1"/>}
+        </Link>
       </div>
       <div className="flex items-center">
         {AmtIcon && <AmtIcon size={amtIconSize} style={{color}} className="mx-3" />}

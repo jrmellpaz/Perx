@@ -47,7 +47,7 @@ export async function signupConsumer(data: ConsumerFormInputs) {
     email,
     password,
     confirmPassword,
-    referralCode,
+    referrer_code,
     interests,
   } = data;
 
@@ -80,13 +80,17 @@ export async function signupConsumer(data: ConsumerFormInputs) {
     return { error: dbError.message };
   }
 
+  const unique_code = await generateUniqueCode();
+
   const { error: db2Error } = await supabase.from('consumers').insert([
     {
       id: userId,
       email: email,
-      referralCode,
+      referrer_code,
       interests,
       name,
+      referral_code: unique_code,
+      has_purchased: false,
     },
   ]);
 
@@ -168,51 +172,69 @@ export async function changePassword(password: string) {
   }
 }
 
+export async function checkReferrer(referrerCode: string): Promise<boolean> {
+  const supabase = await createClient();
 
-// // Function to generate a referral code (alphanumeric)
-// function generateReferralCode(length: number): string {
-//   const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-//   let referralCode = '';
-//   for (let i = 0; i < length; i++) {
-//     referralCode += characters.charAt(Math.floor(Math.random() * characters.length));
-//   }
-//   console.log(referralCode)
-//   return referralCode;
-// }
+  if (!referrerCode?.trim()) {
+    return true;
+  }
 
-// // Function to check if the referral code exists in the database
-// async function isCodeUnique(code: string): Promise<boolean> {
-//   const supabase = await createClient();
-//   const { data, error } = await supabase
-//     .from('referrals')
-//     .select('code')
-//     .eq('code', code);
+  // console.log("indsddedi")
+  const { data, error } = await supabase
+    .from('consumers') 
+    .select('id')
+    .eq('referral_code', referrerCode)
+    .single();
 
-//   return data?.length === 0; // if length is 0, code is unique
-// }
+  if (error || !data) {
+    return false; 
+  }
 
-// // Main function to generate and save referral code
-// async function generateAndSaveReferralCode(userId: string): Promise<void> {
-//   const supabase = await createClient();
-//   let referralCode: string = '';
-//   let uniqueCode = false;
+  return true; 
+}
 
-//   while (!uniqueCode) {
-//     referralCode = generateReferralCode(8); // Generate a referral code of length 8
-//     uniqueCode = await isCodeUnique(referralCode);
-//   }
+function generateReferralCode(length: number): string {
+  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  let referralCode = '';
+  for (let i = 0; i < length; i++) {
+    referralCode += characters.charAt(Math.floor(Math.random() * characters.length));
+  }
+  console.log(referralCode)
+  return referralCode;
+}
 
-//   // Save to Supabase
-//   const { data, error } = await supabase
-//     .from('referrals')
-//     .insert([{ user_id: userId, code: referralCode, used: false }]);
+async function isCodeUnique(code: string): Promise<boolean> {
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from('consumers')
+    .select('referral_code')
+    .eq('referral_code', code);
 
-//   if (error) {
-//     console.error('Error saving referral code:', error);
-//   } else {
-//     console.log('Referral code saved:', referralCode);
-//   }
-// }
+  return data?.length === 0;
+}
 
-// // Usage example
-// generateAndSaveReferralCode('user123');
+export async function generateUniqueCode(): Promise<string> {
+  let referralCode: string = '';
+  let uniqueCode = false;
+
+  while (!uniqueCode) {
+    referralCode = generateReferralCode(8); // Generate a referral code of length 8
+    uniqueCode = await isCodeUnique(referralCode);
+  }
+
+  return referralCode;
+}
+
+export const fetchTopCouponTypes = async (): Promise<string[]> => {
+  const supabase = await createClient();
+  const { data, error } = await supabase.rpc('get_top_coupon_types');
+
+  if (error) {
+    console.error('Error fetching coupon types:', error);
+    return [];
+  }
+
+  // console.log('Fetched coupon types:', data);
+
+  return (data as { type: string; count: number }[]).map((item) => item.type);
+};

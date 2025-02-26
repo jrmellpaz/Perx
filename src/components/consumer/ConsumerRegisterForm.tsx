@@ -23,10 +23,11 @@ import { Button } from '../ui/button';
 import { Checkbox } from '../ui/checkbox';
 import Link from 'next/link';
 import PerxInput from '../custom/PerxInput';
-import { signupConsumer } from '@/actions/consumer/auth';
+import { signupConsumer, checkReferrer, fetchTopCouponTypes } from '@/actions/consumer/auth';
 import PerxAlert from '../custom/PerxAlert';
 import { LoaderCircle } from 'lucide-react';
 import PerxCheckbox from '../custom/PerxCheckbox';
+import { useDebounce } from 'use-debounce';
 
 const schemas = [Step1Schema, Step2Schema, Step3Schema];
 
@@ -39,7 +40,7 @@ const steps = [
   {
     id: 'Step 2',
     name: 'Referral Code',
-    fields: ['referralCode'],
+    fields: ['referrer_code'],
   },
   {
     id: 'Step 3',
@@ -77,6 +78,11 @@ export default function ConsumerRegisterForm() {
       console.log('hereee');
       const data = getValues();
       console.log(data);
+      const isValidReferrer = await checkReferrer(data.referrer_code);
+      if (!isValidReferrer) {
+        setSubmitError('Invalid referral code');
+        return;
+      } 
       await signupConsumer(data);
       reset();
       setSubmitError(null);
@@ -122,7 +128,7 @@ export default function ConsumerRegisterForm() {
       {submitError && (
         <PerxAlert
           heading={submitError}
-          message="Make sure your email and password are correct."
+          message="Make sure your credentials are correct."
           variant="error"
         />
       )}
@@ -135,7 +141,7 @@ export default function ConsumerRegisterForm() {
           {currentStep === 0 && (
             <Step1 register={register} errors={errors} delta={delta} />
           )}
-          {currentStep === 1 && <Step2 register={register} delta={delta} />}
+          {currentStep === 1 && <Step2 register={register} watch={watch} delta={delta} />}
           {currentStep === 2 && (
             <Step3
               register={register}
@@ -278,11 +284,44 @@ function Step1({
 
 function Step2({
   register,
+  watch,
   delta,
 }: {
   register: UseFormRegister<ConsumerFormInputs>;
+  watch: UseFormWatch<ConsumerFormInputs>;  
   delta: number;
 }) {
+  const [referrerExists, setReferrerExists] = useState<boolean | null>(null);
+  // const [referrerCode, setReferrerCode] = useState('');
+  // const [debouncedReferrerCode] = useDebounce(referrerCode, 500); // Delay API call by 500ms
+
+  const referrerCode = watch('referrer_code');
+const [debouncedCode, setDebouncedCode] = useState(referrerCode);
+
+useEffect(() => {
+  const handler = setTimeout(() => {
+    setDebouncedCode(referrerCode);
+  }, 300); // Delay API call by 500ms
+
+  return () => clearTimeout(handler);
+}, [referrerCode]);
+
+useEffect(() => {
+  if (!debouncedCode?.trim()) {
+    setReferrerExists(null);
+    return;
+  }
+
+  const verifyReferrer = async () => {
+    setReferrerExists(null);
+    const exists = await checkReferrer(debouncedCode);
+    setReferrerExists(exists);
+  };
+
+  verifyReferrer();
+}, [debouncedCode]);
+
+  
   return (
     <motion.div
       initial={{ x: delta >= 0 ? '50%' : '-50%', opacity: 0 }}
@@ -295,8 +334,11 @@ function Step2({
           label="Enter Code "
           type="text"
           placeholder="IpSuM123"
-          {...register('referralCode')}
+          {...register('referrer_code')}
         />
+        {referrerExists === false && (
+          <ErrorMessage message="Invalid referral code" />
+        )}
       </div>
     </motion.div>
   );
@@ -315,8 +357,17 @@ function Step3({
   watch: UseFormWatch<ConsumerFormInputs>;
   setValue: UseFormSetValue<ConsumerFormInputs>;
 }) {
-  const interests = ['Shopping', 'Coffee', 'Shoes', 'Clothes', 'Food'];
+  const [interests, setInterests] = useState<string[]>([]);
   const selectedInterests = watch('interests', []) || [];
+
+  useEffect(() => {
+    const loadCouponTypes = async () => {
+      const topTypes = await fetchTopCouponTypes();
+      setInterests(topTypes);
+    };
+    loadCouponTypes();
+    setValue('interests', []);
+  }, [setValue]);
 
   const handleCheckboxChange = (interest: string, checked: boolean) => {
     if (checked) {
@@ -328,10 +379,6 @@ function Step3({
       );
     }
   };
-  
-  useEffect(() => {
-    setValue('interests', []);
-  }, [setValue]);
 
   return (
     <motion.div
@@ -375,6 +422,18 @@ function Navigation({
   currentStep: number;
   isLoading: boolean;
 }) {
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Enter') {
+        event.preventDefault(); 
+        next(); 
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [next]);
+
   return (
     <div className="flex justify-end gap-4">
       {currentStep === 0 && (

@@ -8,7 +8,7 @@ import {
   // Inbox,
   LoaderCircle,
   Ticket,
-  Navigation2,
+  Compass,
   Search
 } from 'lucide-react';
 import Link from 'next/link';
@@ -23,7 +23,7 @@ interface NavItems {
 
 const navItems: NavItems[] = [
   {
-    icon: <Navigation2 />,
+    icon: <Compass />,
     name: 'Explore',
     link: '/explore',
   },

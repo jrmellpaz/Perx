@@ -36,7 +36,7 @@ export async function loginConsumer(data: LoginConsumerInputs) {
   }
 
   revalidatePath('/home');
-  // redirect('/home');
+  redirect('/home');
 }
 
 export async function signupConsumer(data: ConsumerFormInputs) {
@@ -167,3 +167,52 @@ export async function changePassword(password: string) {
     throw new Error(error.message);
   }
 }
+
+
+// // Function to generate a referral code (alphanumeric)
+// function generateReferralCode(length: number): string {
+//   const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+//   let referralCode = '';
+//   for (let i = 0; i < length; i++) {
+//     referralCode += characters.charAt(Math.floor(Math.random() * characters.length));
+//   }
+//   console.log(referralCode)
+//   return referralCode;
+// }
+
+// // Function to check if the referral code exists in the database
+// async function isCodeUnique(code: string): Promise<boolean> {
+//   const supabase = await createClient();
+//   const { data, error } = await supabase
+//     .from('referrals')
+//     .select('code')
+//     .eq('code', code);
+
+//   return data?.length === 0; // if length is 0, code is unique
+// }
+
+// // Main function to generate and save referral code
+// async function generateAndSaveReferralCode(userId: string): Promise<void> {
+//   const supabase = await createClient();
+//   let referralCode: string = '';
+//   let uniqueCode = false;
+
+//   while (!uniqueCode) {
+//     referralCode = generateReferralCode(8); // Generate a referral code of length 8
+//     uniqueCode = await isCodeUnique(referralCode);
+//   }
+
+//   // Save to Supabase
+//   const { data, error } = await supabase
+//     .from('referrals')
+//     .insert([{ user_id: userId, code: referralCode, used: false }]);
+
+//   if (error) {
+//     console.error('Error saving referral code:', error);
+//   } else {
+//     console.log('Referral code saved:', referralCode);
+//   }
+// }
+
+// // Usage example
+// generateAndSaveReferralCode('user123');

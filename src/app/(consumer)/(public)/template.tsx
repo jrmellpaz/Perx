@@ -9,7 +9,7 @@ import {
   LoaderCircle,
   Ticket,
   Compass,
-  Search
+  Search,
 } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';

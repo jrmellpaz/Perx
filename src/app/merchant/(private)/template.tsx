@@ -83,7 +83,7 @@ function VerticalNav() {
   const pathname = usePathname();
 
   return (
-    <ul className="flex h-full w-full flex-col gap-1">
+    <ul className="flex h-full w-full flex-col">
       {navItems.map((item, index) => {
         const isActive: boolean = pathname === item.link;
 

@@ -10,6 +10,7 @@ interface InputTextProps {
   name?: string;
   autofocus?: boolean;
   step?: string;
+  min?: string | number;
 }
 
 export default function PerxInput({
@@ -20,6 +21,7 @@ export default function PerxInput({
   name,
   autofocus,
   step,
+  min,
   ...props
 }: InputTextProps) {
   const id = useId();
@@ -39,6 +41,7 @@ export default function PerxInput({
         name={name}
         autoFocus={autofocus}
         step={step}
+        min={min}
         className="placeholder:opacity-0 focus:placeholder:opacity-100"
         {...props}
       />

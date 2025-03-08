@@ -208,6 +208,7 @@ function Inputs({
           type="number"
           placeholder="0.00"
           step="any"
+          min={0}
           required
           {...register('price', { valueAsNumber: true })}
         />
@@ -225,6 +226,7 @@ function Inputs({
           label="Quantity"
           type="number"
           placeholder="0"
+          min={0}
           required
           {...register('quantity', { valueAsNumber: true })}
         />

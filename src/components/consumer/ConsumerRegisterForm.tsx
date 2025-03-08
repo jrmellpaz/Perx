@@ -8,7 +8,7 @@ import {
 } from '@/lib/consumer/consumerSchema';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { motion } from 'framer-motion';
-import { useEffect, useState, ChangeEvent } from 'react';
+import { useEffect, useState } from 'react';
 import {
   FieldErrors,
   SubmitHandler,
@@ -23,11 +23,14 @@ import { Button } from '../ui/button';
 import { Checkbox } from '../ui/checkbox';
 import Link from 'next/link';
 import PerxInput from '../custom/PerxInput';
-import { signupConsumer, checkReferrer, fetchTopCouponTypes } from '@/actions/consumer/auth';
+import {
+  signupConsumer,
+  checkReferrer,
+  fetchTopCouponTypes,
+} from '@/actions/consumer/auth';
 import PerxAlert from '../custom/PerxAlert';
 import { LoaderCircle } from 'lucide-react';
 import PerxCheckbox from '../custom/PerxCheckbox';
-import { useDebounce } from 'use-debounce';
 
 const schemas = [Step1Schema, Step2Schema, Step3Schema];
 
@@ -78,11 +81,14 @@ export default function ConsumerRegisterForm() {
       console.log('hereee');
       const data = getValues();
       console.log(data);
-      const isValidReferrer = await checkReferrer(data.referrer_code);
-      if (!isValidReferrer) {
-        setSubmitError('Invalid referral code');
-        return;
-      } 
+
+      if (data.referrer_code) {
+        const isValidReferrer = await checkReferrer(data.referrer_code);
+        if (!isValidReferrer) {
+          setSubmitError('Invalid referral code');
+          return;
+        }
+      }
       await signupConsumer(data);
       reset();
       setSubmitError(null);
@@ -141,7 +147,9 @@ export default function ConsumerRegisterForm() {
           {currentStep === 0 && (
             <Step1 register={register} errors={errors} delta={delta} />
           )}
-          {currentStep === 1 && <Step2 register={register} watch={watch} delta={delta} />}
+          {currentStep === 1 && (
+            <Step2 register={register} watch={watch} delta={delta} />
+          )}
           {currentStep === 2 && (
             <Step3
               register={register}
@@ -288,7 +296,7 @@ function Step2({
   delta,
 }: {
   register: UseFormRegister<ConsumerFormInputs>;
-  watch: UseFormWatch<ConsumerFormInputs>;  
+  watch: UseFormWatch<ConsumerFormInputs>;
   delta: number;
 }) {
   const [referrerExists, setReferrerExists] = useState<boolean | null>(null);
@@ -296,32 +304,31 @@ function Step2({
   // const [debouncedReferrerCode] = useDebounce(referrerCode, 500); // Delay API call by 500ms
 
   const referrerCode = watch('referrer_code');
-const [debouncedCode, setDebouncedCode] = useState(referrerCode);
+  const [debouncedCode, setDebouncedCode] = useState(referrerCode);
 
-useEffect(() => {
-  const handler = setTimeout(() => {
-    setDebouncedCode(referrerCode);
-  }, 300); // Delay API call by 500ms
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedCode(referrerCode);
+    }, 300); // Delay API call by 500ms
 
-  return () => clearTimeout(handler);
-}, [referrerCode]);
+    return () => clearTimeout(handler);
+  }, [referrerCode]);
 
-useEffect(() => {
-  if (!debouncedCode?.trim()) {
-    setReferrerExists(null);
-    return;
-  }
+  useEffect(() => {
+    if (!debouncedCode?.trim()) {
+      setReferrerExists(null);
+      return;
+    }
 
-  const verifyReferrer = async () => {
-    setReferrerExists(null);
-    const exists = await checkReferrer(debouncedCode);
-    setReferrerExists(exists);
-  };
+    const verifyReferrer = async () => {
+      setReferrerExists(null);
+      const exists = await checkReferrer(debouncedCode);
+      setReferrerExists(exists);
+    };
 
-  verifyReferrer();
-}, [debouncedCode]);
+    verifyReferrer();
+  }, [debouncedCode]);
 
-  
   return (
     <motion.div
       initial={{ x: delta >= 0 ? '50%' : '-50%', opacity: 0 }}
@@ -394,7 +401,9 @@ function Step3({
               <PerxCheckbox
                 label={interest}
                 checked={selectedInterests.includes(interest)}
-                onCheckedChange={(checked) => handleCheckboxChange(interest, checked)}
+                onCheckedChange={(checked) =>
+                  handleCheckboxChange(interest, checked)
+                }
               />
             </label>
           ))}
@@ -425,8 +434,8 @@ function Navigation({
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === 'Enter') {
-        event.preventDefault(); 
-        next(); 
+        event.preventDefault();
+        next();
       }
     };
 

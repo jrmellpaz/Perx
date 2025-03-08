@@ -16,16 +16,12 @@ export const Step1Schema = z
   });
 
 export const Step2Schema = z.object({
-  referrer_code: z.string(),
+  referrer_code: z.string().optional(),
 });
 
-export const Step3Schema = z
-  .object({
-    interests: z
-      .array(z.string())
-      .optional()
-      .default([]), // Default to an empty array if not provided
-  });
+export const Step3Schema = z.object({
+  interests: z.array(z.string()).optional().default([]), // Default to an empty array if not provided
+});
 
 export const loginConsumerSchema = z.object({
   email: z

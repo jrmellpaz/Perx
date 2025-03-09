@@ -23,15 +23,15 @@ interface ProfileNavItems {
 const profileNavItems: ProfileNavItems[] = [
   {
     name: 'Coupons',
-    icon: <TicketsIcon size={16} aria-hidden="true" />,
+    icon: <TicketsIcon size={20} aria-hidden="true" />,
   },
   {
     name: 'Collections',
-    icon: <SquareLibraryIcon size={16} aria-hidden="true" />,
+    icon: <SquareLibraryIcon size={20} aria-hidden="true" />,
   },
   {
     name: 'Archive',
-    icon: <ArchiveIcon size={16} aria-hidden="true" />,
+    icon: <ArchiveIcon size={20} aria-hidden="true" />,
   },
 ];
 
@@ -79,11 +79,11 @@ function ProfileInfo({ data }: { data: MerchantProfile }) {
           <p className="text-sm">{data.bio}</p>
           <div className="flex items-center gap-1.5">
             <MapPinIcon size={15} />
-            <p className="text-sm">{data.address}</p>
+            <p className="text-sm select-all">{data.address}</p>
           </div>
           <div className="flex items-center gap-1.5">
             <MailIcon size={15} />
-            <p className="text-sm">{data.email}</p>
+            <p className="text-sm select-all">{data.email}</p>
           </div>
         </div>
       </div>

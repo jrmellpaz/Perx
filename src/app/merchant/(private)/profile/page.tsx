@@ -29,12 +29,8 @@ export default async function MerchantProfile() {
     data: { user },
   } = await supabase.auth.getUser();
 
-  if (!user) {
-    redirect('/merchant/login');
-  }
-
-  const data = await getMerchantProfile(user.id);
-  const coupons = await getMerchantCoupons(user.id);
+  const data = await getMerchantProfile(user!.id);
+  const coupons = await getMerchantCoupons(user!.id);
 
   const profileNavItems: ProfileNavItems[] = [
     {

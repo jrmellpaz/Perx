@@ -102,7 +102,8 @@ export async function getMerchantCoupons(merchantId: string) {
       .select(
         'id, description, price, valid_from, valid_to, is_deactivated, image, title, quantity, coupon_type_id'
       )
-      .eq('merchant_id', merchantId);
+      .eq('merchant_id', merchantId)
+      .order('created_at', { ascending: false });
 
     if (error) throw new Error(error.message);
 

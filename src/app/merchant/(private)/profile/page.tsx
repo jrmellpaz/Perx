@@ -112,7 +112,7 @@ function ButtonGroup() {
 
 function CouponList({ coupons }: { coupons: MerchantCoupon[] }) {
   return (
-    <div className="flex w-full flex-col gap-4 px-8">
+    <div className="flex w-full flex-col gap-4 sm:px-8">
       {coupons.map((coupon, index) => (
         <div
           key={coupon.id}

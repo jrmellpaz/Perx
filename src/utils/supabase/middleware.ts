@@ -70,7 +70,7 @@ export async function updateSession(request: NextRequest) {
       if (request.nextUrl.pathname.startsWith('/merchant')) {
         url.pathname = '/merchant/login';
       } else {
-        url.pathname = '/login';
+        url.pathname = '/home';
       }
       return NextResponse.redirect(url);
     }
@@ -95,7 +95,7 @@ export async function updateSession(request: NextRequest) {
       if (userRole === 'merchant') {
         url.pathname = '/merchant/dashboard';
       } else if (userRole === 'consumer') {
-        url.pathname = '/home';
+        url.pathname = '/explore';
       } else {
         throw new Error('MIDDLEWARE: Invalid user role');
       }

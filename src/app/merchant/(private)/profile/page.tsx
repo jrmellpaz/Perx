@@ -73,7 +73,7 @@ function ProfileInfo({ data }: { data: MerchantProfile }) {
         <div className="md:hidden">
           <ButtonGroup />
         </div>
-        <div>
+        <div className="items-startpx-8 flex w-full flex-col sm:items-center md:items-start md:p-0">
           <p className="text-sm">{data.bio}</p>
           <p className="text-sm">{data.address}</p>
           <p className="text-sm">{data.email}</p>

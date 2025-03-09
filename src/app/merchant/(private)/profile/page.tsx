@@ -5,6 +5,8 @@ import type { MerchantProfile } from '@/lib/merchant/profileSchema';
 import { createClient } from '@/utils/supabase/server';
 import {
   ArchiveIcon,
+  MailIcon,
+  MapPinIcon,
   SettingsIcon,
   SquareLibraryIcon,
   TicketsIcon,
@@ -73,10 +75,16 @@ function ProfileInfo({ data }: { data: MerchantProfile }) {
         <div className="md:hidden">
           <ButtonGroup />
         </div>
-        <div className="items-startpx-8 flex w-full flex-col sm:items-center md:items-start md:p-0">
+        <div className="flex flex-col gap-1">
           <p className="text-sm">{data.bio}</p>
-          <p className="text-sm">{data.address}</p>
-          <p className="text-sm">{data.email}</p>
+          <div className="flex items-center gap-1.5">
+            <MapPinIcon size={15} />
+            <p className="text-sm">{data.address}</p>
+          </div>
+          <div className="flex items-center gap-1.5">
+            <MailIcon size={15} />
+            <p className="text-sm">{data.email}</p>
+          </div>
         </div>
       </div>
     </section>

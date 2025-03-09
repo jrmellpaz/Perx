@@ -1,6 +1,8 @@
+import { getMerchantCoupons } from '@/actions/merchant/coupon';
 import { getMerchantProfile } from '@/actions/merchant/profile';
 import PerxTabs from '@/components/custom/PerxTabs';
 import { Button } from '@/components/ui/button';
+import { MerchantCoupon } from '@/lib/merchant/couponSchema';
 import type { MerchantProfile } from '@/lib/merchant/profileSchema';
 import { createClient } from '@/utils/supabase/server';
 import {
@@ -18,22 +20,8 @@ import { JSX } from 'react';
 interface ProfileNavItems {
   icon: JSX.Element;
   name: string;
+  content?: JSX.Element;
 }
-
-const profileNavItems: ProfileNavItems[] = [
-  {
-    name: 'Coupons',
-    icon: <TicketsIcon size={20} aria-hidden="true" />,
-  },
-  {
-    name: 'Collections',
-    icon: <SquareLibraryIcon size={20} aria-hidden="true" />,
-  },
-  {
-    name: 'Archive',
-    icon: <ArchiveIcon size={20} aria-hidden="true" />,
-  },
-];
 
 export default async function MerchantProfile() {
   const supabase = await createClient();
@@ -46,9 +34,26 @@ export default async function MerchantProfile() {
   }
 
   const data = await getMerchantProfile(user.id);
+  const coupons = await getMerchantCoupons(user.id);
+
+  const profileNavItems: ProfileNavItems[] = [
+    {
+      name: 'Coupons',
+      icon: <TicketsIcon size={20} aria-hidden="true" />,
+      content: <CouponList coupons={coupons} />,
+    },
+    {
+      name: 'Collections',
+      icon: <SquareLibraryIcon size={20} aria-hidden="true" />,
+    },
+    {
+      name: 'Archive',
+      icon: <ArchiveIcon size={20} aria-hidden="true" />,
+    },
+  ];
 
   return (
-    <section className="flex flex-col gap-8 md:px-20">
+    <section className="flex flex-col gap-6 md:px-20">
       <ProfileInfo data={data} />
       <PerxTabs tabItems={profileNavItems} />
     </section>
@@ -75,7 +80,7 @@ function ProfileInfo({ data }: { data: MerchantProfile }) {
         <div className="md:hidden">
           <ButtonGroup />
         </div>
-        <div className="flex flex-col gap-1">
+        <div className="flex flex-col items-center gap-1 md:items-start">
           <p className="text-sm">{data.bio}</p>
           <div className="flex items-center gap-1.5">
             <MapPinIcon size={15} />
@@ -101,6 +106,29 @@ function ButtonGroup() {
           <SettingsIcon />
         </Button>
       </Link>
+    </div>
+  );
+}
+
+function CouponList({ coupons }: { coupons: MerchantCoupon[] }) {
+  return (
+    <div className="flex w-full flex-col gap-4 px-8">
+      {coupons.map((coupon, index) => (
+        <div
+          key={coupon.id}
+          className={`flex gap-4 pb-4 ${index !== coupons.length - 1 && 'border-b'}`}
+        >
+          <img
+            src={coupon.image}
+            alt={`${coupon.title} coupon`}
+            className="aspect-square size-20 rounded-sm object-cover md:size-28"
+          />
+          <div>
+            <p>{coupon.title}</p>
+            <p>{coupon.description}</p>
+          </div>
+        </div>
+      ))}
     </div>
   );
 }

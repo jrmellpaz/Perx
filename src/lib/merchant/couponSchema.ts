@@ -40,3 +40,15 @@ export const addCouponSchema = z.object({
 });
 
 export type AddCouponInputs = z.infer<typeof addCouponSchema>;
+export type MerchantCoupon = {
+  id: string;
+  description: string;
+  price: number;
+  valid_from: string;
+  valid_to: string;
+  is_deactivated: boolean;
+  image: string;
+  title: string;
+  quantity: number;
+  coupon_type_id: string;
+};

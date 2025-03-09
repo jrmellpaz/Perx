@@ -5,9 +5,15 @@ import { JSX } from 'react';
 interface TabItems {
   icon: JSX.Element;
   name: string;
+  content?: JSX.Element;
 }
 
-export default function PerxTabs({ tabItems }: { tabItems: TabItems[] }) {
+export default function PerxTabs({
+  tabItems,
+}: {
+  tabItems: TabItems[];
+  content?: JSX.Element;
+}) {
   return (
     <Tabs defaultValue="tab-1">
       <ScrollArea>
@@ -27,36 +33,22 @@ export default function PerxTabs({ tabItems }: { tabItems: TabItems[] }) {
         </TabsList>
         <ScrollBar orientation="horizontal" />
       </ScrollArea>
-      <TabsContent value="tab-1">
+      {tabItems.map((item, index) => {
+        return (
+          <TabsContent
+            value={`tab-${index + 1}`}
+            key={index}
+            className="data-[state=active]:animate-in data-[state=active]:fade-in data-[state=active]:duration-200"
+          >
+            {item.content}
+          </TabsContent>
+        );
+      })}
+      {/* <TabsContent value="tab-1">
         <p className="text-muted-foreground pt-1 text-center text-xs">
           Content for Tab 1
         </p>
-      </TabsContent>
-      <TabsContent value="tab-2">
-        <p className="text-muted-foreground pt-1 text-center text-xs">
-          Content for Tab 2
-        </p>
-      </TabsContent>
-      <TabsContent value="tab-3">
-        <p className="text-muted-foreground pt-1 text-center text-xs">
-          Content for Tab 3
-        </p>
-      </TabsContent>
-      <TabsContent value="tab-4">
-        <p className="text-muted-foreground pt-1 text-center text-xs">
-          Content for Tab 4
-        </p>
-      </TabsContent>
-      <TabsContent value="tab-5">
-        <p className="text-muted-foreground pt-1 text-center text-xs">
-          Content for Tab 5
-        </p>
-      </TabsContent>
-      <TabsContent value="tab-6">
-        <p className="text-muted-foreground pt-1 text-center text-xs">
-          Content for Tab 6
-        </p>
-      </TabsContent>
+      </TabsContent> */}
     </Tabs>
   );
 }

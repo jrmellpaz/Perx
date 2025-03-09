@@ -1,10 +1,16 @@
 'use client';
 
-import { Pencil, Settings, Copy } from 'lucide-react';
+import { 
+  Pencil, 
+  Settings, 
+  Copy 
+} from 'lucide-react';
 import React from 'react';
 import { useEffect, useState } from 'react';
 import { fetchConsumerProfile } from '@/actions/consumer/consumer';
 import PerxLoading from '@/components/custom/PerxLoading';
+import PerxAlert from '@/components/custom/PerxAlert';
+import Link from 'next/link';
 
 interface UserProfile {
   name: string;
@@ -16,6 +22,7 @@ interface UserProfile {
 export default function ProfilePage() {
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState(true);
+  const [copied, setCopied] = useState(false);
 
   useEffect(() => {
     const getProfile = async () => {
@@ -35,6 +42,14 @@ export default function ProfilePage() {
     return <div>No profile data available.</div>;
   }
 
+  const handleCopy = () => {
+    if (profile?.referralCode) {
+      navigator.clipboard.writeText(profile.referralCode);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000); // Reset after 2 seconds
+    }
+  };
+
   // const points = 165;
   const progress = 85;
   // const referralCode = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
@@ -45,7 +60,9 @@ export default function ProfilePage() {
         <h2 className="text-base font-semibold">{profile.name}</h2>
         <div className="flex gap-1">
           <Pencil size={16} className="text-gray-600" />
-          <Settings size={16} className="text-gray-600" />
+          <Link href="/settings">
+            <Settings size={16} className="text-gray-600" />
+          </Link>
         </div>
       </header>
 
@@ -84,10 +101,14 @@ export default function ProfilePage() {
             readOnly
             className="flex-grow border-none bg-transparent text-xs outline-none"
           />
-          <button className="p-1 text-gray-600">
+          <button onClick={handleCopy} className="p-1 text-gray-600">
             <Copy size={14} />
           </button>
         </div>
+        {copied && (
+          // <p className="mt-1 text-xs text-green-600">Copied to clipboard!</p>
+          <PerxAlert heading="Copied to clipboard!" variant="success" />
+        )}
       </div>
     </div>
   );

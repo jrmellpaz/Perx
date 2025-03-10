@@ -108,20 +108,24 @@ function ButtonGroup() {
 
 function CouponList({ coupons }: { coupons: MerchantCoupon[] }) {
   return (
-    <div className="flex w-full flex-col gap-4 sm:px-8">
+    <div className="grid grid-cols-3 gap-2 sm:px-8 md:gap-4">
       {coupons.map((coupon, index) => (
         <div
           key={coupon.id}
-          className={`flex gap-4 pb-4 ${index !== coupons.length - 1 && 'border-b'}`}
+          className={`flex grow basis-60 flex-col gap-2 rounded-md border pb-2`}
         >
-          <img
-            src={coupon.image}
-            alt={`${coupon.title} coupon`}
-            className="aspect-square size-20 rounded-sm object-cover md:size-28"
-          />
-          <div>
-            <p>{coupon.title}</p>
-            <p>{coupon.description}</p>
+          <div className="coupon-image aspect-square h-auto w-full">
+            <img
+              src={coupon.image}
+              alt={`${coupon.title} coupon`}
+              className="aspect-square h-full w-full rounded-sm object-cover"
+            />
+          </div>
+          <div className="flex flex-col gap-1 px-2 py-1">
+            <p className="text-sm font-medium sm:text-base">{coupon.title}</p>
+            {
+              //TODO: Add coupon type
+            }
           </div>
         </div>
       ))}

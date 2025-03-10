@@ -53,7 +53,7 @@ export async function addCoupon(couponData: AddCouponInputs) {
       throw new Error(`CHECK TYPE ERROR: ${typeError.message}`);
     }
 
-    let couponTypeId = existingType?.id;
+    let couponTypeId: string = existingType?.id;
 
     // Step 2: Insert type if it doesn't exist
     if (!couponTypeId) {

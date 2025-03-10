@@ -14,7 +14,6 @@ import {
   TicketsIcon,
 } from 'lucide-react';
 import Link from 'next/link';
-import { redirect } from 'next/navigation';
 import { JSX } from 'react';
 
 interface ProfileNavItems {
@@ -49,7 +48,7 @@ export default async function MerchantProfile() {
   ];
 
   return (
-    <section className="flex flex-col gap-6 md:px-20">
+    <section className="flex flex-col gap-6 overflow-x-hidden lg:px-20">
       <ProfileInfo data={data} />
       <PerxTabs tabItems={profileNavItems} />
     </section>
@@ -63,7 +62,7 @@ function ProfileInfo({ data }: { data: MerchantProfile }) {
         <img
           src={data.logo}
           alt="Merchant Logo"
-          className="aspect-square size-32 rounded-full object-cover md:size-48"
+          className="aspect-square size-32 h-auto rounded-full border object-cover md:size-48"
         />
       </div>
       <div className="flex grow flex-col items-center justify-center gap-4 md:items-start">
@@ -112,7 +111,7 @@ function CouponList({ coupons }: { coupons: MerchantCoupon[] }) {
       {coupons.map((coupon, index) => (
         <div
           key={coupon.id}
-          className={`flex grow basis-60 flex-col gap-2 rounded-md border pb-2`}
+          className={`flex grow basis-60 flex-col gap-2 overflow-hidden rounded-md border pb-2`}
         >
           <div className="coupon-image aspect-square h-auto w-full">
             <img

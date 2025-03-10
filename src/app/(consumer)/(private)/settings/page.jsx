@@ -1,7 +1,7 @@
-export default function MerchantSettings() {
+export default function Settings() {
   return (
     <section>
-      <h1>Merchant settings</h1>
+      <h1>Settings</h1>
     </section>
   );
 }

@@ -59,7 +59,9 @@ export default function ProfilePage() {
       <header className="mb-2 flex items-center justify-between">
         <h2 className="text-base font-semibold">{profile.name}</h2>
         <div className="flex gap-1">
-          <Pencil size={16} className="text-gray-600" />
+          <Link href="/edit-profile"> 
+            <Pencil size={16} className="text-gray-600" />
+          </Link>
           <Link href="/settings">
             <Settings size={16} className="text-gray-600" />
           </Link>

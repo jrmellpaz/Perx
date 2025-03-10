@@ -33,3 +33,20 @@ export async function fetchConsumerProfile(): Promise<UserProfile | null> {
   };
 }
 
+export async function updateConsumerProfile(name: string): Promise<boolean> {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return false;
+
+  const { error } = await supabase
+    .from('consumers')
+    .update({ name })
+    .eq('id', user.id);
+
+  if (error) {
+    console.error('Error updating profile:', error);
+    return false;
+  }
+
+  return true;
+}

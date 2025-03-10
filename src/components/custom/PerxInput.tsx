@@ -11,6 +11,8 @@ interface InputTextProps {
   autofocus?: boolean;
   step?: string;
   min?: string | number;
+  value?: string; // Allow optional controlled input
+  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void; // Allow optional handler
 }
 
 export default function PerxInput({
@@ -22,9 +24,12 @@ export default function PerxInput({
   autofocus,
   step,
   min,
+  value,
+  onChange,
   ...props
 }: InputTextProps) {
   const id = useId();
+
   return (
     <div className="group relative transition-all">
       <Label
@@ -42,6 +47,8 @@ export default function PerxInput({
         autoFocus={autofocus}
         step={step}
         min={min}
+        value={value} // Pass value only if provided
+        onChange={onChange} // Pass onChange only if provided
         className="placeholder:opacity-0 focus:placeholder:opacity-100"
         {...props}
       />

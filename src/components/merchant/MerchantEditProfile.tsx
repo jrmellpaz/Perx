@@ -18,6 +18,8 @@ import PerxTextarea from '../custom/PerxTextarea';
 import { motion } from 'framer-motion';
 import { LoaderCircle } from 'lucide-react';
 import { useState } from 'react';
+import { updateMerchantProfile } from '@/actions/merchant/profile';
+import { redirect } from 'next/navigation';
 
 export default function MerchantEditProfile({
   profile,
@@ -38,20 +40,23 @@ export default function MerchantEditProfile({
   } = useForm<EditProfileInputs>({
     resolver: zodResolver(editProfileSchema),
     defaultValues: {
-      businessName: name,
-      description: bio,
+      name: name,
+      bio: bio,
       address: address,
-      logo: logo,
+      // logo: logo,
     },
   });
 
   const processForm: SubmitHandler<EditProfileInputs> = async (data) => {
     setIsSubmitting(true);
-    console.log('data', data);
-    setTimeout(() => {
-      alert('Profile updated successfully!');
-    }, 2000);
-    setIsSubmitting(false);
+    try {
+      await updateMerchantProfile(data);
+    } catch (error) {
+      console.error('Error updating profile:', error);
+    } finally {
+      setIsSubmitting(false);
+      redirect('/merchant/profile');
+    }
   };
 
   return (
@@ -79,7 +84,11 @@ function EditLogo({ logo }: { logo: string }) {
         alt="Merchant profile photo"
         className="size-32 rounded-full border object-cover sm:size-48"
       />
-      <Button className="text-perx-blue hover:text-perx-blue" variant={'ghost'}>
+      <Button
+        className="text-perx-blue hover:text-perx-blue"
+        variant={'ghost'}
+        type="button"
+      >
         Change photo
       </Button>
     </div>
@@ -109,11 +118,9 @@ function EditDetails({
           placeholder="Business, Inc."
           required
           autofocus
-          {...register('businessName')}
+          {...register('name')}
         />
-        {errors.businessName?.message && (
-          <ErrorMessage message={errors.businessName.message} />
-        )}
+        {errors.name?.message && <ErrorMessage message={errors.name.message} />}
       </div>
       <div>
         <PerxTextarea
@@ -121,11 +128,9 @@ function EditDetails({
           placeholder="Tell us about your business"
           required
           autofocus
-          {...register('description')}
+          {...register('bio')}
         />
-        {errors.description?.message && (
-          <ErrorMessage message={errors.description.message} />
-        )}
+        {errors.bio?.message && <ErrorMessage message={errors.bio.message} />}
       </div>
       <div>
         <PerxInput

@@ -2,8 +2,13 @@ import React from "react";
 import { Button } from "@/components/ui/button";
 import { ChevronRight, ArrowLeft, Mail, Lock, Share2, Palette, HelpCircle, FileText, LogOut } from "lucide-react";
 import Link from 'next/link';
+import {createClient} from '@/utils/supabase/server';
 
-export default function SettingsPage() {
+export default async function SettingsPage() {
+  const supabase = await createClient();
+  const {data, error} = await supabase.auth.getUser();
+
+
   return (
     <div className="min-h-screen text-neutral-800">
       {/* Header */}
@@ -27,7 +32,7 @@ export default function SettingsPage() {
                 <Mail className="h-5 w-5 text-neutral-500" />
                 <div>
                   <div className="text-sm font-medium">Email</div>
-                  <div className="text-xs text-neutral-500">ipsum@example.com</div>
+                  <div className="text-xs text-neutral-500">{data?.user?.email}</div>
                 </div>
               </div>
             </div>

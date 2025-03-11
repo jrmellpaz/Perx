@@ -94,7 +94,9 @@ function ProfileInfo({ data }: { data: MerchantProfile }) {
 function ButtonGroup() {
   return (
     <div className="flex items-center justify-center gap-2 md:gap-4">
-      <Button>Edit profile</Button>
+      <Link href="/merchant/edit-profile">
+        <Button>Edit profile</Button>
+      </Link>
       <Button variant={'secondary'}>Share profile</Button>
       <Link href="/merchant/settings">
         <Button variant={'secondary'}>

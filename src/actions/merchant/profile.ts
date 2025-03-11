@@ -38,3 +38,24 @@ export async function updateMerchantProfile(profileData: EditProfileInputs) {
     console.error(`Failed to update merchant profile: ${error.message}`);
   }
 }
+
+export async function updateMerchantPassword() {
+  const supabase = await createClient();
+  const { data: merchantData } = await supabase.auth.getUser();
+  const url = `${process.env.NEXT_PUBLIC_URL}/merchant/change-password`;
+
+  if (!merchantData?.user?.email) {
+    throw new Error('No email found');
+  }
+
+  const { data, error } = await supabase.auth.resetPasswordForEmail(
+    merchantData.user.email,
+    {
+      redirectTo: url,
+    }
+  );
+
+  if (error) {
+    throw new Error(error.message);
+  }
+}

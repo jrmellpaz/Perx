@@ -1,5 +1,8 @@
 'use server';
-import { MerchantProfile } from '@/lib/merchant/profileSchema';
+import {
+  EditProfileInputs,
+  MerchantProfile,
+} from '@/lib/merchant/profileSchema';
 import { createClient } from '@/utils/supabase/server';
 
 export async function getMerchantProfile(
@@ -18,4 +21,20 @@ export async function getMerchantProfile(
   }
 
   return data as MerchantProfile;
+}
+
+export async function updateMerchantProfile(profileData: EditProfileInputs) {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  const { error } = await supabase
+    .from('merchants')
+    .update(profileData)
+    .eq('id', user!.id);
+
+  if (error) {
+    console.error(`Failed to update merchant profile: ${error.message}`);
+  }
 }

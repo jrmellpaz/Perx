@@ -10,10 +10,10 @@ export default function PerxHeader({
   title: string;
 }) {
   return (
-    <header className="flex w-full items-center gap-2">
+    <header className="mb-4 flex w-full items-center gap-2">
       <Link href={link}>
         <Button variant={'ghost'} className="aspect-square rounded-full p-2">
-          <ArrowLeftIcon size={36} />
+          <ArrowLeftIcon className="size-6" />
         </Button>
       </Link>
       <h1>{title}</h1>

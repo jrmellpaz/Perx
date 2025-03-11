@@ -4,6 +4,7 @@ import { ChevronRight, ArrowLeft, Mail, Lock, Share2, Palette, HelpCircle, FileT
 import Link from 'next/link';
 import {createClient} from '@/utils/supabase/server';
 
+
 export default async function SettingsPage() {
   const supabase = await createClient();
   const {data, error} = await supabase.auth.getUser();
@@ -36,13 +37,15 @@ export default async function SettingsPage() {
                 </div>
               </div>
             </div>
-            <div className="flex items-center justify-between py-4 px-4 cursor-pointer hover:bg-neutral-100">
-              <div className="flex items-center gap-4">
-                <Lock className="h-5 w-5 text-neutral-500" />
-                <span className="text-sm">Change Password</span>
-              </div>
+            <Link href="/merchant/change-pass-link">
+            <div className="flex items-center justify-between py-4 px-4 cursor-pointer hover:bg-neutral-100 border-b-1">
+                <div className="flex items-center gap-4">
+                  <Lock className="h-5 w-5 text-neutral-500" />
+                  <span className="text-sm">Change Password</span>
+                </div>
               <ChevronRight className="h-4 w-4 text-neutral-400" />
             </div>
+            </Link>
             <div className="flex items-center justify-between py-4 px-4 cursor-pointer hover:bg-neutral-100">
               <div className="flex items-center gap-4">
                 <Share2 className="h-5 w-5 text-neutral-500" />

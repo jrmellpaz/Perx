@@ -14,6 +14,7 @@ import {
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import React, { JSX, useState } from 'react';
+import { motion } from 'motion/react';
 
 interface NavItems {
   icon: JSX.Element;
@@ -72,7 +73,7 @@ export default function MerchantTemplate({
           <HorizontalNav />
         </div>
       </nav>
-      <main className="grow overflow-y-auto bg-white p-4 shadow-xs md:rounded-l-xl md:p-6">
+      <main className="grow overflow-x-hidden overflow-y-auto bg-white p-4 shadow-xs md:rounded-l-xl md:p-6">
         {children}
       </main>
     </main>
@@ -125,11 +126,15 @@ function HorizontalNav() {
             <li
               className={`flex h-full flex-col items-center justify-center gap-0.5 ${isActive && 'text-perx-crimson'}`}
             >
-              <div
+              <motion.div
+                initial={{ scaleX: '50%', scaleY: '75%' }}
+                animate={{ scaleX: '100%', scaleY: '100%' }}
+                transition={{ duration: 0.15, ease: 'easeInOut' }}
+                exit={{ scaleX: 0, scaleY: '50%', opacity: 0 }}
                 className={`${isActive && 'bg-perx-crimson/30'} flex w-4/5 items-center justify-center rounded-full py-1 sm:w-3/5`}
               >
                 {item.icon}
-              </div>
+              </motion.div>
               <span className={`text-[10px] ${isActive && 'font-semibold'}`}>
                 {item.name}
               </span>

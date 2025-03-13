@@ -127,10 +127,12 @@ function HorizontalNav() {
               className={`flex h-full flex-col items-center justify-center gap-0.5 ${isActive && 'text-perx-crimson'}`}
             >
               <motion.div
-                initial={{ scaleX: '50%', scaleY: '75%' }}
-                animate={{ scaleX: '100%', scaleY: '100%' }}
-                transition={{ duration: 0.15, ease: 'easeInOut' }}
-                exit={{ scaleX: 0, scaleY: '50%', opacity: 0 }}
+                {...(isActive && {
+                  initial: { scaleX: '30%', scaleY: '75%' },
+                  animate: { scaleX: '100%', scaleY: '100%' },
+                  transition: { duration: 0.15, ease: 'easeInOut' },
+                  exit: { scaleX: 0, scaleY: '50%', opacity: 0 },
+                })}
                 className={`${isActive && 'bg-perx-crimson/30'} flex w-4/5 items-center justify-center rounded-full py-1 sm:w-3/5`}
               >
                 {item.icon}

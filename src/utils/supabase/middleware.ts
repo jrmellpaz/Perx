@@ -38,8 +38,8 @@ export async function updateSession(request: NextRequest) {
   } = await supabase.auth.getUser();
 
   const consumerPages = {
-    auth: ['/login', '/register', '/recover-password', '/change-password'],
-    public: ['home'],
+    auth: ['/login', '/register', '/change-password'],
+    public: ['home', '/recover-password'],
     private: ['/explore', '/my-coupon', '/profile', '/search', '/settings'],
   };
 
@@ -48,7 +48,7 @@ export async function updateSession(request: NextRequest) {
       '/merchant/login',
       '/merchant/register',
       '/merchant/recover-password',
-      '/merchant/change-password',
+      // '/merchant/change-password',
     ],
     private: [
       '/merchant/dashboard',
@@ -56,6 +56,7 @@ export async function updateSession(request: NextRequest) {
       '/merchant/settings',
       '/merchant/scan-qr',
     ],
+    public: ['/merchant/change-password'],
   };
 
   const authPages = [...consumerPages.auth, ...merchantPages.auth];

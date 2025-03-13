@@ -11,12 +11,14 @@ export interface UserProfile {
 
 export async function fetchConsumerProfile(): Promise<UserProfile | null> {
   const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
   if (!user) return null;
 
   const { data, error } = await supabase
     .from('consumers')
-    .select('name')
+    .select('name, referral_code')
     .eq('id', user.id)
     .single();
 
@@ -27,15 +29,17 @@ export async function fetchConsumerProfile(): Promise<UserProfile | null> {
 
   return {
     name: data.name,
-    level: "Diamond",
+    level: 'Diamond',
     points: 165,
-    referralCode: "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
+    referralCode: data.referral_code,
   };
 }
 
 export async function updateConsumerProfile(name: string): Promise<boolean> {
   const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
   if (!user) return false;
 
   const { error } = await supabase

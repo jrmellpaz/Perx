@@ -1,8 +1,9 @@
-"use client";
+'use client';
 
-import { useEffect, useState } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
-import { ArrowLeft, Clipboard, Copy } from "lucide-react";
+import { useEffect, useState } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { ArrowLeft, Clipboard, Copy } from 'lucide-react';
+import PerxHeader from '@/components/custom/PerxHeader';
 
 // Mock transaction data
 // const mockTransactions = [
@@ -18,7 +19,7 @@ import { ArrowLeft, Clipboard, Copy } from "lucide-react";
 // const TransactionDetails = () => {
 //   const router = useRouter();
 //   const searchParams = useSearchParams();
-  
+
 //   // Extract parameters from URL
 //   const title = searchParams.get("title");
 //   const amount = searchParams.get("amount");
@@ -76,37 +77,47 @@ import { ArrowLeft, Clipboard, Copy } from "lucide-react";
 const TransactionDetails = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
-  
+
   // Extract parameters from URL
-  const title = searchParams.get("title");
-  const amount = searchParams.get("amount");
-  const date = searchParams.get("date");
+  const title = searchParams.get('title');
+  const amount = searchParams.get('amount');
+  const date = searchParams.get('date');
 
   if (!title || !amount || !date) {
-    return <p className="text-center p-4 text-red-500">Transaction not found</p>;
+    return (
+      <p className="p-4 text-center text-red-500">Transaction not found</p>
+    );
   }
 
   return (
-    <div className="relative w-full h-full flex flex-col items-center">
+    <div className="relative flex h-full w-full flex-col items-center">
       {/* <div> */}
-        <button onClick={() => router.back()} className="absolute top-1 left-1 flex items-center cursor-pointer">
-          <ArrowLeft size={35} className="hover:bg-perx-orchid/20 rounded-full p-2"/> <h1 className="mx-1 text-xl font-sans">Transaction details</h1>
-        </button>
+      <button
+        onClick={() => router.back()}
+        className="absolute top-1 left-1 flex cursor-pointer items-center"
+      >
+        <PerxHeader
+          title="Transaction Details"
+          link="/merchant/monthly-records"
+        />
+      </button>
       {/* </div> */}
 
-      <div className="w-full max-w-md p-6 mt-12">
-        <div className="w-full h-40 bg-gray-300 flex items-center justify-center rounded-md">
-          <div className="w-12 h-12 bg-gray-400"></div>
+      <div className="mt-12 w-full max-w-md p-6">
+        <div className="flex h-40 w-full items-center justify-center rounded-md bg-gray-300">
+          <div className="h-12 w-12 bg-gray-400"></div>
         </div>
 
-        <h2 className="text-xl font-mono font-semibold mt-4">{title}</h2>
-        <span className="px-3 py-1 border-2 border-perx-crimson/20 text-xs rounded-md">Type</span>
+        <h2 className="mt-4 font-mono text-xl font-semibold">{title}</h2>
+        <span className="border-perx-crimson/20 rounded-md border-2 px-3 py-1 text-xs">
+          Type
+        </span>
 
         <div className="mt-4 text-sm">
           <div className="flex justify-between border-b py-2">
             <span className="text-perx-black">Transaction number</span>
-            <span className="text-perx-black italic ml-30">9023274475630</span>
-            <Copy className="w-4 h-4 hover:bg-perx-crimson/20 hover:rounded cursor-pointer" />
+            <span className="text-perx-black ml-30 italic">9023274475630</span>
+            <Copy className="hover:bg-perx-crimson/20 h-4 w-4 cursor-pointer hover:rounded" />
           </div>
           <div className="flex justify-between border-b py-2">
             <span className="text-perx-black">Amount</span>
@@ -121,6 +132,5 @@ const TransactionDetails = () => {
     </div>
   );
 };
-
 
 export default TransactionDetails;

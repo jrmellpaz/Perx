@@ -2,9 +2,10 @@
 
 import { useState } from 'react';
 import { Copy, Pencil, Settings } from 'lucide-react';
-import PerxAlert from '@/components/custom/PerxAlert';
+// import PerxAlert from '@/components/custom/PerxAlert';
 import type { ConsumerProfile } from '@/lib/consumer/profileSchema';
 import Link from 'next/link';
+import { toast } from "react-hot-toast";
 
 export default function ProfileInfo({ data }: { data: ConsumerProfile }) {
   const [copied, setCopied] = useState(false);
@@ -12,8 +13,9 @@ export default function ProfileInfo({ data }: { data: ConsumerProfile }) {
   const handleCopy = () => {
     if (data?.referral_code) {
       navigator.clipboard.writeText(data.referral_code);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
+      toast.success("Copied to clipboard!", {
+        position: window.innerWidth > 768 ? "bottom-right" : "bottom-center",
+      });
     }
   };
 
@@ -73,7 +75,6 @@ export default function ProfileInfo({ data }: { data: ConsumerProfile }) {
             <Copy size={14} />
           </button>
         </div>
-        {copied && <PerxAlert heading="Copied to clipboard!" variant="success" />}
       </div>
     </div>
   );

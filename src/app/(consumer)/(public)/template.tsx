@@ -29,14 +29,14 @@ const navItems: NavItems[] = [
     link: '/explore',
   },
   {
-    icon: <Ticket />,
-    name: 'My Coupon',
-    link: '/my-coupon',
-  },
-  {
     icon: <Search />,
     name: 'Search',
     link: '/search',
+  },
+  {
+    icon: <Ticket />,
+    name: 'My Coupons',
+    link: '/my-coupon',
   },
   // {
   //   icon: <Inbox />,

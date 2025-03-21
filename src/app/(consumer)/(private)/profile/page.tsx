@@ -132,7 +132,7 @@ function LoyaltyRewardsCard({
   totalPoints: number;
 }) {
   return (
-    <div className="bg-perx-white relative -top-28 flex aspect-[9/4] h-auto w-4/5 max-w-[800px] flex-col items-center justify-center gap-4 self-center rounded-xl px-12 py-4 shadow-sm">
+    <div className="bg-perx-white relative -top-28 flex aspect-[9/4] h-auto w-[90%] max-w-[800px] flex-col items-center justify-evenly gap-4 self-center rounded-xl px-4 py-4 shadow-sm md:w-4/5 md:px-12">
       <div className="flex flex-col items-center gap-1">
         <img src={icon} alt="Tier icon" className="size-14" />
         <h2 className={`text-${primary} font-mono font-bold`}>
@@ -141,7 +141,7 @@ function LoyaltyRewardsCard({
       </div>
       <div className="text-perx-black flex w-full items-center gap-3">
         <SparklesIcon className={`text-${primary}`} size={40} />
-        <h1 className="font-mono text-5xl font-medium">
+        <h1 className="font-mono text-4xl font-medium sm:text-5xl md:text-6xl">
           {`${points} `}
           <span className="text-muted-foreground font-sans text-base font-normal tracking-tighter">
             points remaining

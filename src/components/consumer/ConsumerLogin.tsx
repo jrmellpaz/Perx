@@ -41,9 +41,9 @@ export default function ConsumerLoginForm() {
         reset();
       }
     } catch (error: unknown) {
-      setSubmitError(
-        error instanceof Error ? error.message : 'An unknown error occurred'
-      );
+      if (error instanceof Error && !error.message.includes('NEXT_REDIRECT')) {
+        setSubmitError(error.message);
+      }
     } finally {
       setIsLoading(false);
     }

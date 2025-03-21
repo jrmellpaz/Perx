@@ -57,7 +57,7 @@ export default function ConsumerRegisterForm() {
   const [currentStep, setCurrentStep] = useState<number>(0);
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [referrerExists, setReferrerExists] = useState<boolean | null>(null); 
+  const [referrerExists, setReferrerExists] = useState<boolean | null>(null);
   const delta = currentStep - previousStep;
 
   const {
@@ -94,10 +94,8 @@ export default function ConsumerRegisterForm() {
       reset();
       setSubmitError(null);
     } catch (error: unknown) {
-      if (error instanceof Error) {
+      if (error instanceof Error && !error.message.includes('NEXT_REDIRECT')) {
         setSubmitError(error.message);
-      } else {
-        setSubmitError('An unknown error occurred');
       }
     } finally {
       setIsLoading(false);
@@ -108,14 +106,16 @@ export default function ConsumerRegisterForm() {
 
   const next = async () => {
     const fields = steps[currentStep].fields;
-    const isValidData = await trigger(fields as FieldName[], { shouldFocus: true });
+    const isValidData = await trigger(fields as FieldName[], {
+      shouldFocus: true,
+    });
 
     if (!isValidData) return; // Prevent next step if validation fails
 
     if (currentStep === 1) {
-      const referrerCode = getValues("referrer_code");
+      const referrerCode = getValues('referrer_code');
       if (referrerCode && referrerExists === false) {
-        setSubmitError("Invalid referral code");
+        setSubmitError('Invalid referral code');
         return; // Stop next step if referral code is invalid
       }
     }
@@ -155,7 +155,13 @@ export default function ConsumerRegisterForm() {
             <Step1 register={register} errors={errors} delta={delta} />
           )}
           {currentStep === 1 && (
-            <Step2 register={register} watch={watch} delta={delta}  referrerExists={referrerExists} setReferrerExists={setReferrerExists}/>
+            <Step2
+              register={register}
+              watch={watch}
+              delta={delta}
+              referrerExists={referrerExists}
+              setReferrerExists={setReferrerExists}
+            />
           )}
           {currentStep === 2 && (
             <Step3

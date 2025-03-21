@@ -37,10 +37,8 @@ export default function MerchantLoginForm() {
       reset();
       setSubmitError(null);
     } catch (error: unknown) {
-      if (error instanceof Error) {
+      if (error instanceof Error && !error.message.includes('NEXT_REDIRECT')) {
         setSubmitError('Invalid credentials');
-      } else {
-        setSubmitError('An unknown error occurred');
       }
     } finally {
       setIsLoading(false);

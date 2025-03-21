@@ -74,10 +74,8 @@ export default function MerchantRegisterForm() {
       reset();
       setSubmitError(null);
     } catch (error: unknown) {
-      if (error instanceof Error) {
+      if (error instanceof Error && !error.message.includes('NEXT_REDIRECT')) {
         setSubmitError(error.message);
-      } else {
-        setSubmitError('An unknown error occurred');
       }
     } finally {
       setIsLoading(false);

@@ -50,7 +50,7 @@ const navItems: NavItems[] = [
   },
 ];
 
-export default function MerchantTemplate({
+export default function ConsumerTemplate({
   children,
 }: {
   children: React.ReactNode;
@@ -58,8 +58,8 @@ export default function MerchantTemplate({
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   return (
-    <main className="bg-perx-white flex h-dvh w-dvw flex-col-reverse md:flex-row md:gap-2">
-      <nav className="bg-perx-white h-18 w-dvw md:h-dvh md:w-64">
+    <main className="bg-perx-white flex h-dvh w-dvw flex-col-reverse overflow-hidden md:flex-row md:gap-2">
+      <nav className="bg-perx-white h-18 w-dvw shrink-0 shadow-md md:h-dvh md:w-64 md:shadow-none">
         <div className="hidden h-full p-2 md:flex md:flex-col md:justify-between">
           <div>
             <div className="my-4 ml-2 h-10">
@@ -73,7 +73,7 @@ export default function MerchantTemplate({
           <HorizontalNav />
         </div>
       </nav>
-      <main className="grow bg-white p-4 shadow-xs md:rounded-l-xl md:p-6">
+      <main className="grow overflow-x-hidden overflow-y-auto bg-white p-4 shadow-xs md:rounded-l-xl md:p-6">
         {children}
       </main>
     </main>
@@ -98,7 +98,7 @@ function VerticalNav() {
               className={`flex w-full items-center gap-4 ${isActive && 'text-perx-crimson'}`}
             >
               {item.icon}
-              <span className={`${isActive && 'font-semibold'}`}>
+              <span className={`${isActive && 'font-medium'}`}>
                 {item.name}
               </span>
             </li>

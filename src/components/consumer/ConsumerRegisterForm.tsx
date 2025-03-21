@@ -57,6 +57,7 @@ export default function ConsumerRegisterForm() {
   const [currentStep, setCurrentStep] = useState<number>(0);
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [referrerExists, setReferrerExists] = useState<boolean | null>(null); 
   const delta = currentStep - previousStep;
 
   const {
@@ -71,7 +72,7 @@ export default function ConsumerRegisterForm() {
   } = useForm<ConsumerFormInputs>({
     resolver: zodResolver(schemas[currentStep]),
     defaultValues: {
-      interests: [], // Ensure interests is always an empty array initially
+      interests: [],
     },
   });
 
@@ -107,17 +108,23 @@ export default function ConsumerRegisterForm() {
 
   const next = async () => {
     const fields = steps[currentStep].fields;
-    const isValidData = await trigger(fields as FieldName[], {
-      shouldFocus: true,
-    });
+    const isValidData = await trigger(fields as FieldName[], { shouldFocus: true });
 
-    if (isValidData) {
-      if (currentStep < steps.length - 1) {
-        setPreviousStep(currentStep);
-        setCurrentStep((prevStep) => prevStep + 1);
-      } else {
-        await handleSubmit(processForm)();
+    if (!isValidData) return; // Prevent next step if validation fails
+
+    if (currentStep === 1) {
+      const referrerCode = getValues("referrer_code");
+      if (referrerCode && referrerExists === false) {
+        setSubmitError("Invalid referral code");
+        return; // Stop next step if referral code is invalid
       }
+    }
+
+    if (currentStep < steps.length - 1) {
+      setPreviousStep(currentStep);
+      setCurrentStep((prevStep) => prevStep + 1);
+    } else {
+      await handleSubmit(processForm)();
     }
   };
 
@@ -134,7 +141,7 @@ export default function ConsumerRegisterForm() {
       {submitError && (
         <PerxAlert
           heading={submitError}
-          message="Make sure your credentials are correct."
+          message="Make sure your inputs are correct."
           variant="error"
         />
       )}
@@ -148,7 +155,7 @@ export default function ConsumerRegisterForm() {
             <Step1 register={register} errors={errors} delta={delta} />
           )}
           {currentStep === 1 && (
-            <Step2 register={register} watch={watch} delta={delta} />
+            <Step2 register={register} watch={watch} delta={delta}  referrerExists={referrerExists} setReferrerExists={setReferrerExists}/>
           )}
           {currentStep === 2 && (
             <Step3
@@ -294,12 +301,15 @@ function Step2({
   register,
   watch,
   delta,
+  referrerExists,
+  setReferrerExists,
 }: {
   register: UseFormRegister<ConsumerFormInputs>;
   watch: UseFormWatch<ConsumerFormInputs>;
   delta: number;
+  referrerExists: boolean | null;
+  setReferrerExists: (exists: boolean | null) => void;
 }) {
-  const [referrerExists, setReferrerExists] = useState<boolean | null>(null);
   // const [referrerCode, setReferrerCode] = useState('');
   // const [debouncedReferrerCode] = useDebounce(referrerCode, 500); // Delay API call by 500ms
 
@@ -327,7 +337,7 @@ function Step2({
     };
 
     verifyReferrer();
-  }, [debouncedCode]);
+  }, [debouncedCode, setReferrerExists]);
 
   return (
     <motion.div

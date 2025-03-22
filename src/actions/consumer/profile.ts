@@ -59,3 +59,34 @@ export async function updateConsumerPassword() {
     throw new Error(error.message);
   }
 }
+
+export async function deleteAccount(userId: string) {
+  const supabase = await createClient();
+
+  try {
+    // Start a transaction: Delete user data first
+
+    const { error: userError } = await supabase
+      .from('users') // Change this to your user table
+      .delete()
+      .eq('id', userId);
+
+    if (userError) throw new Error(userError.message);
+
+    // await supabase.auth.signOut();
+
+    // Delete user authentication
+    const { error: authError } = await supabase.auth.admin.deleteUser(userId);
+
+    if (authError) throw new Error(authError.message);
+
+    return { success: true };
+  } catch (error) {
+    if (error instanceof Error) {
+      throw new Error(error.message);
+    } else {
+      throw new Error('An unknown error occurred');
+    }
+  }
+}
+

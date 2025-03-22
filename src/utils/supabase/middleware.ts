@@ -109,7 +109,7 @@ export async function updateSession(request: NextRequest) {
       merchantPages.private.includes(request.nextUrl.pathname)
     ) {
       const url = request.nextUrl.clone();
-      url.pathname = '/login';
+      url.pathname = '/home';
       return NextResponse.redirect(url);
     }
 

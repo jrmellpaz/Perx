@@ -63,7 +63,7 @@ function ReferralCard({
 }) {
   const handleCopy = () => {
     navigator.clipboard.writeText(referral_code);
-    toast('Refferal code copied to clipboard.');
+    toast('Referral code copied to clipboard.');
   };
 
   return (

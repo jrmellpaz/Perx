@@ -3,6 +3,7 @@ import { Inter, Space_Grotesk } from 'next/font/google';
 import './globals.css';
 import Head from 'next/head';
 import NextTopLoader from 'nextjs-toploader';
+import { Toaster } from '@/components/ui/toaster';
 
 const inter = Inter({
   variable: '--font-inter',
@@ -34,6 +35,7 @@ export default function RootLayout({
       >
         <NextTopLoader color="#A50000" showSpinner={false} height={3} />
         {children}
+        <Toaster />
       </body>
     </html>
   );

@@ -1,16 +1,19 @@
-import React from 'react';
+import { JSX } from 'react';
 import { getConsumerProfile } from '@/actions/consumer/profile';
 import { createClient } from '@/utils/supabase/server';
 import type { ConsumerProfile } from '@/lib/consumer/profileSchema';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import {
-  DiamondIcon,
+  AwardIcon,
+  ClipboardListIcon,
   PencilIcon,
   SettingsIcon,
   SparklesIcon,
 } from 'lucide-react';
 import { Progress } from '@/components/ui/progress';
+import PerxTabs from '@/components/custom/PerxTabs';
+import { Achievements, Missions } from '@/components/consumer/ConsumerProfile';
 
 export default async function ConsumerProfile() {
   const supabase = await createClient();
@@ -49,7 +52,7 @@ export default async function ConsumerProfile() {
       },
       secondaryColor: {
         text: 'text-perx-sunset',
-        bg: 'bg-perx-sunset/15',
+        bg: 'bg-perx-sunset/10',
       },
       next: 'Silver',
     },
@@ -81,10 +84,42 @@ export default async function ConsumerProfile() {
 
   const currentTier = tierStyle[tier];
 
+  type ProfileNavItems = {
+    icon: JSX.Element;
+    name: string;
+    content: JSX.Element;
+  };
+
+  const profileNavItems: ProfileNavItems[] = [
+    {
+      name: 'Missions',
+      icon: <ClipboardListIcon size={20} aria-hidden="true" />,
+      content: (
+        <Missions
+          referral_code={referral_code}
+          primary={currentTier.primaryColor}
+          secondary={currentTier.secondaryColor}
+        />
+      ),
+    },
+    {
+      name: 'Achievements',
+      icon: <AwardIcon size={20} aria-hidden="true" />,
+      content: (
+        <Achievements
+          primary={currentTier.primaryColor}
+          secondary={currentTier.secondaryColor}
+        />
+      ),
+    },
+  ];
+
   return (
     <section className="flex h-full flex-col overflow-x-hidden">
       <Header name={name} />
-      <main className={`${currentTier.secondaryColor.bg} flex grow flex-col`}>
+      <main
+        className={`${currentTier.secondaryColor.bg} flex flex-col items-center`}
+      >
         <LoyaltyRewardsCard
           nextIcon={tierStyle[currentTier.next].icon}
           icon={currentTier.icon}
@@ -94,6 +129,9 @@ export default async function ConsumerProfile() {
           points={points}
           totalPoints={totalPoints}
         />
+        <div className="relative -top-20 w-[90%] max-w-[800px]">
+          <PerxTabs tabItems={profileNavItems} />
+        </div>
       </main>
     </section>
   );
@@ -101,7 +139,7 @@ export default async function ConsumerProfile() {
 
 function Header({ name }: { name: string }) {
   return (
-    <header className="bg-perx-rust flex h-[240px] items-start justify-between px-4 pt-4 md:px-6">
+    <header className="bg-perx-rust z-0 flex h-[240px] shrink-0 items-start justify-between px-6 pt-4 md:px-12">
       <div className="flex grow flex-col">
         <p className="text-perx-white text-sm/tight">Hello</p>
         <h1 className="text-perx-white font-mono text-2xl font-medium">
@@ -159,7 +197,7 @@ function LoyaltyRewardsCard({
   totalPoints: number;
 }) {
   return (
-    <div className="bg-perx-white text-perx-black relative -top-28 flex aspect-[7/3] h-auto w-[90%] max-w-[800px] flex-col items-center justify-around self-center rounded-xl px-4 py-4 shadow-md sm:px-8 md:w-4/5 md:px-12">
+    <div className="bg-perx-white text-perx-black relative -top-28 flex aspect-[7/3] h-auto w-[90%] max-w-[800px] flex-col items-center justify-around rounded-xl px-4 py-4 shadow-md sm:px-8 md:w-4/5 md:px-12">
       <div className="relative -top-12 flex flex-col items-center gap-1">
         <img src={icon} alt="Tier icon" className="size-28" />
         <h2 className={`${primary.text} font-mono text-lg font-medium`}>

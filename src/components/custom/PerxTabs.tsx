@@ -44,11 +44,6 @@ export default function PerxTabs({
           </TabsContent>
         );
       })}
-      {/* <TabsContent value="tab-1">
-        <p className="text-muted-foreground pt-1 text-center text-xs">
-          Content for Tab 1
-        </p>
-      </TabsContent> */}
     </Tabs>
   );
 }

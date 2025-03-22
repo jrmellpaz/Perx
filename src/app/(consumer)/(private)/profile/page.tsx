@@ -159,7 +159,7 @@ function LoyaltyRewardsCard({
   totalPoints: number;
 }) {
   return (
-    <div className="bg-perx-white text-perx-black relative -top-28 flex aspect-[7/3] h-auto w-[90%] max-w-[800px] flex-col items-center justify-around self-center rounded-xl px-8 py-4 shadow-md md:w-4/5 md:px-12">
+    <div className="bg-perx-white text-perx-black relative -top-28 flex aspect-[7/3] h-auto w-[90%] max-w-[800px] flex-col items-center justify-around self-center rounded-xl px-4 py-4 shadow-md sm:px-8 md:w-4/5 md:px-12">
       <div className="relative -top-12 flex flex-col items-center gap-1">
         <img src={icon} alt="Tier icon" className="size-28" />
         <h2 className={`${primary.text} font-mono text-lg font-medium`}>
@@ -189,7 +189,7 @@ function LoyaltyRewardsCard({
               className="h-3"
             />
           </div>
-          <div className="flex items-center gap-1">
+          <div className="flex items-center gap-1 pr-2">
             <h3 className="font-mono font-medium">1000</h3>
             <img src={nextIcon} alt="Next tier icon" className="size-6" />
           </div>

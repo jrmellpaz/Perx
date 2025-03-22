@@ -57,25 +57,25 @@ export default async function MerchantProfile() {
 
 function ProfileInfo({ data }: { data: MerchantProfile }) {
   return (
-    <section className="flex flex-col gap-4 md:flex-row md:gap-8">
-      <div className="flex basis-1/3 items-center justify-center">
+    <section className="flex flex-col gap-4 pt-4 lg:flex-row">
+      <div className="flex basis-1/4 items-center justify-center">
         <img
           src={data.logo}
           alt="Merchant Logo"
-          className="aspect-square size-32 h-auto rounded-full border object-cover md:size-48"
+          className="aspect-square size-28 h-auto rounded-full border object-cover md:size-36"
         />
       </div>
-      <div className="flex grow flex-col items-center justify-center gap-4 md:items-start">
+      <div className="flex grow flex-col items-center justify-center gap-4 lg:items-start">
         <div className="flex items-center gap-8">
-          <h3 className="text-xl font-bold md:text-3xl">{data.name}</h3>
-          <div className="hidden md:flex">
+          <h3 className="text-xl font-bold lg:text-3xl">{data.name}</h3>
+          <div className="hidden lg:flex">
             <ButtonGroup />
           </div>
         </div>
-        <div className="md:hidden">
+        <div className="lg:hidden">
           <ButtonGroup />
         </div>
-        <div className="flex flex-col items-center gap-1 md:items-start">
+        <div className="flex flex-col items-center gap-1 lg:items-start">
           <p className="text-sm">{data.bio}</p>
           <div className="flex items-center gap-1.5">
             <MapPinIcon size={15} />

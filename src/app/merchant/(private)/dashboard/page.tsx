@@ -8,22 +8,8 @@ export default async function DashboardPage() {
   const supabase = await createClient();
   const { data, error } = await supabase.auth.getUser();
 
-  // if (error || !data?.user) {
-  //   redirect('/merchant/login');
-  // }
-
-  // return (
-  //   <div>
-  //     <h1>Dashboard</h1>
-  //     <p>Welcome, {data?.user?.email}</p>
-  //     <form action={logoutMerchant}>
-  //       <Button type="submit">Log out</Button>
-  //     </form>
-  //   </div>
-  // );
-
   return (
-    <div className="flex flex-col gap-4 md:flex-row">
+    <div className="flex flex-col gap-4 p-4 md:flex-row md:p-6">
       {/* LEFT */}
       <div className="flex w-full flex-col gap-4 lg:w-2/3">
         {/* USER CARDS */}

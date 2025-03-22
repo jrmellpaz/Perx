@@ -73,7 +73,7 @@ export default function MerchantTemplate({
           <HorizontalNav />
         </div>
       </nav>
-      <main className="grow overflow-x-hidden overflow-y-auto bg-white p-4 shadow-xs md:rounded-l-xl md:p-6">
+      <main className="grow overflow-x-hidden overflow-y-auto bg-white shadow-xs md:rounded-l-xl">
         {children}
       </main>
     </main>

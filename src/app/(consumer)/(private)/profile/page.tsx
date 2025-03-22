@@ -30,27 +30,51 @@ export default async function ConsumerProfile() {
     'Bronze' | 'Silver' | 'Gold',
     {
       icon: string;
-      primaryColor: string;
-      secondaryColor: string;
+      primaryColor: {
+        text: string;
+        bg: string;
+      };
+      secondaryColor: {
+        text: string;
+        bg: string;
+      };
       next: 'Silver' | 'Gold';
     }
   > = {
     Bronze: {
       icon: 'bronze-icon.svg',
-      primaryColor: 'perx-rust',
-      secondaryColor: 'perx-sunset',
+      primaryColor: {
+        text: 'text-perx-rust',
+        bg: 'bg-perx-rust',
+      },
+      secondaryColor: {
+        text: 'text-perx-sunset',
+        bg: 'bg-perx-sunset/15',
+      },
       next: 'Silver',
     },
     Silver: {
       icon: 'bronze-icon.svg',
-      primaryColor: 'perx-silver',
-      secondaryColor: 'perx-silver',
+      primaryColor: {
+        text: 'text-perx-silver',
+        bg: 'bg-perx-silver',
+      },
+      secondaryColor: {
+        text: 'text-perx-silver',
+        bg: 'bg-perx-silver',
+      },
       next: 'Gold',
     },
     Gold: {
       icon: 'gold-icon.svg',
-      primaryColor: 'perx-gold',
-      secondaryColor: 'perx-gold',
+      primaryColor: {
+        text: 'text-perx-gold',
+        bg: 'bg-perx-gold',
+      },
+      secondaryColor: {
+        text: 'text-perx-gold',
+        bg: 'bg-perx-gold',
+      },
       next: 'Gold',
     },
   };
@@ -60,9 +84,7 @@ export default async function ConsumerProfile() {
   return (
     <section className="flex h-full flex-col overflow-x-hidden">
       <Header name={name} />
-      <main
-        className={`bg-${currentTier.secondaryColor}/15 flex grow flex-col`}
-      >
+      <main className={`${currentTier.secondaryColor.bg} flex grow flex-col`}>
         <LoyaltyRewardsCard
           nextIcon={tierStyle[currentTier.next].icon}
           icon={currentTier.icon}
@@ -126,7 +148,10 @@ function LoyaltyRewardsCard({
   totalPoints,
 }: {
   icon: string;
-  primary: string;
+  primary: {
+    text: string;
+    bg: string;
+  };
   nextIcon: string;
   tier: 'Bronze' | 'Silver' | 'Gold' | 'Platinum' | 'Diamond';
   rank: 'I' | 'II' | 'III';
@@ -137,12 +162,12 @@ function LoyaltyRewardsCard({
     <div className="bg-perx-white text-perx-black relative -top-28 flex aspect-[7/3] h-auto w-[90%] max-w-[800px] flex-col items-center justify-around self-center rounded-xl px-8 py-4 shadow-md md:w-4/5 md:px-12">
       <div className="relative -top-12 flex flex-col items-center gap-1">
         <img src={icon} alt="Tier icon" className="size-28" />
-        <h2 className={`text-${primary} font-mono font-bold`}>
+        <h2 className={`${primary.text} font-mono font-bold`}>
           {`${tier} ${rank}`}
         </h2>
       </div>
       <div className="text-perx-black relative -top-6 flex w-full items-center gap-3">
-        <SparklesIcon className={`text-${primary}`} size={36} />
+        <SparklesIcon className={`${primary.text}`} size={36} />
         <h1 className="font-mono text-5xl font-medium">
           {`${points} `}
           <span className="text-muted-foreground font-sans text-base font-normal tracking-tighter">
@@ -155,7 +180,7 @@ function LoyaltyRewardsCard({
           Earn more points to progress your rank
         </h3>
         <div className="flex grow items-center gap-3">
-          <h3 className="font-mono">{`${totalPoints}`}</h3>
+          <h3 className="font-mono font-medium">{`${totalPoints}`}</h3>
           <div className="w-full">
             <Progress
               value={350}
@@ -165,7 +190,7 @@ function LoyaltyRewardsCard({
             />
           </div>
           <div className="flex items-center gap-1">
-            <h3 className="font-mono">1000</h3>
+            <h3 className="font-mono font-medium">1000</h3>
             <img src={nextIcon} alt="Next tier icon" className="size-6" />
           </div>
         </div>

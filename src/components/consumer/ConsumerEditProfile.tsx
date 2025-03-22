@@ -8,6 +8,7 @@ import {
   useForm,
   UseFormRegister,
   useFormContext,
+  FormProvider,
 } from 'react-hook-form';
 import {
   EditProfileInputs,
@@ -32,21 +33,15 @@ export default function ConsumerEditProfile({
   const { name, interests } = profile;
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
-  const {
-    register,
-    handleSubmit,
-    watch,
-    reset,
-    trigger,
-    getValues,
-    formState: { errors },
-  } = useForm<EditProfileInputs>({
+  const formMethods = useForm<EditProfileInputs>({
     resolver: zodResolver(editProfileSchema),
     defaultValues: {
       name: name,
       interests: interests,
     },
   });
+
+  const { handleSubmit, register, formState: { errors } } = formMethods;
 
   const processForm: SubmitHandler<EditProfileInputs> = async (data) => {
     setIsSubmitting(true);
@@ -61,18 +56,16 @@ export default function ConsumerEditProfile({
   };
 
   return (
-    <main className="flex w-full flex-col items-center">
-      <form
-        onSubmit={handleSubmit(processForm)}
-        className="my-2 flex w-full max-w-[800px] flex-col gap-8"
-      >
-        <EditDetails
-          register={register}
-          errors={errors}
-          isSubmitting={isSubmitting}
-        />
-      </form>
-    </main>
+    <FormProvider {...formMethods}>
+      <main className="flex w-full flex-col items-center">
+        <form
+          onSubmit={handleSubmit(processForm)}
+          className="my-2 flex w-full max-w-[800px] flex-col gap-8"
+        >
+          <EditDetails register={register} errors={errors} isSubmitting={isSubmitting} />
+        </form>
+      </main>
+    </FormProvider>
   );
 }
 
@@ -117,9 +110,9 @@ function EditDetails({
     >
       <div>
         <PerxInput
-          label="Business name"
+          label="Name"
           type="text"
-          placeholder="Business, Inc."
+          placeholder="Juan Dela Cruz"
           required
           autofocus
           {...register('name')}

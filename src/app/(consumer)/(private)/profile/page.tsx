@@ -55,16 +55,18 @@ export default async function ConsumerProfile() {
     },
   };
 
+  const currentTier = tierStyle[tier];
+
   return (
     <section className="flex h-full flex-col overflow-x-hidden">
       <Header name={name} />
       <main
-        className={`bg-${tierStyle[tier].secondaryColor}/15 flex grow flex-col`}
+        className={`bg-${currentTier.secondaryColor}/15 flex grow flex-col`}
       >
         <LoyaltyRewardsCard
-          nextIcon={tierStyle[tierStyle[tier].next].icon}
-          icon={tierStyle[tier].icon}
-          primary={tierStyle[tier].primaryColor}
+          nextIcon={tierStyle[currentTier.next].icon}
+          icon={currentTier.icon}
+          primary={currentTier.primaryColor}
           tier={tier}
           rank={rank}
           points={points}
@@ -132,27 +134,27 @@ function LoyaltyRewardsCard({
   totalPoints: number;
 }) {
   return (
-    <div className="bg-perx-white relative -top-28 flex aspect-[9/4] h-auto w-[90%] max-w-[800px] flex-col items-center justify-evenly gap-4 self-center rounded-xl px-4 py-4 shadow-sm md:w-4/5 md:px-12">
-      <div className="flex flex-col items-center gap-1">
-        <img src={icon} alt="Tier icon" className="size-14" />
+    <div className="bg-perx-white text-perx-black relative -top-28 flex aspect-[7/3] h-auto w-[90%] max-w-[800px] flex-col items-center justify-around self-center rounded-xl px-8 py-4 shadow-md md:w-4/5 md:px-12">
+      <div className="relative -top-12 flex flex-col items-center gap-1">
+        <img src={icon} alt="Tier icon" className="size-28" />
         <h2 className={`text-${primary} font-mono font-bold`}>
           {`${tier} ${rank}`}
         </h2>
       </div>
-      <div className="text-perx-black flex w-full items-center gap-3">
-        <SparklesIcon className={`text-${primary}`} size={40} />
-        <h1 className="font-mono text-4xl font-medium sm:text-5xl md:text-6xl">
+      <div className="text-perx-black relative -top-6 flex w-full items-center gap-3">
+        <SparklesIcon className={`text-${primary}`} size={36} />
+        <h1 className="font-mono text-5xl font-medium">
           {`${points} `}
           <span className="text-muted-foreground font-sans text-base font-normal tracking-tighter">
-            points remaining
+            points balance
           </span>
         </h1>
       </div>
       <div className="flex w-full flex-col justify-start gap-0">
-        <h3 className="text-muted-foreground relative top-2.25 m-0 p-0 text-base/tight tracking-tighter">
-          Total points you earned
+        <h3 className="text-muted-foreground m-0 p-0 text-base tracking-tighter">
+          Earn more points to progress your rank
         </h3>
-        <div className="mt-4 flex w-full items-center gap-3">
+        <div className="flex grow items-center gap-3">
           <h3 className="font-mono">{`${totalPoints}`}</h3>
           <div className="w-full">
             <Progress
@@ -162,8 +164,10 @@ function LoyaltyRewardsCard({
               className="h-3"
             />
           </div>
-          <h3 className="font-mono">1000</h3>
-          <img src={nextIcon} alt="Next tier icon" className="size-6" />
+          <div className="flex items-center gap-1">
+            <h3 className="font-mono">1000</h3>
+            <img src={nextIcon} alt="Next tier icon" className="size-6" />
+          </div>
         </div>
       </div>
     </div>

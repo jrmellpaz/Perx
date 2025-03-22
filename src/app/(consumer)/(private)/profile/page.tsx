@@ -52,7 +52,7 @@ export default async function ConsumerProfile() {
       },
       secondaryColor: {
         text: 'text-perx-sunset',
-        bg: 'bg-perx-sunset/10',
+        bg: 'bg-perx-sunset/15',
       },
       next: 'Silver',
     },

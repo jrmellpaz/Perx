@@ -67,7 +67,7 @@ function ReferralCard({
   };
 
   return (
-    <div className="bg-perx-white flex items-center gap-6 rounded-lg p-4 shadow-xs">
+    <div className="bg-perx-white flex items-center gap-6 rounded-lg p-4 shadow-sm">
       <p className="aspect-square h-full w-auto shrink-0 text-6xl/[80px]">😎</p>
       <div className="flex grow flex-col gap-0.5">
         <div className="flex items-center justify-between">
@@ -175,7 +175,7 @@ function AchievementCard({
 }) {
   const { title, description, icon, reward, achieved } = achievement;
   return (
-    <div className="flex grow basis-60 flex-col gap-2 rounded-md border">
+    <div className="bg-perx-white flex grow basis-60 flex-col gap-2 rounded-md p-2 shadow-md">
       <div
         className={`flex aspect-square h-auto w-full items-center justify-center ${achieved ? primary.text : 'text-muted-foreground/80'}`}
       >

@@ -189,7 +189,7 @@ function LoyaltyRewardsCard({
               className="h-3"
             />
           </div>
-          <div className="flex shrink-0 items-center gap-1 pr-2">
+          <div className="flex shrink-0 items-center gap-1">
             <h3 className="font-mono font-medium">1000</h3>
             <img src={nextIcon} alt="Next tier icon" className="size-6" />
           </div>

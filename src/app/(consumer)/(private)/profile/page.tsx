@@ -162,7 +162,7 @@ function LoyaltyRewardsCard({
     <div className="bg-perx-white text-perx-black relative -top-28 flex aspect-[7/3] h-auto w-[90%] max-w-[800px] flex-col items-center justify-around self-center rounded-xl px-8 py-4 shadow-md md:w-4/5 md:px-12">
       <div className="relative -top-12 flex flex-col items-center gap-1">
         <img src={icon} alt="Tier icon" className="size-28" />
-        <h2 className={`${primary.text} font-mono font-bold`}>
+        <h2 className={`${primary.text} font- font-mono text-lg`}>
           {`${tier} ${rank}`}
         </h2>
       </div>
@@ -175,9 +175,9 @@ function LoyaltyRewardsCard({
           </span>
         </h1>
       </div>
-      <div className="flex w-full flex-col justify-start gap-0">
+      <div className="flex w-full flex-col justify-start gap-2">
         <h3 className="text-muted-foreground m-0 p-0 text-base tracking-tighter">
-          Earn more points to progress your rank
+          Earn more points to unlock the next tier
         </h3>
         <div className="flex grow items-center gap-3">
           <h3 className="font-mono font-medium">{`${totalPoints}`}</h3>

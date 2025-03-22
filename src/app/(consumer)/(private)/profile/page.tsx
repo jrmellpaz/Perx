@@ -162,7 +162,7 @@ function LoyaltyRewardsCard({
     <div className="bg-perx-white text-perx-black relative -top-28 flex aspect-[7/3] h-auto w-[90%] max-w-[800px] flex-col items-center justify-around self-center rounded-xl px-8 py-4 shadow-md md:w-4/5 md:px-12">
       <div className="relative -top-12 flex flex-col items-center gap-1">
         <img src={icon} alt="Tier icon" className="size-28" />
-        <h2 className={`${primary.text} font- font-mono text-lg`}>
+        <h2 className={`${primary.text} font-mono text-lg font-medium`}>
           {`${tier} ${rank}`}
         </h2>
       </div>

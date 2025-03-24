@@ -9,13 +9,16 @@ interface PerxCheckboxProps {
   onCheckedChange: (checked: boolean) => void;
 }
 
-export default function PerxCheckbox({ label, checked, onCheckedChange }: PerxCheckboxProps) {
+export default function PerxCheckbox({
+  label,
+  checked,
+  onCheckedChange,
+}: PerxCheckboxProps) {
   const id = useId();
 
   return (
     <Badge
-      className={`relative flex gap-2 px-4 py-1 text-sm transition-all shadow-none outline-none hover:bg-perx-blue/10 
-        ${checked ? 'bg-perx-blue text-white hover:bg-perx-blue/90' : 'bg-muted text-muted-foreground'}`}
+      className={`hover:bg-perx-blue/10 relative flex gap-2 px-4 py-1 text-sm shadow-none transition-all outline-none ${checked ? 'bg-perx-blue hover:bg-perx-blue/90 text-white' : 'bg-muted text-muted-foreground'}`}
     >
       <Checkbox
         id={id}

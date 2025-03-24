@@ -209,6 +209,10 @@
     @apply border-border;
   }
 
+  html {
+    @apply overflow-hidden;
+  }
+
   body {
     @apply bg-background text-foreground h-dvh w-dvw;
   }
@@ -223,4 +227,12 @@ textarea {
   --mask: conic-gradient(from -45deg at bottom,#0000,#000 1deg 89deg,#0000 90deg) 50%/24px 100%;
   -webkit-mask: var(--mask);
   mask: var(--mask);
+}
+
+.inset-right {
+  box-shadow: inset -10px 0 5px -5px hsla(0,0%,0%,.08);
+}
+
+.inset-left {
+  box-shadow: inset 10px 0 5px -5px hsla(0,0%,0%,.08);
 }

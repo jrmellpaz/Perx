@@ -1,7 +1,12 @@
 'use server';
 
 import { createClient } from '@/utils/supabase/server';
-import { AddCouponInputs, MerchantCoupon } from '@/lib/merchant/couponSchema';
+import {
+  AddCouponInputs,
+  CouponCategory,
+  MerchantCoupon,
+} from '@/lib/merchant/couponSchema';
+import { Rank } from '@/lib/consumer/rankSchema';
 
 export async function addCoupon(couponData: AddCouponInputs) {
   try {
@@ -17,7 +22,6 @@ export async function addCoupon(couponData: AddCouponInputs) {
       .from('merchants')
       .select('id')
       .eq('id', merchantId);
-    // .single();
 
     if (roleError)
       throw new Error(`MERCHANT LOOKUP ERROR: ${roleError.message}`);
@@ -25,8 +29,6 @@ export async function addCoupon(couponData: AddCouponInputs) {
     // Image handling: Upload the coupon image
     let imageUrl = null;
     if (couponData.image) {
-      // const fileExt = couponData.image.name.split('.').pop();
-      // const filePath = `coupons/${merchantId}/${Date.now()}.${fileExt}`;
       const date = Date.now();
       const { error: uploadError } = await supabase.storage
         .from('perx')
@@ -42,45 +44,21 @@ export async function addCoupon(couponData: AddCouponInputs) {
       imageUrl = imagePublicUrl.publicUrl;
     }
 
-    // Step 1: Check if the type exists in coupon_types
-    let { data: existingType, error: typeError } = await supabase
-      .from('coupon_types')
-      .select('id')
-      .eq('type', couponData.type)
-      .single();
-
-    if (typeError && typeError.code !== 'PGRST116') {
-      throw new Error(`CHECK TYPE ERROR: ${typeError.message}`);
-    }
-
-    let couponTypeId: string = existingType?.id;
-
-    // Step 2: Insert type if it doesn't exist
-    if (!couponTypeId) {
-      const { data: insertedType, error: insertTypeError } = await supabase
-        .from('coupon_types')
-        .insert({ type: couponData.type })
-        .select('id')
-        .single();
-
-      if (insertTypeError) {
-        throw new Error(`INSERT TYPE ERROR: ${insertTypeError.message}`);
-      }
-
-      couponTypeId = insertedType.id;
-    }
-
-    // Step 3: Insert coupon details with image URL
+    // Insert coupon details with image URL
     const { error: insertError } = await supabase.from('coupons').insert({
       merchant_id: merchantId,
       title: couponData.title,
-      coupon_type_id: couponTypeId,
+      category: couponData.category,
       description: couponData.description,
       price: couponData.price,
       quantity: couponData.quantity,
       valid_from: couponData.validFrom,
       valid_to: couponData.validTo,
       image: imageUrl, // Store image URL
+      accent_color: couponData.accentColor,
+      rank_availability: couponData.consumerRankAvailability,
+      allow_points_purchase: couponData.allowPointsPurchase,
+      points_amount: couponData.pointsAmount,
     });
 
     if (insertError) {
@@ -100,7 +78,7 @@ export async function getMerchantCoupons(merchantId: string) {
     const { data, error } = await supabase
       .from('coupons')
       .select(
-        'id, description, price, valid_from, valid_to, is_deactivated, image, title, quantity, coupon_type_id'
+        'id, description, price, valid_from, valid_to, is_deactivated, image, title, quantity, category'
       )
       .eq('merchant_id', merchantId)
       .order('created_at', { ascending: false });
@@ -110,6 +88,42 @@ export async function getMerchantCoupons(merchantId: string) {
     return data as MerchantCoupon[];
   } catch (error) {
     console.error('Get Merchant Coupons Error:', error);
+    return [];
+  }
+}
+
+export async function fetchCouponCategories() {
+  try {
+    const supabase = await createClient();
+    const { data, error } = await supabase
+      .from('coupon_categories')
+      .select('category, description')
+      .order('category', { ascending: false });
+
+    if (error) throw new Error(error.message);
+
+    return data as CouponCategory[];
+  } catch (error) {
+    console.error('Fetch Coupon Categories Error:', error);
+    return [];
+  }
+}
+
+export async function fetchConsumerRanks() {
+  type Ranks = Pick<Rank, 'id' | 'rank' | 'icon'>[];
+
+  try {
+    const supabase = await createClient();
+    const { data, error } = await supabase
+      .from('ranks')
+      .select('id, rank, icon')
+      .order('id', { ascending: true });
+
+    if (error) throw new Error(error.message);
+
+    return data as Ranks;
+  } catch (error) {
+    console.error('Fetch Consumer Ranks Error:', error);
     return [];
   }
 }

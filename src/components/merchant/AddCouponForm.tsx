@@ -1,15 +1,19 @@
 'use client';
 
-import { AddCouponInputs, addCouponSchema } from '@/lib/merchant/couponSchema';
+import {
+  AddCouponInputs,
+  addCouponSchema,
+  CouponCategory,
+} from '@/lib/merchant/couponSchema';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useState, useEffect } from 'react';
 import type { DateValue } from 'react-aria-components';
-
 import {
   FieldErrors,
   SubmitHandler,
   useForm,
   UseFormRegister,
+  Controller,
 } from 'react-hook-form';
 import PerxAlert from '../custom/PerxAlert';
 import PerxInput from '../custom/PerxInput';
@@ -20,9 +24,22 @@ import { Label } from '../ui/label';
 import { Button } from '../ui/button';
 import { Input } from '../ui/input';
 import { LoaderCircle } from 'lucide-react';
+import PerxColors from '../custom/PerxColors';
+import { Rank } from '@/lib/consumer/rankSchema';
+import PerxSelect from '../custom/PerxSelect';
+import { Checkbox } from '../ui/checkbox';
 import { addCoupon } from '@/actions/merchant/coupon';
+import { PerxDatalist } from '../custom/PerxDatalist';
 
-export default function AddCouponForm() {
+type Ranks = Pick<Rank, 'id' | 'rank' | 'icon'>[];
+
+export default function AddCouponForm({
+  ranks,
+  categories,
+}: {
+  ranks: Ranks;
+  categories: CouponCategory[];
+}) {
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
@@ -35,9 +52,13 @@ export default function AddCouponForm() {
     watch,
     reset,
     setValue,
+    control,
     formState: { errors },
   } = useForm<AddCouponInputs>({
     resolver: zodResolver(addCouponSchema),
+    defaultValues: {
+      allowPointsPurchase: false,
+    },
   });
 
   useEffect(() => {
@@ -71,7 +92,7 @@ export default function AddCouponForm() {
   };
 
   return (
-    <section className="my-8 flex w-full max-w-[800px] flex-col gap-6">
+    <section className="my-8 flex h-auto w-full max-w-[800px] flex-col gap-6">
       {submitError && (
         <PerxAlert
           heading="Something went wrong 😢"
@@ -104,6 +125,9 @@ export default function AddCouponForm() {
           setImagePreview={setImagePreview}
           imagePreview={imagePreview}
           setImageFile={setImageFile}
+          control={control}
+          ranks={ranks}
+          categories={categories}
         />
       </form>
     </section>
@@ -118,7 +142,10 @@ function Inputs({
   isSubmitting,
   setImagePreview,
   imagePreview,
-  setImageFile, // Receive setImageFile prop
+  setImageFile,
+  control,
+  ranks,
+  categories,
 }: {
   register: UseFormRegister<AddCouponInputs>;
   errors: FieldErrors<AddCouponInputs>;
@@ -128,6 +155,9 @@ function Inputs({
   setImagePreview: (value: string | null) => void;
   imagePreview: string | null;
   setImageFile: (file: File | null) => void;
+  control: any;
+  ranks: Ranks;
+  categories: CouponCategory[];
 }) {
   const imageFile = watch('image');
 
@@ -158,12 +188,27 @@ function Inputs({
     }
   };
 
+  const colors: {
+    name: string;
+    primary: string;
+    secondary: string;
+  }[] = [
+    { name: 'blue', primary: 'perx-blue', secondary: 'perx-cloud' },
+    { name: 'green', primary: 'perx-canopy', secondary: 'perx-lime' },
+    { name: 'gold', primary: 'perx-gold', secondary: 'perx-yellow' },
+    { name: 'orange', primary: 'perx-rust', secondary: 'perx-orange' },
+    { name: 'pink', primary: 'perx-azalea', secondary: 'perx-pink' },
+    { name: 'navy', primary: 'perx-navy', secondary: 'perx-ocean' },
+  ];
+
+  const allowPointsPurchase = watch('allowPointsPurchase');
+
   return (
     <motion.div
       initial={{ x: '50%', opacity: 0 }}
       animate={{ x: 0, opacity: 1 }}
       transition={{ duration: 0.3, ease: 'easeInOut' }}
-      className="flex flex-col gap-5"
+      className="bg-perx- flex flex-col gap-5"
     >
       <div className="flex flex-col gap-1">
         <PerxInput
@@ -180,14 +225,17 @@ function Inputs({
       </div>
 
       <div className="flex flex-col gap-1">
-        <PerxInput
-          label="Type"
-          type="text"
-          placeholder="Type"
-          required
-          {...register('type')}
+        <PerxDatalist
+          options={categories.map((category) => ({
+            value: category.category,
+            label: category.description,
+          }))}
+          label="Category"
+          {...register('category')}
         />
-        {errors.type?.message && <ErrorMessage message={errors.type.message} />}
+        {errors.category?.message && (
+          <ErrorMessage message={errors.category.message} />
+        )}
       </div>
 
       <div className="flex flex-col gap-1">
@@ -219,6 +267,9 @@ function Inputs({
 
       <div className="flex flex-col gap-1">
         <PerxDateRange onChange={handleDateChange} />
+        {errors.validFrom?.message && (
+          <ErrorMessage message={errors.validFrom.message} />
+        )}
       </div>
 
       <div className="flex flex-col gap-1">
@@ -234,6 +285,7 @@ function Inputs({
           <ErrorMessage message={errors.quantity.message} />
         )}
       </div>
+
       <div className="flex flex-col items-center justify-center">
         {imagePreview && (
           <img
@@ -243,6 +295,7 @@ function Inputs({
           />
         )}
       </div>
+
       <div className="flex flex-col gap-1">
         <Label htmlFor="image">Image</Label>
         <Input
@@ -263,6 +316,91 @@ function Inputs({
           />
         )}
       </div>
+
+      <div className="flex flex-col gap-1">
+        <Controller
+          name="accentColor" // Field name for react-hook-form
+          control={control}
+          defaultValue="perx-blue" // Default value
+          render={({ field }) => (
+            <PerxColors
+              colors={colors}
+              label="Accent color"
+              value={field.value} // Controlled value
+              onChange={field.onChange} // Controlled onChange handler
+            />
+          )}
+        />
+        {errors.accentColor?.message && (
+          <ErrorMessage message={errors.accentColor.message} />
+        )}
+      </div>
+
+      <div className="flex flex-col gap-1">
+        <Controller
+          name="consumerRankAvailability" // Field name for react-hook-form
+          control={control}
+          defaultValue="1" // Default value
+          rules={{ required: 'Required' }} // Validation rules
+          render={({ field, fieldState }) => (
+            <>
+              <PerxSelect
+                label="Consumer Rank Availability"
+                description="Select which consumers can avail this coupon."
+                options={ranks.map(({ id, rank, icon }) => ({
+                  id: id.toString(),
+                  title: rank,
+                  icon,
+                }))}
+                value={field.value} // Controlled value
+                onValueChange={field.onChange} // Controlled onChange handler
+              />
+              {errors.consumerRankAvailability?.message && (
+                <ErrorMessage
+                  message={errors.consumerRankAvailability.message}
+                />
+              )}
+            </>
+          )}
+        />
+      </div>
+
+      <div className="flex flex-col gap-4">
+        <Controller
+          name="allowPointsPurchase"
+          control={control}
+          defaultValue={false} // Default value
+          render={({ field }) => (
+            <div className="flex items-center gap-2">
+              <Checkbox
+                id="allowPointsPurchase"
+                checked={field.value} // Controlled value
+                onCheckedChange={field.onChange} // Controlled onChange handler
+              />
+              <Label
+                htmlFor="allowPointsPurchase"
+                className="mt-[1px] cursor-pointer text-sm"
+              >
+                Allow points purchase
+              </Label>
+            </div>
+          )}
+        />
+        {allowPointsPurchase && (
+          <PerxInput
+            label="Amount of points"
+            type="number"
+            placeholder="0.00"
+            step="any"
+            min={0}
+            {...register('pointsAmount', { valueAsNumber: true })}
+          />
+        )}
+        {errors.pointsAmount?.message && (
+          <ErrorMessage message={errors.pointsAmount.message} />
+        )}
+      </div>
+
       <div className="mt-2 flex justify-end">
         <Button
           type="submit"

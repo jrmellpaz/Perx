@@ -1,7 +1,5 @@
 import MerchantLoginForm from '@/components/merchant/MerchantLogin';
 import { MerchantLogo } from '@/components/merchant/MerchantLogo';
-import { createClient } from '@/utils/supabase/server';
-import { redirect } from 'next/navigation';
 
 export default async function MerchantLoginPage() {
   // const supabase = await createClient();

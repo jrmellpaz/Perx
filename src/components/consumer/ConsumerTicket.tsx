@@ -16,7 +16,7 @@ export default function Ticket({
   merchantLogo: string;
 }) {
   return (
-    <div className="relative flex w-[90%] max-w-[800px] flex-col rounded-lg border bg-white shadow-md">
+    <div className="relative flex w-[99%] max-w-[800px] flex-col rounded-lg border bg-white shadow-md">
       {/* Upper Half */}
       <div className="flex flex-col">
         {image && (

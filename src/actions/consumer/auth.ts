@@ -35,8 +35,8 @@ export async function loginConsumer(data: LoginConsumerInputs) {
     return { error: "Please log in with a consumer account." };
   }
 
-  revalidatePath('/home');
-  redirect('/home');
+  revalidatePath('/explore');
+  redirect('/explore');
 }
 
 export async function signupConsumer(data: ConsumerFormInputs) {
@@ -124,8 +124,8 @@ export async function signupConsumer(data: ConsumerFormInputs) {
   // const confirmationLink = `{{ .SiteURL }}/auth/confirm?token_hash={{ .TokenHash }}&type=signup&redirect_to=${redirectUrl}`;
   // console.log('Confirmation link:', confirmationLink); // Log the confirmation link
 
-  revalidatePath('/home');
-  redirect('/home');
+  revalidatePath('/explore');
+  redirect('/explore');
 }
 
 export async function logoutConsumer() {

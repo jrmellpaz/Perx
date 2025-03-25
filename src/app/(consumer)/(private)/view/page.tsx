@@ -48,7 +48,7 @@ async function Ticket({ id }: { id: string }) {
 
   return (
     <section
-      className={`flex h-full w-full items-center justify-center bg-${accentColor} overflow-y-auto`}
+      className={`flex h-full w-full items-center justify-center bg-${accentColor} overflow-y-auto py-4`}
     >
       <div
         className={cn(

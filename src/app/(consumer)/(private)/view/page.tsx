@@ -1,7 +1,6 @@
 import { fetchCoupon } from '@/actions/merchant/coupon';
 import { fetchRank } from '@/actions/rank';
 import { PerxReadMore } from '@/components/custom/PerxReadMore';
-import { accentColorMap } from '@/lib/merchant/couponSchema';
 import { cn } from '@/lib/utils';
 import { SparklesIcon } from 'lucide-react';
 import { redirect } from 'next/navigation';

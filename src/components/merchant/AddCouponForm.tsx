@@ -291,7 +291,7 @@ function Inputs({
           <img
             src={imagePreview}
             alt="Your coupon image"
-            className="border-input aspect-square size-48 border object-cover"
+            className="border-input aspect-video h-64 w-auto rounded-md border object-cover"
           />
         )}
       </div>
@@ -345,7 +345,7 @@ function Inputs({
           render={({ field, fieldState }) => (
             <>
               <PerxSelect
-                label="Consumer Rank Availability"
+                label="Consumer Rank availability"
                 description="Select which consumers can avail this coupon."
                 options={ranks.map(({ id, rank, icon }) => ({
                   id: id.toString(),

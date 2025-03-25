@@ -78,14 +78,29 @@ export async function getMerchantCoupons(merchantId: string) {
     const { data, error } = await supabase
       .from('coupons')
       .select(
-        'id, description, price, valid_from, valid_to, is_deactivated, image, title, quantity, category'
+        'id, description, price, valid_from, valid_to, is_deactivated, image, title, quantity, category, accent_color, rank_availability, allow_points_purchase, points_amount'
       )
       .eq('merchant_id', merchantId)
       .order('created_at', { ascending: false });
 
     if (error) throw new Error(error.message);
 
-    return data as MerchantCoupon[];
+    return data.map((item) => ({
+      id: item.id,
+      title: item.title,
+      description: item.description,
+      price: item.price,
+      validFrom: item.valid_from,
+      validTo: item.valid_to,
+      isDeactivated: item.is_deactivated,
+      image: item.image,
+      quantity: item.quantity,
+      category: item.category,
+      accentColor: item.accent_color,
+      consumerAvailability: item.rank_availability,
+      allowPointsPurchase: item.allow_points_purchase,
+      pointsAmount: item.points_amount || null,
+    })) as MerchantCoupon[];
   } catch (error) {
     console.error('Get Merchant Coupons Error:', error);
     return [];
@@ -98,7 +113,7 @@ export async function fetchCouponCategories() {
     const { data, error } = await supabase
       .from('coupon_categories')
       .select('category, description')
-      .order('category', { ascending: false });
+      .order('category');
 
     if (error) throw new Error(error.message);
 
@@ -109,21 +124,41 @@ export async function fetchCouponCategories() {
   }
 }
 
-export async function fetchConsumerRanks() {
-  type Ranks = Pick<Rank, 'id' | 'rank' | 'icon'>[];
-
+export async function fetchCoupon(id: string): Promise<MerchantCoupon | null> {
   try {
     const supabase = await createClient();
     const { data, error } = await supabase
-      .from('ranks')
-      .select('id, rank, icon')
-      .order('id', { ascending: true });
+      .from('coupons')
+      .select(
+        'id, description, price, valid_from, valid_to, is_deactivated, image, title, quantity, category, accent_color, rank_availability, allow_points_purchase, points_amount'
+      )
+      .eq('id', id)
+      .single();
 
     if (error) throw new Error(error.message);
+    if (!data) throw new Error('Coupon not found');
 
-    return data as Ranks;
+    // Map snake_case to camelCase
+    const coupon: MerchantCoupon = {
+      id: data.id,
+      title: data.title,
+      description: data.description,
+      price: data.price,
+      validFrom: data.valid_from,
+      validTo: data.valid_to,
+      isDeactivated: data.is_deactivated,
+      image: data.image,
+      quantity: data.quantity,
+      category: data.category,
+      accentColor: data.accent_color,
+      consumerAvailability: data.rank_availability,
+      allowPointsPurchase: data.allow_points_purchase,
+      pointsAmount: data.points_amount,
+    };
+
+    return coupon;
   } catch (error) {
-    console.error('Fetch Consumer Ranks Error:', error);
-    return [];
+    console.error('Fetch Coupon Error:', error);
+    return null;
   }
 }

@@ -1,3 +1,8 @@
+import { fetchCoupon } from '@/actions/merchant/coupon';
+import { fetchRank } from '@/actions/rank';
+import { PerxReadMore } from '@/components/custom/PerxReadMore';
+import { accentColorMap } from '@/lib/merchant/couponSchema';
+import { SparklesIcon } from 'lucide-react';
 import { redirect } from 'next/navigation';
 
 export default async function ViewCoupon({
@@ -12,63 +17,148 @@ export default async function ViewCoupon({
   }
 
   return (
-    <section>
-      <Ticket
-        title="Sample Ticket"
-        description="This is a sample ticket description."
-        price="$10.00"
-        image="https://via.placeholder.com/150"
-      />
+    <section className="h-full w-full overflow-hidden">
+      <Ticket id={id} />
     </section>
   );
 }
 
-function Ticket({
-  title,
-  description,
-  price,
-  image,
-}: {
-  title: string;
-  description: string;
-  price: string;
-  image?: string;
-}) {
+async function Ticket({ id }: { id: string }) {
+  const coupon = await fetchCoupon(id);
+  if (!coupon) {
+    redirect('/not-found');
+  }
+  const {
+    title,
+    description,
+    price,
+    validFrom,
+    validTo,
+    isDeactivated,
+    image,
+    quantity,
+    category,
+    accentColor,
+    consumerAvailability,
+    allowPointsPurchase,
+    pointsAmount,
+  } = coupon;
+
+  const { rank, maxPoints, icon } = await fetchRank(consumerAvailability);
+  const secondaryColor = accentColorMap[accentColor];
+
   return (
-    <div className="relative flex w-[90%] max-w-[800px] flex-col rounded-lg border bg-white shadow-md">
-      {/* Upper Half */}
-      <div className="flex flex-col">
-        {image && (
-          <div className="h-40 w-full overflow-hidden rounded-t-lg">
+    <section
+      className={`flex h-full w-full items-center justify-center bg-${accentColor} overflow-y-auto`}
+    >
+      <div
+        className={`bg-perx-white relative flex w-[90%] flex-col rounded-lg shadow-xl sm:w-[60%] sm:max-w-[480px]`}
+      >
+        {/* Upper Half */}
+        <div className="flex flex-col items-center">
+          <div className="h-auto w-full overflow-hidden rounded-t-lg">
             <img
               src={image}
               alt={title}
-              className="h-full w-full object-cover"
+              className="aspect-video h-auto w-full object-cover"
             />
           </div>
-        )}
-        <div className="p-4">
-          <h2 className="text-lg font-bold text-gray-800">{title}</h2>
-          <p className="text-sm text-gray-600">{description}</p>
+          <div className="flex w-full flex-col gap-4 px-6 py-4">
+            <div className="flex flex-col">
+              <h2 className="font-mono text-lg/tight font-black tracking-tight">
+                {title}
+              </h2>
+              {
+                // TODO: Add merchant logo
+              }
+              <span className="text-muted-foreground w-fit rounded-full border px-1.5 py-0.5 text-xs/tight tracking-tight">
+                {category}
+              </span>
+            </div>
+            <div className="flex items-center">
+              <div className="flex flex-col items-center">
+                <h3
+                  className={`text-${accentColor} font-mono text-sm font-medium tracking-tight`}
+                >
+                  {quantity}
+                </h3>
+                <p className={`text-muted-foreground text-xs tracking-tight`}>
+                  Items left
+                </p>
+              </div>
+              <div
+                className={`border-muted-foreground mx-3 h-6 w-[0.25px] rounded-full border-l-[0.5px]`}
+              ></div>
+              <div className="flex flex-col items-center">
+                <h3
+                  className={`text-${accentColor} font-mono text-sm font-medium tracking-tight`}
+                >
+                  {new Date(validFrom).toLocaleDateString()} -{' '}
+                  {new Date(validTo).toLocaleDateString()}
+                </h3>
+                <p className={`text-muted-foreground text-xs tracking-tight`}>
+                  Validity
+                </p>
+              </div>
+              <div
+                className={`border-muted-foreground mx-3 h-6 w-[0.25px] rounded-full border-l-[0.5px]`}
+              ></div>
+              <div className="flex flex-col items-center">
+                <h3
+                  className={`text-${accentColor} font-mono text-sm font-medium tracking-tight`}
+                >
+                  {consumerAvailability}
+                </h3>
+                <p className={`text-muted-foreground text-xs tracking-tight`}>
+                  For {rank} and up
+                </p>
+              </div>
+            </div>
+            <div className="flex flex-col">
+              <h3 className="font-mono text-xs font-medium tracking-tight">
+                About this coupon
+              </h3>
+              <PerxReadMore
+                id="coupon-description"
+                accentColor={accentColor}
+                text="Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum."
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* Broken Line Divider */}
+        <div className="relative flex items-center">
+          <div
+            className={`w-full border-t border-dashed border-${accentColor}`}
+          ></div>
+          {/* Left Circular Div */}
+          <div
+            className={`inset-right absolute -left-3 size-6 rounded-full bg-${accentColor}`}
+          ></div>
+          {/* Right Circular Div */}
+          <div
+            className={`inset-left absolute -right-3 size-6 rounded-full bg-${accentColor}`}
+          ></div>
+        </div>
+
+        {/* Lower Half */}
+        <div className="flex items-center justify-between p-6">
+          <span className="flex gap-2 text-xl font-semibold">
+            &#8369;{price}{' '}
+            {allowPointsPurchase && (
+              <span className="flex items-center gap-1">
+                {' '}
+                or&nbsp;
+                <SparklesIcon /> {pointsAmount}{' '}
+              </span>
+            )}
+          </span>
+          <button className="bg-perx-blue hover:bg-perx-blue/90 rounded-full px-4 py-2 text-sm font-medium text-white">
+            Purchase
+          </button>
         </div>
       </div>
-
-      {/* Broken Line Divider */}
-      <div className="relative flex items-center">
-        <div className="w-full border-t border-dashed border-gray-300"></div>
-        {/* Left Circular Div */}
-        <div className="border-muted-foreground/30 inset-right absolute -left-3 size-6 rounded-full bg-white"></div>
-        {/* Right Circular Div */}
-        <div className="border-muted-foreground/30 inset-left absolute -right-3 size-6 rounded-full bg-white"></div>
-      </div>
-
-      {/* Lower Half */}
-      <div className="flex items-center justify-between p-4">
-        <span className="text-perx-crimson text-xl font-semibold">{price}</span>
-        <button className="bg-perx-blue hover:bg-perx-blue/90 rounded-full px-4 py-2 text-sm font-medium text-white">
-          Redeem
-        </button>
-      </div>
-    </div>
+    </section>
   );
 }

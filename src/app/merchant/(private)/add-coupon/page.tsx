@@ -1,11 +1,9 @@
-import {
-  fetchConsumerRanks,
-  fetchCouponCategories,
-} from '@/actions/merchant/coupon';
+import { fetchCouponCategories } from '@/actions/merchant/coupon';
+import { fetchRanks } from '@/actions/rank';
 import AddCouponForm from '@/components/merchant/AddCouponForm';
 
 export default async function AddCoupon() {
-  const ranks = await fetchConsumerRanks();
+  const ranks = await fetchRanks();
   const categories = await fetchCouponCategories();
 
   return (

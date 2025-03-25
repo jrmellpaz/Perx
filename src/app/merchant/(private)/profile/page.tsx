@@ -115,11 +115,11 @@ function CouponList({ coupons }: { coupons: MerchantCoupon[] }) {
           <div
             className={`flex grow basis-60 flex-col gap-2 overflow-hidden rounded-md border pb-2`}
           >
-            <div className="coupon-image aspect-square h-auto w-full">
+            <div className="coupon-image aspect-video h-auto w-full">
               <img
                 src={coupon.image}
                 alt={`${coupon.title} coupon`}
-                className="aspect-square h-full w-full rounded-sm object-cover"
+                className="aspect-video h-auto w-full rounded-sm object-cover"
               />
             </div>
             <div className="flex flex-col gap-1 px-2 py-1">

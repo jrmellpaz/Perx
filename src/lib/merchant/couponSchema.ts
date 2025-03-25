@@ -67,9 +67,9 @@ export type MerchantCoupon = {
   id: string;
   description: string;
   price: number;
-  valid_from: string;
-  valid_to: string;
-  is_deactivated: boolean;
+  validFrom: string;
+  validTo: string;
+  isDeactivated: boolean;
   image: string;
   title: string;
   quantity: number;
@@ -99,4 +99,13 @@ export type MerchantCoupon = {
     | '15';
   allowPointsPurchase: boolean;
   pointsAmount: number | null;
+};
+
+export const accentColorMap: { [key: string]: string } = {
+  'perx-blue': 'perx-cloud/50',
+  'perx-canopy': 'perx-lime/50',
+  'perx-gold': 'perx-yellow',
+  'perx-rust': 'perx-orange/50',
+  'perx-azalea': 'perx-pink',
+  'perx-navy': 'perx-ocean',
 };

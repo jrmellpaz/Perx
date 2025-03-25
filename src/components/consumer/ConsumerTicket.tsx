@@ -21,7 +21,7 @@ export default function Ticket({
   return (
     <div className="relative flex w-[99%] max-w-[800px] flex-col rounded-lg border bg-white shadow-md">
       {/* Upper Half */}
-      <Link href={`/merchant/view?id=${id}`} key={id}>
+      <Link href={`/view?id=${id}`} key={id}>
         <div className="flex flex-col">
           {image && (
             <div className="h-40 w-full overflow-hidden rounded-t-lg">

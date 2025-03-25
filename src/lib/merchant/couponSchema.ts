@@ -1,11 +1,20 @@
+import { fetchCouponCategories } from '@/actions/merchant/coupon';
 import { z } from 'zod';
 
 const ACCEPTED_IMAGE_TYPES = ['image/jpeg', 'image/jpg', 'image/png'];
 
+const data = await fetchCouponCategories();
+const categoryNames = data.map((category) => category.category);
+
+export const couponCategories = z.enum(categoryNames as [string, ...string[]], {
+  required_error: 'Category is required',
+  invalid_type_error: 'Invalid category',
+});
+
 export const addCouponSchema = z
   .object({
     title: z.string().nonempty('Title is required'),
-    category: z.string().nonempty('Type is required'),
+    category: couponCategories,
     description: z.string().nonempty('Description is required'),
     price: z
       .number({
@@ -100,13 +109,4 @@ export type MerchantCoupon = {
     | '15';
   allowPointsPurchase: boolean;
   pointsAmount: number | null;
-};
-
-export const accentColorMap: { [key: string]: string } = {
-  'perx-blue': 'perx-cloud/50',
-  'perx-canopy': '#b9f0df',
-  'perx-gold': 'perx-yellow',
-  'perx-rust': 'perx-orange/50',
-  'perx-azalea': 'perx-pink',
-  'perx-navy': 'perx-ocean',
 };

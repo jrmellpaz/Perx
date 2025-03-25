@@ -30,6 +30,7 @@ import PerxSelect from '../custom/PerxSelect';
 import { Checkbox } from '../ui/checkbox';
 import { addCoupon } from '@/actions/merchant/coupon';
 import { PerxDatalist } from '../custom/PerxDatalist';
+import { toast } from 'sonner';
 
 type Ranks = Pick<Rank, 'id' | 'rank' | 'icon'>[];
 
@@ -40,11 +41,8 @@ export default function AddCouponForm({
   ranks: Ranks;
   categories: CouponCategory[];
 }) {
-  const [submitError, setSubmitError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
-  const [imageFile, setImageFile] = useState<File | null>(null);
 
   const {
     register,
@@ -66,54 +64,36 @@ export default function AddCouponForm({
   }, [errors]);
 
   const processForm: SubmitHandler<AddCouponInputs> = async (data) => {
-    console.log('Form submission started');
     setIsSubmitting(true);
-    setSuccessMessage(null);
-    setSubmitError(null);
-    console.log('Form submitted with:', data);
     try {
-      console.log('Submitting data:', data);
-      console.log('Image file before submission:', imageFile);
-
       const response = await addCoupon(data);
-      console.log('Response from addCoupon:', response);
 
-      setSuccessMessage('Coupon added successfully! 🥳');
+      if (!response.success) {
+        throw new Error(response.message);
+      }
+
+      toast('Coupon added successfully! 🥳');
       reset();
       setImagePreview(null);
-      setImageFile(null);
     } catch (error) {
       console.error('Submission error:', error);
-      setSubmitError('Failed to submit coupon. Please try again.');
+      toast.error(
+        (error as { message: string }).message ||
+          'An error occurred while adding the coupon.'
+      );
     } finally {
-      console.log('Form submission finished');
       setIsSubmitting(false);
     }
   };
 
   return (
     <section className="my-8 flex h-auto w-full max-w-[800px] flex-col gap-6">
-      {submitError && (
-        <PerxAlert
-          heading="Something went wrong 😢"
-          message={submitError}
-          variant="error"
-        />
-      )}
-      {successMessage && (
-        <PerxAlert heading={successMessage} variant="success" />
-      )}
       <form
         onSubmit={(e) => {
           e.preventDefault();
-          console.log('Form submission triggered!');
-
-          console.log('Calling handleSubmit...');
           handleSubmit((data) => {
-            console.log('Inside handleSubmit callback, received data:', data);
             processForm(data);
           })(e);
-          console.log('After handleSubmit call.');
         }}
       >
         <Inputs
@@ -124,7 +104,6 @@ export default function AddCouponForm({
           isSubmitting={isSubmitting}
           setImagePreview={setImagePreview}
           imagePreview={imagePreview}
-          setImageFile={setImageFile}
           control={control}
           ranks={ranks}
           categories={categories}
@@ -142,7 +121,6 @@ function Inputs({
   isSubmitting,
   setImagePreview,
   imagePreview,
-  setImageFile,
   control,
   ranks,
   categories,
@@ -154,7 +132,6 @@ function Inputs({
   isSubmitting: boolean;
   setImagePreview: (value: string | null) => void;
   imagePreview: string | null;
-  setImageFile: (file: File | null) => void;
   control: any;
   ranks: Ranks;
   categories: CouponCategory[];
@@ -231,10 +208,13 @@ function Inputs({
             label: category.description,
           }))}
           label="Category"
+          required
           {...register('category')}
         />
         {errors.category?.message && (
-          <ErrorMessage message={errors.category.message} />
+          <ErrorMessage
+            message={'Invalid category. Select from the given list only.'}
+          />
         )}
       </div>
 

@@ -3,13 +3,29 @@ import { z } from 'zod';
 
 const ACCEPTED_IMAGE_TYPES = ['image/jpeg', 'image/jpg', 'image/png'];
 
-const data = await fetchCouponCategories();
-const categoryNames = data.map((category) => category.category);
-
-export const couponCategories = z.enum(categoryNames as [string, ...string[]], {
-  required_error: 'Category is required',
-  invalid_type_error: 'Invalid category',
-});
+export const couponCategories = z.enum([
+  'Hardware & Tools',
+  'Transportation & Delivery',
+  'Luxury Goods',
+  'Health, Beauty, & Wellness',
+  'Automotive',
+  'Office & Business',
+  'Travel & Tourism',
+  'Sports & Fitness',
+  'Internet & Telecom',
+  'Seasonal & Holiday Offers',
+  'Technology & Electronics',
+  'Entertainment & Leisure',
+  'Food & Beverage',
+  'Baby & Maternity',
+  'Home & Living',
+  'Subscription & Membership',
+  'Toys & Hobbies',
+  'Fashion & Apparel',
+  'Professional Services',
+  'Events & Celebration',
+  'Pets',
+]);
 
 export const addCouponSchema = z
   .object({

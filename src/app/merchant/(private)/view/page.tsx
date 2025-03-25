@@ -2,6 +2,9 @@ import { fetchCoupon } from '@/actions/merchant/coupon';
 import { fetchRank } from '@/actions/rank';
 import { PerxReadMore } from '@/components/custom/PerxReadMore';
 import { accentColorMap } from '@/lib/merchant/couponSchema';
+import { cn } from '@/lib/utils';
+import { createClient } from '@/utils/supabase/server';
+import { create } from 'domain';
 import { SparklesIcon } from 'lucide-react';
 import { redirect } from 'next/navigation';
 
@@ -25,9 +28,13 @@ export default async function ViewCoupon({
 
 async function Ticket({ id }: { id: string }) {
   const coupon = await fetchCoupon(id);
-  if (!coupon) {
+  const supabase = await createClient();
+  const { data: user } = await supabase.auth.getUser();
+
+  if (!coupon || !user?.user || coupon.merchantId !== user.user.id) {
     redirect('/not-found');
   }
+
   const {
     title,
     description,
@@ -45,14 +52,28 @@ async function Ticket({ id }: { id: string }) {
   } = coupon;
 
   const { rank, maxPoints, icon } = await fetchRank(consumerAvailability);
-  const secondaryColor = accentColorMap[accentColor];
 
   return (
     <section
       className={`flex h-full w-full items-center justify-center bg-${accentColor} overflow-y-auto`}
     >
       <div
-        className={`bg-perx-white relative flex w-[90%] flex-col rounded-lg shadow-xl sm:w-[60%] sm:max-w-[480px]`}
+        className={cn(
+          `relative flex w-[90%] flex-col rounded-lg shadow-xl sm:w-[60%] sm:max-w-[480px]`,
+          accentColor === 'perx-canopy'
+            ? 'bg-[#b9f0df]'
+            : accentColor === 'perx-rust'
+              ? 'bg-[#fadac8]'
+              : accentColor === 'perx-blue'
+                ? 'bg-[#b7d0f7]'
+                : accentColor === 'perx-gold'
+                  ? 'bg-[#eddfc5]'
+                  : accentColor === 'perx-azalea'
+                    ? 'bg-[#f0c7db]'
+                    : accentColor === 'perx-navy'
+                      ? 'bg-[#b6c7e3]'
+                      : 'bg-perx-white'
+        )}
       >
         {/* Upper Half */}
         <div className="flex flex-col items-center">
@@ -65,13 +86,15 @@ async function Ticket({ id }: { id: string }) {
           </div>
           <div className="flex w-full flex-col gap-4 px-6 py-4">
             <div className="flex flex-col">
-              <h2 className="font-mono text-lg/tight font-black tracking-tight">
+              <h2
+                className={`text-${accentColor} font-mono text-lg/tight font-black tracking-tight`}
+              >
                 {title}
               </h2>
               {
                 // TODO: Add merchant logo
               }
-              <span className="text-muted-foreground w-fit rounded-full border px-1.5 py-0.5 text-xs/tight tracking-tight">
+              <span className="border-perx-black text-perx-black w-fit rounded-full border px-1.5 py-0.5 text-xs/tight tracking-tight">
                 {category}
               </span>
             </div>
@@ -82,7 +105,7 @@ async function Ticket({ id }: { id: string }) {
                 >
                   {quantity}
                 </h3>
-                <p className={`text-muted-foreground text-xs tracking-tight`}>
+                <p className={`text-perx-black text-xs tracking-tight`}>
                   Items left
                 </p>
               </div>
@@ -96,7 +119,7 @@ async function Ticket({ id }: { id: string }) {
                   {new Date(validFrom).toLocaleDateString()} -{' '}
                   {new Date(validTo).toLocaleDateString()}
                 </h3>
-                <p className={`text-muted-foreground text-xs tracking-tight`}>
+                <p className={`text-perx-black text-xs tracking-tight`}>
                   Validity
                 </p>
               </div>
@@ -109,13 +132,15 @@ async function Ticket({ id }: { id: string }) {
                 >
                   {consumerAvailability}
                 </h3>
-                <p className={`text-muted-foreground text-xs tracking-tight`}>
+                <p className={`text-perx-black text-xs tracking-tight`}>
                   For {rank} and up
                 </p>
               </div>
             </div>
             <div className="flex flex-col">
-              <h3 className="font-mono text-xs font-medium tracking-tight">
+              <h3
+                className={`text-${accentColor} font-mono text-xs font-medium tracking-tight`}
+              >
                 About this coupon
               </h3>
               <PerxReadMore
@@ -143,20 +168,34 @@ async function Ticket({ id }: { id: string }) {
         </div>
 
         {/* Lower Half */}
-        <div className="flex items-center justify-between p-6">
-          <span className="flex gap-2 text-xl font-semibold">
-            &#8369;{price}{' '}
+        <div className="flex flex-col gap-4 p-6">
+          {/* Price Section */}
+          <div className="flex flex-col items-center gap-2">
+            <span className={`text-${accentColor} font-mono text-xl font-bold`}>
+              &#8369;{price.toFixed(2)}
+            </span>
             {allowPointsPurchase && (
-              <span className="flex items-center gap-1">
-                {' '}
-                or&nbsp;
-                <SparklesIcon /> {pointsAmount}{' '}
+              <span className="flex items-center gap-2 text-sm text-gray-600">
+                or <SparklesIcon size={20} className="" /> {pointsAmount} Points
               </span>
             )}
-          </span>
-          <button className="bg-perx-blue hover:bg-perx-blue/90 rounded-full px-4 py-2 text-sm font-medium text-white">
-            Purchase
-          </button>
+          </div>
+
+          {/* Payment Buttons */}
+          <div className="flex gap-4">
+            {allowPointsPurchase && (
+              <button
+                className={`flex-1 rounded-lg border text-${accentColor} border-${accentColor} px-4 py-2 text-sm font-medium hover:bg-${accentColor}/50 cursor-pointer`}
+              >
+                Purchase with Points
+              </button>
+            )}
+            <button
+              className={`bg-${accentColor} hover:bg-${accentColor}/70 text-perx-white flex-1 cursor-pointer rounded-lg px-4 py-2 text-sm font-medium`}
+            >
+              Pay with Cash
+            </button>
+          </div>
         </div>
       </div>
     </section>

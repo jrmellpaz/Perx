@@ -130,7 +130,7 @@ export async function fetchCoupon(id: string): Promise<MerchantCoupon | null> {
     const { data, error } = await supabase
       .from('coupons')
       .select(
-        'id, description, price, valid_from, valid_to, is_deactivated, image, title, quantity, category, accent_color, rank_availability, allow_points_purchase, points_amount'
+        'id, merchant_id, description, price, valid_from, valid_to, is_deactivated, image, title, quantity, category, accent_color, rank_availability, allow_points_purchase, points_amount'
       )
       .eq('id', id)
       .single();
@@ -141,6 +141,7 @@ export async function fetchCoupon(id: string): Promise<MerchantCoupon | null> {
     // Map snake_case to camelCase
     const coupon: MerchantCoupon = {
       id: data.id,
+      merchantId: data.merchant_id,
       title: data.title,
       description: data.description,
       price: data.price,

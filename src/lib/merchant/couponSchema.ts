@@ -65,6 +65,7 @@ export type CouponCategory = {
 };
 export type MerchantCoupon = {
   id: string;
+  merchantId: string;
   description: string;
   price: number;
   validFrom: string;
@@ -103,7 +104,7 @@ export type MerchantCoupon = {
 
 export const accentColorMap: { [key: string]: string } = {
   'perx-blue': 'perx-cloud/50',
-  'perx-canopy': 'perx-lime/50',
+  'perx-canopy': '#b9f0df',
   'perx-gold': 'perx-yellow',
   'perx-rust': 'perx-orange/50',
   'perx-azalea': 'perx-pink',

@@ -182,7 +182,7 @@ async function Ticket({ id }: { id: string }) {
           </div>
 
           {/* Payment Buttons */}
-          <div className="flex gap-4">
+          {/* <div className="flex gap-4">
             {allowPointsPurchase && (
               <button
                 className={`flex-1 rounded-lg border text-${accentColor} border-${accentColor} px-4 py-2 text-sm font-medium hover:bg-${accentColor}/50 cursor-pointer`}
@@ -195,7 +195,7 @@ async function Ticket({ id }: { id: string }) {
             >
               Pay with Cash
             </button>
-          </div>
+          </div>*/}
         </div>
       </div>
     </section>

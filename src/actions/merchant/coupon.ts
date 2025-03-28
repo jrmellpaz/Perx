@@ -52,6 +52,7 @@ export async function addCoupon(couponData: AddCouponInputs) {
       description: couponData.description,
       price: couponData.price,
       quantity: couponData.quantity,
+      allow_limited_purchase: couponData.allowLimitedPurchase,
       valid_from: couponData.validFrom,
       valid_to: couponData.validTo,
       image: imageUrl, // Store image URL

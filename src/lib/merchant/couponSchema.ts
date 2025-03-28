@@ -45,8 +45,9 @@ export const addCouponSchema = z
       })
       .int('Invalid quantity')
       .positive('Quantity must be greater than 0'),
-    validFrom: z.string().date(),
-    validTo: z.string().date(),
+    allowLimitedPurchase: z.boolean().default(false),
+    validFrom: z.union([z.string().datetime(), z.null()]).optional(),
+    validTo: z.union([z.string().datetime(), z.null()]).optional(),
     image: z
       .any()
       .refine((files) => files?.length > 0, {
@@ -80,6 +81,20 @@ export const addCouponSchema = z
     {
       message: 'Points amount is required when points purchase is allowed.',
       path: ['pointsAmount'],
+    }
+  )
+  .refine(
+    (data) =>
+      data.allowLimitedPurchase
+        ? data.validFrom !== null &&
+          data.validTo !== null &&
+          typeof data.validFrom === 'string' &&
+          typeof data.validTo === 'string'
+        : data.validFrom === null && data.validTo === null,
+    {
+      message:
+        'When allowLimitedPurchase is true, validFrom and validTo must be valid dates. When false, they must be null.',
+      path: ['validFrom', 'validTo'], // Attach the error to these fields
     }
   );
 

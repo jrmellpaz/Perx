@@ -152,9 +152,14 @@ function Inputs({
   }, [imageFile]);
 
   useEffect(() => {
-    register('validFrom', { required: 'Required' });
-    register('validTo', { required: 'Required' });
-  }, [register]);
+    if (watch('allowLimitedPurchase')) {
+      register('validFrom', { required: 'Valid From is required' });
+      register('validTo', { required: 'Valid To is required' });
+    } else {
+      setValue('validFrom', null); // Reset validFrom to null when unchecked
+      setValue('validTo', null); // Reset validTo to null when unchecked
+    }
+  }, [watch('allowLimitedPurchase'), register, setValue]);
 
   const handleDateChange = (
     value: { start: DateValue; end: DateValue } | null
@@ -242,13 +247,6 @@ function Inputs({
         />
         {errors.price?.message && (
           <ErrorMessage message={errors.price.message} />
-        )}
-      </div>
-
-      <div className="flex flex-col gap-1">
-        <PerxDateRange onChange={handleDateChange} />
-        {errors.validFrom?.message && (
-          <ErrorMessage message={errors.validFrom.message} />
         )}
       </div>
 
@@ -367,17 +365,50 @@ function Inputs({
           )}
         />
         {allowPointsPurchase && (
-          <PerxInput
-            label="Amount of points"
-            type="number"
-            placeholder="0.00"
-            step="any"
-            min={0}
-            {...register('pointsAmount', { valueAsNumber: true })}
-          />
+          <div className="flex flex-col gap-1">
+            <PerxInput
+              label="Amount of points"
+              type="number"
+              placeholder="0.00"
+              step="any"
+              min={0}
+              {...register('pointsAmount', { valueAsNumber: true })}
+            />
+            {errors.pointsAmount?.message && (
+              <ErrorMessage message={errors.pointsAmount.message} />
+            )}
+          </div>
         )}
-        {errors.pointsAmount?.message && (
-          <ErrorMessage message={errors.pointsAmount.message} />
+      </div>
+
+      <div className="flex flex-col gap-4">
+        <Controller
+          name="allowLimitedPurchase"
+          control={control}
+          defaultValue={false} // Default value
+          render={({ field }) => (
+            <div className="flex items-center gap-2">
+              <Checkbox
+                id="allowLimitedPurchase"
+                checked={field.value} // Controlled value
+                onCheckedChange={field.onChange} // Controlled onChange handler
+              />
+              <Label
+                htmlFor="allowLimitedPurchase"
+                className="mt-[1px] cursor-pointer text-sm"
+              >
+                Allow limited purchase
+              </Label>
+            </div>
+          )}
+        />
+        {watch('allowLimitedPurchase') && (
+          <div className="flex flex-col gap-1">
+            <PerxDateRange onChange={handleDateChange} />
+            {errors.validFrom?.message && (
+              <ErrorMessage message={errors.validFrom.message} />
+            )}
+          </div>
         )}
       </div>
 

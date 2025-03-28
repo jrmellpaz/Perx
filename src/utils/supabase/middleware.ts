@@ -48,13 +48,17 @@ export async function updateSession(request: NextRequest) {
       '/merchant/login',
       '/merchant/register',
       '/merchant/recover-password',
-      // '/merchant/change-password',
     ],
     private: [
       '/merchant/dashboard',
       '/merchant/profile',
       '/merchant/settings',
       '/merchant/scan-qr',
+      '/merchant/add-coupon',
+      '/merchant/edit-profile',
+      '/merchant/monthly-records',
+      '/merchant/trans-details',
+      '/merchant/view',
     ],
     public: ['/merchant/change-password'],
   };

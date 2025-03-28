@@ -240,7 +240,13 @@ function Inputs({
           step="0.01"
           min={0}
           required
-          {...register('price', { valueAsNumber: true })}
+          {...register('price', {
+            valueAsNumber: true,
+            onChange: (e) => {
+              const value = parseFloat(e.target.value);
+              setValue('price', parseFloat(value.toFixed(2)));
+            },
+          })}
         />
         {errors.price?.message && (
           <ErrorMessage message={errors.price.message} />
@@ -369,7 +375,13 @@ function Inputs({
               placeholder="0.00"
               step="0.01"
               min={0}
-              {...register('pointsAmount', { valueAsNumber: true })}
+              {...register('pointsAmount', {
+                valueAsNumber: true,
+                onChange: (e) => {
+                  const value = parseFloat(e.target.value);
+                  setValue('pointsAmount', parseFloat(value.toFixed(2)));
+                },
+              })}
             />
             {errors.pointsAmount?.message && (
               <ErrorMessage message={errors.pointsAmount.message} />

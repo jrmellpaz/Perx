@@ -394,7 +394,7 @@ function Inputs({
                 htmlFor="allowLimitedPurchase"
                 className="mt-[1px] cursor-pointer text-sm"
               >
-                Allow limited purchase
+                Limit purchase to a date range
               </Label>
             </div>
           )}

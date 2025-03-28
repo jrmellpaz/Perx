@@ -46,8 +46,8 @@ export const addCouponSchema = z
       .int('Invalid quantity')
       .positive('Quantity must be greater than 0'),
     allowLimitedPurchase: z.boolean().default(false),
-    validFrom: z.union([z.string().datetime(), z.null()]).optional(),
-    validTo: z.union([z.string().datetime(), z.null()]).optional(),
+    validFrom: z.string().datetime().optional(),
+    validTo: z.string().datetime().optional(),
     image: z
       .any()
       .refine((files) => files?.length > 0, {
@@ -109,8 +109,8 @@ export type MerchantCoupon = {
   description: string;
   price: number;
   allowLimitedPurchase: boolean;
-  validFrom: string | null;
-  validTo: string | null;
+  validFrom: string;
+  validTo: string;
   isDeactivated: boolean;
   image: string;
   title: string;

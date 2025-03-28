@@ -55,6 +55,8 @@ export default function AddCouponForm({
     resolver: zodResolver(addCouponSchema),
     defaultValues: {
       allowPointsPurchase: false,
+      validFrom: '',
+      validTo: '',
     },
   });
 

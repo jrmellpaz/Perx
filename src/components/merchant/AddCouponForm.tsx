@@ -55,10 +55,12 @@ export default function AddCouponForm({
     resolver: zodResolver(addCouponSchema),
     defaultValues: {
       allowPointsPurchase: false,
-      validFrom: '',
-      validTo: '',
     },
   });
+
+  useEffect(() => {
+    console.log('Errors:', errors);
+  }, [errors]);
 
   const processForm: SubmitHandler<AddCouponInputs> = async (data) => {
     setIsSubmitting(true);
@@ -88,7 +90,9 @@ export default function AddCouponForm({
       <form
         onSubmit={(e) => {
           e.preventDefault();
+          console.log('here', watch('validFrom'));
           handleSubmit((data) => {
+            console.log('Form data:', data);
             processForm(data);
           })(e);
         }}
@@ -150,11 +154,13 @@ function Inputs({
 
   useEffect(() => {
     if (watch('allowLimitedPurchase')) {
+      console.log('di dpaat here');
       register('validFrom', { required: 'Valid From is required' });
       register('validTo', { required: 'Valid To is required' });
     } else {
-      setValue('validFrom', null); // Reset validFrom to null when unchecked
-      setValue('validTo', null); // Reset validTo to null when unchecked
+      console.log('dapat here');
+      setValue('validFrom', '');
+      setValue('validTo', '');
     }
   }, [watch('allowLimitedPurchase'), register, setValue]);
 

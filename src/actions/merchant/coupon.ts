@@ -6,7 +6,6 @@ import {
   CouponCategory,
   MerchantCoupon,
 } from '@/lib/merchant/couponSchema';
-import { Rank } from '@/lib/consumer/rankSchema';
 
 export async function addCoupon(couponData: AddCouponInputs) {
   try {
@@ -53,9 +52,13 @@ export async function addCoupon(couponData: AddCouponInputs) {
       price: couponData.price,
       quantity: couponData.quantity,
       allow_limited_purchase: couponData.allowLimitedPurchase,
-      valid_from: couponData.validFrom,
-      valid_to: couponData.validTo,
-      image: imageUrl, // Store image URL
+      valid_from: couponData.allowLimitedPurchase
+        ? couponData.validFrom
+        : new Date().toISOString(),
+      valid_to: couponData.allowLimitedPurchase
+        ? couponData.validTo
+        : new Date(Date.now() + 31536000000).toISOString(),
+      image: imageUrl,
       accent_color: couponData.accentColor,
       rank_availability: couponData.consumerRankAvailability,
       allow_points_purchase: couponData.allowPointsPurchase,

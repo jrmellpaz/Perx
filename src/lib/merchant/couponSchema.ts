@@ -46,8 +46,12 @@ export const addCouponSchema = z
       .int('Invalid quantity')
       .positive('Quantity must be greater than 0'),
     allowLimitedPurchase: z.boolean().default(false),
-    validFrom: z.string().datetime().optional(),
-    validTo: z.string().datetime().optional(),
+    validFrom: z
+      .union([z.string().datetime(), z.literal('')]) // Allow datetime string or empty string
+      .optional(),
+    validTo: z
+      .union([z.string().datetime(), z.literal('')]) // Allow datetime string or empty string
+      .optional(),
     image: z
       .any()
       .refine((files) => files?.length > 0, {
@@ -84,16 +88,23 @@ export const addCouponSchema = z
     }
   )
   .refine(
-    (data) =>
-      data.allowLimitedPurchase
-        ? data.validFrom !== null &&
-          data.validTo !== null &&
+    (data) => {
+      if (data.allowLimitedPurchase) {
+        // When allowLimitedPurchase is true, validFrom and validTo must be valid dateTime strings
+        return (
           typeof data.validFrom === 'string' &&
-          typeof data.validTo === 'string'
-        : data.validFrom === null && data.validTo === null,
+          typeof data.validTo === 'string' &&
+          data.validFrom !== '' &&
+          data.validTo !== ''
+        );
+      } else {
+        // When allowLimitedPurchase is false, validFrom and validTo must be empty strings
+        return data.validFrom === '' && data.validTo === '';
+      }
+    },
     {
       message:
-        'When allowLimitedPurchase is true, validFrom and validTo must be valid dates. When false, they must be null.',
+        'When allowLimitedPurchase is true, validFrom and validTo must be valid dateTime strings. When false, they must be empty strings.',
       path: ['validFrom', 'validTo'], // Attach the error to these fields
     }
   );

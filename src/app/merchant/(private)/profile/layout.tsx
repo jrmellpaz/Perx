@@ -1,10 +1,10 @@
-import { getMerchantCoupons } from '@/actions/merchant/coupon';
+// app/merchant/profile/layout.tsx
+import { ReactNode } from 'react';
 import { getMerchantProfile } from '@/actions/merchant/profile';
-import PerxTabs from '@/components/custom/PerxTabs';
+import Tabs from '@/components/custom/Tabs'; // Import the updated Tabs component
+import { MerchantProfile } from '@/lib/merchant/profileSchema';
+import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import { MerchantCoupon } from '@/lib/merchant/couponSchema';
-import type { MerchantProfile } from '@/lib/merchant/profileSchema';
-import { createClient } from '@/utils/supabase/server';
 import {
   ArchiveIcon,
   MailIcon,
@@ -13,44 +13,50 @@ import {
   SquareLibraryIcon,
   TicketsIcon,
 } from 'lucide-react';
-import Link from 'next/link';
-import { JSX } from 'react';
+import { createClient } from '@/utils/supabase/server';
+import { PerxReadMore } from '@/components/custom/PerxReadMore';
 
-interface ProfileNavItems {
-  icon: JSX.Element;
-  name: string;
-  content?: JSX.Element;
-}
-
-export default async function MerchantProfile() {
+export default async function ProfileLayout({
+  children,
+  tabs,
+}: {
+  children: ReactNode;
+  tabs: ReactNode;
+}) {
   const supabase = await createClient();
   const {
     data: { user },
   } = await supabase.auth.getUser();
+  const data = await getMerchantProfile(user!.id); // Fetch profile data
 
-  const data = await getMerchantProfile(user!.id);
-  const coupons = await getMerchantCoupons(user!.id);
-
-  const profileNavItems: ProfileNavItems[] = [
+  const tabItems = [
     {
       name: 'Coupons',
-      icon: <TicketsIcon size={20} aria-hidden="true" />,
-      content: <CouponList coupons={coupons} />,
+      icon: <TicketsIcon size={20} />,
+      path: '/merchant/profile/coupons',
     },
     {
       name: 'Collections',
-      icon: <SquareLibraryIcon size={20} aria-hidden="true" />,
+      icon: <SquareLibraryIcon size={20} />,
+      path: '/merchant/profile/collections',
     },
     {
       name: 'Archive',
-      icon: <ArchiveIcon size={20} aria-hidden="true" />,
+      icon: <ArchiveIcon size={20} />,
+      path: '/merchant/profile/archive',
     },
   ];
 
   return (
-    <section className="flex flex-col gap-6 overflow-x-hidden lg:px-20">
+    <section className="flex flex-col overflow-x-hidden lg:px-20">
+      {/* Static profile details at the top */}
       <ProfileInfo data={data} />
-      <PerxTabs tabItems={profileNavItems} />
+
+      {/* Tab Navigation */}
+      <Tabs tabItems={tabItems} />
+
+      {/* Render dynamic content from the parallel routes */}
+      <div>{tabs}</div>
     </section>
   );
 }
@@ -67,7 +73,9 @@ function ProfileInfo({ data }: { data: MerchantProfile }) {
       </div>
       <div className="flex grow flex-col items-center justify-center gap-4 lg:items-start">
         <div className="flex items-center gap-8">
-          <h3 className="text-xl font-bold lg:text-3xl">{data.name}</h3>
+          <h3 className="font-mono text-xl font-bold tracking-tight lg:text-3xl">
+            {data.name}
+          </h3>
           <div className="hidden lg:flex">
             <ButtonGroup />
           </div>
@@ -76,7 +84,7 @@ function ProfileInfo({ data }: { data: MerchantProfile }) {
           <ButtonGroup />
         </div>
         <div className="flex flex-col items-center gap-1 lg:items-start">
-          <p className="text-sm">{data.bio}</p>
+          <PerxReadMore id="merchant-bio" text={data.bio} />
           <div className="flex items-center gap-1.5">
             <MapPinIcon size={15} />
             <p className="text-sm select-all">{data.address}</p>
@@ -103,34 +111,6 @@ function ButtonGroup() {
           <SettingsIcon />
         </Button>
       </Link>
-    </div>
-  );
-}
-
-function CouponList({ coupons }: { coupons: MerchantCoupon[] }) {
-  return (
-    <div className="grid grid-cols-3 gap-2 sm:px-8 md:gap-4">
-      {coupons.map((coupon) => (
-        <Link href={`/merchant/view?id=${coupon.id}`} key={coupon.id}>
-          <div
-            className={`flex grow basis-60 flex-col gap-2 overflow-hidden rounded-md border pb-2`}
-          >
-            <div className="coupon-image aspect-video h-auto w-full">
-              <img
-                src={coupon.image}
-                alt={`${coupon.title} coupon`}
-                className="aspect-video h-auto w-full rounded-sm object-cover"
-              />
-            </div>
-            <div className="flex flex-col gap-1 px-2 py-1">
-              <p className="text-sm font-medium sm:text-base">{coupon.title}</p>
-              {
-                //TODO: Add coupon type
-              }
-            </div>
-          </div>
-        </Link>
-      ))}
     </div>
   );
 }

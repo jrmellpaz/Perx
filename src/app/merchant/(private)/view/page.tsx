@@ -1,6 +1,7 @@
 import { fetchCoupon } from '@/actions/merchant/coupon';
 import { fetchRank } from '@/actions/rank';
 import { PerxReadMore } from '@/components/custom/PerxReadMore';
+import { MerchantCoupon } from '@/lib/merchant/couponSchema';
 import { cn } from '@/lib/utils';
 import { createClient } from '@/utils/supabase/server';
 import { create } from 'domain';
@@ -12,32 +13,27 @@ export default async function ViewCoupon({
 }: {
   searchParams: Promise<{ [key: string]: string | undefined }>;
 }) {
-  const id = (await searchParams).id;
+  const couponData = (await searchParams).coupon;
 
-  if (!id) {
+  if (!couponData) {
     redirect('/not-found');
   }
 
+  const coupon: MerchantCoupon = JSON.parse(couponData);
+
   return (
     <section className="h-full w-full overflow-hidden">
-      <Ticket id={id} />
+      <Ticket coupon={coupon} />
     </section>
   );
 }
 
-async function Ticket({ id }: { id: string }) {
-  const coupon = await fetchCoupon(id);
-  const supabase = await createClient();
-  const { data: user } = await supabase.auth.getUser();
-
-  if (!coupon || !user?.user || coupon.merchantId !== user.user.id) {
-    redirect('/not-found');
-  }
-
+async function Ticket({ coupon }: { coupon: MerchantCoupon }) {
   const {
     title,
     description,
     price,
+    allowLimitedPurchase,
     validFrom,
     validTo,
     isDeactivated,
@@ -58,7 +54,7 @@ async function Ticket({ id }: { id: string }) {
     >
       <div
         className={cn(
-          `relative flex w-[90%] flex-col rounded-lg shadow-xl sm:w-[60%] sm:max-w-[480px]`,
+          `relative mt-4 flex w-[90%] flex-col rounded-lg shadow-xl sm:w-[60%] sm:max-w-[480px]`,
           accentColor === 'perx-canopy'
             ? 'bg-[#b9f0df]'
             : accentColor === 'perx-rust'
@@ -74,7 +70,6 @@ async function Ticket({ id }: { id: string }) {
                       : 'bg-perx-white'
         )}
       >
-        {/* Upper Half */}
         <div className="flex flex-col items-center">
           <div className="h-auto w-full overflow-hidden rounded-t-lg">
             <img
@@ -84,7 +79,7 @@ async function Ticket({ id }: { id: string }) {
             />
           </div>
           <div className="flex w-full flex-col gap-4 px-6 py-4">
-            <div className="flex flex-col">
+            <div className="flex flex-col gap-1.5">
               <h2
                 className={`text-${accentColor} font-mono text-lg/tight font-black tracking-tight`}
               >
@@ -97,8 +92,8 @@ async function Ticket({ id }: { id: string }) {
                 {category}
               </span>
             </div>
-            <div className="flex items-center">
-              <div className="flex flex-col items-center">
+            <div className="flex items-center overflow-y-auto">
+              <div className="flex shrink-0 flex-col items-center">
                 <h3
                   className={`text-${accentColor} font-mono text-sm font-medium tracking-tight`}
                 >
@@ -108,24 +103,28 @@ async function Ticket({ id }: { id: string }) {
                   Items left
                 </p>
               </div>
+              {allowLimitedPurchase && (
+                <>
+                  <div
+                    className={`border-muted-foreground mx-3 h-6 w-[0.25px] rounded-full border-l-[0.5px]`}
+                  ></div>
+                  <div className="flex shrink-0 flex-col items-center">
+                    <h3
+                      className={`text-${accentColor} font-mono text-sm font-medium tracking-tight`}
+                    >
+                      {validFrom && new Date(validFrom).toLocaleDateString()} -{' '}
+                      {validTo && new Date(validTo).toLocaleDateString()}
+                    </h3>
+                    <p className={`text-perx-black text-xs tracking-tight`}>
+                      Validity
+                    </p>
+                  </div>
+                </>
+              )}
               <div
                 className={`border-muted-foreground mx-3 h-6 w-[0.25px] rounded-full border-l-[0.5px]`}
               ></div>
-              <div className="flex flex-col items-center">
-                <h3
-                  className={`text-${accentColor} font-mono text-sm font-medium tracking-tight`}
-                >
-                  {new Date(validFrom).toLocaleDateString()} -{' '}
-                  {new Date(validTo).toLocaleDateString()}
-                </h3>
-                <p className={`text-perx-black text-xs tracking-tight`}>
-                  Validity
-                </p>
-              </div>
-              <div
-                className={`border-muted-foreground mx-3 h-6 w-[0.25px] rounded-full border-l-[0.5px]`}
-              ></div>
-              <div className="flex flex-col items-center">
+              <div className="flex shrink-0 flex-col items-center">
                 <h3
                   className={`text-${accentColor} font-mono text-sm font-medium tracking-tight`}
                 >

@@ -38,15 +38,10 @@ const navItems: NavItems[] = [
     name: 'Add Coupon',
     link: '/merchant/add-coupon',
   },
-  // {
-  //   icon: <Inbox />,
-  //   name: 'Inbox',
-  //   link: '/merchant/inbox',
-  // },
   {
     icon: <CircleUserRound />,
     name: 'Profile',
-    link: '/merchant/profile',
+    link: '/merchant/profile/coupons',
   },
 ];
 

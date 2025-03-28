@@ -237,7 +237,7 @@ function Inputs({
           label="Price"
           type="number"
           placeholder="0.00"
-          step="any"
+          step="0.01"
           min={0}
           required
           {...register('price', { valueAsNumber: true })}
@@ -252,7 +252,7 @@ function Inputs({
           label="Quantity"
           type="number"
           placeholder="0"
-          min={0}
+          min={1}
           required
           {...register('quantity', { valueAsNumber: true })}
         />
@@ -367,7 +367,7 @@ function Inputs({
               label="Amount of points"
               type="number"
               placeholder="0.00"
-              step="any"
+              step="0.01"
               min={0}
               {...register('pointsAmount', { valueAsNumber: true })}
             />

@@ -117,11 +117,11 @@ export async function PerxTicket({
                       className={`text-${accentColor} font-mono text-sm font-medium tracking-tight`}
                     >
                       {validFrom !== null
-                        ? new Date(validFrom as string).toLocaleDateString()
+                        ? new Date(validFrom || '').toLocaleDateString()
                         : 'N/A'}{' '}
                       -{' '}
                       {validTo !== null
-                        ? new Date(validTo as string).toLocaleDateString()
+                        ? new Date(validTo || '').toLocaleDateString()
                         : 'N/A'}
                     </h3>
                     <p className={`text-perx-black text-xs tracking-tight`}>

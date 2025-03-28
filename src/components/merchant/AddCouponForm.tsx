@@ -15,7 +15,6 @@ import {
   UseFormRegister,
   Controller,
 } from 'react-hook-form';
-import PerxAlert from '../custom/PerxAlert';
 import PerxInput from '../custom/PerxInput';
 import { motion } from 'framer-motion';
 import PerxDateRange from '../custom/PerxDateRange';
@@ -58,10 +57,6 @@ export default function AddCouponForm({
       allowPointsPurchase: false,
     },
   });
-
-  useEffect(() => {
-    console.log('Validation Errors:', errors);
-  }, [errors]);
 
   const processForm: SubmitHandler<AddCouponInputs> = async (data) => {
     setIsSubmitting(true);

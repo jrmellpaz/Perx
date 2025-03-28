@@ -79,7 +79,7 @@ export async function getMerchantCoupons(merchantId: string) {
     const { data, error } = await supabase
       .from('coupons')
       .select(
-        'id, description, price, valid_from, valid_to, is_deactivated, image, title, quantity, category, accent_color, rank_availability, allow_points_purchase, points_amount'
+        'id, description, price, allow_limited_purchase, valid_from, valid_to, is_deactivated, image, title, quantity, category, accent_color, rank_availability, allow_points_purchase, points_amount'
       )
       .eq('merchant_id', merchantId)
       .order('created_at', { ascending: false });
@@ -91,6 +91,7 @@ export async function getMerchantCoupons(merchantId: string) {
       title: item.title,
       description: item.description,
       price: item.price,
+      allowLimitedPurchase: item.allow_limited_purchase,
       validFrom: item.valid_from,
       validTo: item.valid_to,
       isDeactivated: item.is_deactivated,
@@ -131,7 +132,7 @@ export async function fetchCoupon(id: string): Promise<MerchantCoupon | null> {
     const { data, error } = await supabase
       .from('coupons')
       .select(
-        'id, merchant_id, description, price, valid_from, valid_to, is_deactivated, image, title, quantity, category, accent_color, rank_availability, allow_points_purchase, points_amount'
+        'id, merchant_id, description, price, allow_limited_purchase, valid_from, valid_to, is_deactivated, image, title, quantity, category, accent_color, rank_availability, allow_points_purchase, points_amount'
       )
       .eq('id', id)
       .single();
@@ -146,6 +147,7 @@ export async function fetchCoupon(id: string): Promise<MerchantCoupon | null> {
       title: data.title,
       description: data.description,
       price: data.price,
+      allowLimitedPurchase: data.allow_limited_purchase,
       validFrom: data.valid_from,
       validTo: data.valid_to,
       isDeactivated: data.is_deactivated,

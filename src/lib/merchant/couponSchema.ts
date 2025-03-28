@@ -108,8 +108,9 @@ export type MerchantCoupon = {
   merchantId: string;
   description: string;
   price: number;
-  validFrom: string;
-  validTo: string;
+  allowLimitedPurchase: boolean;
+  validFrom: string | null;
+  validTo: string | null;
   isDeactivated: boolean;
   image: string;
   title: string;

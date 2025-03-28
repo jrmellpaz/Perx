@@ -20,8 +20,8 @@ export async function PerxTicket({
     description,
     price,
     allowLimitedPurchase,
-    validFrom,
-    validTo,
+    validFrom = '',
+    validTo = '',
     isDeactivated,
     image,
     quantity,
@@ -116,13 +116,7 @@ export async function PerxTicket({
                     <h3
                       className={`text-${accentColor} font-mono text-sm font-medium tracking-tight`}
                     >
-                      {validFrom !== null
-                        ? new Date(validFrom || '').toLocaleDateString()
-                        : 'N/A'}{' '}
-                      -{' '}
-                      {validTo !== null
-                        ? new Date(validTo || '').toLocaleDateString()
-                        : 'N/A'}
+                      {formatDate(validFrom)} - {formatDate(validTo)}
                     </h3>
                     <p className={`text-perx-black text-xs tracking-tight`}>
                       Validity
@@ -208,4 +202,8 @@ export async function PerxTicket({
       </div>
     </section>
   );
+}
+
+function formatDate(date: string | null): string {
+  return date ? new Date(date).toLocaleDateString() : 'N/A';
 }

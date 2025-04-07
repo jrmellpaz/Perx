@@ -91,7 +91,7 @@ function AchievementCard({
   const { title, description, icon, reward, achieved } = achievement;
 
   return (
-    <div className="bg-perx-white flex grow basis-60 flex-col gap-2 rounded-md p-2 shadow-md">
+    <div className="bg-perx-white flex grow grid-cols-1 gap-0.5 rounded-md p-2 shadow-md sm:grid-cols-2 md:grid-cols-3 md:gap-1">
       <div
         style={{
           color: achieved ? primary : 'rgba(0, 0, 0, 0.5)', // Dynamic text color

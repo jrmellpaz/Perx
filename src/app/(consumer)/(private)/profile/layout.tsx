@@ -76,7 +76,7 @@ export default async function ConsumerProfileLayout({
         <div className="relative -top-20">
           <Tabs tabItems={profileNavItems} />
         </div>
-        <div className="relative -top-20 w-[90%] max-w-[800px]">{tabs}</div>
+        <div className="relative -top-20 w-[95%] max-w-[800px]">{tabs}</div>
       </main>
     </section>
   );

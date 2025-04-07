@@ -1,7 +1,6 @@
 import { JSX } from 'react';
 import { getConsumerProfile } from '@/actions/consumer/profile';
 import { createClient } from '@/utils/supabase/server';
-import type { ConsumerProfile } from '@/lib/consumer/profileSchema';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import {
@@ -12,12 +11,15 @@ import {
   SparklesIcon,
 } from 'lucide-react';
 import { Progress } from '@/components/ui/progress';
-import PerxTabs from '@/components/custom/PerxTabs';
-import { Achievements, Missions } from '@/components/consumer/ConsumerProfile';
+import Tabs from '@/components/custom/Tabs';
 import { fetchRank } from '@/actions/rank';
 import { Rank } from '@/lib/consumer/rankSchema';
 
-export default async function ConsumerProfile() {
+export default async function ConsumerProfileLayout({
+  tabs,
+}: {
+  tabs: React.ReactNode;
+}) {
   const supabase = await createClient();
   const {
     data: { user },
@@ -25,16 +27,16 @@ export default async function ConsumerProfile() {
 
   const {
     name,
-    interests,
-    referralCode,
-    rank: rankId,
     balancePoints,
     totalPoints,
+    rank: rankId,
   } = await getConsumerProfile(user!.id);
+
   const rank = await fetchRank(rankId);
   let nextIcon: string | null = null;
 
-  if (rankId !== '15') {
+  if (rankId.toString() !== '15') {
+    console.log('hereeeeee', rankId);
     const nextRank = await fetchRank((parseInt(rankId) + 1).toString());
     nextIcon = nextRank.icon;
   }
@@ -42,32 +44,19 @@ export default async function ConsumerProfile() {
   type ProfileNavItems = {
     icon: JSX.Element;
     name: string;
-    content: JSX.Element;
+    path: string;
   };
 
   const profileNavItems: ProfileNavItems[] = [
     {
       name: 'Missions',
       icon: <ClipboardListIcon size={20} aria-hidden="true" />,
-      content: (
-        // <Missions
-        //   referral_code={referralCode}
-        //   primary={currentTier.primaryColor}
-        //   // secondary={currentTier.secondaryColor}
-        // />
-        <p>Hello</p>
-      ),
+      path: '/profile/missions',
     },
     {
       name: 'Achievements',
       icon: <AwardIcon size={20} aria-hidden="true" />,
-      content: (
-        // <Achievements
-        //   primary={currentTier.primaryColor}
-        //   secondary={currentTier.secondaryColor}
-        // />
-        <p>Hello</p>
-      ),
+      path: '/profile/achievements',
     },
   ];
 
@@ -75,7 +64,8 @@ export default async function ConsumerProfile() {
     <section className="flex h-full flex-col overflow-x-hidden">
       <Header name={name} primaryColor={rank.primaryColor} />
       <main
-        className={`bg-${rank.secondaryColor}/20 flex grow flex-col items-center`}
+        style={{ backgroundColor: `${rank.secondaryColor}33` }}
+        className="flex grow flex-col items-center"
       >
         <LoyaltyRewardsCard
           nextIcon={nextIcon}
@@ -83,9 +73,10 @@ export default async function ConsumerProfile() {
           balancePoints={balancePoints}
           totalPoints={totalPoints}
         />
-        <div className="relative -top-20 w-[90%] max-w-[800px]">
-          <PerxTabs tabItems={profileNavItems} />
+        <div className="relative -top-20">
+          <Tabs tabItems={profileNavItems} />
         </div>
+        <div className="relative -top-20 w-[90%] max-w-[800px]">{tabs}</div>
       </main>
     </section>
   );
@@ -100,7 +91,8 @@ function Header({
 }) {
   return (
     <header
-      className={`bg-${primaryColor} z-0 flex h-[240px] shrink-0 items-start justify-between px-6 pt-4 md:px-12`}
+      style={{ backgroundColor: primaryColor }}
+      className="z-0 flex h-[240px] shrink-0 items-start justify-between px-6 pt-4 md:px-12"
     >
       <div className="flex grow flex-col">
         <p className="text-perx-white text-sm/tight">Hello</p>
@@ -154,13 +146,14 @@ function LoyaltyRewardsCard({
       <div className="relative -top-18 flex flex-col items-center gap-1">
         <img src={rank.icon} alt="Rank icon" className="size-32" />
         <h2
-          className={`text-${rank.primaryColor} font-mono text-lg font-medium`}
+          style={{ color: rank.primaryColor }}
+          className="font-mono text-lg font-medium"
         >
           {rank.rank}
         </h2>
       </div>
-      <div className="text-perx-black relative -top-10 flex w-full items-center gap-3">
-        <SparklesIcon className={`text-perx-orange`} size={36} />
+      <div className="relative -top-10 flex w-full items-center gap-3">
+        <SparklesIcon style={{ color: '#FF7F50' }} size={36} />{' '}
         <h1 className="font-mono text-5xl font-medium">
           {balancePoints}
           <span className="text-muted-foreground font-sans text-base font-normal tracking-tighter">

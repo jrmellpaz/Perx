@@ -1,7 +1,6 @@
-// app/merchant/profile/layout.tsx
 import { ReactNode } from 'react';
 import { getMerchantProfile } from '@/actions/merchant/profile';
-import Tabs from '@/components/custom/Tabs'; // Import the updated Tabs component
+import Tabs from '@/components/custom/Tabs';
 import { MerchantProfile } from '@/lib/merchant/profileSchema';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
@@ -16,11 +15,9 @@ import {
 import { createClient } from '@/utils/supabase/server';
 import { PerxReadMore } from '@/components/custom/PerxReadMore';
 
-export default async function ProfileLayout({
-  children,
+export default async function MerchantProfileLayout({
   tabs,
 }: {
-  children: ReactNode;
   tabs: ReactNode;
 }) {
   const supabase = await createClient();

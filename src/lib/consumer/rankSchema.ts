@@ -3,4 +3,6 @@ export type Rank = {
   rank: string;
   maxPoints: number;
   icon: string;
+  primaryColor: string;
+  secondaryColor: string;
 };

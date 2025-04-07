@@ -14,6 +14,8 @@ import {
 import { Progress } from '@/components/ui/progress';
 import PerxTabs from '@/components/custom/PerxTabs';
 import { Achievements, Missions } from '@/components/consumer/ConsumerProfile';
+import { fetchRank } from '@/actions/rank';
+import { Rank } from '@/lib/consumer/rankSchema';
 
 export default async function ConsumerProfile() {
   const supabase = await createClient();
@@ -21,68 +23,21 @@ export default async function ConsumerProfile() {
     data: { user },
   } = await supabase.auth.getUser();
 
-  const { name, interests, referral_code } = await getConsumerProfile(user!.id);
+  const {
+    name,
+    interests,
+    referralCode,
+    rank: rankId,
+    balancePoints,
+    totalPoints,
+  } = await getConsumerProfile(user!.id);
+  const rank = await fetchRank(rankId);
+  let nextIcon: string | null = null;
 
-  // Temporary consumer data
-  const tier = 'Bronze';
-  const rank = 'II';
-  const points = 69;
-  const totalPoints = 350;
-
-  const tierStyle: Record<
-    'Bronze' | 'Silver' | 'Gold',
-    {
-      icon: string;
-      primaryColor: {
-        text: string;
-        bg: string;
-      };
-      secondaryColor: {
-        text: string;
-        bg: string;
-      };
-      next: 'Silver' | 'Gold';
-    }
-  > = {
-    Bronze: {
-      icon: 'bronze-icon.svg',
-      primaryColor: {
-        text: 'text-perx-rust',
-        bg: 'bg-perx-rust',
-      },
-      secondaryColor: {
-        text: 'text-perx-sunset',
-        bg: 'bg-perx-sunset/15',
-      },
-      next: 'Silver',
-    },
-    Silver: {
-      icon: 'bronze-icon.svg',
-      primaryColor: {
-        text: 'text-perx-silver',
-        bg: 'bg-perx-silver',
-      },
-      secondaryColor: {
-        text: 'text-perx-silver',
-        bg: 'bg-perx-silver',
-      },
-      next: 'Gold',
-    },
-    Gold: {
-      icon: 'gold-icon.svg',
-      primaryColor: {
-        text: 'text-perx-gold',
-        bg: 'bg-perx-gold',
-      },
-      secondaryColor: {
-        text: 'text-perx-gold',
-        bg: 'bg-perx-gold',
-      },
-      next: 'Gold',
-    },
-  };
-
-  const currentTier = tierStyle[tier];
+  if (rankId !== '15') {
+    const nextRank = await fetchRank((parseInt(rankId) + 1).toString());
+    nextIcon = nextRank.icon;
+  }
 
   type ProfileNavItems = {
     icon: JSX.Element;
@@ -95,38 +50,37 @@ export default async function ConsumerProfile() {
       name: 'Missions',
       icon: <ClipboardListIcon size={20} aria-hidden="true" />,
       content: (
-        <Missions
-          referral_code={referral_code}
-          primary={currentTier.primaryColor}
-          secondary={currentTier.secondaryColor}
-        />
+        // <Missions
+        //   referral_code={referralCode}
+        //   primary={currentTier.primaryColor}
+        //   // secondary={currentTier.secondaryColor}
+        // />
+        <p>Hello</p>
       ),
     },
     {
       name: 'Achievements',
       icon: <AwardIcon size={20} aria-hidden="true" />,
       content: (
-        <Achievements
-          primary={currentTier.primaryColor}
-          secondary={currentTier.secondaryColor}
-        />
+        // <Achievements
+        //   primary={currentTier.primaryColor}
+        //   secondary={currentTier.secondaryColor}
+        // />
+        <p>Hello</p>
       ),
     },
   ];
 
   return (
     <section className="flex h-full flex-col overflow-x-hidden">
-      <Header name={name} />
+      <Header name={name} primaryColor={rank.primaryColor} />
       <main
-        className={`${currentTier.secondaryColor.bg} flex flex-col items-center`}
+        className={`bg-${rank.secondaryColor}/20 flex grow flex-col items-center`}
       >
         <LoyaltyRewardsCard
-          nextIcon={tierStyle[currentTier.next].icon}
-          icon={currentTier.icon}
-          primary={currentTier.primaryColor}
-          tier={tier}
+          nextIcon={nextIcon}
           rank={rank}
-          points={points}
+          balancePoints={balancePoints}
           totalPoints={totalPoints}
         />
         <div className="relative -top-20 w-[90%] max-w-[800px]">
@@ -137,9 +91,17 @@ export default async function ConsumerProfile() {
   );
 }
 
-function Header({ name }: { name: string }) {
+function Header({
+  name,
+  primaryColor,
+}: {
+  name: string;
+  primaryColor: string;
+}) {
   return (
-    <header className="bg-perx-rust z-0 flex h-[240px] shrink-0 items-start justify-between px-6 pt-4 md:px-12">
+    <header
+      className={`bg-${primaryColor} z-0 flex h-[240px] shrink-0 items-start justify-between px-6 pt-4 md:px-12`}
+    >
       <div className="flex grow flex-col">
         <p className="text-perx-white text-sm/tight">Hello</p>
         <h1 className="text-perx-white font-mono text-2xl font-medium">
@@ -177,59 +139,54 @@ function ButtonGroup() {
 }
 
 function LoyaltyRewardsCard({
-  icon,
-  primary,
   nextIcon,
-  tier,
   rank,
-  points,
+  balancePoints,
   totalPoints,
 }: {
-  icon: string;
-  primary: {
-    text: string;
-    bg: string;
-  };
-  nextIcon: string;
-  tier: 'Bronze' | 'Silver' | 'Gold' | 'Platinum' | 'Diamond';
-  rank: 'I' | 'II' | 'III';
-  points: number;
+  nextIcon: string | null;
+  rank: Rank;
+  balancePoints: number;
   totalPoints: number;
 }) {
   return (
     <div className="bg-perx-white text-perx-black relative -top-28 flex aspect-[7/3] h-auto w-[90%] max-w-[800px] flex-col items-center justify-around rounded-xl px-4 py-4 shadow-md sm:px-8 md:w-4/5 md:px-12">
-      <div className="relative -top-12 flex flex-col items-center gap-1">
-        <img src={icon} alt="Tier icon" className="size-28" />
-        <h2 className={`${primary.text} font-mono text-lg font-medium`}>
-          {`${tier} ${rank}`}
+      <div className="relative -top-18 flex flex-col items-center gap-1">
+        <img src={rank.icon} alt="Rank icon" className="size-32" />
+        <h2
+          className={`text-${rank.primaryColor} font-mono text-lg font-medium`}
+        >
+          {rank.rank}
         </h2>
       </div>
-      <div className="text-perx-black relative -top-6 flex w-full items-center gap-3">
-        <SparklesIcon className={`${primary.text}`} size={36} />
+      <div className="text-perx-black relative -top-10 flex w-full items-center gap-3">
+        <SparklesIcon className={`text-perx-orange`} size={36} />
         <h1 className="font-mono text-5xl font-medium">
-          {`${points} `}
+          {balancePoints}
           <span className="text-muted-foreground font-sans text-base font-normal tracking-tighter">
-            points balance
+            &nbsp;&nbsp;points balance
           </span>
         </h1>
       </div>
-      <div className="flex w-full flex-col justify-start gap-2">
+      <div className="relative -top-4 flex w-full flex-col justify-start gap-2">
         <h3 className="text-muted-foreground m-0 p-0 text-base tracking-tighter">
           Earn more points to unlock the next tier
         </h3>
         <div className="flex grow items-center gap-3">
-          <h3 className="font-mono font-medium">{`${totalPoints}`}</h3>
+          <h3 className="font-mono font-medium">{totalPoints}</h3>
           <div className="w-full">
             <Progress
-              value={350}
+              value={totalPoints}
               indicatorClass="bg-perx-rust"
-              max={1000}
+              max={rank.maxPoints}
               className="h-3"
             />
           </div>
           <div className="flex shrink-0 items-center gap-1">
-            <h3 className="font-mono font-medium">1000</h3>
-            <img src={nextIcon} alt="Next tier icon" className="size-6" />
+            <h3 className="font-mono font-medium">{rank.maxPoints}</h3>
+            {nextIcon && (
+              <img src={nextIcon} alt="Next tier icon" className="size-6" />
+            )}
           </div>
         </div>
       </div>

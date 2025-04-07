@@ -84,11 +84,13 @@ export async function PerxTicket({
                 <Link href="#">
                   <div className="flex items-center gap-1.5">
                     <img
-                      src={icon}
-                      alt="Rank icon"
+                      src={merchantData.logo}
+                      alt="Merchant icon"
                       className="size-4 rounded-full border"
                     />
-                    <p className="text-perx-black text-xs">{rank}</p>
+                    <p className="text-perx-black text-xs">
+                      {merchantData.name}
+                    </p>
                   </div>
                 </Link>
               )}
@@ -128,11 +130,7 @@ export async function PerxTicket({
                 className={`border-muted-foreground mx-3 h-6 w-[0.25px] rounded-full border-l-[0.5px]`}
               ></div>
               <div className="flex shrink-0 flex-col items-center">
-                <h3
-                  className={`text-${accentColor} font-mono text-sm font-medium tracking-tight`}
-                >
-                  {consumerAvailability}
-                </h3>
+                <img src={icon} alt="Rank icon" className="size-6" />
                 <p className={`text-perx-black text-xs tracking-tight`}>
                   For {rank} and up
                 </p>

@@ -67,7 +67,7 @@ async function Coupon({
             {coupon.allowPointsPurchase && (
               <Sparkles size={20} strokeWidth={1.5} />
             )}
-            <img src="/bronze-icon.svg" alt={'Rank icon'} className="size-5" />
+            <img src={rankIcon} alt={'Rank icon'} className="size-6" />
           </div>
         </div>
       </div>

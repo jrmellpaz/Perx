@@ -5,17 +5,22 @@ import { cn } from '@/lib/utils';
 import Link from 'next/link';
 import { PerxReadMore } from './PerxReadMore';
 import { SparklesIcon } from 'lucide-react';
+import { ConsumerCoupon } from '@/lib/consumer/couponSchema';
+import { PerxTicketSubmit } from './PerxTicketSubmit';
+import { createClient } from '@/utils/supabase/server';
+import { redirect } from 'next/navigation';
 
 export async function PerxTicket({
   couponData,
   merchantData,
   variant,
 }: {
-  couponData: MerchantCoupon;
+  couponData: MerchantCoupon | ConsumerCoupon;
   merchantData: MerchantProfile;
   variant: 'consumer' | 'merchant';
 }) {
   const {
+    id: couponId,
     title,
     description,
     price,
@@ -32,7 +37,7 @@ export async function PerxTicket({
     pointsAmount,
   } = couponData;
 
-  const { rank, maxPoints, icon } = await fetchRank(consumerAvailability);
+  const { rank, icon } = await fetchRank(consumerAvailability);
 
   return (
     <section
@@ -150,7 +155,6 @@ export async function PerxTicket({
             </div>
           </div>
         </div>
-
         {/* Broken Line Divider */}
         <div className="relative flex items-center">
           <div
@@ -165,7 +169,6 @@ export async function PerxTicket({
             className={`inset-left absolute -right-3 size-6 rounded-full bg-${accentColor}`}
           ></div>
         </div>
-
         {/* Lower Half */}
         <div className="flex flex-col gap-4 p-6">
           {/* Price Section */}
@@ -179,22 +182,12 @@ export async function PerxTicket({
               </span>
             )}
           </div>
-
           {variant === 'consumer' && (
-            <div className="flex gap-4">
-              {allowPointsPurchase && (
-                <button
-                  className={`flex-1 rounded-lg border text-${accentColor} border-${accentColor} px-4 py-2 text-sm font-medium hover:bg-${accentColor}/50 cursor-pointer`}
-                >
-                  Purchase with Points
-                </button>
-              )}
-              <button
-                className={`bg-${accentColor} hover:bg-${accentColor}/70 text-perx-white flex-1 cursor-pointer rounded-lg px-4 py-2 text-sm font-medium`}
-              >
-                Pay with Cash
-              </button>
-            </div>
+            <PerxTicketSubmit
+              allowPointsPurchase={allowPointsPurchase}
+              accentColor={accentColor}
+              couponId={couponId}
+            />
           )}
         </div>
       </div>

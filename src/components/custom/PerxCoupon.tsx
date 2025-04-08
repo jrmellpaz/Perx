@@ -24,7 +24,7 @@ export async function PerxCoupon({
       key={coupon.id}
     >
       <div
-        className={`flex grow basis-60 flex-col gap-2 overflow-hidden rounded-md border pb-2`}
+        className={`bg-perx-white flex grow basis-60 flex-col gap-2 overflow-hidden rounded-md border pb-2`}
       >
         <div className="coupon-image aspect-video h-auto w-full">
           <img

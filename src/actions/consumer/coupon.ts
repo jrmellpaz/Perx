@@ -114,8 +114,8 @@ export async function fetchConsumerCoupons(): Promise<ConsumerCoupon[]> {
       pointsAmount: coupon.points_amount,
       merchant: {
         id: coupon.merchant_id,
-        name: '', // Placeholder for merchant name (fetch separately if needed)
-        logo: '', // Placeholder for merchant logo (fetch separately if needed)
+        name: coupon.merchants.name,
+        logo: coupon.merchants.logo,
       },
     };
   });

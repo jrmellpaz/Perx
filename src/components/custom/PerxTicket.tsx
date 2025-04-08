@@ -7,6 +7,7 @@ import { PerxReadMore } from './PerxReadMore';
 import { SparklesIcon } from 'lucide-react';
 import { ConsumerCoupon } from '@/lib/consumer/couponSchema';
 import { PerxTicketSubmit } from './PerxTicketSubmit';
+import CountdownTimer from './CountdownTimer';
 
 export async function PerxTicket({
   couponData,
@@ -69,7 +70,7 @@ export async function PerxTicket({
                   <img
                     src={merchantData.logo}
                     alt="Merchant icon"
-                    className="size-4 rounded-full object-cover"
+                    className="size-5 rounded-full object-cover"
                   />
                   <p className="text-perx-black text-xs">{merchantData.name}</p>
                 </div>
@@ -113,6 +114,7 @@ export async function PerxTicket({
                     >
                       {formatDate(validFrom)} - {formatDate(validTo)}
                     </h3>
+                    {/* <CountdownTimer validTo={validTo} /> */}
                     <p className="text-perx-black text-xs tracking-tight">
                       Validity
                     </p>

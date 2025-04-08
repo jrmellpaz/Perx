@@ -1,3 +1,5 @@
+'use server';
+
 import { Rank } from '@/lib/consumer/rankSchema';
 import { createClient } from '@/utils/supabase/server';
 

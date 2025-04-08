@@ -10,7 +10,8 @@ export async function getCoupons() {
     .from('coupons')
     .select(
       'id, description, price, allow_limited_purchase, valid_from, valid_to, is_deactivated, image, title, quantity, category, accent_color, rank_availability, allow_points_purchase, points_amount, merchant:merchants(id, name, logo)'
-    );
+    )
+    .order('created_at', { ascending: false });
 
   if (error) {
     console.error('Error fetching coupons:', error);

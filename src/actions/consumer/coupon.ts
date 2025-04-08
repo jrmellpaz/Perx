@@ -3,6 +3,7 @@
 import { ConsumerCoupon, PurchasedCoupon } from '@/lib/consumer/couponSchema';
 import { createClient } from '@/utils/supabase/server';
 import { redirect } from 'next/navigation';
+import { handlePurchase } from './achievements';
 
 export async function getCoupons() {
   const supabase = await createClient();
@@ -65,7 +66,15 @@ export async function purchaseCoupon(
   if (insertError) {
     console.error('Error purchasing coupon:', insertError);
   }
-
+  if (paymentMethod === 'points') {
+    const { data: coupon} = await supabase
+      .from('coupons')
+      .select('points_amount')
+      .eq('id', couponId)
+      .single()
+    handlePurchase(consumerId, coupon?.points_amount); // Call the function to handle points deduction
+  }
+  handlePurchase(consumerId); // Call the function to handle points purchase
   // TODO: Update loyalty points
 }
 

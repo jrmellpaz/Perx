@@ -194,7 +194,7 @@ function formatDate(date: string | null): string {
   return date ? new Date(date).toLocaleDateString() : 'N/A';
 }
 
-function getAccentColor(accentColor: string): string {
+export function getAccentColor(accentColor: string): string {
   const colors: Record<string, string> = {
     'perx-blue': '#b7d0f7',
     'perx-canopy': '#b9f0df',
@@ -206,7 +206,7 @@ function getAccentColor(accentColor: string): string {
   return colors[accentColor] || '#FFFFFF'; // Default to white if color is not found
 }
 
-function getPrimaryAccentColor(accentColor: string): string {
+export function getPrimaryAccentColor(accentColor: string): string {
   const primaryColors: Record<string, string> = {
     'perx-blue': '#0061FE',
     'perx-canopy': '#0F503C',

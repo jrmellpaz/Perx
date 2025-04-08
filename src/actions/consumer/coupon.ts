@@ -80,7 +80,8 @@ export async function fetchConsumerCoupons(): Promise<ConsumerCoupon[]> {
   const { data, error } = await supabase
     .from('user_coupons')
     .select('id, created_at, consumer_id, coupon_id, coupons(*, merchants(*))')
-    .eq('consumer_id', consumerId);
+    .eq('consumer_id', consumerId)
+    .order('created_at', { ascending: false });
 
   if (error) {
     console.error('Error fetching joined data:', error);

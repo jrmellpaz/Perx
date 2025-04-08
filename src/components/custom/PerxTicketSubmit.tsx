@@ -1,6 +1,7 @@
 'use client';
 
 import { purchaseCoupon } from '@/actions/consumer/coupon';
+import { cn } from '@/lib/utils';
 import { useState } from 'react';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { toast } from 'sonner';
@@ -44,7 +45,10 @@ export function PerxTicketSubmit({
           type="submit"
           onClick={() => setValue('paymentMethod', 'points')} // Set payment method to 'points'
           disabled={isLoading}
-          className={`flex-1 rounded-lg border text-${accentColor} border-${accentColor} px-4 py-2 text-sm font-medium hover:bg-${accentColor}/50 cursor-pointer`}
+          className={cn(
+            `flex-1 rounded-lg border text-${accentColor} border-${accentColor} px-4 py-2 text-sm font-medium hover:bg-${accentColor}/50 cursor-pointer`,
+            isLoading && 'opacity-50'
+          )}
         >
           Purchase with Points
         </button>
@@ -53,7 +57,10 @@ export function PerxTicketSubmit({
         type="submit"
         onClick={() => setValue('paymentMethod', 'cash')} // Set payment method to 'cash'
         disabled={isLoading}
-        className={`bg-${accentColor} hover:bg-${accentColor}/70 text-perx-white flex-1 cursor-pointer rounded-lg px-4 py-2 text-sm font-medium`}
+        className={cn(
+          `bg-${accentColor} hover:bg-${accentColor}/70 text-perx-white flex-1 cursor-pointer rounded-lg px-4 py-2 text-sm font-medium`,
+          isLoading && 'opacity-50'
+        )}
       >
         Pay with Cash
       </button>

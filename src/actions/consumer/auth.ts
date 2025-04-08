@@ -8,6 +8,7 @@ import {
   LoginConsumerInputs,
   ConsumerFormInputs,
 } from '@/lib/consumer/consumerSchema';
+import { checkAchievements } from './achievements';
 
 export async function loginConsumer(data: LoginConsumerInputs) {
   const supabase = await createClient();
@@ -99,6 +100,26 @@ export async function signupConsumer(data: ConsumerFormInputs) {
     return { error: db2Error.message };
   }
 
+  const { error: db3Error } = await supabase.from('consumer_achievements').insert([
+    {
+      id: userId,
+      achievement_id: [],
+    },
+  ]);
+
+  if (db3Error) {
+    // console.error('DB2 error:', db2Error.message); // Log the DB2 error
+    return { error: db3Error.message };
+  }
+
+  if (referrer_code) {
+    const { data: checkData, error: checkError } = await supabase
+    .from("consumers")
+    .select("id")
+    .eq("referral_code", referrer_code)
+    .single();
+    checkAchievements(checkData?.id); // Call the function to check achievements
+  }
   // Fetch the user's role
   // const { data: roleData, error: roleError } = await supabase
   //   .from('profiles')

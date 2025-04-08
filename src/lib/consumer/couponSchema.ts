@@ -39,9 +39,14 @@ export type ConsumerCoupon = {
     name: string;
     logo: string;
   };
-  rank: {
-    id: string;
-    rank: string;
-    icon: string;
-  };
+};
+
+export type PurchasedCoupon = Omit<
+  ConsumerCoupon,
+  'id' | 'merchant' | 'rank'
+> & {
+  id: string;
+  couponId: string;
+  consumerId: string;
+  purchaseDate: string;
 };

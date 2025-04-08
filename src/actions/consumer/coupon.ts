@@ -1,6 +1,6 @@
 'use server';
 
-import { ConsumerCoupon } from '@/lib/consumer/couponSchema';
+import { ConsumerCoupon, PurchasedCoupon } from '@/lib/consumer/couponSchema';
 import { createClient } from '@/utils/supabase/server';
 import { redirect } from 'next/navigation';
 
@@ -66,4 +66,58 @@ export async function purchaseCoupon(
   }
 
   // TODO: Update loyalty points
+}
+
+export async function fetchConsumerCoupons(): Promise<ConsumerCoupon[]> {
+  const supabase = await createClient();
+  const { data: userData } = await supabase.auth.getUser();
+  const consumerId = userData.user?.id;
+
+  if (!consumerId) {
+    redirect('/login');
+  }
+
+  const { data, error } = await supabase
+    .from('user_coupons')
+    .select('id, created_at, consumer_id, coupon_id, coupons(*, merchants(*))')
+    .eq('consumer_id', consumerId);
+
+  if (error) {
+    console.error('Error fetching joined data:', error);
+    return [];
+  }
+
+  console.log('Fetched consumer coupons:', data);
+
+  // Map the joined data to match the PurchasedCoupon type
+  const consumerCoupons: ConsumerCoupon[] = data.map((entry) => {
+    const coupon = Array.isArray(entry.coupons)
+      ? entry.coupons[0]
+      : entry.coupons;
+
+    return {
+      id: coupon.id, // ID from the coupons table
+      description: coupon.description,
+      price: coupon.price,
+      allowLimitedPurchase: coupon.allow_limited_purchase,
+      validFrom: coupon.valid_from,
+      validTo: coupon.valid_to,
+      isDeactivated: coupon.is_deactivated,
+      image: coupon.image,
+      title: coupon.title,
+      quantity: coupon.quantity,
+      category: coupon.category,
+      accentColor: coupon.accent_color,
+      consumerAvailability: coupon.rank_availability.toString(),
+      allowPointsPurchase: coupon.allow_points_purchase,
+      pointsAmount: coupon.points_amount,
+      merchant: {
+        id: coupon.merchant_id,
+        name: '', // Placeholder for merchant name (fetch separately if needed)
+        logo: '', // Placeholder for merchant logo (fetch separately if needed)
+      },
+    };
+  });
+
+  return consumerCoupons;
 }

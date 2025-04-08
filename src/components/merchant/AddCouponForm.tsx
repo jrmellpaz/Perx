@@ -55,6 +55,8 @@ export default function AddCouponForm({
     resolver: zodResolver(addCouponSchema),
     defaultValues: {
       allowPointsPurchase: false,
+      allowLimitedPurchase: false,
+      dateRange: { start: null, end: null },
     },
   });
 
@@ -90,7 +92,7 @@ export default function AddCouponForm({
       <form
         onSubmit={(e) => {
           e.preventDefault();
-          console.log('here', watch('validFrom'));
+          // console.log('here', watch('validFrom'));
           handleSubmit((data) => {
             console.log('Form data:', data);
             processForm(data);
@@ -137,6 +139,23 @@ function Inputs({
   ranks: Ranks;
   categories: CouponCategory[];
 }) {
+  const allowLimitedPurchase = watch('allowLimitedPurchase');
+  const allowPointsPurchase = watch('allowPointsPurchase');
+
+  // Clear dateRange when allowLimitedPurchase is false
+  useEffect(() => {
+    if (!allowLimitedPurchase) {
+      setValue('dateRange', { start: null, end: null });
+    }
+  }, [allowLimitedPurchase, setValue]);
+
+  // Clear pointsAmount when allowPointsPurchase is false
+  useEffect(() => {
+    if (!allowPointsPurchase) {
+      setValue('pointsAmount', undefined);
+    }
+  }, [allowPointsPurchase, setValue]);
+
   const imageFile = watch('image');
 
   useEffect(() => {
@@ -152,27 +171,6 @@ function Inputs({
     }
   }, [imageFile]);
 
-  useEffect(() => {
-    if (watch('allowLimitedPurchase')) {
-      console.log('di dpaat here');
-      register('validFrom', { required: 'Valid From is required' });
-      register('validTo', { required: 'Valid To is required' });
-    } else {
-      console.log('dapat here');
-      setValue('validFrom', '');
-      setValue('validTo', '');
-    }
-  }, [watch('allowLimitedPurchase'), register, setValue]);
-
-  const handleDateChange = (
-    value: { start: DateValue; end: DateValue } | null
-  ) => {
-    if (value) {
-      setValue('validFrom', value.start.toString());
-      setValue('validTo', value.end.toString());
-    }
-  };
-
   const colors: {
     name: string;
     primary: string;
@@ -185,8 +183,6 @@ function Inputs({
     { name: 'pink', primary: 'perx-azalea', secondary: 'perx-pink' },
     { name: 'navy', primary: 'perx-navy', secondary: 'perx-ocean' },
   ];
-
-  const allowPointsPurchase = watch('allowPointsPurchase');
 
   return (
     <motion.div
@@ -396,17 +392,17 @@ function Inputs({
         )}
       </div>
 
-      <div className="flex flex-col gap-4">
+      <div className="flex w-full flex-col gap-4">
         <Controller
           name="allowLimitedPurchase"
           control={control}
-          defaultValue={false} // Default value
+          defaultValue={false}
           render={({ field }) => (
             <div className="flex items-center gap-2">
               <Checkbox
                 id="allowLimitedPurchase"
-                checked={field.value} // Controlled value
-                onCheckedChange={field.onChange} // Controlled onChange handler
+                checked={field.value}
+                onCheckedChange={field.onChange}
               />
               <Label
                 htmlFor="allowLimitedPurchase"
@@ -417,14 +413,61 @@ function Inputs({
             </div>
           )}
         />
-        {watch('allowLimitedPurchase') && (
-          <div className="flex flex-col gap-1">
-            <PerxDateRange onChange={handleDateChange} />
-            {errors.validFrom?.message && (
-              <ErrorMessage message={errors.validFrom.message} />
+        {allowLimitedPurchase && (
+          <Controller
+            name="dateRange"
+            control={control}
+            defaultValue={{ start: null, end: null }} // Default to null values
+            render={({ field }) => (
+              <div className="flex w-full flex-col gap-2">
+                <PerxDateRange
+                  value={field.value} // Pass strings or null
+                  onChange={field.onChange} // Handle changes
+                />
+                <div className="flex flex-col">
+                  {errors.dateRange?.start && (
+                    <p className="text-sm text-red-500">
+                      {errors.dateRange.start.message}
+                    </p>
+                  )}
+                  {errors.dateRange?.end && (
+                    <p className="text-sm text-red-500">
+                      {errors.dateRange.end.message}
+                    </p>
+                  )}
+                  {errors.dateRange && (
+                    <p className="text-sm text-red-500">
+                      {errors.dateRange.message}
+                    </p>
+                  )}
+                </div>
+              </div>
             )}
-          </div>
+          />
         )}
+      </div>
+
+      <div className="flex flex-col gap-4">
+        <Controller
+          name="allowRepeatPurchase"
+          control={control}
+          defaultValue={false} // Default value
+          render={({ field }) => (
+            <div className="flex items-center gap-2">
+              <Checkbox
+                id="allowRepeatPurchase"
+                checked={field.value} // Controlled value
+                onCheckedChange={field.onChange} // Controlled onChange handler
+              />
+              <Label
+                htmlFor="allowRepeatPurchase"
+                className="mt-[1px] cursor-pointer text-sm"
+              >
+                Allow repeat purchase
+              </Label>
+            </div>
+          )}
+        />
       </div>
 
       <div className="mt-2 flex justify-end">

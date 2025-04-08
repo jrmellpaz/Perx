@@ -1,84 +1,71 @@
 'use client';
 
-import { cn } from '@/lib/utils';
-import { RangeCalendar } from '@/components/ui/calendar-rac';
-import { DateInput, dateInputStyle } from '@/components/ui/datefield-rac';
-import { CalendarDate, getLocalTimeZone, today } from '@internationalized/date';
-import { CalendarIcon } from 'lucide-react';
-import type { DateValue } from 'react-aria-components';
-import {
-  Button,
-  DateRangePicker,
-  Dialog,
-  Group,
-  Label,
-  Popover,
-} from 'react-aria-components';
+import React from 'react';
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
+import { Label } from '../ui/label';
 
 export default function PerxDateRange({
-  onChange,
   value,
+  onChange,
 }: {
-  onChange?: (value: { start: DateValue; end: DateValue } | null) => void;
-  value?: { start: DateValue; end: DateValue } | null;
+  value: { start: string | null; end: string | null }; // Accept strings or null
+  onChange: (value: { start: string | null; end: string | null }) => void; // Pass strings or null
 }) {
-  const now: CalendarDate = today(getLocalTimeZone());
-  const disabledRanges: CalendarDate[][] = [
-    // [now, now.add({ days: 5 })],
-    // [now.add({ days: 14 }), now.add({ days: 16 })],
-    // [now.add({ days: 23 }), now.add({ days: 24 })],
-  ];
-
-  const isDateUnavailable = (date: DateValue) =>
-    disabledRanges.some(
-      (interval) =>
-        date.compare(interval[0]) >= 0 && date.compare(interval[1]) <= 0
-    );
-  const validate = (value: { start: DateValue; end: DateValue } | null) =>
-    disabledRanges.some(
-      (interval) =>
-        value &&
-        value.end.compare(interval[0]) >= 0 &&
-        value.start.compare(interval[1]) <= 0
-    )
-      ? 'Selected date range may not include unavailable dates.'
-      : null;
+  // Get today's date
+  const today = new Date();
+  today.setHours(0, 0, 0, 0); // Reset time to midnight for accurate comparison
 
   return (
-    <DateRangePicker
-      className="group relative *:not-first:mt-2"
-      isDateUnavailable={isDateUnavailable}
-      validate={validate}
-      onChange={onChange} // Pass the onChange prop here
-    >
-      <Label className="text-muted-foreground/70 bg-background group-focus-within:text-perx-blue absolute top-0.5 z-20 ml-2 px-1 font-mono text-xs font-medium">
-        Date validity range
-      </Label>
-      <div className="group flex">
-        <Group
-          className={cn(
-            dateInputStyle,
-            'group-focus-within:border-perx-blue pe-9'
-          )}
+    <div className="mt-2 flex w-full flex-col gap-4 sm:flex-row">
+      <div className="group relative transition-all">
+        <Label
+          htmlFor="startDate"
+          className="text-muted-foreground/70 group-focus-within:text-perx-blue bg-background absolute -top-2 z-[1] ml-2 px-1 font-mono text-xs font-medium"
         >
-          <DateInput slot="start" unstyled />
-          <span aria-hidden="true" className="text-muted-foreground/70 px-2">
-            -
-          </span>
-          <DateInput slot="end" unstyled />
-        </Group>
-        <Button className="text-muted-foreground/80 hover:text-foreground hover:bg-perx-blue/10 z-10 -ms-12 -me-px flex h-12 w-12 items-center justify-center rounded-full outline-offset-2 transition-colors focus-visible:outline-hidden data-focus-visible:outline-2">
-          <CalendarIcon size={16} />
-        </Button>
+          <span>Select start date</span>
+        </Label>
+        <DatePicker
+          id="startDate"
+          selected={value.start ? new Date(value.start) : null} // Convert string to Date
+          onChange={(date) =>
+            onChange({
+              ...value,
+              start: date ? date.toISOString() : null, // Convert Date to ISO string
+            })
+          }
+          selectsStart
+          startDate={value.start ? new Date(value.start) : null}
+          endDate={value.end ? new Date(value.end) : null}
+          minDate={today} // Prevent selecting dates before today
+          className="border-input bg-background text-foreground placeholder:text-muted-foreground/70 focus-visible:border-perx-blue flex h-12 w-max rounded-lg border-2 px-3 py-2 text-sm transition-all focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
+          placeholderText="MM/DD/YYYY"
+        />
       </div>
-      <Popover
-        className="bg-background text-popover-foreground data-entering:animate-in data-exiting:animate-out data-[entering]:fade-in-0 data-[exiting]:fade-out-0 data-[entering]:zoom-in-95 data-[exiting]:zoom-out-95 data-[placement=bottom]:slide-in-from-top-2 data-[placement=left]:slide-in-from-right-2 data-[placement=right]:slide-in-from-left-2 data-[placement=top]:slide-in-from-bottom-2 z-50 rounded-lg border shadow-lg outline-hidden"
-        offset={4}
-      >
-        <Dialog className="max-h-[inherit] overflow-auto p-2">
-          <RangeCalendar minValue={now} isDateUnavailable={isDateUnavailable} />
-        </Dialog>
-      </Popover>
-    </DateRangePicker>
+      <div className="group relative transition-all">
+        <Label
+          htmlFor="endDate"
+          className="text-muted-foreground/70 group-focus-within:text-perx-blue bg-background absolute -top-2 z-[1] ml-2 px-1 font-mono text-xs font-medium"
+        >
+          <span>Select end date</span>
+        </Label>
+        <DatePicker
+          id="endDate"
+          selected={value.end ? new Date(value.end) : null} // Convert string to Date
+          onChange={(date) =>
+            onChange({
+              ...value,
+              end: date ? date.toISOString() : null, // Convert Date to ISO string
+            })
+          }
+          selectsEnd
+          startDate={value.start ? new Date(value.start) : null}
+          endDate={value.end ? new Date(value.end) : null}
+          minDate={value.start ? new Date(value.start) : today} // Prevent selecting dates before the start date or today
+          className="border-input bg-background text-foreground placeholder:text-muted-foreground/70 focus-visible:border-perx-blue flex h-12 w-full rounded-lg border-2 px-3 py-2 text-sm transition-all focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
+          placeholderText="MM/DD/YYYY"
+        />
+      </div>
+    </div>
   );
 }

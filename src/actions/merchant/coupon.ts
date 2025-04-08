@@ -53,16 +53,17 @@ export async function addCoupon(couponData: AddCouponInputs) {
       quantity: couponData.quantity,
       allow_limited_purchase: couponData.allowLimitedPurchase,
       valid_from: couponData.allowLimitedPurchase
-        ? couponData.validFrom
+        ? couponData.dateRange?.start
         : new Date().toISOString(),
       valid_to: couponData.allowLimitedPurchase
-        ? couponData.validTo
+        ? couponData.dateRange?.end
         : new Date(Date.now() + 31536000000).toISOString(),
       image: imageUrl,
       accent_color: couponData.accentColor,
       rank_availability: couponData.consumerRankAvailability,
       allow_points_purchase: couponData.allowPointsPurchase,
       points_amount: couponData.pointsAmount,
+      allow_repeat_purchase: couponData.allowRepeatPurchase,
     });
 
     if (insertError) {
@@ -82,7 +83,7 @@ export async function getMerchantCoupons(merchantId: string) {
     const { data, error } = await supabase
       .from('coupons')
       .select(
-        'id, description, price, allow_limited_purchase, valid_from, valid_to, is_deactivated, image, title, quantity, category, accent_color, rank_availability, allow_points_purchase, points_amount'
+        'id, description, price, allow_limited_purchase, valid_from, valid_to, is_deactivated, image, title, quantity, category, accent_color, rank_availability, allow_points_purchase, points_amount, allow_repeat_purchase'
       )
       .eq('merchant_id', merchantId)
       .eq('is_deactivated', false)
@@ -106,6 +107,7 @@ export async function getMerchantCoupons(merchantId: string) {
       consumerAvailability: item.rank_availability,
       allowPointsPurchase: item.allow_points_purchase,
       pointsAmount: item.points_amount || null,
+      allowRepeatPurchase: item.allow_repeat_purchase,
     })) as MerchantCoupon[];
   } catch (error) {
     console.error('Get Merchant Coupons Error:', error);
@@ -136,7 +138,7 @@ export async function fetchCoupon(id: string): Promise<MerchantCoupon | null> {
     const { data, error } = await supabase
       .from('coupons')
       .select(
-        'id, merchant_id, description, price, allow_limited_purchase, valid_from, valid_to, is_deactivated, image, title, quantity, category, accent_color, rank_availability, allow_points_purchase, points_amount'
+        'id, merchant_id, description, price, allow_limited_purchase, valid_from, valid_to, is_deactivated, image, title, quantity, category, accent_color, rank_availability, allow_points_purchase, points_amount, allow_repeat_purchase'
       )
       .eq('id', id)
       .single();
@@ -162,6 +164,7 @@ export async function fetchCoupon(id: string): Promise<MerchantCoupon | null> {
       consumerAvailability: data.rank_availability,
       allowPointsPurchase: data.allow_points_purchase,
       pointsAmount: data.points_amount,
+      allowRepeatPurchase: data.allow_repeat_purchase,
     };
 
     return coupon;

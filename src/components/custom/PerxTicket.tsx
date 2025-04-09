@@ -7,7 +7,6 @@ import { PerxReadMore } from './PerxReadMore';
 import { SparklesIcon } from 'lucide-react';
 import { ConsumerCoupon } from '@/lib/consumer/couponSchema';
 import { PerxTicketSubmit } from './PerxTicketSubmit';
-import CountdownTimer from './CountdownTimer';
 
 export async function PerxTicket({
   couponData,

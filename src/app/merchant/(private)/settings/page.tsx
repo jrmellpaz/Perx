@@ -10,21 +10,21 @@ import {
   HelpCircle,
   FileText,
   LogOut,
-  Trash2,
 } from 'lucide-react';
 import Link from 'next/link';
 import { createClient } from '@/utils/supabase/server';
 import PerxHeader from '@/components/custom/PerxHeader';
-import { logoutMerchant } from '@/actions/merchant/auth';
+import LogoutButton from '@/components/merchant/MerchantSettingsLogOut';
 
 export default async function SettingsPage() {
   const supabase = await createClient();
   const { data, error } = await supabase.auth.getUser();
+
   return (
     <div className="min-h-screen text-neutral-800">
       {/* Header */}
       {/* <div className=""></div> Spacer */}
-      <PerxHeader title="Settings" link="/profile" />
+      <PerxHeader title="Settings" link="/merchant/profile" />
 
       {/* Content */}
       <div className="mx-auto max-w-xl space-y-8 px-4 py-8">
@@ -43,7 +43,7 @@ export default async function SettingsPage() {
                 </div>
               </div>
             </div>
-            <Link href="/change-pass-link">
+            <Link href="/merchant/change-pass-link">
               <div className="flex cursor-pointer items-center justify-between border-b-1 px-4 py-4 hover:bg-neutral-100">
                 <div className="flex items-center gap-4">
                   <Lock className="h-5 w-5 text-neutral-500" />
@@ -59,15 +59,6 @@ export default async function SettingsPage() {
               </div>
               <ChevronRight className="h-4 w-4 text-neutral-400" />
             </div>
-            <Link href="/remove-account">
-              <div className="flex cursor-pointer items-center justify-between px-4 py-4 hover:bg-neutral-100">
-                <div className="flex items-center gap-4">
-                  <Trash2 className="h-5 w-5 text-neutral-500" />
-                  <span className="text-sm">Delete account permanently</span>
-                </div>
-                <ChevronRight className="h-4 w-4 text-neutral-400" />
-              </div>
-            </Link>
           </div>
         </div>
 
@@ -116,20 +107,7 @@ export default async function SettingsPage() {
         </div>
 
         {/* Login Section */}
-        <div>
-          <h2 className="mb-2 text-sm font-medium text-neutral-500">Login</h2>
-          <div className="rounded-md bg-white shadow-sm">
-            <div className="flex cursor-pointer items-center justify-between px-4 py-4 hover:bg-neutral-100">
-              <div className="flex items-center gap-4">
-                <LogOut className="h-5 w-5 text-neutral-500" />
-                <Button onClick={logoutMerchant} className="text-sm">
-                  Log Out Account
-                </Button>
-              </div>
-              <ChevronRight className="h-4 w-4 text-neutral-400" />
-            </div>
-          </div>
-        </div>
+        <LogoutButton />
       </div>
     </div>
   );

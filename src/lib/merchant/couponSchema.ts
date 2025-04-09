@@ -30,82 +30,63 @@ export const couponCategories = z.enum([
 export const addCouponSchema = z
   .object({
     title: z.string().nonempty('Title is required'),
-    category: couponCategories,
+    category: z.string().nonempty('Category is required'),
     description: z.string().nonempty('Description is required'),
-    price: z
-      .number({
-        required_error: 'Price is required',
-        invalid_type_error: 'Invalid price',
-      })
-      .positive('Invalid price'),
-    quantity: z
-      .number({
-        required_error: 'Quantity is required',
-        invalid_type_error: 'Invalid quantity',
-      })
-      .int('Invalid quantity')
-      .positive('Quantity must be greater than 0'),
+    price: z.number().positive('Price must be greater than 0'),
+    quantity: z.number().int().positive('Quantity must be greater than 0'),
     allowLimitedPurchase: z.boolean().default(false),
-    validFrom: z
-      .union([z.string().datetime(), z.literal('')]) // Allow datetime string or empty string
-      .optional(),
-    validTo: z
-      .union([z.string().datetime(), z.literal('')]) // Allow datetime string or empty string
-      .optional(),
-    image: z
-      .any()
-      .refine((files) => files?.length > 0, {
-        message: 'Image is required',
-        path: ['image'],
+    dateRange: z
+      .object({
+        start: z.union([z.string().datetime('Invalid start date'), z.null()]),
+        end: z.union([z.string().datetime('Invalid end date'), z.null()]),
       })
-      .refine(
-        (files) => {
-          const file = files[0];
-          return file && ACCEPTED_IMAGE_TYPES.includes(file.type);
-        },
-        {
-          message: 'Only JPG, JPEG, and PNG formats are accepted',
-          path: ['image'],
-        }
-      ),
+      .optional(), // Initially optional
+    image: z.any().optional(),
     accentColor: z.string().default('perx-blue'),
-    consumerRankAvailability: z.string().default('1'),
     allowPointsPurchase: z.boolean().default(false),
     pointsAmount: z
-      .number({
-        invalid_type_error: 'Invalid amount of points',
-      })
-      .positive('Invalid amount of points')
-      .optional(),
+      .number()
+      .positive('Points amount must be greater than 0')
+      .optional(), // Initially optional
+    allowRepeatPurchase: z.boolean().default(false),
+    consumerRankAvailability: z
+      .enum([
+        '1',
+        '2',
+        '3',
+        '4',
+        '5',
+        '6',
+        '7',
+        '8',
+        '9',
+        '10',
+        '11',
+        '12',
+        '13',
+        '14',
+        '15',
+      ])
+      .default('1'), // Default to rank '1'
   })
+  .refine(
+    (data) =>
+      !data.allowLimitedPurchase ||
+      (data.allowLimitedPurchase &&
+        data.dateRange?.start !== null &&
+        data.dateRange?.end !== null),
+    {
+      message: 'Date range is required when limited purchase is enabled.',
+      path: ['dateRange'], // Attach the error to the dateRange field
+    }
+  )
   .refine(
     (data) =>
       !data.allowPointsPurchase ||
       (data.allowPointsPurchase && data.pointsAmount !== undefined),
     {
-      message: 'Points amount is required when points purchase is allowed.',
-      path: ['pointsAmount'],
-    }
-  )
-  .refine(
-    (data) => {
-      if (data.allowLimitedPurchase) {
-        // When allowLimitedPurchase is true, validFrom and validTo must be valid dateTime strings
-        return (
-          typeof data.validFrom === 'string' &&
-          typeof data.validTo === 'string' &&
-          data.validFrom !== '' &&
-          data.validTo !== ''
-        );
-      } else {
-        // When allowLimitedPurchase is false, validFrom and validTo must be empty strings
-        return data.validFrom === '' && data.validTo === '';
-      }
-    },
-    {
-      message:
-        'When allowLimitedPurchase is true, validFrom and validTo must be valid dateTime strings. When false, they must be empty strings.',
-      path: ['validFrom', 'validTo'], // Attach the error to these fields
+      message: 'Points amount is required when points purchase is enabled.',
+      path: ['pointsAmount'], // Attach the error to the pointsAmount field
     }
   );
 
@@ -152,4 +133,5 @@ export type MerchantCoupon = {
     | '15';
   allowPointsPurchase: boolean;
   pointsAmount: number | null;
+  allowRepeatPurchase: boolean;
 };

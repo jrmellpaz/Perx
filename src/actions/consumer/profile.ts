@@ -5,14 +5,14 @@ import {
 } from '@/lib/consumer/profileSchema';
 import { createClient } from '@/utils/supabase/server';
 
-export async function getConsumerProfile(
-  id: string
-): Promise<ConsumerProfile> {
+export async function getConsumerProfile(id: string): Promise<ConsumerProfile> {
   const supabase = await createClient();
 
   const { data, error } = await supabase
     .from('consumers')
-    .select('name, referral_code, interests')
+    .select(
+      'name, referral_code, interests, rank, points_balance, points_total'
+    )
     .eq('id', id)
     .single();
 
@@ -20,7 +20,18 @@ export async function getConsumerProfile(
     console.error(`Failed to fetch consumer profile: ${error.message}`);
   }
 
-  return data as ConsumerProfile;
+  if (!data) {
+    throw new Error('Consumer profile not found');
+  }
+
+  return {
+    name: data.name,
+    referralCode: data.referral_code,
+    interests: data.interests,
+    rank: data.rank,
+    balancePoints: data.points_balance,
+    totalPoints: data.points_total,
+  } as ConsumerProfile;
 }
 
 export async function updateConsumerProfile(profileData: EditProfileInputs) {
@@ -89,4 +100,3 @@ export async function deleteAccount(userId: string) {
     }
   }
 }
-

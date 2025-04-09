@@ -31,6 +31,7 @@ import {
 import PerxAlert from '../custom/PerxAlert';
 import { LoaderCircle } from 'lucide-react';
 import PerxCheckbox from '../custom/PerxCheckbox';
+import { couponCategories } from '@/lib/merchant/couponSchema';
 
 const schemas = [Step1Schema, Step2Schema, Step3Schema];
 
@@ -384,14 +385,10 @@ function Step3({
   const selectedInterests = watch('interests', []) || [];
 
   useEffect(() => {
-    const loadCouponTypes = async () => {
-      const topTypes = await fetchTopCouponTypes();
-      setInterests(topTypes);
-    };
-    loadCouponTypes();
+    setInterests(couponCategories.options);
     setValue('interests', []);
   }, [setValue]);
-
+  
   const handleCheckboxChange = (interest: string, checked: boolean) => {
     if (checked) {
       setValue('interests', [...selectedInterests, interest]);

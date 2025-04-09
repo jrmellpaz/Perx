@@ -1,3 +1,5 @@
+'use server';
+
 import { Rank } from '@/lib/consumer/rankSchema';
 import { createClient } from '@/utils/supabase/server';
 
@@ -25,7 +27,7 @@ export async function fetchRank(rankId: string): Promise<Rank> {
 
   const { data, error } = await supabase
     .from('ranks')
-    .select('rank, max_points, icon')
+    .select('rank, max_points, icon, primary_color, secondary_color')
     .eq('id', rankId)
     .single();
 
@@ -41,5 +43,7 @@ export async function fetchRank(rankId: string): Promise<Rank> {
     rank: data.rank,
     maxPoints: data.max_points,
     icon: data.icon,
+    primaryColor: data.primary_color,
+    secondaryColor: data.secondary_color,
   } as Rank;
 }

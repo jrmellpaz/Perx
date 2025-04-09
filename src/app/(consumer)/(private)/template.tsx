@@ -46,7 +46,7 @@ const navItems: NavItems[] = [
   {
     icon: <CircleUserRound />,
     name: 'Profile',
-    link: '/profile',
+    link: '/profile/missions',
   },
 ];
 

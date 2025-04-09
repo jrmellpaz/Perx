@@ -5,17 +5,20 @@ import { cn } from '@/lib/utils';
 import Link from 'next/link';
 import { PerxReadMore } from './PerxReadMore';
 import { SparklesIcon } from 'lucide-react';
+import { ConsumerCoupon } from '@/lib/consumer/couponSchema';
+import { PerxTicketSubmit } from './PerxTicketSubmit';
 
 export async function PerxTicket({
   couponData,
   merchantData,
   variant,
 }: {
-  couponData: MerchantCoupon;
+  couponData: MerchantCoupon | ConsumerCoupon;
   merchantData: MerchantProfile;
   variant: 'consumer' | 'merchant';
 }) {
   const {
+    id: couponId,
     title,
     description,
     price,
@@ -32,29 +35,18 @@ export async function PerxTicket({
     pointsAmount,
   } = couponData;
 
-  const { rank, maxPoints, icon } = await fetchRank(consumerAvailability);
+  const { rank, icon } = await fetchRank(consumerAvailability);
 
   return (
     <section
-      className={`flex h-full w-full items-center justify-center bg-${accentColor} overflow-y-auto py-4`}
+      style={{ backgroundColor: getPrimaryAccentColor(accentColor) }}
+      className={`flex h-full w-full items-center justify-center overflow-y-auto py-4`}
     >
       <div
         className={cn(
-          `relative mt-4 flex w-[90%] flex-col rounded-lg shadow-xl sm:w-[60%] sm:max-w-[480px]`,
-          accentColor === 'perx-canopy'
-            ? 'bg-[#b9f0df]'
-            : accentColor === 'perx-rust'
-              ? 'bg-[#fadac8]'
-              : accentColor === 'perx-blue'
-                ? 'bg-[#b7d0f7]'
-                : accentColor === 'perx-gold'
-                  ? 'bg-[#eddfc5]'
-                  : accentColor === 'perx-azalea'
-                    ? 'bg-[#f0c7db]'
-                    : accentColor === 'perx-navy'
-                      ? 'bg-[#b6c7e3]'
-                      : 'bg-perx-white'
+          `relative mt-4 flex w-[90%] flex-col rounded-lg shadow-xl sm:w-[60%] sm:max-w-[480px]`
         )}
+        style={{ backgroundColor: getAccentColor(accentColor) }}
       >
         <div className="flex flex-col items-center">
           <div className="h-auto w-full overflow-hidden rounded-t-lg">
@@ -67,7 +59,8 @@ export async function PerxTicket({
           <div className="flex w-full flex-col gap-4 px-6 py-4">
             <div className="flex flex-col gap-1.5">
               <h2
-                className={`text-${accentColor} font-mono text-lg/tight font-black tracking-tight`}
+                style={{ color: getPrimaryAccentColor(accentColor) }}
+                className="font-mono text-lg/tight font-black tracking-tight"
               >
                 {title}
               </h2>
@@ -76,7 +69,7 @@ export async function PerxTicket({
                   <img
                     src={merchantData.logo}
                     alt="Merchant icon"
-                    className="size-4 rounded-full object-cover"
+                    className="size-5 rounded-full object-cover"
                   />
                   <p className="text-perx-black text-xs">{merchantData.name}</p>
                 </div>
@@ -84,11 +77,13 @@ export async function PerxTicket({
                 <Link href="#">
                   <div className="flex items-center gap-1.5">
                     <img
-                      src={icon}
-                      alt="Rank icon"
+                      src={merchantData.logo}
+                      alt="Merchant icon"
                       className="size-4 rounded-full border"
                     />
-                    <p className="text-perx-black text-xs">{rank}</p>
+                    <p className="text-perx-black text-xs">
+                      {merchantData.name}
+                    </p>
                   </div>
                 </Link>
               )}
@@ -99,48 +94,44 @@ export async function PerxTicket({
             <div className="flex items-center overflow-y-auto">
               <div className="flex shrink-0 flex-col items-center">
                 <h3
-                  className={`text-${accentColor} font-mono text-sm font-medium tracking-tight`}
+                  style={{ color: getPrimaryAccentColor(accentColor) }}
+                  className={`font-mono text-sm font-medium tracking-tight`}
                 >
                   {quantity}
                 </h3>
-                <p className={`text-perx-black text-xs tracking-tight`}>
+                <p className="text-perx-black text-xs tracking-tight">
                   Items left
                 </p>
               </div>
               {allowLimitedPurchase && (
                 <>
-                  <div
-                    className={`border-muted-foreground mx-3 h-6 w-[0.25px] rounded-full border-l-[0.5px]`}
-                  ></div>
+                  <div className="border-muted-foreground mx-3 h-6 w-[0.25px] rounded-full border-l-[0.5px]"></div>
                   <div className="flex shrink-0 flex-col items-center">
                     <h3
-                      className={`text-${accentColor} font-mono text-sm font-medium tracking-tight`}
+                      style={{ color: getPrimaryAccentColor(accentColor) }}
+                      className={`font-mono text-sm font-medium tracking-tight`}
                     >
                       {formatDate(validFrom)} - {formatDate(validTo)}
                     </h3>
-                    <p className={`text-perx-black text-xs tracking-tight`}>
+                    {/* <CountdownTimer validTo={validTo} /> */}
+                    <p className="text-perx-black text-xs tracking-tight">
                       Validity
                     </p>
                   </div>
                 </>
               )}
-              <div
-                className={`border-muted-foreground mx-3 h-6 w-[0.25px] rounded-full border-l-[0.5px]`}
-              ></div>
+              <div className="border-muted-foreground mx-3 h-6 w-[0.25px] rounded-full border-l-[0.5px]"></div>
               <div className="flex shrink-0 flex-col items-center">
-                <h3
-                  className={`text-${accentColor} font-mono text-sm font-medium tracking-tight`}
-                >
-                  {consumerAvailability}
-                </h3>
-                <p className={`text-perx-black text-xs tracking-tight`}>
+                <img src={icon} alt="Rank icon" className="size-6" />
+                <p className="text-perx-black text-xs tracking-tight">
                   For {rank} and up
                 </p>
               </div>
             </div>
             <div className="flex flex-col">
               <h3
-                className={`text-${accentColor} font-mono text-xs font-medium tracking-tight`}
+                style={{ color: getPrimaryAccentColor(accentColor) }}
+                className="font-mono text-xs font-medium tracking-tight"
               >
                 About this coupon
               </h3>
@@ -152,27 +143,31 @@ export async function PerxTicket({
             </div>
           </div>
         </div>
-
         {/* Broken Line Divider */}
         <div className="relative flex items-center">
           <div
-            className={`w-full border-t border-dashed border-${accentColor}`}
+            style={{ borderColor: getPrimaryAccentColor(accentColor) }}
+            className="w-full border-t border-dashed"
           ></div>
           {/* Left Circular Div */}
           <div
-            className={`inset-right absolute -left-3 size-6 rounded-full bg-${accentColor}`}
+            style={{ backgroundColor: getPrimaryAccentColor(accentColor) }}
+            className={`inset-right absolute -left-3 size-6 rounded-full`}
           ></div>
           {/* Right Circular Div */}
           <div
-            className={`inset-left absolute -right-3 size-6 rounded-full bg-${accentColor}`}
+            style={{ backgroundColor: getPrimaryAccentColor(accentColor) }}
+            className={`inset-left absolute -right-3 size-6 rounded-full`}
           ></div>
         </div>
-
         {/* Lower Half */}
         <div className="flex flex-col gap-4 p-6">
           {/* Price Section */}
           <div className="flex flex-col items-center gap-2">
-            <span className={`text-${accentColor} font-mono text-xl font-bold`}>
+            <span
+              style={{ color: getPrimaryAccentColor(accentColor) }}
+              className="font-mono text-xl font-bold"
+            >
               &#8369;{price.toFixed(2)}
             </span>
             {allowPointsPurchase && (
@@ -181,22 +176,12 @@ export async function PerxTicket({
               </span>
             )}
           </div>
-
           {variant === 'consumer' && (
-            <div className="flex gap-4">
-              {allowPointsPurchase && (
-                <button
-                  className={`flex-1 rounded-lg border text-${accentColor} border-${accentColor} px-4 py-2 text-sm font-medium hover:bg-${accentColor}/50 cursor-pointer`}
-                >
-                  Purchase with Points
-                </button>
-              )}
-              <button
-                className={`bg-${accentColor} hover:bg-${accentColor}/70 text-perx-white flex-1 cursor-pointer rounded-lg px-4 py-2 text-sm font-medium`}
-              >
-                Pay with Cash
-              </button>
-            </div>
+            <PerxTicketSubmit
+              allowPointsPurchase={allowPointsPurchase}
+              accentColor={accentColor}
+              couponId={couponId}
+            />
           )}
         </div>
       </div>
@@ -206,4 +191,29 @@ export async function PerxTicket({
 
 function formatDate(date: string | null): string {
   return date ? new Date(date).toLocaleDateString() : 'N/A';
+}
+
+export function getAccentColor(accentColor: string): string {
+  const colors: Record<string, string> = {
+    'perx-blue': '#b7d0f7',
+    'perx-canopy': '#b9f0df',
+    'perx-rust': '#fadac8',
+    'perx-gold': '#eddfc5',
+    'perx-azalea': '#f0c7db',
+    'perx-navy': '#b6c7e3',
+  };
+  return colors[accentColor] || '#FFFFFF'; // Default to white if color is not found
+}
+
+export function getPrimaryAccentColor(accentColor: string): string {
+  const primaryColors: Record<string, string> = {
+    'perx-blue': '#0061FE',
+    'perx-canopy': '#0F503C',
+    'perx-rust': '#BE4B0A',
+    'perx-gold': '#9B6400',
+    'perx-azalea': '#CD2F7B',
+    'perx-navy': '#283750',
+  };
+
+  return primaryColors[accentColor] || '#FFFFFF';
 }

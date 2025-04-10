@@ -1,13 +1,9 @@
-import { createClient } from '@/utils/supabase/server';
 import UserCard from '@/components/merchant/Usercard';
 import { ArrowRight, Tickets, UsersRound, PhilippinePeso } from 'lucide-react';
 import LineChart from '@/components/merchant/lineChart';
 import TopCouponsMonth from '@/components/merchant/TopCouponsMonth';
 
 export default async function DashboardPage() {
-  const supabase = await createClient();
-  const { data, error } = await supabase.auth.getUser();
-
   return (
     <div className="flex flex-col gap-4 p-4 md:flex-row md:p-6">
       {/* LEFT */}

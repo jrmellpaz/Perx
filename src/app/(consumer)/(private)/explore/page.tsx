@@ -18,7 +18,6 @@ export default async function Explore() {
             />
           ))
         ) : (
-          // 'Hello'
           <p>No tickets available.</p>
         )}
       </div>

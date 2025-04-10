@@ -13,17 +13,7 @@ export default async function NotFound() {
   if (!userData) {
     url = '/';
   } else {
-    const { data: roleData, error } = await supabase
-      .from('users')
-      .select('role')
-      .eq('id', userData.user?.id)
-      .single();
-
-    if (error) {
-      throw new Error(error.message);
-    }
-
-    userRole = roleData.role;
+    userRole = userData.user?.user_metadata.role;
     if (userRole === 'merchant') {
       url = '/merchant/dashboard';
     } else if (userRole === 'consumer') {

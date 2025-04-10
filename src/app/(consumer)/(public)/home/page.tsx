@@ -8,23 +8,16 @@ type UserRole = 'consumer' | 'merchant';
 
 export default async function DashboardPage() {
   const supabase = await createClient();
-  const { data, error } = await supabase.auth.getUser();
+  const {
+    data: { user },
+    error,
+  } = await supabase.auth.getUser();
 
-  if (error || !data?.user) {
+  if (error || !user) {
     redirect('/login');
   }
 
-  const { data: roleData, error: errorData } = await supabase
-    .from('users')
-    .select('role')
-    .eq('id', data.user.id)
-    .single();
-
-  const userRole: UserRole = roleData?.role;
-
-  if (errorData) {
-    throw new Error(errorData.message);
-  }
+  const userRole: UserRole = user?.user_metadata.role as UserRole;
 
   return (
     <div>
@@ -35,7 +28,7 @@ export default async function DashboardPage() {
         </Link>
       ) : (
         <>
-          <p>Welcome, {data.user.email}</p>
+          <p>Welcome, {user.email}</p>
           {/* <form action={logoutConsumer}>
             <Button type="submit">Log out</Button>
           </form> */}

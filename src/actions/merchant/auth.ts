@@ -80,7 +80,7 @@ export async function signupMerchant(data: MerchantFormInputs) {
 
   const { data: logoURL } = await supabase.storage
     .from('perx')
-    .getPublicUrl(`logo/${merchantId}`);
+    .getPublicUrl(logoData.path);
 
   // Insert merchant details in public.merchants table
   const { error: merchantsTableError } = await supabase

@@ -43,6 +43,11 @@ export async function signupMerchant(data: MerchantFormInputs) {
   const { data: merchantData, error: authError } = await supabase.auth.signUp({
     email,
     password,
+    options: {
+      data: {
+        role: 'merchant',
+      },
+    },
   });
 
   if (authError) {
@@ -50,20 +55,21 @@ export async function signupMerchant(data: MerchantFormInputs) {
   }
 
   // Insert in public.users table
+
+  // const { error: usersTableError } = await supabase
+  //   .from('users')
+  //   .insert({ id: merchantId, role: 'merchant' });
+
+  // if (usersTableError) {
+  //   throw new Error(`USERS TABLE ERROR: ${usersTableError.message}`);
+  // }
+
+  // Store logo in storage and retrieve link
   const merchantId = merchantData?.user?.id;
   if (!merchantId) {
     throw new Error('Failed to retrieve merchant ID.');
   }
 
-  const { error: usersTableError } = await supabase
-    .from('users')
-    .insert({ id: merchantId, role: 'merchant' });
-
-  if (usersTableError) {
-    throw new Error(`USERS TABLE ERROR: ${usersTableError.message}`);
-  }
-
-  // Store logo in storage and retrieve link
   const { data: logoData, error: logoError } = await supabase.storage
     .from('perx')
     .upload(`logo/${merchantId}`, logo[0]);

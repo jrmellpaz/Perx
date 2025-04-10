@@ -22,19 +22,19 @@ export async function loginConsumer(data: LoginConsumerInputs) {
 
   const userId = authData?.user?.id;
   if (!userId) {
-    return { error: "No such consumer account." };
+    return { error: 'No such consumer account.' };
   }
 
-  const { data: userData, error: userError } = await supabase
-    .from('users')
-    .select('role')
-    .eq('id', userId)
-    .single();
+  // const { data: userData, error: userError } = await supabase
+  //   .from('users')
+  //   .select('role')
+  //   .eq('id', userId)
+  //   .single();
 
-  if (userError || !userData) {
-    await supabase.auth.signOut();
-    return { error: "Please log in with a consumer account." };
-  }
+  // if (userError || !userData) {
+  //   await supabase.auth.signOut();
+  //   return { error: 'Please log in with a consumer account.' };
+  // }
 
   revalidatePath('/explore');
   redirect('/explore');
@@ -43,20 +43,19 @@ export async function loginConsumer(data: LoginConsumerInputs) {
 export async function signupConsumer(data: ConsumerFormInputs) {
   const supabase = await createClient();
 
-  const {
-    name,
-    email,
-    password,
-    confirmPassword,
-    referrer_code,
-    interests,
-  } = data;
+  const { name, email, password, confirmPassword, referrer_code, interests } =
+    data;
 
   console.log('Signup data:', data); // Log the signup data
 
   const { data: authData, error: authError } = await supabase.auth.signUp({
     email,
     password,
+    options: {
+      data: {
+        role: 'consumer',
+      },
+    },
   });
 
   if (authError) {
@@ -67,19 +66,19 @@ export async function signupConsumer(data: ConsumerFormInputs) {
   const userId = authData?.user?.id;
   if (!userId) {
     // console.error('Failed to retrieve user ID'); // Log the user ID retrieval failure
-    return { error: "Failed to retrieve user ID." };
+    return { error: 'Failed to retrieve user ID.' };
   }
 
-  const { error: dbError } = await supabase.from('users').insert([
-    {
-      id: userId,
-    },
-  ]);
+  // const { error: dbError } = await supabase.from('users').insert([
+  //   {
+  //     id: userId,
+  //   },
+  // ]);
 
-  if (dbError) {
-    // console.error('DB error:', dbError.message); // Log the DB error
-    return { error: dbError.message };
-  }
+  // if (dbError) {
+  //   // console.error('DB error:', dbError.message); // Log the DB error
+  //   return { error: dbError.message };
+  // }
 
   const unique_code = await generateUniqueCode();
 
@@ -100,12 +99,14 @@ export async function signupConsumer(data: ConsumerFormInputs) {
     return { error: db2Error.message };
   }
 
-  const { error: db3Error } = await supabase.from('consumer_achievements').insert([
-    {
-      id: userId,
-      achievement_id: [],
-    },
-  ]);
+  const { error: db3Error } = await supabase
+    .from('consumer_achievements')
+    .insert([
+      {
+        id: userId,
+        achievement_id: [],
+      },
+    ]);
 
   if (db3Error) {
     // console.error('DB2 error:', db2Error.message); // Log the DB2 error
@@ -114,10 +115,10 @@ export async function signupConsumer(data: ConsumerFormInputs) {
 
   if (referrer_code) {
     const { data: checkData, error: checkError } = await supabase
-    .from("consumers")
-    .select("id")
-    .eq("referral_code", referrer_code)
-    .single();
+      .from('consumers')
+      .select('id')
+      .eq('referral_code', referrer_code)
+      .single();
     checkAchievements(checkData?.id); // Call the function to check achievements
   }
   // Fetch the user's role
@@ -169,15 +170,13 @@ export async function recoverPassword(email: string) {
   const { data: userData, error: userError } = await supabase
     .from('consumers')
     .select('id')
-    .eq('email', email)
+    .eq('email', email);
 
   if (userData) {
-  const { data, error } = await supabase.auth.resetPasswordForEmail(email, {
-    redirectTo: url,
-  });
-
-  }
-  else {
+    const { data, error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: url,
+    });
+  } else {
     throw new Error(userError.message);
   }
 }
@@ -202,25 +201,28 @@ export async function checkReferrer(referrerCode: string): Promise<boolean> {
 
   // console.log("indsddedi")
   const { data, error } = await supabase
-    .from('consumers') 
+    .from('consumers')
     .select('id')
     .eq('referral_code', referrerCode)
     .single();
 
   if (error || !data) {
-    return false; 
+    return false;
   }
 
-  return true; 
+  return true;
 }
 
 function generateReferralCode(length: number): string {
-  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  const characters =
+    'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
   let referralCode = '';
   for (let i = 0; i < length; i++) {
-    referralCode += characters.charAt(Math.floor(Math.random() * characters.length));
+    referralCode += characters.charAt(
+      Math.floor(Math.random() * characters.length)
+    );
   }
-  console.log(referralCode)
+  console.log(referralCode);
   return referralCode;
 }
 

@@ -81,17 +81,7 @@ export async function updateSession(request: NextRequest) {
     }
   } else {
     // Fetch user role from database
-    const { data, error } = await supabase
-      .from('users')
-      .select('role')
-      .eq('id', user.id)
-      .single();
-
-    if (error) {
-      throw new Error(error.message);
-    }
-
-    const userRole: UserRole = data.role;
+    const userRole: UserRole = user.user_metadata.role as UserRole;
     console.log('role:', userRole);
 
     // Redirect authenticated users to dashboard / home page

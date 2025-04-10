@@ -14,7 +14,7 @@ import {
 import Link from 'next/link';
 import { createClient } from '@/utils/supabase/server';
 import PerxHeader from '@/components/custom/PerxHeader';
-import { logoutMerchant } from '@/actions/merchant/auth';
+import LogoutButton from '@/components/merchant/MerchantSettingsLogOut';
 
 export default async function SettingsPage() {
   const supabase = await createClient();
@@ -107,20 +107,7 @@ export default async function SettingsPage() {
         </div>
 
         {/* Login Section */}
-        <div>
-          <h2 className="mb-2 text-sm font-medium text-neutral-500">Login</h2>
-          <div className="rounded-md bg-white shadow-sm">
-            <div className="flex cursor-pointer items-center justify-between px-4 py-4 hover:bg-neutral-100">
-              <div className="flex items-center gap-4">
-                <LogOut className="h-5 w-5 text-neutral-500" />
-                <Button onClick={logoutMerchant} className="text-sm">
-                  Log Out Account
-                </Button>
-              </div>
-              <ChevronRight className="h-4 w-4 text-neutral-400" />
-            </div>
-          </div>
-        </div>
+        <LogoutButton />
       </div>
     </div>
   );

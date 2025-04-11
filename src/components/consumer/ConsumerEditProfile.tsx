@@ -16,14 +16,13 @@ import {
   ConsumerProfile,
 } from '@/lib/consumer/profileSchema';
 import { zodResolver } from '@hookform/resolvers/zod';
-import PerxTextarea from '../custom/PerxTextarea';
 import PerxCheckbox from '../custom/PerxCheckbox';
 import { motion } from 'framer-motion';
 import { LoaderCircle } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { updateConsumerProfile } from '@/actions/consumer/profile';
 import { redirect } from 'next/navigation';
-import { fetchTopCouponTypes } from '@/actions/consumer/auth';
+import { fetchTopCouponTypes } from '@/actions/consumerAuth';
 
 export default function ConsumerEditProfile({
   profile,
@@ -41,7 +40,11 @@ export default function ConsumerEditProfile({
     },
   });
 
-  const { handleSubmit, register, formState: { errors } } = formMethods;
+  const {
+    handleSubmit,
+    register,
+    formState: { errors },
+  } = formMethods;
 
   const processForm: SubmitHandler<EditProfileInputs> = async (data) => {
     setIsSubmitting(true);
@@ -62,7 +65,11 @@ export default function ConsumerEditProfile({
           onSubmit={handleSubmit(processForm)}
           className="my-2 flex w-full max-w-[800px] flex-col gap-8"
         >
-          <EditDetails register={register} errors={errors} isSubmitting={isSubmitting} />
+          <EditDetails
+            register={register}
+            errors={errors}
+            isSubmitting={isSubmitting}
+          />
         </form>
       </main>
     </FormProvider>
@@ -165,7 +172,6 @@ function EditDetails({
     </motion.div>
   );
 }
-
 
 function ErrorMessage({ message }: { message: string }) {
   return <p className="mt-1 font-mono text-sm text-red-400">{message}</p>;

@@ -12,7 +12,7 @@ import {
   changePasswordSchema,
 } from '@/lib/merchant/merchantSchema';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { changePassword } from '@/actions/merchant/auth';
+import { changePassword } from '@/actions/merchantAuth';
 import { LoaderCircle } from 'lucide-react';
 import PerxAlert from '../custom/PerxAlert';
 import { set } from 'zod';

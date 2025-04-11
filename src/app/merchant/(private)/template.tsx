@@ -1,6 +1,6 @@
 'use client';
 
-import { logoutMerchant } from '@/actions/merchant/auth';
+import { logoutMerchant } from '@/actions/merchantAuth';
 import { MerchantLogo } from '@/components/merchant/MerchantLogo';
 import { Button } from '@/components/ui/button';
 import {

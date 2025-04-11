@@ -13,7 +13,7 @@ import {
 import { FieldErrors, useForm, UseFormRegister } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import PerxInput from '../custom/PerxInput';
-import { loginConsumer } from '@/actions/consumer/auth';
+import { loginConsumer } from '@/actions/consumerAuth';
 import PerxAlert from '../custom/PerxAlert';
 import { LoaderCircle } from 'lucide-react';
 import SignInWithGoogle from './SignInWithGoogle';

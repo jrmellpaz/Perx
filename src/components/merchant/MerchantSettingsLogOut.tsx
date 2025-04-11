@@ -1,7 +1,7 @@
 'use client';
 import { useRouter } from 'next/navigation';
 import { LogOut, ChevronRight } from 'lucide-react';
-import { logoutMerchant } from '@/actions/merchant/auth';
+import { logoutMerchant } from '@/actions/merchantAuth';
 import { toast } from 'sonner';
 
 export default function LogoutButton() {

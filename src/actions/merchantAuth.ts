@@ -2,14 +2,13 @@
 
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
-
 import { createClient } from '@/utils/supabase/server';
 import {
   LoginMerchantInputs,
   MerchantFormInputs,
 } from '@/lib/merchant/merchantSchema';
 
-export async function loginMerchant(data: LoginMerchantInputs) {
+export const loginMerchant = async (data: LoginMerchantInputs) => {
   const supabase = await createClient();
 
   const { error } = await supabase.auth.signInWithPassword(data);
@@ -20,9 +19,9 @@ export async function loginMerchant(data: LoginMerchantInputs) {
 
   revalidatePath('/merchant/dashboard');
   redirect('/merchant/dashboard');
-}
+};
 
-export async function signupMerchant(data: MerchantFormInputs) {
+export const signupMerchant = async (data: MerchantFormInputs) => {
   const supabase = await createClient();
 
   const {
@@ -39,7 +38,7 @@ export async function signupMerchant(data: MerchantFormInputs) {
     throw new Error('Passwords do not match.');
   }
 
-  // Supabase auth
+  // Pass user credentials and set role to merchant
   const { data: merchantData, error: authError } = await supabase.auth.signUp({
     email,
     password,
@@ -51,18 +50,8 @@ export async function signupMerchant(data: MerchantFormInputs) {
   });
 
   if (authError) {
-    throw new Error(`AUTH ERROR: ${authError.message}`);
+    throw new Error(`Auth error: ${authError.message}`);
   }
-
-  // Insert in public.users table
-
-  // const { error: usersTableError } = await supabase
-  //   .from('users')
-  //   .insert({ id: merchantId, role: 'merchant' });
-
-  // if (usersTableError) {
-  //   throw new Error(`USERS TABLE ERROR: ${usersTableError.message}`);
-  // }
 
   // Store logo in storage and retrieve link
   const merchantId = merchantData?.user?.id;
@@ -75,10 +64,10 @@ export async function signupMerchant(data: MerchantFormInputs) {
     .upload(`logo/${merchantId}`, logo[0]);
 
   if (logoError) {
-    throw new Error(`LOGO ERROR: ${logoError.message}`);
+    throw new Error(`Logo error: ${logoError.message}`);
   }
 
-  const { data: logoURL } = await supabase.storage
+  const { data: logoUrl } = await supabase.storage
     .from('perx')
     .getPublicUrl(logoData.path);
 
@@ -90,20 +79,20 @@ export async function signupMerchant(data: MerchantFormInputs) {
       name: businessName,
       bio: description,
       address,
-      logo: logoURL.publicUrl,
+      logo: logoUrl.publicUrl,
       id: merchantId,
     });
 
   if (merchantsTableError) {
-    throw new Error(`MERCHANT TABLE ERROR: ${merchantsTableError.message}`);
+    throw new Error(`Merchant table error: ${merchantsTableError.message}`);
   }
 
   // Redirect to dashboard
   revalidatePath('/merchant/dashboard');
   redirect('/merchant/dashboard');
-}
+};
 
-export async function logoutMerchant() {
+export const logoutMerchant = async () => {
   const supabase = await createClient();
 
   const { error } = await supabase.auth.signOut();
@@ -114,28 +103,28 @@ export async function logoutMerchant() {
 
   revalidatePath('/', 'layout');
   redirect('/merchant/login');
-}
+};
 
-export async function recoverPassword(email: string) {
+export const recoverPassword = async (email: string) => {
   const supabase = await createClient();
   const url = `${process.env.NEXT_PUBLIC_URL}/merchant/change-password`;
 
-  const { data, error } = await supabase.auth.resetPasswordForEmail(email, {
+  const { error } = await supabase.auth.resetPasswordForEmail(email, {
     redirectTo: url,
   });
 
   if (error) {
     throw new Error(error.message);
   }
-}
+};
 
-export async function changePassword(password: string) {
+export const changePassword = async (password: string) => {
   const supabase = await createClient();
-  const { data, error } = await supabase.auth.updateUser({
+  const { error } = await supabase.auth.updateUser({
     password,
   });
 
   if (error) {
     throw new Error(error.message);
   }
-}
+};

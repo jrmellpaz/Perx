@@ -18,16 +18,11 @@ import {
   UseFormSetValue,
 } from 'react-hook-form';
 import { Label } from '../ui/label';
-import { Input } from '../ui/input';
 import { Button } from '../ui/button';
 import { Checkbox } from '../ui/checkbox';
 import Link from 'next/link';
 import PerxInput from '../custom/PerxInput';
-import {
-  signupConsumer,
-  checkReferrer,
-  fetchTopCouponTypes,
-} from '@/actions/consumer/auth';
+import { signupConsumer, checkReferrer } from '@/actions/consumerAuth';
 import PerxAlert from '../custom/PerxAlert';
 import { LoaderCircle } from 'lucide-react';
 import PerxCheckbox from '../custom/PerxCheckbox';
@@ -84,8 +79,8 @@ export default function ConsumerRegisterForm() {
       const data = getValues();
       console.log(data);
 
-      if (data.referrer_code) {
-        const isValidReferrer = await checkReferrer(data.referrer_code);
+      if (data.referrerCode) {
+        const isValidReferrer = await checkReferrer(data.referrerCode);
         if (!isValidReferrer) {
           setSubmitError('Invalid referral code');
           return;
@@ -114,7 +109,7 @@ export default function ConsumerRegisterForm() {
     if (!isValidData) return; // Prevent next step if validation fails
 
     if (currentStep === 1) {
-      const referrerCode = getValues('referrer_code');
+      const referrerCode = getValues('referrerCode');
       if (referrerCode && referrerExists === false) {
         setSubmitError('Invalid referral code');
         return; // Stop next step if referral code is invalid
@@ -320,7 +315,7 @@ function Step2({
   // const [referrerCode, setReferrerCode] = useState('');
   // const [debouncedReferrerCode] = useDebounce(referrerCode, 500); // Delay API call by 500ms
 
-  const referrerCode = watch('referrer_code');
+  const referrerCode = watch('referrerCode');
   const [debouncedCode, setDebouncedCode] = useState(referrerCode);
 
   useEffect(() => {
@@ -355,10 +350,10 @@ function Step2({
     >
       <div>
         <PerxInput
-          label="Enter Code "
+          label="Enter code (Optional)"
           type="text"
           placeholder="IpSuM123"
-          {...register('referrer_code')}
+          {...register('referrerCode')}
         />
         {referrerExists === false && (
           <ErrorMessage message="Invalid referral code" />
@@ -388,7 +383,7 @@ function Step3({
     setInterests(couponCategories.options);
     setValue('interests', []);
   }, [setValue]);
-  
+
   const handleCheckboxChange = (interest: string, checked: boolean) => {
     if (checked) {
       setValue('interests', [...selectedInterests, interest]);

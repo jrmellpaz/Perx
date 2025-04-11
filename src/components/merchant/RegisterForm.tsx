@@ -23,7 +23,7 @@ import { Checkbox } from '../ui/checkbox';
 import Link from 'next/link';
 import PerxInput from '../custom/PerxInput';
 import PerxTextarea from '../custom/PerxTextarea';
-import { signupMerchant } from '@/actions/merchant/auth';
+import { signupMerchant } from '@/actions/merchantAuth';
 import PerxAlert from '../custom/PerxAlert';
 import { LoaderCircle } from 'lucide-react';
 

@@ -1,6 +1,6 @@
 'use client';
 
-import { logoutConsumer } from '@/actions/consumer/auth';
+import { logoutConsumer } from '@/actions/consumerAuth';
 import { ConsumerLogo } from '@/components/consumer/ConsumerLogo';
 import { Button } from '@/components/ui/button';
 import {

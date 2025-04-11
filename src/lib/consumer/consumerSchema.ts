@@ -16,7 +16,7 @@ export const Step1Schema = z
   });
 
 export const Step2Schema = z.object({
-  referrer_code: z.string().optional(),
+  referrerCode: z.string().optional(),
 });
 
 export const Step3Schema = z.object({

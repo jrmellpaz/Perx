@@ -15,7 +15,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { changePassword } from '@/actions/consumerAuth';
 import { LoaderCircle } from 'lucide-react';
 import PerxAlert from '../custom/PerxAlert';
-import { set } from 'zod';
+import { redirect } from 'next/navigation';
 
 export default function ConsumerChangePassword() {
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -44,6 +44,7 @@ export default function ConsumerChangePassword() {
       await changePassword(confirmPassword);
       reset();
       setSuccess(true);
+      redirect('/login');
     } catch (error: unknown) {
       setIsError(true);
       throw new Error(error as string);
@@ -71,27 +72,29 @@ export default function ConsumerChangePassword() {
             <PerxAlert
               variant="success"
               heading="Successfully changed password 🔐"
-              message="You're all set. Go to dashboard to continue."
+              message="You're all set. You will be redirected."
             />
           )}
           <InputGroup register={register} errors={errors} />
         </div>
         <div className="flex w-full justify-end">
-          <Button type="submit" disabled={isLoading}>
-            {isLoading ? (
-              <>
-                <LoaderCircle
-                  className="-ms-1 animate-spin"
-                  size={16}
-                  strokeWidth={2}
-                  aria-hidden="true"
-                />
-                Change password
-              </>
-            ) : (
-              'Change password'
-            )}
-          </Button>
+          {!success && (
+            <Button type="submit" disabled={isLoading}>
+              {isLoading ? (
+                <>
+                  <LoaderCircle
+                    className="-ms-1 animate-spin"
+                    size={16}
+                    strokeWidth={2}
+                    aria-hidden="true"
+                  />
+                  Change password
+                </>
+              ) : (
+                'Change password'
+              )}
+            </Button>
+          )}
         </div>
       </form>
     </section>

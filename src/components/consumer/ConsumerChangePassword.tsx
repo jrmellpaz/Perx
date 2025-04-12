@@ -62,13 +62,7 @@ export default function ConsumerChangePassword() {
         className="flex h-full flex-col justify-between"
       >
         <div className="flex flex-col gap-6">
-          {isError && (
-            <PerxAlert
-              variant="error"
-              heading="An error occurred"
-              message="New password should be different from the old password."
-            />
-          )}
+          {isError && <PerxAlert variant="error" heading="An error occurred" />}
           {success && !isError && (
             <PerxAlert
               variant="success"

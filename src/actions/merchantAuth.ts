@@ -118,18 +118,18 @@ export const recoverPassword = async (email: string) => {
   }
 };
 
-export const changePassword = async (password: string) => {
-  const supabase = await createClient();
-  const { error } = await supabase.auth.updateUser({
-    password,
-  });
+// export const changePassword = async (password: string) => {
+//   const supabase = await createClient();
+//   const { error } = await supabase.auth.updateUser({
+//     password,
+//   });
 
-  if (
-    error &&
-    !error.message.includes(
-      'supabase.auth.getSession() or from some supabase.auth.onAuthStateChange()'
-    )
-  ) {
-    throw new Error(error.message);
-  }
-};
+//   if (
+//     error &&
+//     !error.message.includes(
+//       'supabase.auth.getSession() or from some supabase.auth.onAuthStateChange()'
+//     )
+//   ) {
+//     throw new Error(error.message);
+//   }
+// };

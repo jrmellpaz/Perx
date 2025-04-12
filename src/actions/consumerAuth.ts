@@ -131,7 +131,12 @@ export const changePassword = async (password: string) => {
     password,
   });
 
-  if (error) {
+  if (
+    error &&
+    !error.message.includes(
+      'supabase.auth.getSession() or from some supabase.auth.onAuthStateChange()'
+    )
+  ) {
     throw new Error(error.message);
   }
 };

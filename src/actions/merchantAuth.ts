@@ -107,7 +107,7 @@ export const logoutMerchant = async () => {
 
 export const recoverPassword = async (email: string) => {
   const supabase = await createClient();
-  const url = `/merchant/change-password`;
+  const url = `${process.env.NEXT_PUBLIC_URL}/merchant/change-password`;
 
   const { error } = await supabase.auth.resetPasswordForEmail(email, {
     redirectTo: url,

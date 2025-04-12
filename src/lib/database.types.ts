@@ -11,21 +11,21 @@ export type Database = {
     Tables: {
       achievements: {
         Row: {
-          created_at: string
+          createdAt: string
           description: string
           id: number
           name: string
           points: number
         }
         Insert: {
-          created_at?: string
+          createdAt?: string
           description?: string
           id?: number
           name: string
           points?: number
         }
         Update: {
-          created_at?: string
+          createdAt?: string
           description?: string
           id?: number
           name?: string
@@ -35,43 +35,43 @@ export type Database = {
       }
       consumers: {
         Row: {
-          created_at: string
+          createdAt: string
           email: string
-          has_purchased: boolean
+          hasPurchased: boolean
           id: string
           interests: string[] | null
           name: string
-          points_balance: number
-          points_total: number
+          pointsBalance: number
+          pointsTotal: number
           rank: number
-          referral_code: string
-          referrer_code: string | null
+          referralCode: string
+          referrerCode: string | null
         }
         Insert: {
-          created_at?: string
+          createdAt?: string
           email: string
-          has_purchased?: boolean
+          hasPurchased?: boolean
           id: string
           interests?: string[] | null
           name: string
-          points_balance?: number
-          points_total?: number
+          pointsBalance?: number
+          pointsTotal?: number
           rank?: number
-          referral_code: string
-          referrer_code?: string | null
+          referralCode: string
+          referrerCode?: string | null
         }
         Update: {
-          created_at?: string
+          createdAt?: string
           email?: string
-          has_purchased?: boolean
+          hasPurchased?: boolean
           id?: string
           interests?: string[] | null
           name?: string
-          points_balance?: number
-          points_total?: number
+          pointsBalance?: number
+          pointsTotal?: number
           rank?: number
-          referral_code?: string
-          referrer_code?: string | null
+          referralCode?: string
+          referrerCode?: string | null
         }
         Relationships: [
           {
@@ -186,7 +186,7 @@ export type Database = {
         Row: {
           address: string | null
           bio: string | null
-          created_at: string
+          createdAt: string
           email: string
           id: string
           logo: string
@@ -195,7 +195,7 @@ export type Database = {
         Insert: {
           address?: string | null
           bio?: string | null
-          created_at?: string
+          createdAt?: string
           email: string
           id: string
           logo: string
@@ -204,7 +204,7 @@ export type Database = {
         Update: {
           address?: string | null
           bio?: string | null
-          created_at?: string
+          createdAt?: string
           email?: string
           id?: string
           logo?: string

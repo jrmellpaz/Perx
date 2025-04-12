@@ -1,4 +1,4 @@
-import { getConsumerProfile } from '@/actions/consumer/profile';
+import { fetchConsumerProfile } from '@/actions/consumerProfile';
 import { fetchRank } from '@/actions/rank';
 import { createClient } from '@/utils/supabase/server';
 import {
@@ -24,7 +24,7 @@ export default async function Achievements() {
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  const { rank } = await getConsumerProfile(user!.id);
+  const { rank } = await fetchConsumerProfile(user!.id);
   const { primaryColor, secondaryColor } = await fetchRank(rank);
 
   const achievements = [

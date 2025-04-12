@@ -1,94 +1,94 @@
 'use server';
 import { createClient } from '@/utils/supabase/server';
 
-export async function handlePurchase(userId: string, amount = 0) {
-  const supabase = await createClient();
+// export async function handlePurchase(userId: string, amount = 0) {
+//   const supabase = await createClient();
 
-  // 1. Get user info
-  const { data: user, error: checkError } = await supabase
-    .from('consumers')
-    .select('*')
-    .eq('id', userId)
-    .single();
+//   // 1. Get user info
+//   const { data: user, error: checkError } = await supabase
+//     .from('consumers')
+//     .select('*')
+//     .eq('id', userId)
+//     .single();
 
-  if (checkError || !user) {
-    throw new Error('User not found.');
-  }
+//   if (checkError || !user) {
+//     throw new Error('User not found.');
+//   }
 
-  // 2. Handle 'points' payment method
-  if (amount > 0) {
-    if (user.points_balance < amount) {
-      throw new Error('Not enough points to complete the purchase.');
-    }
+//   // 2. Handle 'points' payment method
+//   if (amount > 0) {
+//     if (user.points_balance < amount) {
+//       throw new Error('Not enough points to complete the purchase.');
+//     }
 
-    console.log(
-      'Deducting',
-      amount,
-      'points to',
-      user.points_balance,
-      'balance'
-    );
-    user.points_balance = user.points_balance - amount;
-    console.log('New balance', user.points_balance);
-    await supabase
-      .from('consumers')
-      .update({
-        points_balance: user.points_balance,
-      })
-      .eq('id', userId);
-  }
+//     console.log(
+//       'Deducting',
+//       amount,
+//       'points to',
+//       user.points_balance,
+//       'balance'
+//     );
+//     user.points_balance = user.points_balance - amount;
+//     console.log('New balance', user.points_balance);
+//     await supabase
+//       .from('consumers')
+//       .update({
+//         points_balance: user.points_balance,
+//       })
+//       .eq('id', userId);
+//   }
 
-  const newPoints = user.points_balance + 50;
-  await supabase
-    .from('consumers')
-    .update({
-      points_balance: newPoints,
-      points_total: user.points_total + 50,
-    })
-    .eq('id', userId);
+//   const newPoints = user.points_balance + 50;
+//   await supabase
+//     .from('consumers')
+//     .update({
+//       points_balance: newPoints,
+//       points_total: user.points_total + 50,
+//     })
+//     .eq('id', userId);
 
-  // 3. If already purchased, just reward points and return
-  if (user.has_purchased) {
-    return;
-  }
+//   // 3. If already purchased, just reward points and return
+//   if (user.has_purchased) {
+//     return;
+//   }
 
-  // 4. Mark user as purchased
-  await supabase
-    .from('consumers')
-    .update({ has_purchased: true })
-    .eq('id', userId);
+//   // 4. Mark user as purchased
+//   await supabase
+//     .from('consumers')
+//     .update({ has_purchased: true })
+//     .eq('id', userId);
 
-  // 5. Get latest consumer data (if needed for referrer)
-  const { data: consumer } = await supabase
-    .from('consumers')
-    .select('*')
-    .eq('id', userId)
-    .single();
+//   // 5. Get latest consumer data (if needed for referrer)
+//   const { data: consumer } = await supabase
+//     .from('consumers')
+//     .select('*')
+//     .eq('id', userId)
+//     .single();
 
-  // 6. Reward referrer
-  if (consumer?.referrer_code) {
-    const { data: referrer } = await supabase
-      .from('consumers')
-      .select('*')
-      .eq('referral_code', consumer.referrer_code)
-      .single();
+//   // 6. Reward referrer
+//   if (consumer?.referrer_code) {
+//     const { data: referrer } = await supabase
+//       .from('consumers')
+//       .select('*')
+//       .eq('referral_code', consumer.referrer_code)
+//       .single();
 
-    if (referrer) {
-      const newPoints = referrer.points_balance + 50;
+//     if (referrer) {
+//       const newPoints = referrer.points_balance + 50;
 
-      await supabase
-        .from('consumers')
-        .update({
-          points_balance: newPoints,
-          points_total: referrer.points_total + 50,
-        })
-        .eq('id', referrer.id);
+//       await supabase
+//         .from('consumers')
+//         .update({
+//           points_balance: newPoints,
+//           points_total: referrer.points_total + 50,
+//         })
+//         .eq('id', referrer.id);
 
-      // await grantAchievement(referrer.id, "Referral Bonus");
-    }
-  }
-  // await grantAchievement(consumer.id, 'First Purchase');
-}
+//       // await grantAchievement(referrer.id, "Referral Bonus");
+//     }
+//   }
+//   // await grantAchievement(consumer.id, 'First Purchase');
+// }
 
 // export async function grantAchievement(consumerId: string, code: string) {
 //   const supabase = await createClient();

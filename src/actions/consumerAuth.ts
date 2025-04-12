@@ -60,11 +60,11 @@ export const signupConsumer = async (data: ConsumerFormInputs) => {
     {
       id: userId,
       email: email,
-      referrer_code: referrerCode,
+      referrerCode: referrerCode,
       interests,
       name,
-      referral_code: uniqueCode,
-      has_purchased: false,
+      referralCode: uniqueCode,
+      hasPurchased: false,
     },
   ]);
 

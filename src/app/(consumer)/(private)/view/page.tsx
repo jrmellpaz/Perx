@@ -1,7 +1,8 @@
-import { getMerchantProfile } from '@/actions/merchant/profile';
+import { getMerchantProfile } from '@/actions/merchantProfile';
 import { PerxTicket } from '@/components/custom/PerxTicket';
 import { redirect } from 'next/navigation';
-import { ConsumerCoupon } from '@/lib/consumer/couponSchema';
+
+import type { Coupon } from '@/lib/types';
 
 export default async function ViewCoupon({
   searchParams,
@@ -15,7 +16,7 @@ export default async function ViewCoupon({
     redirect('/not-found');
   }
 
-  const coupon: ConsumerCoupon = JSON.parse(couponData);
+  const coupon: Coupon = JSON.parse(couponData);
   const merchantData = await getMerchantProfile(merchantId);
 
   return (

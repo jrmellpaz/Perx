@@ -18,7 +18,7 @@ import PerxTextarea from '../custom/PerxTextarea';
 import { motion } from 'framer-motion';
 import { LoaderCircle } from 'lucide-react';
 import { useState } from 'react';
-import { updateMerchantProfile } from '@/actions/merchant/profile';
+import { updateMerchantProfile } from '@/actions/merchantProfile';
 import { redirect } from 'next/navigation';
 
 export default function MerchantEditProfile({

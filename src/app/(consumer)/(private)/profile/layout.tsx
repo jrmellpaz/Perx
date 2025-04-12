@@ -1,5 +1,5 @@
 import { JSX } from 'react';
-import { getConsumerProfile } from '@/actions/consumer/profile';
+import { fetchConsumerProfile } from '@/actions/consumerProfile';
 import { createClient } from '@/utils/supabase/server';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
@@ -27,17 +27,17 @@ export default async function ConsumerProfileLayout({
 
   const {
     name,
-    balancePoints,
-    totalPoints,
+    pointsBalance,
+    pointsTotal,
     rank: rankId,
-  } = await getConsumerProfile(user!.id);
+  } = await fetchConsumerProfile(user!.id);
 
   const rank = await fetchRank(rankId);
   let nextIcon: string | null = null;
 
   if (rankId.toString() !== '15') {
     console.log('hereeeeee', rankId);
-    const nextRank = await fetchRank((parseInt(rankId) + 1).toString());
+    const nextRank = await fetchRank(rankId + 1);
     nextIcon = nextRank.icon;
   }
 
@@ -70,8 +70,8 @@ export default async function ConsumerProfileLayout({
         <LoyaltyRewardsCard
           nextIcon={nextIcon}
           rank={rank}
-          balancePoints={balancePoints}
-          totalPoints={totalPoints}
+          balancePoints={pointsBalance}
+          totalPoints={pointsTotal}
         />
         <div className="relative -top-20">
           <Tabs tabItems={profileNavItems} />

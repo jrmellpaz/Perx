@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { Button } from '../ui/button';
-import { updateConsumerPassword } from '@/actions/consumer/profile';
+import { updateConsumerPassword } from '@/actions/consumerProfile';
 import PerxAlert from '../custom/PerxAlert';
 import { LoaderCircle } from 'lucide-react';
 

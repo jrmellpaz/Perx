@@ -1,5 +1,5 @@
 import { ReactNode } from 'react';
-import { getMerchantProfile } from '@/actions/merchant/profile';
+import { getMerchantProfile } from '@/actions/merchantProfile';
 import Tabs from '@/components/custom/Tabs';
 import { MerchantProfile } from '@/lib/merchant/profileSchema';
 import Link from 'next/link';

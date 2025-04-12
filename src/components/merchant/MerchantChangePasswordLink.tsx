@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { Button } from '../ui/button';
-import { updateMerchantPassword } from '@/actions/merchant/profile';
+import { updateMerchantPassword } from '@/actions/merchantProfile';
 import PerxAlert from '../custom/PerxAlert';
 import { LoaderCircle } from 'lucide-react';
 

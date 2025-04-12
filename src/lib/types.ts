@@ -12,5 +12,12 @@ export type CouponCategory =
 export type CouponCategories = CouponCategory[];
 export type InsertCoupon = Database['public']['Tables']['coupons']['Insert'];
 
+// Consumer
+export type Consumer = Database['public']['Tables']['consumers']['Row'];
+
+// Merchant
+export type Merchant = Database['public']['Tables']['merchants']['Row'];
+export type Merchants = Merchant[];
+
 // Success types
 export type SuccessResponse = { success: boolean; message: string };

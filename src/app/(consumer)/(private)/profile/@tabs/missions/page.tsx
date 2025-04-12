@@ -1,4 +1,4 @@
-import { getConsumerProfile } from '@/actions/consumer/profile';
+import { fetchConsumerProfile } from '@/actions/consumerProfile';
 import { fetchRank } from '@/actions/rank';
 import { ReferralCard } from '@/components/consumer/ConsumerProfile';
 import { createClient } from '@/utils/supabase/server';
@@ -9,7 +9,7 @@ export default async function Missions() {
     data: { user },
   } = await supabase.auth.getUser();
 
-  const { referralCode, rank: rankId } = await getConsumerProfile(user!.id);
+  const { referralCode, rank: rankId } = await fetchConsumerProfile(user!.id);
   const rank = await fetchRank(rankId);
 
   return (

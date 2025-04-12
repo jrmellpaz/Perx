@@ -1,11 +1,13 @@
 'use client';
 
-import { purchaseCoupon } from '@/actions/consumer/coupon';
 import { cn } from '@/lib/utils';
 import { useState } from 'react';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { toast } from 'sonner';
 import { getAccentColor, getPrimaryAccentColor } from './PerxTicket';
+import { purchaseCoupon } from '@/actions/purchase';
+
+import type { Coupon } from '@/lib/types';
 
 type FormInputs = {
   paymentMethod: 'points' | 'cash';
@@ -14,11 +16,11 @@ type FormInputs = {
 export function PerxTicketSubmit({
   allowPointsPurchase,
   accentColor,
-  couponId,
+  coupon,
 }: {
   allowPointsPurchase: boolean;
   accentColor: string;
-  couponId: string;
+  coupon: Coupon;
 }) {
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
@@ -29,7 +31,7 @@ export function PerxTicketSubmit({
 
     try {
       // Call the purchase function with the selected payment method
-      await purchaseCoupon(couponId, data.paymentMethod);
+      await purchaseCoupon(coupon, data.paymentMethod);
       toast('Coupon purchased successfully');
     } catch (error) {
       console.error('Purchase error:', error);

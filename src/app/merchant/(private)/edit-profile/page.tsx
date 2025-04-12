@@ -1,4 +1,4 @@
-import { getMerchantProfile } from '@/actions/merchant/profile';
+import { getMerchantProfile } from '@/actions/merchantProfile';
 import PerxHeader from '@/components/custom/PerxHeader';
 import MerchantEditProfile from '@/components/merchant/MerchantEditProfile';
 import { createClient } from '@/utils/supabase/server';

@@ -1,19 +1,19 @@
 import { fetchRank } from '@/actions/rank';
-import { MerchantCoupon } from '@/lib/merchant/couponSchema';
 import { MerchantProfile } from '@/lib/merchant/profileSchema';
 import { cn } from '@/lib/utils';
 import Link from 'next/link';
 import { PerxReadMore } from './PerxReadMore';
 import { SparklesIcon } from 'lucide-react';
-import { ConsumerCoupon } from '@/lib/consumer/couponSchema';
 import { PerxTicketSubmit } from './PerxTicketSubmit';
+
+import type { Coupon } from '@/lib/types';
 
 export async function PerxTicket({
   couponData,
   merchantData,
   variant,
 }: {
-  couponData: MerchantCoupon | ConsumerCoupon;
+  couponData: Coupon;
   merchantData: MerchantProfile;
   variant: 'consumer' | 'merchant';
 }) {
@@ -180,7 +180,7 @@ export async function PerxTicket({
             <PerxTicketSubmit
               allowPointsPurchase={allowPointsPurchase}
               accentColor={accentColor}
-              couponId={couponId}
+              coupon={couponData}
             />
           )}
         </div>

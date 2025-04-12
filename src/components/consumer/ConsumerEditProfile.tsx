@@ -10,24 +10,25 @@ import {
   useFormContext,
   FormProvider,
 } from 'react-hook-form';
-import {
-  EditProfileInputs,
-  editProfileSchema,
-  ConsumerProfile,
-} from '@/lib/consumer/profileSchema';
 import { zodResolver } from '@hookform/resolvers/zod';
 import PerxCheckbox from '../custom/PerxCheckbox';
 import { motion } from 'framer-motion';
 import { LoaderCircle } from 'lucide-react';
 import { useState, useEffect } from 'react';
-import { updateConsumerProfile } from '@/actions/consumer/profile';
+import { updateConsumerProfile } from '@/actions/consumerProfile';
 import { redirect } from 'next/navigation';
 import { fetchTopCouponTypes } from '@/actions/consumerAuth';
+
+import type { Consumer } from '@/lib/types';
+import {
+  EditProfileInputs,
+  editProfileSchema,
+} from '@/lib/consumer/profileSchema';
 
 export default function ConsumerEditProfile({
   profile,
 }: {
-  profile: ConsumerProfile;
+  profile: Consumer;
 }) {
   const { name, interests } = profile;
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
@@ -36,7 +37,7 @@ export default function ConsumerEditProfile({
     resolver: zodResolver(editProfileSchema),
     defaultValues: {
       name: name,
-      interests: interests,
+      interests: interests ?? [],
     },
   });
 

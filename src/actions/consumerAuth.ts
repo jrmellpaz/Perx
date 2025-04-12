@@ -105,7 +105,7 @@ export const logoutConsumer = async () => {
 
 export const recoverPassword = async (email: string) => {
   const supabase = await createClient();
-  const url = `${process.env.NEXT_PUBLIC_URL}/change-password`;
+  const url = `/change-password`;
 
   const { data: userData, error: userError } = await supabase
     .from('consumers')

@@ -1,13 +1,7 @@
 'use client';
 
-import {
-  AddCouponInputs,
-  addCouponSchema,
-  CouponCategory,
-} from '@/lib/merchant/couponSchema';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useState, useEffect } from 'react';
-import type { DateValue } from 'react-aria-components';
 import {
   FieldErrors,
   SubmitHandler,
@@ -24,21 +18,24 @@ import { Button } from '../ui/button';
 import { Input } from '../ui/input';
 import { LoaderCircle } from 'lucide-react';
 import PerxColors from '../custom/PerxColors';
-import { Rank } from '@/lib/consumer/rankSchema';
 import PerxSelect from '../custom/PerxSelect';
 import { Checkbox } from '../ui/checkbox';
-import { addCoupon } from '@/actions/merchant/coupon';
 import { PerxDatalist } from '../custom/PerxDatalist';
 import { toast } from 'sonner';
+import { addCoupon } from '@/actions/coupon';
 
-type Ranks = Pick<Rank, 'id' | 'rank' | 'icon'>[];
+import {
+  type AddCouponInputs,
+  addCouponSchema,
+} from '@/lib/merchant/couponSchema';
+import type { CouponCategories, Ranks } from '@/lib/types';
 
 export default function AddCouponForm({
   ranks,
   categories,
 }: {
   ranks: Ranks;
-  categories: CouponCategory[];
+  categories: CouponCategories;
 }) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
@@ -137,7 +134,7 @@ function Inputs({
   imagePreview: string | null;
   control: any;
   ranks: Ranks;
-  categories: CouponCategory[];
+  categories: CouponCategories;
 }) {
   const allowLimitedPurchase = watch('allowLimitedPurchase');
   const allowPointsPurchase = watch('allowPointsPurchase');

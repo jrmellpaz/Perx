@@ -1,8 +1,18 @@
-import { fetchConsumerCoupons } from '@/actions/consumer/coupon';
+import { fetchCouponsByConsumerId } from '@/actions/coupon';
 import { PerxCoupon } from '@/components/custom/PerxCoupon';
+import { createClient } from '@/utils/supabase/server';
 
 export default async function MyCoupon() {
-  const purchasedCoupons = await fetchConsumerCoupons();
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    throw new Error('Error fetching user.');
+  }
+
+  const purchasedCoupons = await fetchCouponsByConsumerId(user.id);
 
   return (
     <section className="flex flex-col gap-2 p-4">
@@ -13,7 +23,7 @@ export default async function MyCoupon() {
             <PerxCoupon
               key={coupon.id}
               coupon={coupon}
-              merchantId={coupon.merchant.id}
+              merchantId={coupon.merchantId}
               variant="consumer"
             />
           ))

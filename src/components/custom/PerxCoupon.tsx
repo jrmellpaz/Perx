@@ -1,6 +1,7 @@
 import { fetchRank } from '@/actions/rank';
 import { ConsumerCoupon } from '@/lib/consumer/couponSchema';
 import { MerchantCoupon } from '@/lib/merchant/couponSchema';
+import { Coupon } from '@/lib/types';
 import { Clock, Sparkles } from 'lucide-react';
 import Link from 'next/link';
 
@@ -9,7 +10,7 @@ export async function PerxCoupon({
   merchantId,
   variant,
 }: {
-  coupon: MerchantCoupon | ConsumerCoupon;
+  coupon: Coupon;
   merchantId: string;
   variant: 'merchant' | 'consumer';
 }) {

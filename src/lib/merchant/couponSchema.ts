@@ -1,4 +1,3 @@
-import { fetchCouponCategories } from '@/actions/merchant/coupon';
 import { z } from 'zod';
 
 const ACCEPTED_IMAGE_TYPES = ['image/jpeg', 'image/jpg', 'image/png'];

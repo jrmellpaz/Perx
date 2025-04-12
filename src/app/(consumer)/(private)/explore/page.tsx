@@ -1,9 +1,8 @@
-import { getCoupons } from '@/actions/consumer/coupon';
+import { fetchCoupons } from '@/actions/coupon';
 import { PerxCoupon } from '@/components/custom/PerxCoupon';
-import PerxHeader from '@/components/custom/PerxHeader';
 
 export default async function Explore() {
-  const coupons = await getCoupons();
+  const coupons = await fetchCoupons();
 
   return (
     <div className="w-full p-6">
@@ -13,7 +12,7 @@ export default async function Explore() {
             <PerxCoupon
               key={coupon.id}
               coupon={coupon}
-              merchantId={coupon.merchant.id}
+              merchantId={coupon.merchantId}
               variant="consumer"
             />
           ))

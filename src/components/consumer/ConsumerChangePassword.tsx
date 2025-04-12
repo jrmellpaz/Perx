@@ -44,7 +44,7 @@ export default function ConsumerChangePassword() {
 
       await changePassword(confirmPassword);
       reset();
-      setSuccess(true);
+      !isError && setSuccess(true);
       redirect('/login');
     } catch (error: unknown) {
       setIsError(true);

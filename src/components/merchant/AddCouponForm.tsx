@@ -338,10 +338,8 @@ function Inputs({
                 value={field.value} // Controlled value
                 onValueChange={field.onChange} // Controlled onChange handler
               />
-              {errors.consumerRankAvailability?.message && (
-                <ErrorMessage
-                  message={errors.consumerRankAvailability.message}
-                />
+              {errors.rankAvailability?.message && (
+                <ErrorMessage message={errors.rankAvailability.message} />
               )}
             </>
           )}

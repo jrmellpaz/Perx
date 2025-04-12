@@ -28,7 +28,7 @@ export async function fetchRank(rankId: string): Promise<Rank> {
   const { data, error } = await supabase
     .from('ranks')
     .select('rank, max_points, icon, primary_color, secondary_color')
-    .eq('id', rankId)
+    .eq('id', Number(rankId))
     .single();
 
   if (error) {

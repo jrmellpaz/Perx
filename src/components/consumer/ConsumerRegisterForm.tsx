@@ -132,7 +132,7 @@ export default function ConsumerRegisterForm() {
   };
 
   return (
-    <section className="flex h-full flex-col gap-6">
+    <section className="flex h-full flex-col gap-6 overflow-x-hidden overflow-y-auto">
       <h1 className="text-2xl font-bold">Sign up</h1>
       {submitError && (
         <PerxAlert
@@ -144,7 +144,7 @@ export default function ConsumerRegisterForm() {
       <Steps currentStep={currentStep} />
       <form
         onSubmit={handleSubmit(processForm)}
-        className="flex h-full flex-col justify-between"
+        className="flex h-full flex-col justify-between gap-4"
       >
         <div className="flex flex-col gap-6">
           {currentStep === 0 && (

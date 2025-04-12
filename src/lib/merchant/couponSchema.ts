@@ -4,70 +4,74 @@ import { z } from 'zod';
 const ACCEPTED_IMAGE_TYPES = ['image/jpeg', 'image/jpg', 'image/png'];
 
 export const couponCategories = z.enum([
-  'Hardware & Tools',
-  'Transportation & Delivery',
-  'Luxury Goods',
+  'Food & Beverage',
+  'Technology & Electronics',
+  'Fashion & Apparel',
   'Health, Beauty, & Wellness',
+  'Home & Living',
   'Automotive',
-  'Office & Business',
+  'Toys & Hobbies',
+  'Pets',
+  'Entertainment & Leisure',
   'Travel & Tourism',
+  'Education & Learning',
+  'Professional Services',
+  'Transportation & Delivery',
+  'Events & Celebration',
   'Sports & Fitness',
   'Internet & Telecom',
-  'Seasonal & Holiday Offers',
-  'Technology & Electronics',
-  'Entertainment & Leisure',
-  'Food & Beverage',
-  'Baby & Maternity',
-  'Home & Living',
   'Subscription & Membership',
-  'Toys & Hobbies',
-  'Fashion & Apparel',
-  'Professional Services',
-  'Events & Celebration',
-  'Pets',
+  'Baby & Maternity',
+  'Office & Business',
+  'Hardware & Tools',
+  'Luxury Goods',
+  'Seasonal & Holiday Offers',
+]);
+
+const ColorEnum = z.enum([
+  'perx-blue',
+  'perx-canopy',
+  'perx-gold',
+  'perx-rust',
+  'perx-azalea',
+  'perx-navy',
+  'perx-black',
+  'perx-cloud',
+  'perx-crimson',
+  'perx-lime',
+  'perx-ocean',
+  'perx-orange',
+  'perx-orchid',
+  'perx-pink',
+  'perx-sunset',
+  'perx-yellow',
+  'perx-zen',
+  'perx-plum',
 ]);
 
 export const addCouponSchema = z
   .object({
-    title: z.string().nonempty('Title is required'),
-    category: z.string().nonempty('Category is required'),
-    description: z.string().nonempty('Description is required'),
-    price: z.number().positive('Price must be greater than 0'),
-    quantity: z.number().int().positive('Quantity must be greater than 0'),
-    allowLimitedPurchase: z.boolean().default(false),
+    title: z.string().nonempty('Title is required'), // NOT NULL
+    category: couponCategories, // Enum from the database
+    description: z.string().nonempty('Description is required'), // NOT NULL
+    price: z.number().positive('Price must be greater than 0'), // NOT NULL
+    quantity: z.number().int().positive('Quantity must be greater than 0'), // NOT NULL
+    allowLimitedPurchase: z.boolean().default(false), // DEFAULT false
     dateRange: z
       .object({
-        start: z.union([z.string().datetime('Invalid start date'), z.null()]),
-        end: z.union([z.string().datetime('Invalid end date'), z.null()]),
+        start: z.union([z.string().datetime('Invalid start date'), z.null()]), // NULLABLE
+        end: z.union([z.string().datetime('Invalid end date'), z.null()]), // NULLABLE
       })
-      .optional(), // Initially optional
-    image: z.any().optional(),
-    accentColor: z.string().default('perx-blue'),
-    allowPointsPurchase: z.boolean().default(false),
+      .optional(), // Optional field
+    image: z.any(), // NULLABLE, must be a valid URL
+    accentColor: ColorEnum.default('perx-blue'), // Enum with DEFAULT 'perx-blue'
+    allowPointsPurchase: z.boolean().default(false), // DEFAULT false
     pointsAmount: z
       .number()
       .positive('Points amount must be greater than 0')
-      .optional(), // Initially optional
-    allowRepeatPurchase: z.boolean().default(false),
-    consumerRankAvailability: z
-      .enum([
-        '1',
-        '2',
-        '3',
-        '4',
-        '5',
-        '6',
-        '7',
-        '8',
-        '9',
-        '10',
-        '11',
-        '12',
-        '13',
-        '14',
-        '15',
-      ])
-      .default('1'), // Default to rank '1'
+      .optional(), // NULLABLE
+    allowRepeatPurchase: z.boolean().default(false), // DEFAULT false
+    rankAvailability: z.number().int().default(1), // DEFAULT 1
   })
   .refine(
     (data) =>
@@ -96,42 +100,21 @@ export type CouponCategory = {
   description: string;
 };
 export type MerchantCoupon = {
-  id: string;
-  merchantId: string;
-  description: string;
-  price: number;
-  allowLimitedPurchase: boolean;
-  validFrom: string;
-  validTo: string;
-  isDeactivated: boolean;
-  image: string;
-  title: string;
-  quantity: number;
-  category: string;
-  accentColor:
-    | 'perx-blue'
-    | 'perx-canopy'
-    | 'perx-gold'
-    | 'perx-rust'
-    | 'perx-azalea'
-    | 'perx-navy';
-  consumerAvailability:
-    | '1'
-    | '2'
-    | '3'
-    | '4'
-    | '5'
-    | '6'
-    | '7'
-    | '8'
-    | '9'
-    | '10'
-    | '11'
-    | '12'
-    | '13'
-    | '14'
-    | '15';
-  allowPointsPurchase: boolean;
-  pointsAmount: number | null;
-  allowRepeatPurchase: boolean;
+  id: string; // UUID, primary key
+  merchantId: string; // Foreign key to merchants table
+  description: string; // NOT NULL
+  price: number; // NOT NULL
+  allowLimitedPurchase: boolean; // DEFAULT false
+  validFrom: string | null; // Corresponds to valid_from, NULLABLE
+  validTo: string | null; // Corresponds to valid_to, NULLABLE
+  isDeactivated: boolean; // Indicates if the coupon is deactivated
+  image: string | null; // NULLABLE
+  title: string; // NOT NULL
+  quantity: number; // NOT NULL
+  category: (typeof couponCategories._def.values)[number]; // Enum from database
+  accentColor: (typeof ColorEnum._def.values)[number]; // Enum from database
+  rankAvailability: string; // Corresponds to rank_availability, DEFAULT 1
+  allowPointsPurchase: boolean; // DEFAULT false
+  pointsAmount: number | null; // NULLABLE
+  allowRepeatPurchase: boolean; // DEFAULT false
 };

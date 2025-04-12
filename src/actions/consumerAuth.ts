@@ -7,7 +7,6 @@ import {
   LoginConsumerInputs,
   ConsumerFormInputs,
 } from '@/lib/consumer/consumerSchema';
-import { checkAchievements } from './consumer/achievements';
 import { nanoid } from 'nanoid';
 
 export const loginConsumer = async (data: LoginConsumerInputs) => {
@@ -84,7 +83,7 @@ export const signupConsumer = async (data: ConsumerFormInputs) => {
       return { error: 'Referrer code not found.' };
     }
 
-    checkAchievements(checkData?.id);
+    // checkAchievements(checkData?.id);
   }
 
   revalidatePath('/explore');

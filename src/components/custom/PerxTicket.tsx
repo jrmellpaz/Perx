@@ -30,12 +30,12 @@ export async function PerxTicket({
     quantity,
     category,
     accentColor,
-    consumerAvailability,
+    rankAvailability,
     allowPointsPurchase,
     pointsAmount,
   } = couponData;
 
-  const { rank, icon } = await fetchRank(consumerAvailability);
+  const { rank, icon } = await fetchRank(rankAvailability);
 
   return (
     <section
@@ -51,7 +51,7 @@ export async function PerxTicket({
         <div className="flex flex-col items-center">
           <div className="h-auto w-full overflow-hidden rounded-t-lg">
             <img
-              src={image}
+              src={image || undefined}
               alt={title}
               className="aspect-video h-auto w-full object-cover"
             />

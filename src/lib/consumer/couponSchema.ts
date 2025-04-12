@@ -16,7 +16,7 @@ export type ConsumerCoupon = {
     | 'perx-rust'
     | 'perx-gold'
     | 'perx-silver';
-  consumerAvailability:
+  rankAvailability:
     | '1'
     | '2'
     | '3'

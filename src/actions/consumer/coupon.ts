@@ -32,7 +32,7 @@ export async function getCoupons() {
     quantity: coupon.quantity,
     category: coupon.category,
     accentColor: coupon.accent_color,
-    consumerAvailability: coupon.rank_availability,
+    rankAvailability: coupon.rank_availability.toString(),
     allowPointsPurchase: coupon.allow_points_purchase,
     pointsAmount: coupon.points_amount,
     merchant: Array.isArray(coupon.merchant)
@@ -67,12 +67,12 @@ export async function purchaseCoupon(
     console.error('Error purchasing coupon:', insertError);
   }
   if (paymentMethod === 'points') {
-    const { data: coupon} = await supabase
+    const { data: coupon } = await supabase
       .from('coupons')
       .select('points_amount')
       .eq('id', couponId)
-      .single()
-    handlePurchase(consumerId, coupon?.points_amount); // Call the function to handle points deduction
+      .single();
+    handlePurchase(consumerId, coupon?.points_amount ?? undefined); // Call the function to handle points deduction
   }
   handlePurchase(consumerId); // Call the function to handle points purchase
   // TODO: Update loyalty points
@@ -119,7 +119,7 @@ export async function fetchConsumerCoupons(): Promise<ConsumerCoupon[]> {
       quantity: coupon.quantity,
       category: coupon.category,
       accentColor: coupon.accent_color,
-      consumerAvailability: coupon.rank_availability.toString(),
+      rankAvailability: coupon.rank_availability.toString(),
       allowPointsPurchase: coupon.allow_points_purchase,
       pointsAmount: coupon.points_amount,
       merchant: {

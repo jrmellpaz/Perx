@@ -16,10 +16,8 @@ export default async function NotFound() {
     userRole = userData.user?.user_metadata.role;
     if (userRole === 'merchant') {
       url = '/merchant/dashboard';
-    } else if (userRole === 'consumer') {
-      url = '/explore';
     } else {
-      throw new Error('MIDDLEWARE: Invalid user role');
+      url = '/explore';
     }
   }
 

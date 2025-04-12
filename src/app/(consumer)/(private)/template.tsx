@@ -1,16 +1,7 @@
 'use client';
 
-import { logoutConsumer } from '@/actions/consumerAuth';
 import { ConsumerLogo } from '@/components/consumer/ConsumerLogo';
-import { Button } from '@/components/ui/button';
-import {
-  CircleUserRound,
-  // Inbox,
-  LoaderCircle,
-  Ticket,
-  Compass,
-  Search,
-} from 'lucide-react';
+import { CircleUserRound, Ticket, Compass, Search } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import React, { JSX, useState } from 'react';
@@ -38,11 +29,6 @@ const navItems: NavItems[] = [
     name: 'My Coupons',
     link: '/my-coupon',
   },
-  // {
-  //   icon: <Inbox />,
-  //   name: 'Inbox',
-  //   link: '/inbox',
-  // },
   {
     icon: <CircleUserRound />,
     name: 'Profile',
@@ -55,8 +41,6 @@ export default function ConsumerTemplate({
 }: {
   children: React.ReactNode;
 }) {
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-
   return (
     <main className="bg-perx-white flex h-dvh w-dvw flex-col-reverse overflow-hidden md:flex-row md:gap-2">
       <nav className="bg-perx-white h-18 w-dvw shrink-0 shadow-md md:h-dvh md:w-64 md:shadow-none">
@@ -67,7 +51,6 @@ export default function ConsumerTemplate({
             </div>
             <VerticalNav />
           </div>
-          <LogoutButton isLoading={isLoading} setIsLoading={setIsLoading} />
         </div>
         <div className="bg-perx-crimson/10 h-full w-full md:hidden">
           <HorizontalNav />
@@ -145,44 +128,5 @@ function HorizontalNav() {
         );
       })}
     </ul>
-  );
-}
-
-function LogoutButton({
-  isLoading,
-  setIsLoading,
-}: {
-  isLoading: boolean;
-  setIsLoading: (value: boolean) => void;
-}) {
-  const logout = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    setIsLoading(true);
-    await logoutConsumer();
-    setIsLoading(false);
-  };
-
-  return (
-    <form onSubmit={logout} className="mb-8 px-4">
-      <Button
-        type="submit"
-        className="w-full transition-all"
-        disabled={isLoading}
-      >
-        {isLoading ? (
-          <>
-            <LoaderCircle
-              className="-ms-1 animate-spin"
-              size={16}
-              strokeWidth={2}
-              aria-hidden="true"
-            />
-            Logging out
-          </>
-        ) : (
-          'Log out'
-        )}
-      </Button>
-    </form>
   );
 }

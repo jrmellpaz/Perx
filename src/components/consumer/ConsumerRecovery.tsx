@@ -79,21 +79,23 @@ export default function ConsumerPasswordRecovery() {
           <Link href="/login">
             <Button variant={'link'}>Return to login</Button>
           </Link>
-          <Button type="submit" disabled={isLoading}>
-            {isLoading ? (
-              <>
-                <LoaderCircle
-                  className="-ms-1 animate-spin"
-                  size={16}
-                  strokeWidth={2}
-                  aria-hidden="true"
-                />
-                Processing
-              </>
-            ) : (
-              'Proceed'
-            )}
-          </Button>
+          {!success && (
+            <Button type="submit" disabled={isLoading}>
+              {isLoading ? (
+                <>
+                  <LoaderCircle
+                    className="-ms-1 animate-spin"
+                    size={16}
+                    strokeWidth={2}
+                    aria-hidden="true"
+                  />
+                  Processing
+                </>
+              ) : (
+                'Proceed'
+              )}
+            </Button>
+          )}
         </div>
       </form>
     </section>

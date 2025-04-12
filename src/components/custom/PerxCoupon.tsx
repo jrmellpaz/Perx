@@ -13,7 +13,7 @@ export async function PerxCoupon({
   merchantId: string;
   variant: 'merchant' | 'consumer';
 }) {
-  const { icon: rankIcon } = await fetchRank(coupon.consumerAvailability);
+  const { icon: rankIcon } = await fetchRank(coupon.rankAvailability);
 
   return (
     <Link
@@ -28,7 +28,7 @@ export async function PerxCoupon({
       >
         <div className="coupon-image aspect-video h-auto w-full">
           <img
-            src={coupon.image}
+            src={coupon.image ?? ''}
             alt={`${coupon.title} coupon`}
             className="aspect-video h-auto w-full rounded-sm object-cover"
           />

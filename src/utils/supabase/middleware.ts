@@ -40,9 +40,14 @@ export async function updateSession(request: NextRequest) {
   } = await supabase.auth.getUser();
 
   const consumerPages = {
-    auth: ['/login', '/register', '/change-password'],
-    public: ['home', '/recover-password'],
-    private: ['/explore', '/my-coupon', '/profile', '/search', '/settings'],
+    auth: ['/login', '/register', '/recover-password'],
+    public: ['explore', 'search', '/change-password', '/'],
+    private: [
+      '/my-coupon',
+      '/profile/missions',
+      'profile/achievements',
+      '/settings',
+    ],
   };
 
   const merchantPages = {
@@ -53,7 +58,9 @@ export async function updateSession(request: NextRequest) {
     ],
     private: [
       '/merchant/dashboard',
-      '/merchant/profile',
+      '/merchant/profile/coupons',
+      '/merchant/profile/collections',
+      '/merchant/profile/archive',
       '/merchant/settings',
       '/merchant/scan-qr',
       '/merchant/add-coupon',
@@ -77,7 +84,7 @@ export async function updateSession(request: NextRequest) {
       if (request.nextUrl.pathname.startsWith('/merchant')) {
         url.pathname = '/merchant/login';
       } else {
-        url.pathname = '/home';
+        url.pathname = '/login';
       }
       return NextResponse.redirect(url);
     }
@@ -94,7 +101,12 @@ export async function updateSession(request: NextRequest) {
       } else if (userRole === 'consumer') {
         url.pathname = '/explore';
       } else {
-        throw new Error('MIDDLEWARE: Invalid user role');
+        if (request.nextUrl.pathname.startsWith('/merchant')) {
+          url.pathname = '/merchant/login';
+        } else {
+          url.pathname = '/explore';
+        }
+        // throw new Error('MIDDLEWARE: Invalid user role');
       }
       return NextResponse.redirect(url);
     }
@@ -105,7 +117,7 @@ export async function updateSession(request: NextRequest) {
       merchantPages.private.includes(request.nextUrl.pathname)
     ) {
       const url = request.nextUrl.clone();
-      url.pathname = '/home';
+      url.pathname = '/explore';
       return NextResponse.redirect(url);
     }
 

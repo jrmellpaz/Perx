@@ -44,8 +44,9 @@ export async function addCoupon(couponData: AddCouponInputs) {
     }
 
     // Insert coupon details with image URL
-    const { error: insertError } = await supabase.from('coupons').insert({
-      merchant_id: merchantId,
+    const { error: insertError } = await supabase.from('coupons').insert<any>({
+      accent_color: couponData.accentColor,
+      merchant_id: merchantId as string,
       title: couponData.title,
       category: couponData.category,
       description: couponData.description,
@@ -59,8 +60,7 @@ export async function addCoupon(couponData: AddCouponInputs) {
         ? couponData.dateRange?.end
         : new Date(Date.now() + 31536000000).toISOString(),
       image: imageUrl,
-      accent_color: couponData.accentColor,
-      rank_availability: couponData.consumerRankAvailability,
+      rank_availability: couponData.rankAvailability,
       allow_points_purchase: couponData.allowPointsPurchase,
       points_amount: couponData.pointsAmount,
       allow_repeat_purchase: couponData.allowRepeatPurchase,
@@ -93,6 +93,7 @@ export async function getMerchantCoupons(merchantId: string) {
 
     return data.map((item) => ({
       id: item.id,
+      merchantId: merchantId, // Add the missing merchantId property
       title: item.title,
       description: item.description,
       price: item.price,
@@ -104,7 +105,8 @@ export async function getMerchantCoupons(merchantId: string) {
       quantity: item.quantity,
       category: item.category,
       accentColor: item.accent_color,
-      consumerAvailability: item.rank_availability,
+      rankAvailability:
+        item.rank_availability.toString() as MerchantCoupon['rankAvailability'],
       allowPointsPurchase: item.allow_points_purchase,
       pointsAmount: item.points_amount || null,
       allowRepeatPurchase: item.allow_repeat_purchase,
@@ -161,7 +163,8 @@ export async function fetchCoupon(id: string): Promise<MerchantCoupon | null> {
       quantity: data.quantity,
       category: data.category,
       accentColor: data.accent_color,
-      consumerAvailability: data.rank_availability,
+      rankAvailability:
+        data.rank_availability.toString() as MerchantCoupon['rankAvailability'],
       allowPointsPurchase: data.allow_points_purchase,
       pointsAmount: data.points_amount,
       allowRepeatPurchase: data.allow_repeat_purchase,

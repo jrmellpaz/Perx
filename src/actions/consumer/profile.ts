@@ -28,7 +28,7 @@ export async function getConsumerProfile(id: string): Promise<ConsumerProfile> {
     name: data.name,
     referralCode: data.referral_code,
     interests: data.interests,
-    rank: data.rank,
+    rank: data.rank.toString(),
     balancePoints: data.points_balance,
     totalPoints: data.points_total,
   } as ConsumerProfile;
@@ -78,7 +78,7 @@ export async function deleteAccount(userId: string) {
     // Start a transaction: Delete user data first
 
     const { error: userError } = await supabase
-      .from('users') // Change this to your user table
+      .from('consumers') // Change this to your user table
       .delete()
       .eq('id', userId);
 

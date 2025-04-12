@@ -1,7 +1,7 @@
-'use client'; 
+'use client';
 import { useRouter } from 'next/navigation';
 import { LogOut, ChevronRight } from 'lucide-react';
-import { logoutConsumer } from '@/actions/consumer/auth';
+import { logoutConsumer } from '@/actions/consumerAuth';
 import { toast } from 'sonner';
 
 export default function LogoutButton() {
@@ -10,10 +10,10 @@ export default function LogoutButton() {
   const handleLogout = async () => {
     try {
       await logoutConsumer();
-      toast("Logged out successfully.");
-      router.push("/home"); 
+      toast('Logged out successfully.');
+      router.push('/home');
     } catch (error) {
-      console.error("Logout failed:", error);
+      console.error('Logout failed:', error);
     }
   };
 

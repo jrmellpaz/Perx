@@ -12,7 +12,7 @@ import {
   changePasswordSchema,
 } from '@/lib/merchant/merchantSchema';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { changePassword } from '@/actions/merchantAuth';
+// import { changePassword } from '@/actions/merchantAuth';
 import { LoaderCircle } from 'lucide-react';
 import PerxAlert from '../custom/PerxAlert';
 
@@ -40,7 +40,7 @@ export default function MerchantChangePassword() {
         throw new Error('Passwords do not match');
       }
 
-      await changePassword(confirmPassword);
+      // await changePassword(confirmPassword);
       reset();
       setSuccess(true);
     } catch (error: unknown) {

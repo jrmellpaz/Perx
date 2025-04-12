@@ -135,9 +135,10 @@ export const changePassword = async (password: string) => {
     error &&
     !error.message.includes(
       'supabase.auth.getSession() or from some supabase.auth.onAuthStateChange()'
-    )
+    ) &&
+    !error.message.includes('NEXT_REDIRECT')
   ) {
-    throw new Error(error.message);
+    console.error('Error changing password:', error.message);
   }
 };
 

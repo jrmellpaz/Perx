@@ -43,14 +43,27 @@ export default function ConsumerChangePassword() {
       }
 
       await changePassword(confirmPassword);
+      console.log('done');
       reset();
       !isError && setSuccess(true);
       redirect('/login');
     } catch (error: unknown) {
-      setIsError(true);
-      throw new Error(error as string);
+      if (
+        error instanceof Error &&
+        !error.message.includes(
+          'supabase.auth.getSession() or from some supabase.auth.onAuthStateChange()'
+        ) &&
+        !error.message.includes('NEXT_REDIRECT')
+      ) {
+        setIsError(true);
+        console.error('Error changing password:', error.message);
+      }
     } finally {
       setIsLoading(false);
+
+      if (!isError) {
+        redirect('/login');
+      }
     }
   };
 
@@ -66,8 +79,8 @@ export default function ConsumerChangePassword() {
           {success && !isError && (
             <PerxAlert
               variant="success"
+              message="You're all set. Redirecting you to login."
               heading="Successfully changed password 🔐"
-              message="You're all set. You will be redirected."
             />
           )}
           <InputGroup register={register} errors={errors} />

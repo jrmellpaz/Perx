@@ -34,6 +34,7 @@ export default function ConsumerChangePassword() {
   const onSubmit = async (data: ChangePasswordInputs) => {
     setIsLoading(true);
     setIsError(false);
+    setSuccess(false);
     try {
       const { password, confirmPassword } = data;
 
@@ -68,7 +69,7 @@ export default function ConsumerChangePassword() {
               message="New password should be different from the old password."
             />
           )}
-          {success && (
+          {success && !isError && (
             <PerxAlert
               variant="success"
               heading="Successfully changed password 🔐"

@@ -27,7 +27,7 @@ const MAX_IMAGE_SIZE_MB = 3;
 //   'Seasonal & Holiday Offers',
 // ]);
 
-const couponCategories = Constants.public.Enums.coupon_category;
+export const couponCategories = Constants.public.Enums.coupon_category;
 const couponCategoriesEnum = z.enum(couponCategories);
 
 const colors = Constants.public.Enums.color;

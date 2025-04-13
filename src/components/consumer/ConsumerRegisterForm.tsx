@@ -380,7 +380,7 @@ function Step3({
   const selectedInterests = watch('interests', []) || [];
 
   useEffect(() => {
-    setInterests(couponCategories.options);
+    setInterests([...couponCategories]);
     setValue('interests', []);
   }, [setValue]);
 

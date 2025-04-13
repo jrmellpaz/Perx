@@ -1,8 +1,8 @@
-import { getMerchantProfile } from '@/actions/merchantProfile';
+import { fetchMerchantProfile } from '@/actions/merchantProfile';
 import { PerxTicket } from '@/components/custom/PerxTicket';
 import { redirect } from 'next/navigation';
 
-import type { Coupon } from '@/lib/types';
+import type { Coupon, Merchant } from '@/lib/types';
 
 export default async function ViewCoupon({
   searchParams,
@@ -17,7 +17,7 @@ export default async function ViewCoupon({
   }
 
   const coupon: Coupon = JSON.parse(couponData);
-  const merchantData = await getMerchantProfile(merchantId);
+  const merchantData: Merchant = await fetchMerchantProfile(merchantId);
 
   return (
     <section className="h-full w-full overflow-hidden">

@@ -1,5 +1,6 @@
 import { z } from 'zod';
 
+// Consumer signup schemas and types
 export const Step1Schema = z
   .object({
     name: z.string().nonempty('Name is required'),
@@ -20,9 +21,15 @@ export const Step2Schema = z.object({
 });
 
 export const Step3Schema = z.object({
-  interests: z.array(z.string()).optional().default([]), // Default to an empty array if not provided
+  interests: z.array(z.string()).optional().default([]),
 });
 
+export type Step1Inputs = z.infer<typeof Step1Schema>;
+export type Step2Inputs = z.infer<typeof Step2Schema>;
+export type Step3Inputs = z.infer<typeof Step3Schema>;
+export type ConsumerFormInputs = Step1Inputs & Step2Inputs & Step3Inputs;
+
+// Consumer login schemas and types
 export const loginConsumerSchema = z.object({
   email: z
     .string()
@@ -31,9 +38,12 @@ export const loginConsumerSchema = z.object({
   password: z.string().nonempty('Password is required'),
 });
 
-export type Step1Inputs = z.infer<typeof Step1Schema>;
-export type Step2Inputs = z.infer<typeof Step2Schema>;
-export type Step3Inputs = z.infer<typeof Step3Schema>;
 export type LoginConsumerInputs = z.infer<typeof loginConsumerSchema>;
 
-export type ConsumerFormInputs = Step1Inputs & Step2Inputs & Step3Inputs;
+// Consumer edit profile schemas and types
+export const editProfileSchema = z.object({
+  name: z.string().nonempty('Name is required'),
+  interests: z.array(z.string()).optional(),
+});
+
+export type EditProfileInputs = z.infer<typeof editProfileSchema>;

@@ -7,15 +7,16 @@ import { Checkbox } from '../ui/checkbox';
 import { Label } from '../ui/label';
 import { motion } from 'framer-motion';
 import { FieldErrors, useForm, UseFormRegister } from 'react-hook-form';
-import {
-  ChangePasswordInputs,
-  changePasswordSchema,
-} from '@/lib/merchant/merchantSchema';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { changePassword } from '@/actions/consumerAuth';
 import { LoaderCircle } from 'lucide-react';
 import PerxAlert from '../custom/PerxAlert';
 import { redirect } from 'next/navigation';
+
+import {
+  type ChangePasswordInputs,
+  changePasswordSchema,
+} from '@/lib/merchantSchema';
 
 export default function ConsumerChangePassword() {
   const [isLoading, setIsLoading] = useState<boolean>(false);

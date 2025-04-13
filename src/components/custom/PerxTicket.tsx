@@ -1,12 +1,11 @@
 import { fetchRank } from '@/actions/rank';
-import { MerchantProfile } from '@/lib/merchant/profileSchema';
 import { cn } from '@/lib/utils';
 import Link from 'next/link';
 import { PerxReadMore } from './PerxReadMore';
 import { SparklesIcon } from 'lucide-react';
 import { PerxTicketSubmit } from './PerxTicketSubmit';
 
-import type { Coupon } from '@/lib/types';
+import type { Coupon, Merchant } from '@/lib/types';
 
 export async function PerxTicket({
   couponData,
@@ -14,7 +13,7 @@ export async function PerxTicket({
   variant,
 }: {
   couponData: Coupon;
-  merchantData: MerchantProfile;
+  merchantData: Merchant;
   variant: 'consumer' | 'merchant';
 }) {
   const {

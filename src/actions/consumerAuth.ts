@@ -3,10 +3,7 @@
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import { createClient } from '@/utils/supabase/server';
-import {
-  LoginConsumerInputs,
-  ConsumerFormInputs,
-} from '@/lib/consumer/consumerSchema';
+import { LoginConsumerInputs, ConsumerFormInputs } from '@/lib/consumerSchema';
 import { nanoid } from 'nanoid';
 
 export const loginConsumer = async (data: LoginConsumerInputs) => {

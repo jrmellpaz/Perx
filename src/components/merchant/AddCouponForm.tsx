@@ -24,10 +24,7 @@ import { PerxDatalist } from '../custom/PerxDatalist';
 import { toast } from 'sonner';
 import { addCoupon } from '@/actions/coupon';
 
-import {
-  type AddCouponInputs,
-  addCouponSchema,
-} from '@/lib/merchant/couponSchema';
+import { type AddCouponInputs, addCouponSchema } from '@/lib/couponSchema';
 import type { CouponCategories, Ranks } from '@/lib/types';
 
 export default function AddCouponForm({
@@ -65,11 +62,9 @@ export default function AddCouponForm({
     setIsSubmitting(true);
     try {
       const response = await addCoupon(data);
-
       if (!response.success) {
         throw new Error(response.message);
       }
-
       toast('Coupon added successfully! 🥳');
       reset();
       setImagePreview(null);
@@ -89,7 +84,6 @@ export default function AddCouponForm({
       <form
         onSubmit={(e) => {
           e.preventDefault();
-          // console.log('here', watch('validFrom'));
           handleSubmit((data) => {
             console.log('Form data:', data);
             processForm(data);
@@ -318,9 +312,9 @@ function Inputs({
 
       <div className="flex flex-col gap-1">
         <Controller
-          name="consumerRankAvailability" // Field name for react-hook-form
+          name="rankAvailability" // Field name for react-hook-form
           control={control}
-          defaultValue="1" // Default value
+          defaultValue={1} // Default value
           rules={{ required: 'Required' }} // Validation rules
           render={({ field, fieldState }) => (
             <>
@@ -332,8 +326,8 @@ function Inputs({
                   title: rank,
                   icon,
                 }))}
-                value={field.value} // Controlled value
-                onValueChange={field.onChange} // Controlled onChange handler
+                value={field.value.toString()} // Controlled value
+                onValueChange={(value) => field.onChange(Number(value))} // Controlled onChange handler
               />
               {errors.rankAvailability?.message && (
                 <ErrorMessage message={errors.rankAvailability.message} />
@@ -420,20 +414,14 @@ function Inputs({
                   onChange={field.onChange} // Handle changes
                 />
                 <div className="flex flex-col">
-                  {errors.dateRange?.start && (
-                    <p className="text-sm text-red-500">
-                      {errors.dateRange.start.message}
-                    </p>
+                  {errors.dateRange?.start?.message && (
+                    <ErrorMessage message={errors.dateRange.start.message} />
                   )}
-                  {errors.dateRange?.end && (
-                    <p className="text-sm text-red-500">
-                      {errors.dateRange.end.message}
-                    </p>
+                  {errors.dateRange?.end?.message && (
+                    <ErrorMessage message={errors.dateRange.end.message} />
                   )}
-                  {errors.dateRange && (
-                    <p className="text-sm text-red-500">
-                      {errors.dateRange.message}
-                    </p>
+                  {errors.dateRange?.message && (
+                    <ErrorMessage message={errors.dateRange.message} />
                   )}
                 </div>
               </div>

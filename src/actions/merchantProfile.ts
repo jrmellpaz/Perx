@@ -1,18 +1,17 @@
 'use server';
-import {
-  EditProfileInputs,
-  MerchantProfile,
-} from '@/lib/merchant/profileSchema';
+import { EditProfileInputs } from '@/lib/merchantSchema';
 import { createClient } from '@/utils/supabase/server';
 
-export async function getMerchantProfile(
+import type { Merchant } from '@/lib/types';
+
+export const fetchMerchantProfile = async (
   merchantId: string
-): Promise<MerchantProfile> {
+): Promise<Merchant> => {
   const supabase = await createClient();
 
   const { data, error } = await supabase
     .from('merchants')
-    .select('name, email, bio, address, logo')
+    .select('*')
     .eq('id', merchantId)
     .single();
 
@@ -20,10 +19,12 @@ export async function getMerchantProfile(
     console.error(`Failed to fetch merchant profile: ${error.message}`);
   }
 
-  return data as MerchantProfile;
-}
+  return data as Merchant;
+};
 
-export async function updateMerchantProfile(profileData: EditProfileInputs) {
+export const updateMerchantProfile = async (
+  profileData: EditProfileInputs
+): Promise<void> => {
   const supabase = await createClient();
   const {
     data: { user },
@@ -37,9 +38,9 @@ export async function updateMerchantProfile(profileData: EditProfileInputs) {
   if (error) {
     console.error(`Failed to update merchant profile: ${error.message}`);
   }
-}
+};
 
-export async function updateMerchantPassword() {
+export const updateMerchantPassword = async (): Promise<void> => {
   const supabase = await createClient();
   const { data: merchantData } = await supabase.auth.getUser();
   const url = `${process.env.NEXT_PUBLIC_URL}/merchant/change-password`;
@@ -58,4 +59,4 @@ export async function updateMerchantPassword() {
   if (error) {
     throw new Error(error.message);
   }
-}
+};

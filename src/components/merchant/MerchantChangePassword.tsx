@@ -10,7 +10,7 @@ import { FieldErrors, useForm, UseFormRegister } from 'react-hook-form';
 import {
   ChangePasswordInputs,
   changePasswordSchema,
-} from '@/lib/merchant/merchantSchema';
+} from '@/lib/merchantSchema';
 import { zodResolver } from '@hookform/resolvers/zod';
 // import { changePassword } from '@/actions/merchantAuth';
 import { LoaderCircle } from 'lucide-react';

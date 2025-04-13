@@ -8,8 +8,9 @@ import type {
   Coupons,
   InsertCoupon,
   SuccessResponse,
+  UserCoupons,
 } from '@/lib/types';
-import type { AddCouponInputs } from '@/lib/merchant/couponSchema';
+import type { AddCouponInputs } from '@/lib/couponSchema';
 
 export const addCoupon = async (
   couponData: AddCouponInputs
@@ -56,6 +57,7 @@ export const addCoupon = async (
       description: couponData.description,
       price: couponData.price,
       quantity: couponData.quantity,
+      rankAvailability: couponData.rankAvailability,
       allowLimitedPurchase: couponData.allowLimitedPurchase,
       validFrom: couponData.allowLimitedPurchase
         ? couponData.dateRange?.start
@@ -64,6 +66,9 @@ export const addCoupon = async (
         ? couponData.dateRange?.end
         : new Date(Date.now() + 1000 * 60 * 60 * 24 * 30).toISOString(),
       image: imageUrl,
+      allowPointsPurchase: couponData.allowPointsPurchase,
+      pointsAmount: couponData.pointsAmount,
+      allowRepeatPurchase: couponData.allowRepeatPurchase,
     } as InsertCoupon);
 
     if (insertCouponError) {
@@ -127,11 +132,11 @@ export const fetchCouponsByMerchantId = async (
 
 export const fetchCouponsByConsumerId = async (
   consumerId: string
-): Promise<Coupons> => {
+): Promise<UserCoupons> => {
   const supabase = await createClient();
   const { data, error } = await supabase
-    .from('coupons')
-    .select('*')
+    .from('user_coupons')
+    .select('*, coupons(*)')
     .eq('consumerId', consumerId)
     .order('createdAt', { ascending: false });
 
@@ -140,7 +145,7 @@ export const fetchCouponsByConsumerId = async (
     return [];
   }
 
-  return data as Coupons;
+  return data as UserCoupons;
 };
 
 export const fetchCouponCategories = async (): Promise<CouponCategories> => {

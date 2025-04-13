@@ -19,14 +19,18 @@ export default async function MyCoupon() {
       <h1>My Coupons</h1>
       <div className="place-start grid grid-cols-1 gap-0.5 sm:grid-cols-2 md:grid-cols-3 md:gap-1">
         {purchasedCoupons.length > 0 ? (
-          purchasedCoupons.map((coupon) => (
-            <PerxCoupon
-              key={coupon.id}
-              coupon={coupon}
-              merchantId={coupon.merchantId}
-              variant="consumer"
-            />
-          ))
+          purchasedCoupons.map((coupon) => {
+            const couponDetails = coupon.coupons;
+
+            return (
+              <PerxCoupon
+                key={coupon.id}
+                coupon={couponDetails}
+                merchantId={couponDetails.merchantId}
+                variant="consumer"
+              />
+            );
+          })
         ) : (
           <p>No coupons purchased yet.</p>
         )}

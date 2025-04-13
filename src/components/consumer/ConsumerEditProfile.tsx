@@ -20,10 +20,7 @@ import { redirect } from 'next/navigation';
 import { fetchTopCouponTypes } from '@/actions/consumerAuth';
 
 import type { Consumer } from '@/lib/types';
-import {
-  EditProfileInputs,
-  editProfileSchema,
-} from '@/lib/consumer/profileSchema';
+import { EditProfileInputs, editProfileSchema } from '@/lib/consumerSchema';
 
 export default function ConsumerEditProfile({
   profile,

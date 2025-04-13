@@ -5,7 +5,7 @@ import {
   Step2Schema,
   Step3Schema,
   MerchantFormInputs,
-} from '@/lib/merchant/merchantSchema';
+} from '@/lib/merchantSchema';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { motion } from 'framer-motion';
 import { useEffect, useState } from 'react';

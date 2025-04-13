@@ -5,7 +5,7 @@ import {
   Step2Schema,
   Step3Schema,
   ConsumerFormInputs,
-} from '@/lib/consumer/consumerSchema';
+} from '@/lib/consumerSchema';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { motion } from 'framer-motion';
 import { useEffect, useState } from 'react';
@@ -26,7 +26,7 @@ import { signupConsumer, checkReferrer } from '@/actions/consumerAuth';
 import PerxAlert from '../custom/PerxAlert';
 import { LoaderCircle } from 'lucide-react';
 import PerxCheckbox from '../custom/PerxCheckbox';
-import { couponCategories } from '@/lib/merchant/couponSchema';
+import { couponCategories } from '@/lib/couponSchema';
 
 const schemas = [Step1Schema, Step2Schema, Step3Schema];
 

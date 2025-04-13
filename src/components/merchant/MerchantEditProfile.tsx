@@ -8,11 +8,6 @@ import {
   useForm,
   UseFormRegister,
 } from 'react-hook-form';
-import {
-  EditProfileInputs,
-  editProfileSchema,
-  MerchantProfile,
-} from '@/lib/merchant/profileSchema';
 import { zodResolver } from '@hookform/resolvers/zod';
 import PerxTextarea from '../custom/PerxTextarea';
 import { motion } from 'framer-motion';
@@ -21,10 +16,16 @@ import { useState } from 'react';
 import { updateMerchantProfile } from '@/actions/merchantProfile';
 import { redirect } from 'next/navigation';
 
+import type { Merchant } from '@/lib/types';
+import {
+  type EditProfileInputs,
+  editProfileSchema,
+} from '@/lib/merchantSchema';
+
 export default function MerchantEditProfile({
   profile,
 }: {
-  profile: MerchantProfile;
+  profile: Merchant;
 }) {
   const { name, email, bio, address, logo } = profile;
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
@@ -41,8 +42,8 @@ export default function MerchantEditProfile({
     resolver: zodResolver(editProfileSchema),
     defaultValues: {
       name: name,
-      bio: bio,
-      address: address,
+      bio: bio ?? '',
+      address: address ?? '',
       // logo: logo,
     },
   });

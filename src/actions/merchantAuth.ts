@@ -3,10 +3,7 @@
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import { createClient } from '@/utils/supabase/server';
-import {
-  LoginMerchantInputs,
-  MerchantFormInputs,
-} from '@/lib/merchant/merchantSchema';
+import { LoginMerchantInputs, MerchantFormInputs } from '@/lib/merchantSchema';
 
 export const loginMerchant = async (data: LoginMerchantInputs) => {
   const supabase = await createClient();

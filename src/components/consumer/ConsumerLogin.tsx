@@ -6,10 +6,7 @@ import { Label } from '../ui/label';
 import { useState } from 'react';
 import { Checkbox } from '../ui/checkbox';
 import { motion } from 'framer-motion';
-import {
-  LoginConsumerInputs,
-  loginConsumerSchema,
-} from '@/lib/consumer/consumerSchema';
+import { LoginConsumerInputs, loginConsumerSchema } from '@/lib/consumerSchema';
 import { FieldErrors, useForm, UseFormRegister } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import PerxInput from '../custom/PerxInput';

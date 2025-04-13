@@ -1,4 +1,4 @@
-import { getMerchantProfile } from '@/actions/merchantProfile';
+import { fetchMerchantProfile } from '@/actions/merchantProfile';
 import PerxHeader from '@/components/custom/PerxHeader';
 import MerchantEditProfile from '@/components/merchant/MerchantEditProfile';
 import { createClient } from '@/utils/supabase/server';
@@ -8,7 +8,7 @@ export default async function MerchantEditProfilePage() {
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  const profile = await getMerchantProfile(user!.id);
+  const profile = await fetchMerchantProfile(user!.id);
 
   return (
     <section className="flex h-full w-full flex-col">

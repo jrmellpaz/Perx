@@ -1,11 +1,9 @@
 'use server';
 
-import {
-  EditProfileInputs,
-  ConsumerProfile,
-} from '@/lib/consumer/profileSchema';
 import { Consumer, SuccessResponse } from '@/lib/types';
 import { createClient } from '@/utils/supabase/server';
+
+import type { EditProfileInputs } from '@/lib/consumerSchema';
 
 export const fetchConsumerProfile = async (
   consumerId: string

@@ -13,7 +13,8 @@ import {
 import { Progress } from '@/components/ui/progress';
 import Tabs from '@/components/custom/Tabs';
 import { fetchRank } from '@/actions/rank';
-import { Rank } from '@/lib/consumer/rankSchema';
+
+import type { Rank } from '@/lib/types';
 
 export default async function ConsumerProfileLayout({
   tabs,

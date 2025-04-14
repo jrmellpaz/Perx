@@ -4,13 +4,6 @@ import { createClient } from '@/utils/supabase/server';
 import { redirect } from 'next/navigation';
 
 export default async function ConsumerLoginPage() {
-  // const supabase = await createClient();
-  // const { data } = await supabase.auth.getUser();
-
-  // if (data?.user) {
-  //   redirect('/home');
-  // }
-
   return (
     <section className="flex h-full w-9/10 flex-col gap-4 overflow-hidden py-8 sm:w-4/5">
       <div className="flex h-12 w-fit">

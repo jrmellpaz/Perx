@@ -52,7 +52,12 @@ export function ReferralCard({
           }}
           className="mt-2 flex items-center justify-between gap-4 px-2"
         >
-          <h3 style={{ color: primary }}>{referral_code}</h3>
+          <h3
+            style={{ color: primary }}
+            className="text-xs sm:text-sm md:text-base"
+          >
+            {referral_code}
+          </h3>
           <button
             onClick={handleCopy}
             onMouseEnter={() => setIsHovered(true)}

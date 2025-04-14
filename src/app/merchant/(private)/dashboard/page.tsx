@@ -1,6 +1,6 @@
 import UserCard from '@/components/merchant/Usercard';
 import { ArrowRight, Tickets, UsersRound, PhilippinePeso } from 'lucide-react';
-import LineChart from '@/components/merchant/LineChart';
+import MerchantLineChart from '@/components/merchant/MerchantLineChart';
 import TopCouponsMonth from '@/components/merchant/TopCouponsMonth';
 
 export default async function DashboardPage() {
@@ -49,7 +49,7 @@ export default async function DashboardPage() {
         </div>
         {/* LINE CHART */}
         <div className="h-[450px] w-full">
-          <LineChart />
+          <MerchantLineChart />
         </div>
       </div>
       {/* RIGHT */}

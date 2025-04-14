@@ -3,7 +3,7 @@ import PerxHeader from '@/components/custom/PerxHeader';
 import {
   AccountSection,
   LoginSection,
-} from '@/components/consumer/ConsumerSettings';
+} from '@/components/merchant/MerchantSettings';
 
 export default async function SettingsPage() {
   const supabase = await createClient();

@@ -32,7 +32,7 @@ const navItems: NavItems[] = [
   {
     icon: <CircleUserRound />,
     name: 'Profile',
-    link: '/profile/missions',
+    link: '/profile',
   },
 ];
 
@@ -69,7 +69,7 @@ function VerticalNav() {
   return (
     <ul className="flex h-full w-full flex-col">
       {navItems.map((item, index) => {
-        const isActive: boolean = pathname === item.link;
+        const isActive: boolean = pathname.startsWith(item.link);
 
         return (
           <Link
@@ -98,7 +98,7 @@ function HorizontalNav() {
   return (
     <ul className="flex h-full w-full items-center justify-around">
       {navItems.map((item, index) => {
-        const isActive: boolean = pathname === item.link;
+        const isActive: boolean = pathname.startsWith(item.link);
 
         return (
           <Link

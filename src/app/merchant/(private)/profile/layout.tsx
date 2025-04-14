@@ -46,7 +46,7 @@ export default async function MerchantProfileLayout({
   ];
 
   return (
-    <section className="flex flex-col overflow-x-hidden lg:px-20">
+    <section className="flex flex-col overflow-hidden lg:px-20">
       {/* Static profile details at the top */}
       <ProfileInfo data={data} />
 

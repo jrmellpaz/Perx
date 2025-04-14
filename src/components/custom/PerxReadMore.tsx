@@ -1,5 +1,7 @@
 'use client';
 
+import { getPrimaryAccentColor } from '@/lib/utils';
+import { get } from 'http';
 import { useState } from 'react';
 
 interface ReadMoreProps {
@@ -30,7 +32,7 @@ export const PerxReadMore = ({
   };
 
   return (
-    <p id={id} className="text-sm tracking-tight">
+    <p id={id} className="text-sm tracking-tighter">
       {beginText}
       {itCanOverflow && (
         <>
@@ -42,7 +44,8 @@ export const PerxReadMore = ({
             {endText}
           </span>
           <span
-            className={`text-${accentColor} ml-2 cursor-pointer font-medium`}
+            className={`ml-2 cursor-pointer font-medium`}
+            style={{ color: getPrimaryAccentColor(accentColor) }}
             role="button"
             tabIndex={0}
             aria-expanded={isExpanded}

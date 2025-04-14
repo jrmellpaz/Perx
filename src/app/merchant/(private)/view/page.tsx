@@ -1,6 +1,7 @@
 import { fetchMerchantProfile } from '@/actions/merchantProfile';
 import { PerxTicket } from '@/components/custom/PerxTicket';
 import { redirect } from 'next/navigation';
+import { fetchCoupon } from '@/actions/coupon';
 
 import type { Coupon, Merchant } from '@/lib/types';
 
@@ -9,23 +10,23 @@ export default async function ViewCoupon({
 }: {
   searchParams: Promise<{ [key: string]: string }>;
 }) {
-  const couponData = (await searchParams).coupon;
-  const merchantId = (await searchParams).merchantId;
+  const couponId = (await searchParams).coupon;
+  const merchantId = (await searchParams).merchant;
 
-  if (!couponData || !merchantId) {
+  if (!couponId || !merchantId) {
     redirect('/not-found');
   }
 
-  const coupon: Coupon = JSON.parse(couponData);
-  const merchantData: Merchant = await fetchMerchantProfile(merchantId);
+  const coupon: Coupon = await fetchCoupon(couponId);
+  const merchant: Merchant = await fetchMerchantProfile(merchantId);
 
   return (
     <section className="h-full w-full overflow-hidden">
       <PerxTicket
         couponData={coupon}
-        merchantData={merchantData}
+        merchantData={merchant}
         variant="merchant"
-      />
+      ></PerxTicket>
     </section>
   );
 }

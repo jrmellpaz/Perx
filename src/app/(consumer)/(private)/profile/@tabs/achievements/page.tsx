@@ -9,7 +9,7 @@ import {
   UsersRoundIcon,
   SparklesIcon,
 } from 'lucide-react';
-import { JSX } from 'react';
+import { JSX, Suspense } from 'react';
 
 type Achievement = {
   title: string;
@@ -91,18 +91,55 @@ function AchievementCard({
   const { title, description, icon, reward, achieved } = achievement;
 
   return (
-    <div className="bg-perx-white flex grow basis-60 flex-col gap-2 rounded-md p-2 shadow-md">
-      <div
-        style={{
-          color: achieved ? primary : 'rgba(0, 0, 0, 0.5)',
-        }}
-        className="flex aspect-square h-auto w-full items-center justify-center"
-      >
-        {icon}
-      </div>
-      <div className="flex flex-col gap-0.5 px-2 py-1">
-        <h3 className="font-mono font-medium">{title}</h3>
+    <Suspense fallback={<AchievementCardSkeleton />}>
+      <div className="bg-perx-white flex grow basis-60 flex-col gap-2 rounded-md p-2 shadow-md">
         <div
+          style={{
+            color: achieved ? primary : 'rgba(0, 0, 0, 0.5)',
+          }}
+          className="flex aspect-square h-auto w-full items-center justify-center"
+        >
+          {icon}
+        </div>
+        <div className="flex flex-col gap-0.5 px-2 py-1">
+          <h3 className="font-mono font-medium">{title}</h3>
+          <div
+            style={{
+              backgroundColor: `${secondary}33`,
+            }}
+            className="flex w-fit items-center gap-1 rounded-full px-3 py-1"
+          >
+            <SparklesIcon
+              style={{
+                color: primary,
+              }}
+              size={12}
+            />
+            <p
+              style={{
+                color: primary,
+              }}
+              className="font-mono text-xs font-medium"
+            >
+              {reward}
+            </p>
+          </div>
+          <p className="text-accent-foreground/80 mt-2 text-sm text-pretty">
+            {description}
+          </p>
+        </div>
+      </div>
+    </Suspense>
+  );
+}
+
+function AchievementCardSkeleton() {
+  return (
+    <div className="bg-perx-white flex grow basis-60 flex-col gap-2 rounded-md p-2 shadow-md">
+      <div className="bg-muted flex aspect-square h-auto w-full animate-pulse items-center justify-center"></div>
+      <div className="flex flex-col gap-0.5 px-2 py-1">
+        <div className="bg-muted h-6 w-3/4 animate-pulse rounded-full"></div>
+        {/* <div
           style={{
             backgroundColor: `${secondary}33`,
           }}
@@ -125,7 +162,7 @@ function AchievementCard({
         </div>
         <p className="text-accent-foreground/80 mt-2 text-sm text-pretty">
           {description}
-        </p>
+        </p> */}
       </div>
     </div>
   );

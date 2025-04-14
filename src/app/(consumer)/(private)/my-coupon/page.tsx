@@ -26,7 +26,6 @@ export default async function MyCoupon() {
               <PerxCoupon
                 key={coupon.id}
                 coupon={couponDetails}
-                merchantId={couponDetails.merchantId}
                 variant="consumer"
               />
             );

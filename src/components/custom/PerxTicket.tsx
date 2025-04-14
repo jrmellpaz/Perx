@@ -1,20 +1,22 @@
 import { fetchRank } from '@/actions/rank';
-import { cn } from '@/lib/utils';
+import { cn, getAccentColor, getPrimaryAccentColor } from '@/lib/utils';
 import Link from 'next/link';
 import { PerxReadMore } from './PerxReadMore';
 import { SparklesIcon } from 'lucide-react';
-import { PerxTicketSubmit } from './PerxTicketSubmit';
 
 import type { Coupon, Merchant } from '@/lib/types';
+import { ReactNode } from 'react';
 
 export async function PerxTicket({
   couponData,
   merchantData,
   variant,
+  children,
 }: {
   couponData: Coupon;
   merchantData: Merchant;
   variant: 'consumer' | 'merchant';
+  children?: ReactNode;
 }) {
   const {
     id: couponId,
@@ -112,7 +114,6 @@ export async function PerxTicket({
                     >
                       {formatDate(validFrom)} - {formatDate(validTo)}
                     </h3>
-                    {/* <CountdownTimer validTo={validTo} /> */}
                     <p className="text-perx-black text-xs tracking-tight">
                       Validity
                     </p>
@@ -170,18 +171,13 @@ export async function PerxTicket({
               &#8369;{price.toFixed(2)}
             </span>
             {allowPointsPurchase && (
-              <span className="flex items-center gap-2 text-sm text-gray-600">
-                or <SparklesIcon size={20} className="" /> {pointsAmount} Points
+              <span className="text-perx-black flex items-center gap-1 text-sm tracking-tighter">
+                or <SparklesIcon size={18} strokeWidth={1.5} /> {pointsAmount}{' '}
+                points
               </span>
             )}
           </div>
-          {variant === 'consumer' && (
-            <PerxTicketSubmit
-              allowPointsPurchase={allowPointsPurchase}
-              accentColor={accentColor}
-              coupon={couponData}
-            />
-          )}
+          <div>{children}</div>
         </div>
       </div>
     </section>
@@ -190,29 +186,4 @@ export async function PerxTicket({
 
 function formatDate(date: string | null): string {
   return date ? new Date(date).toLocaleDateString() : 'N/A';
-}
-
-export function getAccentColor(accentColor: string): string {
-  const colors: Record<string, string> = {
-    'perx-blue': '#b7d0f7',
-    'perx-canopy': '#b9f0df',
-    'perx-rust': '#fadac8',
-    'perx-gold': '#eddfc5',
-    'perx-azalea': '#f0c7db',
-    'perx-navy': '#b6c7e3',
-  };
-  return colors[accentColor] || '#FFFFFF'; // Default to white if color is not found
-}
-
-export function getPrimaryAccentColor(accentColor: string): string {
-  const primaryColors: Record<string, string> = {
-    'perx-blue': '#0061FE',
-    'perx-canopy': '#0F503C',
-    'perx-rust': '#BE4B0A',
-    'perx-gold': '#9B6400',
-    'perx-azalea': '#CD2F7B',
-    'perx-navy': '#283750',
-  };
-
-  return primaryColors[accentColor] || '#FFFFFF';
 }

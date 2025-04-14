@@ -1,6 +1,7 @@
 import { Input } from '@/components/ui/input';
-import { useId } from 'react';
+import { Ref, useId } from 'react';
 import { Label } from '../ui/label';
+import { cn } from '@/lib/utils';
 
 interface InputTextProps {
   label: string;
@@ -12,7 +13,10 @@ interface InputTextProps {
   step?: string;
   min?: string | number;
   value?: string; // Allow optional controlled input
-  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void; // Allow optional handler
+  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  accept?: string;
+  className?: string;
+  ref?: Ref<HTMLInputElement>;
 }
 
 export default function PerxInput({
@@ -26,6 +30,9 @@ export default function PerxInput({
   min,
   value,
   onChange,
+  accept,
+  className,
+  ref,
   ...props
 }: InputTextProps) {
   const id = useId();
@@ -47,9 +54,14 @@ export default function PerxInput({
         autoFocus={autofocus}
         step={step}
         min={min}
-        value={value} // Pass value only if provided
-        onChange={onChange} // Pass onChange only if provided
-        className="placeholder:opacity-0 focus:placeholder:opacity-100"
+        value={value}
+        onChange={onChange}
+        accept={accept}
+        className={cn(
+          'placeholder:opacity-0 focus:placeholder:opacity-100',
+          className
+        )}
+        ref={ref}
         {...props}
       />
     </div>

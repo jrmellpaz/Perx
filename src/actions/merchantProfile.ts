@@ -3,6 +3,7 @@ import { EditProfileInputs } from '@/lib/merchantSchema';
 import { createClient } from '@/utils/supabase/server';
 
 import type { Merchant } from '@/lib/types';
+import { revalidatePath } from 'next/cache';
 
 export const fetchMerchantProfile = async (
   merchantId: string
@@ -30,12 +31,36 @@ export const updateMerchantProfile = async (
     data: { user },
   } = await supabase.auth.getUser();
 
+  if (!user) {
+    throw new Error('User not authenticated');
+  }
+
+  const logo = profileData.logo[0];
+  const { data: newLogoData, error: updateLogoError } = await supabase.storage
+    .from('perx')
+    .update(`logo/${user.id}`, logo);
+
+  if (updateLogoError) {
+    throw new Error(`Failed to update logo: ${updateLogoError.message}`);
+  }
+
+  const { data: logoUrl } = supabase.storage
+    .from('perx')
+    .getPublicUrl(newLogoData.path);
+
   const { error } = await supabase
     .from('merchants')
-    .update(profileData)
+    .update({
+      name: profileData.name,
+      bio: profileData.bio,
+      address: profileData.address,
+      logo: logoUrl.publicUrl,
+    })
     .eq('id', user!.id);
 
   if (error) {
     console.error(`Failed to update merchant profile: ${error.message}`);
   }
+
+  revalidatePath('/merchant/profile/coupons');
 };

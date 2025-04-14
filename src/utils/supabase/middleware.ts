@@ -130,6 +130,20 @@ export async function updateSession(request: NextRequest) {
       url.pathname = '/merchant/login';
       return NextResponse.redirect(url);
     }
+
+    // Redirect merchant/profile to merchant/profile/coupons
+    if (request.nextUrl.pathname === '/merchant/profile') {
+      const url = request.nextUrl.clone();
+      url.pathname = '/merchant/profile/coupons';
+      return NextResponse.redirect(url);
+    }
+
+    // Redirect consumer/profile to profile/missions
+    if (request.nextUrl.pathname === '/profile') {
+      const url = request.nextUrl.clone();
+      url.pathname = '/profile/missions';
+      return NextResponse.redirect(url);
+    }
   }
 
   // IMPORTANT: You *must* return the supabaseResponse object as it is. If you're

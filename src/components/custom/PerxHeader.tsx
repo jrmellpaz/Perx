@@ -1,22 +1,35 @@
+'use client';
+
+import { cn } from '@/lib/utils';
 import { ArrowLeftIcon } from 'lucide-react';
-import Link from 'next/link';
-import { Button } from '../ui/button';
+import { useRouter } from 'next/navigation';
 
 export default function PerxHeader({
-  link,
   title,
+  className,
 }: {
-  link: string;
   title: string;
+  className: string;
 }) {
+  const router = useRouter();
+  const handleBack = () => {
+    router.back();
+  };
+
   return (
-    <header className="mb-4 flex w-full items-center gap-2">
-      <Link href={link}>
-        <Button variant={'ghost'} className="aspect-square rounded-full p-2">
-          <ArrowLeftIcon className="size-6" />
-        </Button>
-      </Link>
-      <h1>{title}</h1>
+    <header
+      className={cn(
+        'sticky top-0 z-10 flex w-full items-center gap-1 px-4 py-2 shadow-sm',
+        className
+      )}
+    >
+      <button
+        onClick={handleBack}
+        className="hover:bg-accent aspect-square cursor-pointer rounded-full p-3"
+      >
+        <ArrowLeftIcon className="size-5" />
+      </button>
+      <h1 className="font-mono text-lg font-medium">{title}</h1>
     </header>
   );
 }

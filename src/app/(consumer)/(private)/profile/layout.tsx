@@ -11,7 +11,7 @@ import {
   SparklesIcon,
 } from 'lucide-react';
 import { Progress } from '@/components/ui/progress';
-import Tabs from '@/components/custom/Tabs';
+import Tabs from '@/components/custom/PerxTabs';
 import { fetchRank } from '@/actions/rank';
 
 import type { Rank } from '@/lib/types';

@@ -1,9 +1,9 @@
-import { createClient } from '@/utils/supabase/server';
 import PerxHeader from '@/components/custom/PerxHeader';
 import {
   AccountSection,
   LoginSection,
 } from '@/components/consumer/ConsumerSettings';
+import { createClient } from '@/utils/supabase/server';
 
 export default async function SettingsPage() {
   const supabase = await createClient();

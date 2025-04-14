@@ -1,6 +1,6 @@
 import { ReactNode } from 'react';
 import { fetchMerchantProfile } from '@/actions/merchantProfile';
-import Tabs from '@/components/custom/Tabs';
+import Tabs from '@/components/custom/PerxTabs';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import {

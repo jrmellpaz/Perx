@@ -12,7 +12,7 @@ export default async function MerchantEditProfilePage() {
 
   return (
     <section className="flex h-full w-full flex-col">
-      <PerxHeader link="/merchant/profile" title="Edit profile" />
+      <PerxHeader title="Edit profile" className="bg-white" />
       <MerchantEditProfile profile={profile} />
     </section>
   );

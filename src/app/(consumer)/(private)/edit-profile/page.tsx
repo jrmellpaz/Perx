@@ -13,7 +13,7 @@ export default async function ConsumerEditProfilePage() {
 
   return (
     <section className="flex h-full w-full flex-col">
-      <PerxHeader link="/profile" title="Edit profile" />
+      <PerxHeader title="Edit profile" className="bg-white" />
       <ConsumerEditProfile profile={profile} />
     </section>
   );

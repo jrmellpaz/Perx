@@ -122,6 +122,23 @@ export const recoverPassword = async (email: string) => {
   }
 };
 
+export const updatePassword = async (): Promise<void> => {
+  const supabase = await createClient();
+  const { data: merchantData } = await supabase.auth.getUser();
+
+  if (!merchantData?.user?.email) {
+    throw new Error('No email found');
+  }
+
+  const { error } = await supabase.auth.resetPasswordForEmail(
+    merchantData.user.email
+  );
+
+  if (error) {
+    throw new Error(error.message);
+  }
+};
+
 export const changePassword = async (password: string) => {
   const supabase = await createClient();
   const { error } = await supabase.auth.updateUser({

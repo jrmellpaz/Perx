@@ -1,6 +1,6 @@
 import UserCard from '@/components/merchant/Usercard';
 import { ArrowRight, Tickets, UsersRound, PhilippinePeso } from 'lucide-react';
-import LineChart from '@/components/merchant/lineChart';
+import LineChart from '@/components/merchant/LineChart';
 import TopCouponsMonth from '@/components/merchant/TopCouponsMonth';
 
 export default async function DashboardPage() {

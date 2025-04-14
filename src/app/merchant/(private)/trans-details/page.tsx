@@ -96,10 +96,7 @@ const TransactionDetails = () => {
         onClick={() => router.back()}
         className="absolute top-1 left-1 flex cursor-pointer items-center"
       >
-        <PerxHeader
-          title="Transaction Details"
-          link="/merchant/monthly-records"
-        />
+        <PerxHeader title="Transaction Details" className="bg-white" />
       </button>
       {/* </div> */}
 

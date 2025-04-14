@@ -10,6 +10,7 @@ import { motion } from 'motion/react';
 interface NavItems {
   icon: JSX.Element;
   name: string;
+  path: string;
   link: string;
 }
 
@@ -17,22 +18,26 @@ const navItems: NavItems[] = [
   {
     icon: <Compass />,
     name: 'Explore',
+    path: '/explore',
     link: '/explore',
   },
   {
     icon: <Search />,
     name: 'Search',
+    path: '/search',
     link: '/search',
   },
   {
     icon: <Ticket />,
     name: 'My Coupons',
+    path: '/my-coupon',
     link: '/my-coupon',
   },
   {
     icon: <CircleUserRound />,
     name: 'Profile',
-    link: '/profile',
+    path: '/profile',
+    link: '/profile/missions',
   },
 ];
 

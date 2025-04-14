@@ -19,6 +19,7 @@ import { motion } from 'motion/react';
 interface NavItems {
   icon: JSX.Element;
   name: string;
+  path: string;
   link: string;
 }
 
@@ -26,22 +27,26 @@ const navItems: NavItems[] = [
   {
     icon: <LayoutDashboard />,
     name: 'Dashboard',
+    path: '/merchant/dashboard',
     link: '/merchant/dashboard',
   },
   {
     icon: <ScanQrCode />,
     name: 'Scan QR',
+    path: '/merchant/scan-qr',
     link: '/merchant/scan-qr',
   },
   {
     icon: <TicketPlus />,
     name: 'Add Coupon',
+    path: '/merchant/add-coupon',
     link: '/merchant/add-coupon',
   },
   {
     icon: <CircleUserRound />,
     name: 'Profile',
-    link: '/merchant/profile',
+    path: '/merchant/profile',
+    link: '/merchant/profile/coupons',
   },
 ];
 
@@ -81,7 +86,7 @@ function VerticalNav() {
   return (
     <ul className="flex h-full w-full flex-col">
       {navItems.map((item, index) => {
-        const isActive: boolean = pathname.startsWith(item.link);
+        const isActive: boolean = pathname.startsWith(item.path);
 
         return (
           <Link
@@ -110,7 +115,7 @@ function HorizontalNav() {
   return (
     <ul className="flex h-full w-full items-center justify-around">
       {navItems.map((item, index) => {
-        const isActive: boolean = pathname.startsWith(item.link);
+        const isActive: boolean = pathname.startsWith(item.path);
 
         return (
           <Link

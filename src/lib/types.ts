@@ -23,5 +23,9 @@ export type Consumer = Database['public']['Tables']['consumers']['Row'];
 export type Merchant = Database['public']['Tables']['merchants']['Row'];
 export type Merchants = Merchant[];
 
+// Achievement
+export type Achievement = Database['public']['Tables']['achievements']['Row'];
+export type Achievements = Achievement[];
+
 // Success types
 export type SuccessResponse = { success: boolean; message: string };

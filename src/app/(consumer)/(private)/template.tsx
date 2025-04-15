@@ -61,7 +61,7 @@ export default function ConsumerTemplate({
           <HorizontalNav />
         </div>
       </nav>
-      <main className="grow overflow-x-hidden overflow-y-auto bg-white shadow-xs md:rounded-l-xl">
+      <main className="w-full grow overflow-x-hidden overflow-y-auto bg-white shadow-xs md:rounded-l-xl">
         {children}
       </main>
     </main>

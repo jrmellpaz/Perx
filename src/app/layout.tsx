@@ -29,6 +29,10 @@ export default function RootLayout({
     <html lang="en">
       <Head>
         <meta name="apple-mobile-web-app-title" content="Perx" />
+        <meta
+          name="google-adsense-account"
+          content="ca-pub-4129833820581954"
+        ></meta>
       </Head>
       <body
         className={`${inter.variable} ${spaceGrotesk.variable} antialiased`}

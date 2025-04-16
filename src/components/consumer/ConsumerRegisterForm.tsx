@@ -132,7 +132,7 @@ export default function ConsumerRegisterForm() {
   };
 
   return (
-    <section className="flex h-full flex-col gap-6 overflow-x-hidden overflow-y-auto">
+    <section className="flex h-full flex-col gap-6">
       <h1 className="text-2xl font-bold">Sign up</h1>
       {submitError && (
         <PerxAlert
@@ -160,6 +160,7 @@ export default function ConsumerRegisterForm() {
             />
           )}
           {currentStep === 2 && (
+          <div className="max-h-[300px] overflow-y-auto">
             <Step3
               register={register}
               errors={errors}
@@ -167,7 +168,8 @@ export default function ConsumerRegisterForm() {
               watch={watch}
               setValue={setValue}
             />
-          )}
+          </div>
+        )}
         </div>
         <Navigation
           next={next}

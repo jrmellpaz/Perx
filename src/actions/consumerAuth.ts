@@ -16,8 +16,15 @@ export const loginConsumer = async (data: LoginConsumerInputs) => {
     return { error: authError.message };
   }
 
-  const userId = authData?.user?.id;
-  if (!userId) {
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  type UserRole = 'merchant' | 'consumer';
+
+  const userRole: UserRole = user?.user_metadata.role as UserRole;
+
+  if (!user || userRole !== 'consumer') {
     return { error: 'No such consumer account.' };
   }
 
@@ -124,14 +131,14 @@ export const recoverPassword = async (email: string) => {
 
 export const updatePassword = async (): Promise<void> => {
   const supabase = await createClient();
-  const { data: merchantData } = await supabase.auth.getUser();
+  const { data: userData } = await supabase.auth.getUser();
 
-  if (!merchantData?.user?.email) {
+  if (!userData?.user?.email) {
     throw new Error('No email found');
   }
 
   const { error } = await supabase.auth.resetPasswordForEmail(
-    merchantData.user.email
+    userData.user.email
   );
 
   if (error) {
@@ -175,17 +182,4 @@ export const checkReferrer = async (referrerCode: string): Promise<boolean> => {
   }
 
   return true;
-};
-
-// TODO: Remove
-export const fetchTopCouponTypes = async (): Promise<string[]> => {
-  const supabase = await createClient();
-  const { data, error } = await supabase.rpc('get_top_coupon_types');
-
-  if (error) {
-    console.error('Error fetching coupon types:', error);
-    return [];
-  }
-
-  return (data as { type: string; count: number }[]).map((item) => item.type);
 };

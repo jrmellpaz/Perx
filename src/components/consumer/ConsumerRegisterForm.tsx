@@ -114,6 +114,8 @@ export default function ConsumerRegisterForm() {
         setSubmitError('Invalid referral code');
         return; // Stop next step if referral code is invalid
       }
+      else
+        setSubmitError(null);
     }
 
     if (currentStep < steps.length - 1) {

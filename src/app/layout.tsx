@@ -4,6 +4,7 @@ import './globals.css';
 import Head from 'next/head';
 import NextTopLoader from 'nextjs-toploader';
 import { Toaster } from '@/components/ui/toaster';
+import Script from 'next/script';
 
 const inter = Inter({
   variable: '--font-inter',
@@ -29,11 +30,11 @@ export default function RootLayout({
     <html lang="en">
       <Head>
         <meta name="apple-mobile-web-app-title" content="Perx" />
-        <script
+        <Script
           async
           src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4129833820581954"
           crossOrigin="anonymous"
-        ></script>
+        />
       </Head>
       <body
         className={`${inter.variable} ${spaceGrotesk.variable} antialiased`}

@@ -1,7 +1,5 @@
 import { fetchCoupons } from '@/actions/coupon';
 import { PerxCoupon } from '@/components/custom/PerxCoupon';
-import Head from 'next/head';
-import Script from 'next/script';
 import { Suspense } from 'react';
 
 export default async function Explore() {
@@ -9,13 +7,6 @@ export default async function Explore() {
 
   return (
     <>
-      <Head>
-        <Script
-          async
-          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4129833820581954"
-          crossOrigin="anonymous"
-        />
-      </Head>
       <div className="w-full p-6">
         <div className="grid w-full grid-cols-1 items-center gap-0.5 sm:grid-cols-2 md:grid-cols-3 md:gap-1">
           <Suspense fallback={<ExplorePageSkeleton />}>

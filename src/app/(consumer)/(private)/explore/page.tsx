@@ -1,24 +1,39 @@
 import { fetchCoupons } from '@/actions/coupon';
 import { PerxCoupon } from '@/components/custom/PerxCoupon';
+import Head from 'next/head';
+import Script from 'next/script';
 import { Suspense } from 'react';
 
 export default async function Explore() {
   const coupons = await fetchCoupons();
 
   return (
-    <div className="w-full p-6">
-      <div className="grid w-full grid-cols-1 items-center gap-0.5 sm:grid-cols-2 md:grid-cols-3 md:gap-1">
-        <Suspense fallback={<ExplorePageSkeleton />}>
-          {coupons.length > 0 ? (
-            coupons.map((coupon) => (
-              <PerxCoupon key={coupon.id} coupon={coupon} variant="consumer" />
-            ))
-          ) : (
-            <p>No tickets available.</p>
-          )}
-        </Suspense>
+    <>
+      <Head>
+        <Script
+          async
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4129833820581954"
+          crossOrigin="anonymous"
+        />
+      </Head>
+      <div className="w-full p-6">
+        <div className="grid w-full grid-cols-1 items-center gap-0.5 sm:grid-cols-2 md:grid-cols-3 md:gap-1">
+          <Suspense fallback={<ExplorePageSkeleton />}>
+            {coupons.length > 0 ? (
+              coupons.map((coupon) => (
+                <PerxCoupon
+                  key={coupon.id}
+                  coupon={coupon}
+                  variant="consumer"
+                />
+              ))
+            ) : (
+              <p>No tickets available.</p>
+            )}
+          </Suspense>
+        </div>
       </div>
-    </div>
+    </>
   );
 }
 

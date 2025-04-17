@@ -19,7 +19,7 @@ export default function PerxHeader({
   return (
     <header
       className={cn(
-        'sticky top-0 z-10 flex w-full items-center gap-1 px-4 py-2 shadow-sm',
+        'sticky top-0 z-10 flex w-full items-center gap-1 px-4 py-2',
         className
       )}
     >

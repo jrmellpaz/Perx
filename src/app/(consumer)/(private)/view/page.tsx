@@ -3,6 +3,7 @@ import { PerxTicket } from '@/components/custom/PerxTicket';
 import { redirect } from 'next/navigation';
 import { PerxTicketSubmit } from '@/components/custom/PerxTicketSubmit';
 import { fetchCoupon } from '@/actions/coupon';
+import PerxHeader from '@/components/custom/PerxHeader';
 
 import type { Coupon, Merchant } from '@/lib/types';
 
@@ -22,7 +23,8 @@ export default async function ViewCoupon({
   const merchant: Merchant = await fetchMerchantProfile(merchantId);
 
   return (
-    <section className="h-full w-full overflow-hidden">
+    <section className="h-full w-full overflow-hidden overflow-y-auto">
+      <PerxHeader title="" className="text-white" />
       <PerxTicket
         couponData={coupon}
         merchantData={merchant}

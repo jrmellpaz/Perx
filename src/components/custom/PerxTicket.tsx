@@ -41,7 +41,7 @@ export async function PerxTicket({
   return (
     <section
       style={{ backgroundColor: getPrimaryAccentColor(accentColor) }}
-      className={`flex h-full w-full items-center justify-center py-4`}
+      className={`flex h-[110%] w-full items-center justify-center`}
     >
       <div
         className={cn(

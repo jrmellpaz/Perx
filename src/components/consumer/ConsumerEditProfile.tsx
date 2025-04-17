@@ -17,7 +17,7 @@ import { LoaderCircle } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { updateConsumerProfile } from '@/actions/consumerProfile';
 import { redirect } from 'next/navigation';
-import { fetchTopCouponTypes } from '@/actions/consumerAuth';
+import { couponCategories } from '@/lib/couponSchema';
 
 import type { Consumer } from '@/lib/types';
 import { EditProfileInputs, editProfileSchema } from '@/lib/consumerSchema';
@@ -88,12 +88,8 @@ function EditDetails({
   const selectedInterests = watch('interests', []) || [];
 
   useEffect(() => {
-    const loadCouponTypes = async () => {
-      const topTypes = await fetchTopCouponTypes(); // Fetch available interests
-      setInterests(topTypes);
-    };
-    loadCouponTypes();
-  }, []);
+      setInterests([...couponCategories]);
+    }, [setValue]);
 
   const handleCheckboxChange = (interest: string, checked: boolean) => {
     if (checked) {

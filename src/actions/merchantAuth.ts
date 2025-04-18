@@ -4,6 +4,7 @@ import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import { createClient } from '@/utils/supabase/server';
 import { LoginMerchantInputs, MerchantFormInputs } from '@/lib/merchantSchema';
+import { logoutConsumer } from './consumerAuth';
 
 export const loginMerchant = async (data: LoginMerchantInputs) => {
   const supabase = await createClient();
@@ -22,8 +23,11 @@ export const loginMerchant = async (data: LoginMerchantInputs) => {
 
   const userRole: UserRole = user?.user_metadata.role as UserRole;
 
-  if (!user || userRole !== 'merchant') {
-    throw new Error("No such merchant account.");
+  if (!user) {
+    throw new Error('No such merchant account.');
+  } else if (userRole === 'consumer') {
+    logoutConsumer();
+    throw new Error('No such merchant account.');
   }
 
   revalidatePath('/merchant/dashboard');
@@ -126,19 +130,3 @@ export const recoverPassword = async (email: string) => {
     throw new Error(error.message);
   }
 };
-
-// export const changePassword = async (password: string) => {
-//   const supabase = await createClient();
-//   const { error } = await supabase.auth.updateUser({
-//     password,
-//   });
-
-//   if (
-//     error &&
-//     !error.message.includes(
-//       'supabase.auth.getSession() or from some supabase.auth.onAuthStateChange()'
-//     )
-//   ) {
-//     throw new Error(error.message);
-//   }
-// };

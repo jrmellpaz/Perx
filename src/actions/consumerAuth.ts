@@ -5,6 +5,7 @@ import { redirect } from 'next/navigation';
 import { createClient } from '@/utils/supabase/server';
 import { LoginConsumerInputs, ConsumerFormInputs } from '@/lib/consumerSchema';
 import { nanoid } from 'nanoid';
+import { logoutMerchant } from './merchantAuth';
 
 export const loginConsumer = async (data: LoginConsumerInputs) => {
   const supabase = await createClient();
@@ -24,8 +25,11 @@ export const loginConsumer = async (data: LoginConsumerInputs) => {
 
   const userRole: UserRole = user?.user_metadata.role as UserRole;
 
-  if (!user || userRole !== 'consumer') {
-    return { error: 'No such consumer account.' };
+  if (!user) {
+    return { error: 'No consumer account exists.' };
+  } else if (userRole === 'consumer') {
+    logoutMerchant();
+    return { error: 'No consumer account exists.' };
   }
 
   revalidatePath('/explore');
@@ -86,8 +90,6 @@ export const signupConsumer = async (data: ConsumerFormInputs) => {
     if (!checkData) {
       return { error: 'Referrer code not found.' };
     }
-
-    // checkAchievements(checkData?.id);
   }
 
   revalidatePath('/explore');

@@ -24,7 +24,7 @@ export default async function ViewCoupon({
 
   return (
     <section className="h-full w-full overflow-hidden overflow-y-auto">
-      <PerxHeader title="" className="text-white" />
+      <PerxHeader title="" className="bg-white text-white" />
       <PerxTicket
         couponData={coupon}
         merchantData={merchant}

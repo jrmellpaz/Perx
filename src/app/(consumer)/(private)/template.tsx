@@ -74,7 +74,7 @@ function VerticalNav() {
   return (
     <ul className="flex h-full w-full flex-col">
       {navItems.map((item, index) => {
-        const isActive: boolean = pathname.startsWith(item.link);
+        const isActive: boolean = pathname.startsWith(item.path);
 
         return (
           <Link
@@ -103,7 +103,7 @@ function HorizontalNav() {
   return (
     <ul className="flex h-full w-full items-center justify-around">
       {navItems.map((item, index) => {
-        const isActive: boolean = pathname.startsWith(item.link);
+        const isActive: boolean = pathname.startsWith(item.path);
 
         return (
           <Link

@@ -88,8 +88,8 @@ function EditDetails({
   const selectedInterests = watch('interests', []) || [];
 
   useEffect(() => {
-      setInterests([...couponCategories]);
-    }, [setValue]);
+    setInterests([...couponCategories]);
+  }, [setValue]);
 
   const handleCheckboxChange = (interest: string, checked: boolean) => {
     if (checked) {

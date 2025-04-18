@@ -12,7 +12,7 @@ export default async function ConsumerEditProfilePage() {
   const profile = await fetchConsumerProfile(user!.id);
 
   return (
-    <section className="flex h-full w-full flex-col sm:w-4/5">
+    <section className="flex h-full w-full flex-col gap-4">
       <PerxHeader title="Edit profile" className="bg-white" />
       <ConsumerEditProfile profile={profile} />
     </section>

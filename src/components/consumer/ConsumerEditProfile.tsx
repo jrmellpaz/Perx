@@ -121,9 +121,8 @@ function EditDetails({
         {errors.name?.message && <ErrorMessage message={errors.name.message} />}
       </div>
 
-      {/* Interests Section */}
-      <div>
-        <label className="font-semibold">Interests</label>
+      <div className="flex flex-col gap-2">
+        <label className="font-mono font-semibold">Interests</label>
         <div className="flex flex-wrap gap-2">
           {interests.map((interest) => (
             <label key={interest} className="flex items-center gap-2">

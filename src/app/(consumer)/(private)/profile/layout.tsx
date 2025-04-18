@@ -8,7 +8,6 @@ import {
   ClipboardListIcon,
   PencilIcon,
   SettingsIcon,
-  SparklesIcon,
 } from 'lucide-react';
 import { Progress } from '@/components/ui/progress';
 import Tabs from '@/components/custom/PerxTabs';
@@ -154,7 +153,11 @@ function LoyaltyRewardsCard({
         </h2>
       </div>
       <div className="relative -top-10 flex w-full items-center gap-3">
-        <SparklesIcon style={{ color: '#FF7F50' }} size={36} />{' '}
+        <img
+          src="/reward-points.svg"
+          alt="Reward points icon"
+          className="aspect-sqaure size-16"
+        />
         <h1 className="font-mono text-5xl font-medium">
           {balancePoints}
           <span className="text-muted-foreground font-sans text-base font-normal tracking-tighter">

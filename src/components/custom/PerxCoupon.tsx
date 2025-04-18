@@ -1,5 +1,5 @@
 import { fetchRank } from '@/actions/rank';
-import { Clock, Sparkles } from 'lucide-react';
+import { Clock } from 'lucide-react';
 import Link from 'next/link';
 
 import type { Coupon } from '@/lib/types';
@@ -41,7 +41,13 @@ export async function PerxCoupon({
               <Clock size={20} strokeWidth={1.5} />
             )}
             {coupon.allowPointsPurchase && (
-              <Sparkles size={20} strokeWidth={1.5} />
+              <img
+                src="/reward-points.svg"
+                alt="Reward Points"
+                width={20}
+                height={20}
+                className="pb-0.25"
+              />
             )}
             <img src={rankIcon} alt={'Rank icon'} className="size-6" />
           </div>

@@ -2,7 +2,6 @@ import { fetchAchievements } from '@/actions/achievements';
 import { fetchConsumerProfile } from '@/actions/consumerProfile';
 import { fetchRank } from '@/actions/rank';
 import { createClient } from '@/utils/supabase/server';
-import { SparklesIcon } from 'lucide-react';
 import { Suspense } from 'react';
 
 import type { Achievement } from '@/lib/types';
@@ -65,11 +64,12 @@ function AchievementCard({
           }}
           className="flex w-fit items-center gap-1 rounded-full px-3 py-1"
         >
-          <SparklesIcon
-            style={{
-              color: primary,
-            }}
-            size={12}
+          <img
+            src="/reward-points.svg"
+            alt="Reward Points"
+            width={14}
+            height={14}
+            className="pb-0.25"
           />
           <p
             style={{

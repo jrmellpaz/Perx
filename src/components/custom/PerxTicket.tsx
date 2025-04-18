@@ -2,10 +2,9 @@ import { fetchRank } from '@/actions/rank';
 import { cn, getAccentColor, getPrimaryAccentColor } from '@/lib/utils';
 import Link from 'next/link';
 import { PerxReadMore } from './PerxReadMore';
-import { SparklesIcon } from 'lucide-react';
+import { ReactNode } from 'react';
 
 import type { Coupon, Merchant } from '@/lib/types';
-import { ReactNode } from 'react';
 
 export async function PerxTicket({
   couponData,
@@ -172,8 +171,15 @@ export async function PerxTicket({
             </span>
             {allowPointsPurchase && (
               <span className="text-perx-black flex items-center gap-1 text-sm tracking-tighter">
-                or <SparklesIcon size={18} strokeWidth={1.5} /> {pointsAmount}{' '}
-                points
+                or&nbsp;
+                <img
+                  src="/reward-points.svg"
+                  alt="Reward Points"
+                  width={18}
+                  height={18}
+                  className="pb-0.25"
+                />{' '}
+                {pointsAmount} points
               </span>
             )}
           </div>

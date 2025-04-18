@@ -2,7 +2,8 @@ import { fetchRank } from '@/actions/rank';
 import { cn, getAccentColor, getPrimaryAccentColor } from '@/lib/utils';
 import Link from 'next/link';
 import { PerxReadMore } from './PerxReadMore';
-import { ReactNode } from 'react';
+import { ReactNode, Suspense } from 'react';
+import { PerxCountdown } from './PerxCountdown';
 
 import type { Coupon, Merchant } from '@/lib/types';
 
@@ -51,7 +52,7 @@ export async function PerxTicket({
         <div className="flex flex-col items-center">
           <div className="h-auto w-full overflow-hidden rounded-t-lg">
             <img
-              src={image || undefined}
+              src={image}
               alt={title}
               className="aspect-video h-auto w-full mask-b-from-80% object-cover"
             />
@@ -107,14 +108,15 @@ export async function PerxTicket({
                 <>
                   <div className="border-muted-foreground mx-3 h-6 w-[0.25px] rounded-full border-l-[0.5px]"></div>
                   <div className="flex shrink-0 flex-col items-center">
-                    <h3
-                      style={{ color: getPrimaryAccentColor(accentColor) }}
-                      className={`font-mono text-sm font-medium tracking-tight`}
-                    >
-                      {formatDate(validFrom)} - {formatDate(validTo)}
-                    </h3>
+                    <Suspense fallback={<p>Loading...</p>}>
+                      <PerxCountdown
+                        targetDate={validTo}
+                        className="font-mono text-sm font-medium tracking-tight"
+                        style={{ color: getPrimaryAccentColor(accentColor) }}
+                      />
+                    </Suspense>
                     <p className="text-perx-black text-xs tracking-tight">
-                      Validity
+                      Valid until {formatDate(validTo)}
                     </p>
                   </div>
                 </>

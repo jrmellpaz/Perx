@@ -32,7 +32,7 @@ export const PerxReadMore = ({
   };
 
   return (
-    <p id={id} className="text-sm tracking-tighter">
+    <p id={id} className="text-sm">
       {beginText}
       {itCanOverflow && (
         <>

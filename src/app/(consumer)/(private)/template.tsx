@@ -16,25 +16,25 @@ interface NavItems {
 
 const navItems: NavItems[] = [
   {
-    icon: <Compass />,
+    icon: <Compass strokeWidth={1.5} />,
     name: 'Explore',
     path: '/explore',
     link: '/explore',
   },
   {
-    icon: <Search />,
+    icon: <Search strokeWidth={1.5} />,
     name: 'Search',
     path: '/search',
     link: '/search',
   },
   {
-    icon: <Ticket />,
+    icon: <Ticket strokeWidth={1.5} />,
     name: 'My Coupons',
     path: '/my-coupons',
     link: '/my-coupons',
   },
   {
-    icon: <CircleUserRound />,
+    icon: <CircleUserRound strokeWidth={1.5} />,
     name: 'Profile',
     path: '/profile',
     link: '/profile/missions',

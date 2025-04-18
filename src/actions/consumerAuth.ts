@@ -27,7 +27,7 @@ export const loginConsumer = async (data: LoginConsumerInputs) => {
 
   if (!user) {
     return { error: 'No consumer account exists.' };
-  } else if (userRole === 'consumer') {
+  } else if (userRole !== 'consumer') {
     logoutMerchant();
     return { error: 'No consumer account exists.' };
   }

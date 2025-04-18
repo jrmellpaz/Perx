@@ -25,7 +25,7 @@ export const loginMerchant = async (data: LoginMerchantInputs) => {
 
   if (!user) {
     throw new Error('No such merchant account.');
-  } else if (userRole === 'consumer') {
+  } else if (userRole !== 'merchant') {
     logoutConsumer();
     throw new Error('No such merchant account.');
   }

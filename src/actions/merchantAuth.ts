@@ -14,6 +14,18 @@ export const loginMerchant = async (data: LoginMerchantInputs) => {
     throw new Error(error.message);
   }
 
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  type UserRole = 'merchant' | 'consumer';
+
+  const userRole: UserRole = user?.user_metadata.role as UserRole;
+
+  if (!user || userRole !== 'merchant') {
+    throw new Error("No such merchant account.");
+  }
+
   revalidatePath('/merchant/dashboard');
   redirect('/merchant/dashboard');
 };

@@ -4,6 +4,7 @@ import { redirect } from 'next/navigation';
 import { PerxTicketSubmit } from '@/components/custom/PerxTicketSubmit';
 import { fetchCoupon } from '@/actions/coupon';
 import PerxHeader from '@/components/custom/PerxHeader';
+import { getPrimaryAccentColor } from '@/lib/utils';
 
 import type { Coupon, Merchant } from '@/lib/types';
 
@@ -23,8 +24,12 @@ export default async function ViewCoupon({
   const merchant: Merchant = await fetchMerchantProfile(merchantId);
 
   return (
-    <section className="h-full w-full overflow-hidden overflow-y-auto">
-      <PerxHeader title="" className="bg-white text-white" />
+    <section className="h-full w-full overflow-hidden overflow-y-auto bg-transparent">
+      <PerxHeader
+        title=""
+        className="text-white"
+        style={{ backgroundColor: getPrimaryAccentColor(coupon.accentColor) }}
+      />
       <PerxTicket
         couponData={coupon}
         merchantData={merchant}

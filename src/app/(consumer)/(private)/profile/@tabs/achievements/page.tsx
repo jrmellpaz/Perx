@@ -17,7 +17,7 @@ export default async function Achievements() {
   const achievements = await fetchAchievements();
 
   return (
-    <section className="grid grid-cols-1 gap-0.5 sm:grid-cols-2 md:grid-cols-3 md:gap-1">
+    <section className="grid grid-cols-1 gap-2 sm:grid-cols-2 md:grid-cols-3 md:gap-3">
       <Suspense fallback={<AchievementCardSkeleton />}>
         {achievements.map((achievement, index) => (
           <AchievementCard

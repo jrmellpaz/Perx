@@ -53,10 +53,10 @@ export async function PerxTicket({
             <img
               src={image || undefined}
               alt={title}
-              className="aspect-video h-auto w-full object-cover"
+              className="aspect-video h-auto w-full mask-b-from-80% object-cover"
             />
           </div>
-          <div className="flex w-full flex-col gap-4 px-6 py-4">
+          <div className="flex w-full flex-col gap-4 px-6 pt-2 pb-4">
             <div className="flex flex-col gap-1.5">
               <h2
                 style={{ color: getPrimaryAccentColor(accentColor) }}

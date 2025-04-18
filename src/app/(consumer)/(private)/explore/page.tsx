@@ -7,7 +7,7 @@ export default async function Explore() {
 
   return (
     <section className="w-full px-2 py-4 sm:px-4">
-      <div className="grid w-full grid-cols-1 items-center gap-1 sm:grid-cols-2 md:grid-cols-3 md:gap-2">
+      <div className="grid w-full grid-cols-1 items-center gap-2 sm:grid-cols-2 md:grid-cols-3 md:gap-3">
         <Suspense fallback={<ExplorePageSkeleton />}>
           {coupons.length > 0 ? (
             coupons.map((coupon) => (

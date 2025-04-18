@@ -18,7 +18,7 @@ export default async function MyCouponsPage() {
 
   return (
     <section className="w-full px-2 py-4 sm:px-4">
-      <div className="place-start grid grid-cols-1 gap-0.5 sm:grid-cols-2 md:grid-cols-3 md:gap-1">
+      <div className="place-start grid grid-cols-1 gap-2 sm:grid-cols-2 md:grid-cols-3 md:gap-3">
         <Suspense fallback={<MyCouponsSkeleton />}>
           {purchasedCoupons.length > 0 ? (
             purchasedCoupons.map((coupon) => {

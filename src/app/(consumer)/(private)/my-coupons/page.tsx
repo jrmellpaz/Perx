@@ -21,10 +21,10 @@ export default async function MyCouponsPage() {
       <div className="place-start grid grid-cols-1 gap-2 sm:grid-cols-2 md:grid-cols-3 md:gap-3">
         <Suspense fallback={<MyCouponsSkeleton />}>
           {purchasedCoupons.length > 0 ? (
-            purchasedCoupons.map((coupon) => {
+            purchasedCoupons.map((coupon, index) => {
               const couponDetails = coupon.coupons;
 
-              return <MyCoupon key={couponDetails.id} coupon={couponDetails} />;
+              return <MyCoupon key={index} coupon={couponDetails} />;
             })
           ) : (
             <p>No coupons purchased yet.</p>

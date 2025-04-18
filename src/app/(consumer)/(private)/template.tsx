@@ -30,8 +30,8 @@ const navItems: NavItems[] = [
   {
     icon: <Ticket />,
     name: 'My Coupons',
-    path: '/my-coupon',
-    link: '/my-coupon',
+    path: '/my-coupons',
+    link: '/my-coupons',
   },
   {
     icon: <CircleUserRound />,

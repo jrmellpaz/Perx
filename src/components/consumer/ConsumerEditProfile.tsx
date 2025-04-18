@@ -61,7 +61,7 @@ export default function ConsumerEditProfile({
       <main className="flex w-full flex-col items-center">
         <form
           onSubmit={handleSubmit(processForm)}
-          className="my-2 flex w-full max-w-[800px] flex-col gap-8"
+          className="my-2 flex w-9/10 max-w-[800px] flex-col gap-8"
         >
           <EditDetails
             register={register}

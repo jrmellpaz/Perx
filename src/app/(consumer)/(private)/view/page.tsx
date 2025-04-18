@@ -7,6 +7,7 @@ import PerxHeader from '@/components/custom/PerxHeader';
 import { getPrimaryAccentColor } from '@/lib/utils';
 
 import type { Coupon, Merchant } from '@/lib/types';
+import { get } from 'http';
 
 export default async function ViewCoupon({
   searchParams,
@@ -24,11 +25,14 @@ export default async function ViewCoupon({
   const merchant: Merchant = await fetchMerchantProfile(merchantId);
 
   return (
-    <section className="h-full w-full overflow-hidden overflow-y-auto bg-transparent">
+    <section className="h-max w-full overflow-y-auto bg-transparent">
       <PerxHeader
         title=""
         className="text-white"
         style={{ backgroundColor: getPrimaryAccentColor(coupon.accentColor) }}
+        buttonStyle={{
+          backgroundColor: getPrimaryAccentColor(coupon.accentColor),
+        }}
       />
       <PerxTicket
         couponData={coupon}

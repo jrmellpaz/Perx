@@ -8,10 +8,12 @@ export default function PerxHeader({
   title,
   className,
   style,
+  buttonStyle,
 }: {
   title: string;
   className: string;
-  style?: React.CSSProperties; // Add style prop type
+  style?: React.CSSProperties;
+  buttonStyle?: React.CSSProperties;
 }) {
   const router = useRouter();
   const handleBack = () => {
@@ -21,18 +23,16 @@ export default function PerxHeader({
   return (
     <header
       className={cn(
-      'sticky top-0 z-10 flex w-full items-center gap-1 px-4 py-2',
-      style ? '' : 'shadow-sm',
-      className
-    )}
+        'sticky top-0 z-10 flex w-full items-center gap-1 p-2',
+        style ? '' : 'shadow-sm',
+        className
+      )}
       style={style}
     >
       <button
         onClick={handleBack}
-        className={cn(
-          'aspect-square cursor-pointer rounded-full p-3',
-          style ? 'hover:bg-black' : 'hover:bg-accent'
-        )}
+        className="hover:bg-accent aspect-square cursor-pointer rounded-full p-3"
+        style={buttonStyle}
       >
         <ArrowLeftIcon className="size-5" />
       </button>

@@ -34,7 +34,10 @@ export function PerxTicketSubmit({ coupon }: { coupon: Coupon }) {
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="flex gap-4">
+    <form
+      onSubmit={handleSubmit(onSubmit)}
+      className="flex flex-col-reverse gap-2 sm:flex-row sm:gap-4"
+    >
       {allowPointsPurchase && (
         <button
           type="submit"

@@ -87,6 +87,10 @@ export async function updateSession(request: NextRequest) {
         url.pathname = '/login';
       }
       return NextResponse.redirect(url);
+    } else if (request.nextUrl.pathname === '/merchant') {
+      const url = request.nextUrl.clone();
+      url.pathname = '/merchant/login';
+      return NextResponse.redirect(url);
     }
   } else {
     // Fetch user role from database
@@ -142,6 +146,12 @@ export async function updateSession(request: NextRequest) {
     if (request.nextUrl.pathname === '/profile') {
       const url = request.nextUrl.clone();
       url.pathname = '/profile/missions';
+      return NextResponse.redirect(url);
+    }
+
+    if (request.nextUrl.pathname === '/merchant') {
+      const url = request.nextUrl.clone();
+      url.pathname = '/merchant/explore';
       return NextResponse.redirect(url);
     }
   }

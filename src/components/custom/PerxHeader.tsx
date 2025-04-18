@@ -31,7 +31,7 @@ export default function PerxHeader({
     >
       <button
         onClick={handleBack}
-        className="hover:bg-accent aspect-square cursor-pointer rounded-full p-3"
+        className="hover:bg-perx-black/10 aspect-square cursor-pointer rounded-full p-3"
         style={buttonStyle}
       >
         <ArrowLeftIcon className="size-5" />

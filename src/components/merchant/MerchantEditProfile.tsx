@@ -56,19 +56,17 @@ export default function MerchantEditProfile({
   };
 
   return (
-    <main className="flex w-full flex-col items-center">
-      <form
-        onSubmit={handleSubmit(processForm)}
-        className="my-2 flex w-full max-w-[800px] flex-col gap-8"
-      >
-        <EditLogo logo={logo} register={register} errors={errors} />
-        <EditDetails
-          register={register}
-          errors={errors}
-          isSubmitting={isSubmitting}
-        />
-      </form>
-    </main>
+    <form
+      onSubmit={handleSubmit(processForm)}
+      className="my-2 flex w-9/10 max-w-[800px] flex-col gap-8"
+    >
+      <EditLogo logo={logo} register={register} errors={errors} />
+      <EditDetails
+        register={register}
+        errors={errors}
+        isSubmitting={isSubmitting}
+      />
+    </form>
   );
 }
 

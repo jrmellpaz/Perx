@@ -92,12 +92,7 @@ const TransactionDetails = () => {
   return (
     <div className="relative flex h-full w-full flex-col items-center">
       {/* <div> */}
-      <button
-        onClick={() => router.back()}
-        className="absolute top-1 left-1 flex cursor-pointer items-center"
-      >
-        <PerxHeader title="Transaction Details" className="bg-white" />
-      </button>
+      <PerxHeader title="Transaction Details" className="bg-white shadow-md" />
       {/* </div> */}
 
       <div className="mt-12 w-full max-w-md p-6">

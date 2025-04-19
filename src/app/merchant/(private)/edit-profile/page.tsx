@@ -11,8 +11,8 @@ export default async function MerchantEditProfilePage() {
   const profile = await fetchMerchantProfile(user!.id);
 
   return (
-    <section className="scrollable-container flex h-full w-full flex-col gap-4">
-      <PerxHeader title="Edit profile" className="bg-white" />
+    <section className="scrollable-container flex h-full w-full flex-col items-center gap-4">
+      <PerxHeader title="Edit profile" className="bg-white shadow-md" />
       <MerchantEditProfile profile={profile} />
     </section>
   );

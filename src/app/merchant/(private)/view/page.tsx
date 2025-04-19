@@ -24,7 +24,7 @@ export default async function ViewCoupon({
 
   return (
     <section
-      className="flex h-full w-full flex-col items-center overflow-y-auto bg-transparent pb-14"
+      className="view-container flex h-full w-full flex-col items-center overflow-y-auto bg-transparent pb-14"
       style={{ backgroundColor: getPrimaryAccentColor(coupon.accentColor) }}
     >
       <PerxHeader

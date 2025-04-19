@@ -25,7 +25,7 @@ export default function PerxHeader({
   };
 
   useEffect(() => {
-    const container = document.querySelector('.scrollable-container');
+    const container = document.querySelector('.view-container');
 
     const handleScroll = () => {
       const scrollPosition = container?.scrollTop;

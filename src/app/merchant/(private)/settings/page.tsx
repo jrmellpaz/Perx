@@ -18,7 +18,7 @@ export default async function SettingsPage() {
   }
 
   return (
-    <section className="flex h-full w-full flex-col items-center gap-6">
+    <section className="scrollable-container flex h-full w-full flex-col items-center gap-6">
       <PerxHeader title="Settings" className="bg-white" />
       <div className="flex w-full max-w-[800px] flex-col gap-8 px-4">
         <AccountSection user={user} />

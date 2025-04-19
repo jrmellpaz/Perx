@@ -18,16 +18,36 @@ export default function PerxHeader({
   buttonStyle?: React.CSSProperties;
 }) {
   const router = useRouter();
+  const [scrolled, setScrolled] = useState<boolean>(false);
 
   const handleBack = () => {
     router.back();
   };
+
+  useEffect(() => {
+    const container = document.querySelector('.scrollable-container');
+
+    const handleScroll = () => {
+      const scrollPosition = container?.scrollTop;
+
+      if (scrollPosition !== undefined && scrollPosition > 0) {
+        setScrolled(true);
+      } else {
+        setScrolled(false);
+      }
+    };
+
+    container?.addEventListener('scroll', handleScroll);
+
+    return () => container?.removeEventListener('scroll', handleScroll);
+  }, []);
 
   return (
     <header
       style={style}
       className={cn(
         'sticky top-0 z-10 flex w-full items-center gap-1 p-2 shadow',
+        style ? (scrolled ? 'shadow-md' : 'shadow-none') : 'shadow-md',
         className
       )}
     >

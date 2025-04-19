@@ -25,9 +25,6 @@ export default async function Explore() {
             )}
           </Suspense>
         </div>
-        <div className="bg-perx-white mt-20 h-[2000px] w-full">
-          <p>Hello</p>
-        </div>
       </section>
     </>
   );

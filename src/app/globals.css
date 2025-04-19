@@ -236,18 +236,3 @@ textarea {
 .inset-left {
   box-shadow: inset 10px 0 5px -5px hsla(0,0%,0%,.08);
 }
-
-/* width */
-::-webkit-scrollbar {
-  @apply w-2 h-1;
-}
-
-/* Track */
-::-webkit-scrollbar-track {
-  @apply rounded-full bg-transparent;
-}
-
-/* Handle */
-::-webkit-scrollbar-thumb {
-  @apply rounded-full bg-[#dfe0e2];
-}

@@ -61,22 +61,25 @@ export default async function ConsumerProfileLayout({
   ];
 
   return (
-    <section className="flex h-full flex-col overflow-x-hidden">
+    <section
+      className="flex h-full flex-col overflow-x-hidden"
+      style={{ backgroundColor: `${rank.secondaryColor}33` }}
+    >
       <Header name={name} primaryColor={rank.primaryColor} />
-      <main
-        style={{ backgroundColor: `${rank.secondaryColor}33` }}
-        className="flex grow flex-col items-center"
-      >
+      <main className="relative -top-20 flex grow flex-col items-center gap-4">
         <LoyaltyRewardsCard
           nextIcon={nextIcon}
           rank={rank}
           balancePoints={pointsBalance}
           totalPoints={pointsTotal}
         />
-        <div className="relative -top-20">
-          <Tabs tabItems={profileNavItems} />
+        <div className="sticky top-0 z-50 w-full">
+          <Tabs
+            tabItems={profileNavItems}
+            style={{ backgroundColor: `${rank.secondaryColor}33` }}
+          />
         </div>
-        <div className="relative -top-20 w-[95%] max-w-[800px]">{tabs}</div>
+        <div className="w-[95%] max-w-[800px]">{tabs}</div>
       </main>
     </section>
   );
@@ -92,7 +95,7 @@ function Header({
   return (
     <header
       style={{ backgroundColor: primaryColor }}
-      className="z-0 flex h-[240px] shrink-0 items-start justify-between px-6 pt-4 md:px-12"
+      className="z-20 flex h-[240px] shrink-0 items-start justify-between px-6 pt-4 md:px-12"
     >
       <div className="flex grow flex-col">
         <p className="text-perx-white text-sm/tight">Hello</p>
@@ -142,7 +145,7 @@ function LoyaltyRewardsCard({
   totalPoints: number;
 }) {
   return (
-    <div className="bg-perx-white text-perx-black relative -top-28 flex aspect-[7/3] h-auto w-[90%] max-w-[800px] flex-col items-center justify-around rounded-xl px-4 py-4 shadow-md sm:px-8 md:w-4/5 md:px-12">
+    <div className="bg-perx-white text-perx-black z-50 flex aspect-[7/3] h-auto w-[90%] max-w-[800px] flex-col items-center justify-around rounded-xl px-4 py-4 shadow-md sm:px-8 md:w-4/5 md:px-12">
       <div className="relative -top-18 flex flex-col items-center gap-1">
         <img src={rank.icon} alt="Rank icon" className="size-32" />
         <h2

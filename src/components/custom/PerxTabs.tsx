@@ -4,7 +4,7 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { TabsList, TabsTrigger, Tabs } from '@/components/ui/tabs';
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
-import { JSX } from 'react';
+import { CSSProperties, JSX } from 'react';
 import { cn } from '@/lib/utils';
 
 interface TabItems {
@@ -13,13 +13,22 @@ interface TabItems {
   path: string;
 }
 
-export default function PerxTabs({ tabItems }: { tabItems: TabItems[] }) {
+export default function PerxTabs({
+  tabItems,
+  style,
+}: {
+  tabItems: TabItems[];
+  style?: CSSProperties;
+}) {
   const pathname = usePathname();
 
   return (
-    <Tabs defaultValue="tab-1" className="m-0">
+    <Tabs defaultValue="tab-1" className="m-0 w-full bg-white p-0">
       <ScrollArea>
-        <TabsList className="mb-3 h-auto w-full gap-8 rounded-none border-b bg-transparent px-0 py-2 shadow-none">
+        <TabsList
+          className="h-auto w-full gap-8 rounded-none border-b bg-transparent px-0 py-2 shadow-none"
+          style={style}
+        >
           {tabItems.map((item, index) => {
             const isActive = pathname === item.path;
 

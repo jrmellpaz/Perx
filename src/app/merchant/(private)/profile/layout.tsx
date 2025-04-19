@@ -46,12 +46,14 @@ export default async function MerchantProfileLayout({
   ];
 
   return (
-    <section className="flex flex-col overflow-hidden lg:px-20">
+    <section className="flex flex-col lg:px-20">
       {/* Static profile details at the top */}
       <ProfileInfo data={data} />
 
       {/* Tab Navigation */}
-      <Tabs tabItems={tabItems} />
+      <div className="sticky top-0 z-50 w-full">
+        <Tabs tabItems={tabItems} />
+      </div>
 
       {/* Render dynamic content from the parallel routes */}
       <div>{tabs}</div>

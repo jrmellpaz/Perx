@@ -8,8 +8,8 @@ export default async function Explore() {
 
   return (
     <>
+      <PerxLogoHeader />
       <section className="w-full px-2 py-4 sm:px-4">
-        <PerxLogoHeader />
         <div className="grid w-full grid-cols-1 items-center gap-2 sm:grid-cols-2 md:grid-cols-3 md:gap-3">
           <Suspense fallback={<ExplorePageSkeleton />}>
             {coupons.length > 0 ? (

@@ -64,10 +64,34 @@ export default function PerxHeader({
 }
 
 export function PerxLogoHeader() {
+  const [hidden, setHidden] = useState<boolean>(false);
+  const [lastScrollY, setLastScrollY] = useState<number>(0);
+
+  useEffect(() => {
+    const container = document.querySelector('.scrollable-container');
+
+    const handleScroll = () => {
+      const currentScrollY = container?.scrollTop || 0;
+
+      if (currentScrollY > lastScrollY && currentScrollY > 150) {
+        setHidden(true);
+      } else {
+        setHidden(false);
+      }
+
+      setLastScrollY(currentScrollY);
+    };
+
+    container?.addEventListener('scroll', handleScroll);
+
+    return () => container?.removeEventListener('scroll', handleScroll);
+  }, [lastScrollY]);
+
   return (
     <header
       className={cn(
-        'sticky top-0 z-50 flex h-12 w-full items-center justify-center shadow md:hidden'
+        'sticky top-0 z-50 flex h-12 w-full items-center justify-center bg-white shadow-md transition-all duration-500 md:hidden',
+        hidden ? '-translate-y-full' : 'translate-y-0'
       )}
     >
       <div className="h-8">

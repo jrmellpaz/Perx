@@ -1,24 +1,35 @@
 import { fetchCoupons } from '@/actions/coupon';
 import { PerxCoupon } from '@/components/custom/PerxCoupon';
+import { PerxLogoHeader } from '@/components/custom/PerxHeader';
 import { Suspense } from 'react';
 
 export default async function Explore() {
   const coupons = await fetchCoupons();
 
   return (
-    <section className="w-full px-2 py-4 sm:px-4">
-      <div className="grid w-full grid-cols-1 items-center gap-2 sm:grid-cols-2 md:grid-cols-3 md:gap-3">
-        <Suspense fallback={<ExplorePageSkeleton />}>
-          {coupons.length > 0 ? (
-            coupons.map((coupon) => (
-              <PerxCoupon key={coupon.id} coupon={coupon} variant="consumer" />
-            ))
-          ) : (
-            <p>No tickets available.</p>
-          )}
-        </Suspense>
-      </div>
-    </section>
+    <>
+      <section className="w-full px-2 py-4 sm:px-4">
+        <PerxLogoHeader />
+        <div className="grid w-full grid-cols-1 items-center gap-2 sm:grid-cols-2 md:grid-cols-3 md:gap-3">
+          <Suspense fallback={<ExplorePageSkeleton />}>
+            {coupons.length > 0 ? (
+              coupons.map((coupon) => (
+                <PerxCoupon
+                  key={coupon.id}
+                  coupon={coupon}
+                  variant="consumer"
+                />
+              ))
+            ) : (
+              <p>No tickets available.</p>
+            )}
+          </Suspense>
+        </div>
+        <div className="bg-perx-white mt-20 h-[2000px] w-full">
+          <p>Hello</p>
+        </div>
+      </section>
+    </>
   );
 }
 

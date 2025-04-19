@@ -23,7 +23,10 @@ export default async function ViewCoupon({
   const merchant: Merchant = await fetchMerchantProfile(merchantId);
 
   return (
-    <section className="h-max w-full overflow-y-auto bg-transparent">
+    <section
+      className="flex h-full w-full flex-col items-center gap-4 overflow-y-auto bg-transparent pb-14"
+      style={{ backgroundColor: getPrimaryAccentColor(coupon.accentColor) }}
+    >
       <PerxHeader
         title=""
         className="text-white"
@@ -32,11 +35,13 @@ export default async function ViewCoupon({
           backgroundColor: getPrimaryAccentColor(coupon.accentColor),
         }}
       />
-      <PerxTicket
-        couponData={coupon}
-        merchantData={merchant}
-        variant="merchant"
-      ></PerxTicket>
+      <div className="flex w-full grow items-center justify-center">
+        <PerxTicket
+          couponData={coupon}
+          merchantData={merchant}
+          variant="merchant"
+        ></PerxTicket>
+      </div>
     </section>
   );
 }

@@ -3,6 +3,8 @@
 import { cn } from '@/lib/utils';
 import { ArrowLeftIcon } from 'lucide-react';
 import { useRouter } from 'next/navigation';
+import { ConsumerLogo } from '../consumer/ConsumerLogo';
+import { useEffect, useState } from 'react';
 
 export default function PerxHeader({
   title,
@@ -16,18 +18,18 @@ export default function PerxHeader({
   buttonStyle?: React.CSSProperties;
 }) {
   const router = useRouter();
+
   const handleBack = () => {
     router.back();
   };
 
   return (
     <header
+      style={style}
       className={cn(
-        'sticky top-0 z-10 flex w-full items-center gap-1 p-2',
-        style ? '' : 'shadow-sm',
+        'sticky top-0 z-10 flex w-full items-center gap-1 p-2 shadow',
         className
       )}
-      style={style}
     >
       <button
         onClick={handleBack}
@@ -37,6 +39,20 @@ export default function PerxHeader({
         <ArrowLeftIcon className="size-5" />
       </button>
       <h1 className="font-mono text-lg font-medium">{title}</h1>
+    </header>
+  );
+}
+
+export function PerxLogoHeader() {
+  return (
+    <header
+      className={cn(
+        'sticky top-0 z-50 flex h-12 w-full items-center justify-center shadow md:hidden'
+      )}
+    >
+      <div className="h-8">
+        <ConsumerLogo logoClass="text-xl pb-[8px]" />
+      </div>
     </header>
   );
 }

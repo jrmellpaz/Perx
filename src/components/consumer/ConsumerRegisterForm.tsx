@@ -109,15 +109,22 @@ export default function ConsumerRegisterForm() {
     if (!isValidData) return; // Prevent next step if validation fails
 
     if (currentStep === 1) {
-      const referrerCode = getValues('referrerCode');
-      if (referrerCode && referrerExists === false) {
-        setSubmitError('Invalid referral code');
-        return; // Stop next step if referral code is invalid
-      }
-      else
+      const referrerCode = getValues('referrerCode')?.trim();
+      // Accept empty code
+      if (referrerCode === '') {
+        setReferrerExists(null);
         setSubmitError(null);
+      } else {
+        const exists = await checkReferrer(referrerCode || '');
+        setReferrerExists(exists);
+        if (!exists) {
+          return; // Stop from going to the next step
+        }
+        setSubmitError(null); // Clear error if code is valid
+      }
     }
-
+    setReferrerExists(null);
+    setSubmitError(null);
     if (currentStep < steps.length - 1) {
       setPreviousStep(currentStep);
       setCurrentStep((prevStep) => prevStep + 1);
@@ -155,10 +162,10 @@ export default function ConsumerRegisterForm() {
           {currentStep === 1 && (
             <Step2
               register={register}
-              watch={watch}
+              // watch={watch}
               delta={delta}
               referrerExists={referrerExists}
-              setReferrerExists={setReferrerExists}
+              // setReferrerExists={setReferrerExists}
             />
           )}
           {currentStep === 2 && (
@@ -305,46 +312,13 @@ function Step1({
 
 function Step2({
   register,
-  watch,
   delta,
   referrerExists,
-  setReferrerExists,
 }: {
   register: UseFormRegister<ConsumerFormInputs>;
-  watch: UseFormWatch<ConsumerFormInputs>;
   delta: number;
   referrerExists: boolean | null;
-  setReferrerExists: (exists: boolean | null) => void;
 }) {
-  // const [referrerCode, setReferrerCode] = useState('');
-  // const [debouncedReferrerCode] = useDebounce(referrerCode, 500); // Delay API call by 500ms
-
-  const referrerCode = watch('referrerCode');
-  const [debouncedCode, setDebouncedCode] = useState(referrerCode);
-
-  useEffect(() => {
-    const handler = setTimeout(() => {
-      setDebouncedCode(referrerCode);
-    }, 300); // Delay API call by 500ms
-
-    return () => clearTimeout(handler);
-  }, [referrerCode]);
-
-  useEffect(() => {
-    if (!debouncedCode?.trim()) {
-      setReferrerExists(null);
-      return;
-    }
-
-    const verifyReferrer = async () => {
-      setReferrerExists(null);
-      const exists = await checkReferrer(debouncedCode);
-      setReferrerExists(exists);
-    };
-
-    verifyReferrer();
-  }, [debouncedCode, setReferrerExists]);
-
   return (
     <motion.div
       initial={{ x: delta >= 0 ? '50%' : '-50%', opacity: 0 }}
@@ -366,6 +340,7 @@ function Step2({
     </motion.div>
   );
 }
+
 
 function Step3({
   register,

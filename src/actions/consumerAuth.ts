@@ -176,7 +176,7 @@ export const checkReferrer = async (referrerCode: string): Promise<boolean> => {
   const { data, error } = await supabase
     .from('consumers')
     .select('id')
-    .eq('referral_code', referrerCode)
+    .eq('referralCode', referrerCode)
     .single();
 
   if (error || !data) {

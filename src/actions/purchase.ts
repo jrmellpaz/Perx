@@ -77,8 +77,7 @@ export const handleCashPurchase = async (
         `Error updating consumer points balance after rebate: ${updateRebateError.message}`
       );
     }
-    console.log(consumer.purchased, 'purchased');
-    console.log(!consumer.purchased);
+
     if (!consumer.purchased) {
       const { error: updateError } = await supabase
         .from('consumers')
@@ -87,6 +86,10 @@ export const handleCashPurchase = async (
 
       if (updateError) {
         console.error('Error updating hasPurchased:', updateError.message);
+      }
+
+      if (consumer.referrerCode) {
+        rewardReferrer(consumer.referrerCode);
       }
     }
     return { success: true, message: 'Cash purchase successful!' };
@@ -151,9 +154,9 @@ export const handlePointsPurchase = async (
         .eq('id', consumerId);
 
       // Reward referrer
-      // if (consumer.referrerCode) {
-      //   rewardReferrer(consumer.referrerCode);
-      // }
+      if (consumer.referrerCode) {
+        rewardReferrer(consumer.referrerCode);
+      }
     }
 
     return { success: true, message: 'Coupon purchased successfully!' };

@@ -37,12 +37,12 @@ export type Database = {
         Row: {
           createdAt: string
           email: string
-          hasPurchased: boolean
           id: string
           interests: string[] | null
           name: string
           pointsBalance: number
           pointsTotal: number
+          purchased: boolean
           rank: number
           referralCode: string
           referrerCode: string | null
@@ -50,12 +50,12 @@ export type Database = {
         Insert: {
           createdAt?: string
           email: string
-          hasPurchased?: boolean
           id: string
           interests?: string[] | null
           name: string
           pointsBalance?: number
           pointsTotal?: number
+          purchased?: boolean
           rank?: number
           referralCode: string
           referrerCode?: string | null
@@ -63,12 +63,12 @@ export type Database = {
         Update: {
           createdAt?: string
           email?: string
-          hasPurchased?: boolean
           id?: string
           interests?: string[] | null
           name?: string
           pointsBalance?: number
           pointsTotal?: number
+          purchased?: boolean
           rank?: number
           referralCode?: string
           referrerCode?: string | null
@@ -286,13 +286,6 @@ export type Database = {
       deactivate_expired_coupons: {
         Args: Record<PropertyKey, never>
         Returns: undefined
-      }
-      get_top_coupon_types: {
-        Args: Record<PropertyKey, never>
-        Returns: {
-          type: string
-          count: number
-        }[]
       }
     }
     Enums: {

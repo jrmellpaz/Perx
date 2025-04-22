@@ -51,7 +51,52 @@ export const handleCashPurchase = async (
   consumerId: string,
   amount: number
 ): Promise<SuccessResponse> => {
-  return { success: true, message: 'Cash purchase successful!' };
+  try {
+    const supabase = await createClient();
+    const { data: consumer, error: fetchConsumerError } = await supabase
+      .from('consumers')
+      .select('*')
+      .eq('id', consumerId)
+      .single();
+
+    if (fetchConsumerError) {
+      throw new Error(`Error fetching consumer: ${fetchConsumerError.message}`);
+    }
+
+    const rebatePoints: number = Math.round(amount * 0.01 * 100) / 100;
+    const { error: updateRebateError } = await supabase
+      .from('consumers')
+      .update({
+        pointsBalance: consumer.pointsBalance + rebatePoints,
+        pointsTotal: consumer.pointsTotal + rebatePoints,
+      })
+      .eq('id', consumerId);
+
+    if (updateRebateError) {
+      throw new Error(
+        `Error updating consumer points balance after rebate: ${updateRebateError.message}`
+      );
+    }
+
+    if (!consumer.purchased) {
+      const { error: updateError } = await supabase
+        .from('consumers')
+        .update({ 'purchased': true })
+        .eq('id', consumerId);
+
+      if (updateError) {
+        console.error('Error updating hasPurchased:', updateError.message);
+      }
+
+      if (consumer.referrerCode) {
+        rewardReferrer(consumer.referrerCode);
+      }
+    }
+    return { success: true, message: 'Cash purchase successful!' };
+  } catch (error) {
+    console.error(`Error purchasing coupon: ${error}`);
+    return { success: false, message: (error as Error).message };
+  }
 };
 
 export const handlePointsPurchase = async (
@@ -102,10 +147,10 @@ export const handlePointsPurchase = async (
       );
     }
 
-    if (!consumer.hasPurchased) {
+    if (!consumer.purchased) {
       await supabase
         .from('consumers')
-        .update({ hasPurchased: true })
+        .update({ purchased: true })
         .eq('id', consumerId);
 
       // Reward referrer

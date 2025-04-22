@@ -77,12 +77,12 @@ export const handleCashPurchase = async (
         `Error updating consumer points balance after rebate: ${updateRebateError.message}`
       );
     }
-    console.log(consumer.hasPurchased, 'hasPurchased');
-    console.log(!consumer.hasPurchased);
-    if (!consumer.hasPurchased) {
+    console.log(consumer.purchased, 'purchased');
+    console.log(!consumer.purchased);
+    if (!consumer.purchased) {
       const { error: updateError } = await supabase
         .from('consumers')
-        .update({ 'hasPurchased': true })
+        .update({ 'purchased': true })
         .eq('id', consumerId);
 
       if (updateError) {
@@ -144,10 +144,10 @@ export const handlePointsPurchase = async (
       );
     }
 
-    if (!consumer.hasPurchased) {
+    if (!consumer.purchased) {
       await supabase
         .from('consumers')
-        .update({ hasPurchased: true })
+        .update({ purchased: true })
         .eq('id', consumerId);
 
       // Reward referrer

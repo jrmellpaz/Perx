@@ -61,15 +61,18 @@ export const purchaseCoupon = async (
       );
     }
 
-    const { error: updateCouponError } = await supabase
+    const newQuantity = coupon.quantity - 1;
+
+    const { error: updateError } = await supabase
       .from('coupons')
-      .update({ quantity: coupon.quantity - 1 })
+      .update({
+        quantity: newQuantity,
+        isDeactivated: newQuantity === 0, 
+      })
       .eq('id', coupon.id);
-    
-    if (updateCouponError) {
-      throw new Error(
-        `Error updating coupon: ${updateCouponError.message}`
-      );
+
+    if (updateError) {
+      throw new Error(`Error updating coupon: ${updateError.message}`);
     }
 
     return { success: true, message: 'Coupon purchased successfully!' };

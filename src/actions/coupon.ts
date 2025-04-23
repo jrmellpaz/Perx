@@ -118,7 +118,7 @@ export const fetchCoupons = async (consumerId: string = ''): Promise<Coupons> =>
   // Step 3: Filter and score based on interest
   const filteredAndRanked = (couponsData || [])
     .filter(coupon => {
-      const hasStock = coupon.quantity > 0;
+      const hasStock = coupon.quantity > 0 && !coupon.isDeactivated;
       const isWithinDateRange = !coupon.validFrom || !coupon.validTo
         ? true
         : new Date(coupon.validFrom) <= now && now <= new Date(coupon.validTo);

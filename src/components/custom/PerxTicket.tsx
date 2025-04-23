@@ -75,7 +75,7 @@ export async function PerxTicket({
                 <p className="text-perx-black text-xs">{merchantData.name}</p>
               </div>
             ) : (
-              <Link href="#">
+              <Link href={`/merchant-profile/${merchantData.id}/coupons`}>
                 <div className="flex items-center gap-1.5">
                   <img
                     src={merchantData.logo}

@@ -82,19 +82,55 @@ export const addCoupon = async (
   }
 };
 
-export const fetchCoupons = async (): Promise<Coupons> => {
+export const fetchCoupons = async (consumerId: string = ''): Promise<Coupons> => {
   const supabase = await createClient();
-  const { data, error } = await supabase
+
+  // Step 1: Try to fetch consumer interests if ID is provided
+  let interests: string[] = [];
+
+  if (consumerId) {
+    const { data: consumerData, error: consumerError } = await supabase
+      .from('consumers')
+      .select('interests')
+      .eq('id', consumerId)
+      .single();
+
+    if (consumerError) {
+      console.error('Fetch Consumer Error:', consumerError);
+    } else {
+      interests = consumerData?.interests || [];
+    }
+  }
+
+  // Step 2: Get all coupons
+  const { data: couponsData, error: couponsError } = await supabase
     .from('coupons')
     .select('*')
     .order('createdAt', { ascending: false });
 
-  if (error) {
-    console.error('Fetch Coupons Error:', error);
+  if (couponsError) {
+    console.error('Fetch Coupons Error:', couponsError);
     return [];
   }
 
-  return data as Coupons;
+  const now = new Date();
+
+  // Step 3: Filter and score based on interest
+  const filteredAndRanked = (couponsData || [])
+    .filter(coupon => {
+      const hasStock = coupon.quantity > 0;
+      const isWithinDateRange = !coupon.validFrom || !coupon.validTo
+        ? true
+        : new Date(coupon.validFrom) <= now && now <= new Date(coupon.validTo);
+      return hasStock && isWithinDateRange;
+    })
+    .map(coupon => ({
+      ...coupon,
+      priority: interests.includes(coupon.category) ? 1 : 0,
+    }))
+    .sort((a, b) => b.priority - a.priority); // Prioritize interest-matching coupons
+
+  return filteredAndRanked as Coupons;
 };
 
 export const fetchCoupon = async (couponId: string): Promise<Coupon> => {

@@ -43,7 +43,7 @@ export async function updateSession(request: NextRequest) {
     auth: ['/login', '/register', '/recover-password'],
     public: ['explore', 'search', '/change-password', '/'],
     private: [
-      '/my-coupon',
+      '/my-coupons',
       '/profile/missions',
       'profile/achievements',
       '/settings',

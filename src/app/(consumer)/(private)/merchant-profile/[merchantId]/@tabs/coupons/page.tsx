@@ -1,14 +1,12 @@
 import { fetchCouponsByMerchantId } from '@/actions/coupon';
 import { PerxCoupon } from '@/components/custom/PerxCoupon';
-import { createClient } from '@/utils/supabase/server';
-import { redirect } from 'next/navigation';
 
 export default async function CouponsTab({
-    params,
-} : {
-  params: Promise<{ merchantId: string }>
+  params,
+}: {
+  params: Promise<{ merchantId: string }>;
 }) {
-  const { merchantId } = await params
+  const { merchantId } = await params;
   const coupons = await fetchCouponsByMerchantId(merchantId);
   console.log('Merchant Profile Data:', coupons);
   return (

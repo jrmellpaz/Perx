@@ -6,10 +6,10 @@ import { redirect } from 'next/navigation';
 export default async function CouponsTab({
     params,
 } : {
-  params: { merchantId: string };
+  params: Promise<{ merchantId: string }>
 }) {
-
-  const coupons = await fetchCouponsByMerchantId(params.merchantId);
+  const { merchantId } = await params
+  const coupons = await fetchCouponsByMerchantId(merchantId);
   console.log('Merchant Profile Data:', coupons);
   return (
     <div className="mb-4 grid grid-cols-1 gap-0.5 sm:grid-cols-2 sm:px-8 md:grid-cols-3 md:gap-1">

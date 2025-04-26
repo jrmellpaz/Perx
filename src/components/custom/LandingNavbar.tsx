@@ -26,9 +26,8 @@ export default function LandingNavBar() {
       <nav>
         <div className="container flex items-center justify-between py-8">
           {/* Perx Section */}
-          <div className="flex items-center gap-2 font-sans text-2xl font-bold">
+          <div className="flex items-center gap-2 font-sans text-2xl font-bold text-white">
             <p>Perx</p>
-            {/* <p className="text-amber-400">Gym</p> */}
           </div>
           {/* Menu Section */}
           <div className="ml-60 hidden md:block">
@@ -38,7 +37,7 @@ export default function LandingNavBar() {
                   <li key={item.id}>
                     <a
                       href={item.link}
-                      className="hover: text-perx-crimson inline-block px-3 py-1 font-mono"
+                      className="hover: inline-block px-3 py-1 font-mono text-white"
                     >
                       {item.title}
                     </a>

@@ -6,7 +6,7 @@ import { Button } from '../ui/button';
 import { motion } from 'framer-motion';
 import { useState } from 'react';
 import PerxAlert from '../custom/PerxAlert';
-import { recoverPassword } from '@/actions/consumer/auth';
+import { recoverPassword } from '@/actions/consumerAuth';
 import { LoaderCircle } from 'lucide-react';
 
 export default function ConsumerPasswordRecovery() {
@@ -59,13 +59,13 @@ export default function ConsumerPasswordRecovery() {
               A recovery link will be sent to your email.
             </p>
           )}
-            {error && (
+          {error && (
             <PerxAlert
               variant="error"
               heading="User does not exist."
               message="Please check the email address and try again."
             />
-            )}
+          )}
           <PerxInput
             label="Email address"
             type="email"
@@ -79,21 +79,23 @@ export default function ConsumerPasswordRecovery() {
           <Link href="/login">
             <Button variant={'link'}>Return to login</Button>
           </Link>
-          <Button type="submit" disabled={isLoading}>
-            {isLoading ? (
-              <>
-                <LoaderCircle
-                  className="-ms-1 animate-spin"
-                  size={16}
-                  strokeWidth={2}
-                  aria-hidden="true"
-                />
-                Processing
-              </>
-            ) : (
-              'Proceed'
-            )}
-          </Button>
+          {!success && (
+            <Button type="submit" disabled={isLoading}>
+              {isLoading ? (
+                <>
+                  <LoaderCircle
+                    className="-ms-1 animate-spin"
+                    size={16}
+                    strokeWidth={2}
+                    aria-hidden="true"
+                  />
+                  Processing
+                </>
+              ) : (
+                'Proceed'
+              )}
+            </Button>
+          )}
         </div>
       </form>
     </section>

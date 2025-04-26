@@ -1,5 +1,5 @@
 import { JSX } from 'react';
-import { getConsumerProfile } from '@/actions/consumer/profile';
+import { fetchConsumerProfile } from '@/actions/consumerProfile';
 import { createClient } from '@/utils/supabase/server';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
@@ -8,12 +8,12 @@ import {
   ClipboardListIcon,
   PencilIcon,
   SettingsIcon,
-  SparklesIcon,
 } from 'lucide-react';
 import { Progress } from '@/components/ui/progress';
-import Tabs from '@/components/custom/Tabs';
+import Tabs from '@/components/custom/PerxTabs';
 import { fetchRank } from '@/actions/rank';
-import { Rank } from '@/lib/consumer/rankSchema';
+
+import type { Rank } from '@/lib/types';
 
 export default async function ConsumerProfileLayout({
   tabs,
@@ -27,17 +27,17 @@ export default async function ConsumerProfileLayout({
 
   const {
     name,
-    balancePoints,
-    totalPoints,
+    pointsBalance,
+    pointsTotal,
     rank: rankId,
-  } = await getConsumerProfile(user!.id);
+  } = await fetchConsumerProfile(user!.id);
 
   const rank = await fetchRank(rankId);
   let nextIcon: string | null = null;
 
   if (rankId.toString() !== '15') {
     console.log('hereeeeee', rankId);
-    const nextRank = await fetchRank((parseInt(rankId) + 1).toString());
+    const nextRank = await fetchRank(rankId + 1);
     nextIcon = nextRank.icon;
   }
 
@@ -61,22 +61,25 @@ export default async function ConsumerProfileLayout({
   ];
 
   return (
-    <section className="flex h-full flex-col overflow-x-hidden">
+    <section
+      className="flex h-full flex-col overflow-x-hidden"
+      style={{ backgroundColor: `${rank.secondaryColor}33` }}
+    >
       <Header name={name} primaryColor={rank.primaryColor} />
-      <main
-        style={{ backgroundColor: `${rank.secondaryColor}33` }}
-        className="flex grow flex-col items-center"
-      >
+      <main className="relative -top-20 flex grow flex-col items-center gap-4">
         <LoyaltyRewardsCard
           nextIcon={nextIcon}
           rank={rank}
-          balancePoints={balancePoints}
-          totalPoints={totalPoints}
+          balancePoints={pointsBalance}
+          totalPoints={pointsTotal}
         />
-        <div className="relative -top-20">
-          <Tabs tabItems={profileNavItems} />
+        <div className="sticky top-0 z-50 w-full">
+          <Tabs
+            tabItems={profileNavItems}
+            style={{ backgroundColor: `${rank.secondaryColor}33` }}
+          />
         </div>
-        <div className="relative -top-20 w-[95%] max-w-[800px]">{tabs}</div>
+        <div className="w-[95%] max-w-[800px]">{tabs}</div>
       </main>
     </section>
   );
@@ -92,7 +95,7 @@ function Header({
   return (
     <header
       style={{ backgroundColor: primaryColor }}
-      className="z-0 flex h-[240px] shrink-0 items-start justify-between px-6 pt-4 md:px-12"
+      className="z-20 flex h-[240px] shrink-0 items-start justify-between px-6 pt-4 md:px-12"
     >
       <div className="flex grow flex-col">
         <p className="text-perx-white text-sm/tight">Hello</p>
@@ -142,7 +145,7 @@ function LoyaltyRewardsCard({
   totalPoints: number;
 }) {
   return (
-    <div className="bg-perx-white text-perx-black relative -top-28 flex aspect-[7/3] h-auto w-[90%] max-w-[800px] flex-col items-center justify-around rounded-xl px-4 py-4 shadow-md sm:px-8 md:w-4/5 md:px-12">
+    <div className="bg-perx-white text-perx-black z-50 flex aspect-[7/3] h-auto w-[90%] max-w-[800px] flex-col items-center justify-around rounded-xl px-4 py-4 shadow-md sm:px-8 md:w-4/5 md:px-12">
       <div className="relative -top-18 flex flex-col items-center gap-1">
         <img src={rank.icon} alt="Rank icon" className="size-32" />
         <h2
@@ -153,7 +156,11 @@ function LoyaltyRewardsCard({
         </h2>
       </div>
       <div className="relative -top-10 flex w-full items-center gap-3">
-        <SparklesIcon style={{ color: '#FF7F50' }} size={36} />{' '}
+        <img
+          src="/reward-points.svg"
+          alt="Reward points icon"
+          className="aspect-sqaure size-16"
+        />
         <h1 className="font-mono text-5xl font-medium">
           {balancePoints}
           <span className="text-muted-foreground font-sans text-base font-normal tracking-tighter">

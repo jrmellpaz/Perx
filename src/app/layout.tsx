@@ -1,12 +1,12 @@
 import type { Metadata } from 'next';
-import { Inter, Space_Grotesk } from 'next/font/google';
+import { Inter, Space_Grotesk, Manrope } from 'next/font/google';
 import './globals.css';
 import Head from 'next/head';
 import NextTopLoader from 'nextjs-toploader';
 import { Toaster } from '@/components/ui/toaster';
 
-const inter = Inter({
-  variable: '--font-inter',
+const manrope = Manrope({
+  variable: '--font-manrope',
   subsets: ['latin'],
 });
 
@@ -31,7 +31,7 @@ export default function RootLayout({
         <meta name="apple-mobile-web-app-title" content="Perx" />
       </Head>
       <body
-        className={`${inter.variable} ${spaceGrotesk.variable} antialiased`}
+        className={`${manrope.variable} ${spaceGrotesk.variable} antialiased`}
       >
         <NextTopLoader color="#A50000" showSpinner={false} height={3} />
         {children}

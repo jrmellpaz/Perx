@@ -1,7 +1,6 @@
 import { ReactNode } from 'react';
-import { getMerchantProfile } from '@/actions/merchant/profile';
-import Tabs from '@/components/custom/Tabs';
-import { MerchantProfile } from '@/lib/merchant/profileSchema';
+import { fetchMerchantProfile } from '@/actions/merchantProfile';
+import Tabs from '@/components/custom/PerxTabs';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import {
@@ -15,6 +14,8 @@ import {
 import { createClient } from '@/utils/supabase/server';
 import { PerxReadMore } from '@/components/custom/PerxReadMore';
 
+import type { Merchant } from '@/lib/types';
+
 export default async function MerchantProfileLayout({
   tabs,
 }: {
@@ -24,7 +25,7 @@ export default async function MerchantProfileLayout({
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  const data = await getMerchantProfile(user!.id); // Fetch profile data
+  const data = await fetchMerchantProfile(user!.id); // Fetch profile data
 
   const tabItems = [
     {
@@ -45,12 +46,14 @@ export default async function MerchantProfileLayout({
   ];
 
   return (
-    <section className="flex flex-col overflow-x-hidden lg:px-20">
+    <section className="flex flex-col lg:px-20">
       {/* Static profile details at the top */}
       <ProfileInfo data={data} />
 
       {/* Tab Navigation */}
-      <Tabs tabItems={tabItems} />
+      <div className="sticky top-0 z-50 w-full">
+        <Tabs tabItems={tabItems} />
+      </div>
 
       {/* Render dynamic content from the parallel routes */}
       <div>{tabs}</div>
@@ -58,7 +61,7 @@ export default async function MerchantProfileLayout({
   );
 }
 
-function ProfileInfo({ data }: { data: MerchantProfile }) {
+function ProfileInfo({ data }: { data: Merchant }) {
   return (
     <section className="flex flex-col gap-4 pt-4 lg:flex-row">
       <div className="flex basis-1/4 items-center justify-center">
@@ -81,7 +84,7 @@ function ProfileInfo({ data }: { data: MerchantProfile }) {
           <ButtonGroup />
         </div>
         <div className="flex flex-col items-center gap-1 lg:items-start">
-          <PerxReadMore id="merchant-bio" text={data.bio} />
+          <PerxReadMore id="merchant-bio" text={data.bio ?? ''} />
           <div className="flex items-center gap-1.5">
             <MapPinIcon size={15} />
             <p className="text-sm select-all">{data.address}</p>

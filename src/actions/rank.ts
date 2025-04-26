@@ -1,16 +1,15 @@
 'use server';
 
-import { Rank } from '@/lib/consumer/rankSchema';
 import { createClient } from '@/utils/supabase/server';
 
-export async function fetchRanks() {
-  type Ranks = Pick<Rank, 'id' | 'rank' | 'icon'>[];
+import type { Rank, Ranks } from '@/lib/types';
 
+export const fetchRanks = async (): Promise<Ranks> => {
   try {
     const supabase = await createClient();
     const { data, error } = await supabase
       .from('ranks')
-      .select('id, rank, icon')
+      .select('*')
       .order('id', { ascending: true });
 
     if (error) throw new Error(error.message);
@@ -20,15 +19,15 @@ export async function fetchRanks() {
     console.error('Fetch Consumer Ranks Error:', error);
     return [];
   }
-}
+};
 
-export async function fetchRank(rankId: string): Promise<Rank> {
+export const fetchRank = async (rankId: number): Promise<Rank> => {
   const supabase = await createClient();
 
   const { data, error } = await supabase
     .from('ranks')
-    .select('rank, max_points, icon, primary_color, secondary_color')
-    .eq('id', rankId)
+    .select('*')
+    .eq('id', Number(rankId))
     .single();
 
   if (error) {
@@ -41,9 +40,11 @@ export async function fetchRank(rankId: string): Promise<Rank> {
 
   return {
     rank: data.rank,
-    maxPoints: data.max_points,
+    maxPoints: data.maxPoints,
     icon: data.icon,
-    primaryColor: data.primary_color,
-    secondaryColor: data.secondary_color,
+    primaryColor: data.primaryColor,
+    secondaryColor: data.secondaryColor,
+    createdAt: data.createdAt,
+    id: data.id,
   } as Rank;
-}
+};

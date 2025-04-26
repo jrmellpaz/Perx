@@ -1,18 +1,19 @@
-import { getConsumerProfile } from '@/actions/consumer/profile';
 import PerxHeader from '@/components/custom/PerxHeader';
 import ConsumerEditProfile from '@/components/consumer/ConsumerEditProfile';
 import { createClient } from '@/utils/supabase/server';
+
+import { fetchConsumerProfile } from '@/actions/consumerProfile';
 
 export default async function ConsumerEditProfilePage() {
   const supabase = await createClient();
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  const profile = await getConsumerProfile(user!.id);
+  const profile = await fetchConsumerProfile(user!.id);
 
   return (
-    <section className="flex h-full w-full flex-col">
-      <PerxHeader link="/profile" title="Edit profile" />
+    <section className="flex w-full flex-col items-center gap-4 pb-4">
+      <PerxHeader title="Edit profile" className="bg-white shadow-md" />
       <ConsumerEditProfile profile={profile} />
     </section>
   );

@@ -1,27 +1,64 @@
-import { getCoupons } from '@/actions/consumer/coupon';
+import { fetchCoupons } from '@/actions/coupon';
 import { PerxCoupon } from '@/components/custom/PerxCoupon';
-import PerxHeader from '@/components/custom/PerxHeader';
+import { PerxLogoHeader } from '@/components/custom/PerxHeader';
+import { Suspense } from 'react';
+import { createClient } from '@/utils/supabase/server';
 
 export default async function Explore() {
-  const coupons = await getCoupons();
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  const coupons = await fetchCoupons(user?.id);
 
   return (
-    <div className="w-full p-6">
-      <div className="grid grid-cols-1 items-center gap-0.5 sm:grid-cols-2 md:grid-cols-3 md:gap-1">
-        {coupons.length > 0 ? (
-          coupons.map((coupon) => (
-            <PerxCoupon
-              key={coupon.id}
-              coupon={coupon}
-              merchantId={coupon.merchant.id}
-              variant="consumer"
-            />
-          ))
-        ) : (
-          // 'Hello'
-          <p>No tickets available.</p>
-        )}
+    <>
+      <PerxLogoHeader />
+      <section className="w-full px-2 py-4 sm:px-4">
+        <div className="grid w-full grid-cols-1 items-center gap-2 sm:grid-cols-2 md:grid-cols-3 md:gap-3">
+          <Suspense fallback={<ExplorePageSkeleton />}>
+            {coupons.length > 0 ? (
+              coupons.map((coupon) => (
+                <PerxCoupon
+                  key={coupon.id}
+                  coupon={coupon}
+                  variant="consumer"
+                />
+              ))
+            ) : (
+              <p>No tickets available.</p>
+            )}
+          </Suspense>
+        </div>
+      </section>
+    </>
+  );
+}
+
+function ExplorePageSkeleton() {
+  return (
+    <>
+      <div className="flex animate-pulse flex-col gap-3 overflow-hidden rounded-md border">
+        <div className="bg-muted aspect-video w-full animate-pulse"></div>
+        <div className="flex flex-col gap-1.5 px-2 py-2">
+          <div className="bg-muted h-6 w-3/4 rounded-md"></div>
+          <div className="bg-muted h-4 w-1/2 rounded-md"></div>
+        </div>
       </div>
-    </div>
+      <div className="flex animate-pulse flex-col gap-3 overflow-hidden rounded-md border">
+        <div className="bg-muted aspect-video w-full animate-pulse"></div>
+        <div className="flex flex-col gap-1.5 px-2 py-2">
+          <div className="bg-muted h-6 w-3/4 rounded-md"></div>
+          <div className="bg-muted h-4 w-1/2 rounded-md"></div>
+        </div>
+      </div>
+      <div className="flex animate-pulse flex-col gap-3 overflow-hidden rounded-md border">
+        <div className="bg-muted aspect-video w-full animate-pulse"></div>
+        <div className="flex flex-col gap-1.5 px-2 py-2">
+          <div className="bg-muted h-6 w-3/4 rounded-md"></div>
+          <div className="bg-muted h-4 w-1/2 rounded-md"></div>
+        </div>
+      </div>
+    </>
   );
 }

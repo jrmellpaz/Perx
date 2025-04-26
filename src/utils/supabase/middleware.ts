@@ -1,12 +1,14 @@
 import { createServerClient } from '@supabase/ssr';
 import { NextResponse, type NextRequest } from 'next/server';
 
+import type { Database } from '@/lib/database.types';
+
 export async function updateSession(request: NextRequest) {
   let supabaseResponse = NextResponse.next({
     request,
   });
 
-  const supabase = createServerClient(
+  const supabase = createServerClient<Database>(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
     {
@@ -38,9 +40,14 @@ export async function updateSession(request: NextRequest) {
   } = await supabase.auth.getUser();
 
   const consumerPages = {
-    auth: ['/login', '/register', '/change-password'],
-    public: ['home', '/recover-password'],
-    private: ['/explore', '/my-coupon', '/profile', '/search', '/settings'],
+    auth: ['/login', '/register', '/recover-password'],
+    public: ['explore', 'search', '/change-password', '/'],
+    private: [
+      '/my-coupons',
+      '/profile/missions',
+      'profile/achievements',
+      '/settings',
+    ],
   };
 
   const merchantPages = {
@@ -51,7 +58,9 @@ export async function updateSession(request: NextRequest) {
     ],
     private: [
       '/merchant/dashboard',
-      '/merchant/profile',
+      '/merchant/profile/coupons',
+      '/merchant/profile/collections',
+      '/merchant/profile/archive',
       '/merchant/settings',
       '/merchant/scan-qr',
       '/merchant/add-coupon',
@@ -75,23 +84,17 @@ export async function updateSession(request: NextRequest) {
       if (request.nextUrl.pathname.startsWith('/merchant')) {
         url.pathname = '/merchant/login';
       } else {
-        url.pathname = '/home';
+        url.pathname = '/login';
       }
+      return NextResponse.redirect(url);
+    } else if (request.nextUrl.pathname === '/merchant') {
+      const url = request.nextUrl.clone();
+      url.pathname = '/merchant/login';
       return NextResponse.redirect(url);
     }
   } else {
     // Fetch user role from database
-    const { data, error } = await supabase
-      .from('users')
-      .select('role')
-      .eq('id', user.id)
-      .single();
-
-    if (error) {
-      throw new Error(error.message);
-    }
-
-    const userRole: UserRole = data.role;
+    const userRole: UserRole = user.user_metadata.role as UserRole;
     console.log('role:', userRole);
 
     // Redirect authenticated users to dashboard / home page
@@ -102,7 +105,12 @@ export async function updateSession(request: NextRequest) {
       } else if (userRole === 'consumer') {
         url.pathname = '/explore';
       } else {
-        throw new Error('MIDDLEWARE: Invalid user role');
+        if (request.nextUrl.pathname.startsWith('/merchant')) {
+          url.pathname = '/merchant/login';
+        } else {
+          url.pathname = '/explore';
+        }
+        // throw new Error('MIDDLEWARE: Invalid user role');
       }
       return NextResponse.redirect(url);
     }
@@ -113,7 +121,7 @@ export async function updateSession(request: NextRequest) {
       merchantPages.private.includes(request.nextUrl.pathname)
     ) {
       const url = request.nextUrl.clone();
-      url.pathname = '/home';
+      url.pathname = '/explore';
       return NextResponse.redirect(url);
     }
 
@@ -124,6 +132,26 @@ export async function updateSession(request: NextRequest) {
     ) {
       const url = request.nextUrl.clone();
       url.pathname = '/merchant/login';
+      return NextResponse.redirect(url);
+    }
+
+    // Redirect merchant/profile to merchant/profile/coupons
+    if (request.nextUrl.pathname === '/merchant/profile') {
+      const url = request.nextUrl.clone();
+      url.pathname = '/merchant/profile/coupons';
+      return NextResponse.redirect(url);
+    }
+
+    // Redirect consumer/profile to profile/missions
+    if (request.nextUrl.pathname === '/profile') {
+      const url = request.nextUrl.clone();
+      url.pathname = '/profile/missions';
+      return NextResponse.redirect(url);
+    }
+
+    if (request.nextUrl.pathname === '/merchant') {
+      const url = request.nextUrl.clone();
+      url.pathname = '/merchant/explore';
       return NextResponse.redirect(url);
     }
   }

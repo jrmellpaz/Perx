@@ -1,4 +1,4 @@
-import { fetchCouponCategories } from '@/actions/merchant/coupon';
+import { fetchCouponCategories } from '@/actions/coupon';
 import { fetchRanks } from '@/actions/rank';
 import AddCouponForm from '@/components/merchant/AddCouponForm';
 

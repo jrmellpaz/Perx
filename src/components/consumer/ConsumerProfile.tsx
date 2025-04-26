@@ -1,6 +1,6 @@
 'use client';
 
-import { CopyIcon, SparklesIcon } from 'lucide-react';
+import { CopyIcon } from 'lucide-react';
 import React from 'react';
 import { toast } from 'sonner';
 
@@ -29,7 +29,13 @@ export function ReferralCard({
             style={{ backgroundColor: `${secondary}33` }}
             className="flex items-center gap-1 rounded-full px-3 py-1"
           >
-            <SparklesIcon style={{ color: primary }} size={12} />
+            <img
+              src="/reward-points.svg"
+              alt="Reward Points"
+              width={14}
+              height={14}
+              className="pb-0.25"
+            />
             <p
               style={{ color: primary }}
               className="font-mono text-sm font-medium"
@@ -38,21 +44,23 @@ export function ReferralCard({
             </p>
           </div>
         </div>
-        <p
-          style={{ color: 'rgba(0, 0, 0, 0.8)' }} // Inline style for text color
-          className="text-sm"
-        >
+        <p style={{ color: 'rgba(0, 0, 0, 0.8)' }} className="text-sm">
           Share your referral code with friends! Earn 50 points for every friend
           who signs up using your code and makes their first coupon purchase.
         </p>
         <div
           style={{
-            borderTop: '1px solid rgba(0, 0, 0, 0.1)', // Inline style for border
+            borderTop: '1px solid rgba(0, 0, 0, 0.1)',
             paddingTop: '8px',
           }}
           className="mt-2 flex items-center justify-between gap-4 px-2"
         >
-          <h3 style={{ color: primary }}>{referral_code}</h3>
+          <h3
+            style={{ color: primary }}
+            className="text-xs sm:text-sm md:text-base"
+          >
+            {referral_code}
+          </h3>
           <button
             onClick={handleCopy}
             onMouseEnter={() => setIsHovered(true)}

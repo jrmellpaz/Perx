@@ -10,25 +10,22 @@ import {
   useFormContext,
   FormProvider,
 } from 'react-hook-form';
-import {
-  EditProfileInputs,
-  editProfileSchema,
-  ConsumerProfile,
-} from '@/lib/consumer/profileSchema';
 import { zodResolver } from '@hookform/resolvers/zod';
-import PerxTextarea from '../custom/PerxTextarea';
 import PerxCheckbox from '../custom/PerxCheckbox';
 import { motion } from 'framer-motion';
 import { LoaderCircle } from 'lucide-react';
 import { useState, useEffect } from 'react';
-import { updateConsumerProfile } from '@/actions/consumer/profile';
+import { updateConsumerProfile } from '@/actions/consumerProfile';
 import { redirect } from 'next/navigation';
-import { fetchTopCouponTypes } from '@/actions/consumer/auth';
+import { couponCategories } from '@/lib/couponSchema';
+
+import type { Consumer } from '@/lib/types';
+import { EditProfileInputs, editProfileSchema } from '@/lib/consumerSchema';
 
 export default function ConsumerEditProfile({
   profile,
 }: {
-  profile: ConsumerProfile;
+  profile: Consumer;
 }) {
   const { name, interests } = profile;
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
@@ -37,11 +34,15 @@ export default function ConsumerEditProfile({
     resolver: zodResolver(editProfileSchema),
     defaultValues: {
       name: name,
-      interests: interests,
+      interests: interests ?? [],
     },
   });
 
-  const { handleSubmit, register, formState: { errors } } = formMethods;
+  const {
+    handleSubmit,
+    register,
+    formState: { errors },
+  } = formMethods;
 
   const processForm: SubmitHandler<EditProfileInputs> = async (data) => {
     setIsSubmitting(true);
@@ -57,14 +58,16 @@ export default function ConsumerEditProfile({
 
   return (
     <FormProvider {...formMethods}>
-      <main className="flex w-full flex-col items-center">
-        <form
-          onSubmit={handleSubmit(processForm)}
-          className="my-2 flex w-full max-w-[800px] flex-col gap-8"
-        >
-          <EditDetails register={register} errors={errors} isSubmitting={isSubmitting} />
-        </form>
-      </main>
+      <form
+        onSubmit={handleSubmit(processForm)}
+        className="my-2 flex w-9/10 max-w-[800px] flex-col gap-8"
+      >
+        <EditDetails
+          register={register}
+          errors={errors}
+          isSubmitting={isSubmitting}
+        />
+      </form>
     </FormProvider>
   );
 }
@@ -83,12 +86,8 @@ function EditDetails({
   const selectedInterests = watch('interests', []) || [];
 
   useEffect(() => {
-    const loadCouponTypes = async () => {
-      const topTypes = await fetchTopCouponTypes(); // Fetch available interests
-      setInterests(topTypes);
-    };
-    loadCouponTypes();
-  }, []);
+    setInterests([...couponCategories]);
+  }, [setValue]);
 
   const handleCheckboxChange = (interest: string, checked: boolean) => {
     if (checked) {
@@ -120,9 +119,8 @@ function EditDetails({
         {errors.name?.message && <ErrorMessage message={errors.name.message} />}
       </div>
 
-      {/* Interests Section */}
-      <div>
-        <label className="font-semibold">Interests</label>
+      <div className="flex flex-col gap-2">
+        <label className="font-mono font-semibold">Interests</label>
         <div className="flex flex-wrap gap-2">
           {interests.map((interest) => (
             <label key={interest} className="flex items-center gap-2">
@@ -165,7 +163,6 @@ function EditDetails({
     </motion.div>
   );
 }
-
 
 function ErrorMessage({ message }: { message: string }) {
   return <p className="mt-1 font-mono text-sm text-red-400">{message}</p>;

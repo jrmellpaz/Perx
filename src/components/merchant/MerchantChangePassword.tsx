@@ -10,12 +10,11 @@ import { FieldErrors, useForm, UseFormRegister } from 'react-hook-form';
 import {
   ChangePasswordInputs,
   changePasswordSchema,
-} from '@/lib/merchant/merchantSchema';
+} from '@/lib/merchantSchema';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { changePassword } from '@/actions/merchant/auth';
+// import { changePassword } from '@/actions/merchantAuth';
 import { LoaderCircle } from 'lucide-react';
 import PerxAlert from '../custom/PerxAlert';
-import { set } from 'zod';
 
 export default function MerchantChangePassword() {
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -41,7 +40,7 @@ export default function MerchantChangePassword() {
         throw new Error('Passwords do not match');
       }
 
-      await changePassword(confirmPassword);
+      // await changePassword(confirmPassword);
       reset();
       setSuccess(true);
     } catch (error: unknown) {

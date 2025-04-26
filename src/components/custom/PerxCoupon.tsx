@@ -1,25 +1,23 @@
 import { fetchRank } from '@/actions/rank';
-import { ConsumerCoupon } from '@/lib/consumer/couponSchema';
-import { MerchantCoupon } from '@/lib/merchant/couponSchema';
-import { Clock, Sparkles } from 'lucide-react';
+import { Clock } from 'lucide-react';
 import Link from 'next/link';
+
+import type { Coupon } from '@/lib/types';
 
 export async function PerxCoupon({
   coupon,
-  merchantId,
   variant,
 }: {
-  coupon: MerchantCoupon | ConsumerCoupon;
-  merchantId: string;
+  coupon: Coupon;
   variant: 'merchant' | 'consumer';
 }) {
-  const { icon: rankIcon } = await fetchRank(coupon.consumerAvailability);
+  const { icon: rankIcon } = await fetchRank(coupon.rankAvailability);
 
   return (
     <Link
       href={{
         pathname: variant === 'merchant' ? '/merchant/view' : '/view',
-        query: { coupon: JSON.stringify(coupon), merchantId },
+        query: { coupon: coupon.id, merchant: coupon.merchantId },
       }}
       key={coupon.id}
     >
@@ -28,7 +26,7 @@ export async function PerxCoupon({
       >
         <div className="coupon-image aspect-video h-auto w-full">
           <img
-            src={coupon.image}
+            src={coupon.image ?? ''}
             alt={`${coupon.title} coupon`}
             className="aspect-video h-auto w-full rounded-sm object-cover"
           />
@@ -43,7 +41,13 @@ export async function PerxCoupon({
               <Clock size={20} strokeWidth={1.5} />
             )}
             {coupon.allowPointsPurchase && (
-              <Sparkles size={20} strokeWidth={1.5} />
+              <img
+                src="/reward-points.svg"
+                alt="Reward Points"
+                width={20}
+                height={20}
+                className="pb-0.25"
+              />
             )}
             <img src={rankIcon} alt={'Rank icon'} className="size-6" />
           </div>

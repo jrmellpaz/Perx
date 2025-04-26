@@ -7,15 +7,16 @@ import { Checkbox } from '../ui/checkbox';
 import { Label } from '../ui/label';
 import { motion } from 'framer-motion';
 import { FieldErrors, useForm, UseFormRegister } from 'react-hook-form';
-import {
-  ChangePasswordInputs,
-  changePasswordSchema,
-} from '@/lib/merchant/merchantSchema';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { changePassword } from '@/actions/consumer/auth';
+import { changePassword } from '@/actions/consumerAuth';
 import { LoaderCircle } from 'lucide-react';
 import PerxAlert from '../custom/PerxAlert';
-import { set } from 'zod';
+import { redirect } from 'next/navigation';
+
+import {
+  type ChangePasswordInputs,
+  changePasswordSchema,
+} from '@/lib/merchantSchema';
 
 export default function ConsumerChangePassword() {
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -34,6 +35,7 @@ export default function ConsumerChangePassword() {
   const onSubmit = async (data: ChangePasswordInputs) => {
     setIsLoading(true);
     setIsError(false);
+    setSuccess(false);
     try {
       const { password, confirmPassword } = data;
 
@@ -42,13 +44,27 @@ export default function ConsumerChangePassword() {
       }
 
       await changePassword(confirmPassword);
+      console.log('done');
       reset();
-      setSuccess(true);
+      !isError && setSuccess(true);
+      redirect('/login');
     } catch (error: unknown) {
-      setIsError(true);
-      throw new Error(error as string);
+      if (
+        error instanceof Error &&
+        !error.message.includes(
+          'supabase.auth.getSession() or from some supabase.auth.onAuthStateChange()'
+        ) &&
+        !error.message.includes('NEXT_REDIRECT')
+      ) {
+        setIsError(true);
+        console.error('Error changing password:', error.message);
+      }
     } finally {
       setIsLoading(false);
+
+      if (!isError) {
+        redirect('/login');
+      }
     }
   };
 
@@ -60,38 +76,34 @@ export default function ConsumerChangePassword() {
         className="flex h-full flex-col justify-between"
       >
         <div className="flex flex-col gap-6">
-          {isError && (
-            <PerxAlert
-              variant="error"
-              heading="An error occurred"
-              message="New password should be different from the old password."
-            />
-          )}
-          {success && (
+          {isError && <PerxAlert variant="error" heading="An error occurred" />}
+          {success && !isError && (
             <PerxAlert
               variant="success"
+              message="You're all set. Redirecting you to login."
               heading="Successfully changed password 🔐"
-              message="You're all set. Go to dashboard to continue."
             />
           )}
           <InputGroup register={register} errors={errors} />
         </div>
         <div className="flex w-full justify-end">
-          <Button type="submit" disabled={isLoading}>
-            {isLoading ? (
-              <>
-                <LoaderCircle
-                  className="-ms-1 animate-spin"
-                  size={16}
-                  strokeWidth={2}
-                  aria-hidden="true"
-                />
-                Change password
-              </>
-            ) : (
-              'Change password'
-            )}
-          </Button>
+          {!success && (
+            <Button type="submit" disabled={isLoading}>
+              {isLoading ? (
+                <>
+                  <LoaderCircle
+                    className="-ms-1 animate-spin"
+                    size={16}
+                    strokeWidth={2}
+                    aria-hidden="true"
+                  />
+                  Change password
+                </>
+              ) : (
+                'Change password'
+              )}
+            </Button>
+          )}
         </div>
       </form>
     </section>

@@ -1,16 +1,7 @@
 'use client';
 
-import { logoutConsumer } from '@/actions/consumer/auth';
 import { ConsumerLogo } from '@/components/consumer/ConsumerLogo';
-import { Button } from '@/components/ui/button';
-import {
-  CircleUserRound,
-  // Inbox,
-  LoaderCircle,
-  Ticket,
-  Compass,
-  Search,
-} from 'lucide-react';
+import { CircleUserRound, Ticket, Compass, Search } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import React, { JSX, useState } from 'react';
@@ -19,33 +10,33 @@ import { motion } from 'motion/react';
 interface NavItems {
   icon: JSX.Element;
   name: string;
+  path: string;
   link: string;
 }
 
 const navItems: NavItems[] = [
   {
-    icon: <Compass />,
+    icon: <Compass strokeWidth={1.5} />,
     name: 'Explore',
+    path: '/explore',
     link: '/explore',
   },
   {
-    icon: <Search />,
+    icon: <Search strokeWidth={1.5} />,
     name: 'Search',
+    path: '/search',
     link: '/search',
   },
   {
-    icon: <Ticket />,
+    icon: <Ticket strokeWidth={1.5} />,
     name: 'My Coupons',
-    link: '/my-coupon',
+    path: '/my-coupons',
+    link: '/my-coupons',
   },
-  // {
-  //   icon: <Inbox />,
-  //   name: 'Inbox',
-  //   link: '/inbox',
-  // },
   {
-    icon: <CircleUserRound />,
+    icon: <CircleUserRound strokeWidth={1.5} />,
     name: 'Profile',
+    path: '/profile',
     link: '/profile/missions',
   },
 ];
@@ -55,8 +46,6 @@ export default function ConsumerTemplate({
 }: {
   children: React.ReactNode;
 }) {
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-
   return (
     <main className="bg-perx-white flex h-dvh w-dvw flex-col-reverse overflow-hidden md:flex-row md:gap-2">
       <nav className="bg-perx-white h-18 w-dvw shrink-0 shadow-md md:h-dvh md:w-64 md:shadow-none">
@@ -67,13 +56,12 @@ export default function ConsumerTemplate({
             </div>
             <VerticalNav />
           </div>
-          <LogoutButton isLoading={isLoading} setIsLoading={setIsLoading} />
         </div>
         <div className="bg-perx-crimson/10 h-full w-full md:hidden">
           <HorizontalNav />
         </div>
       </nav>
-      <main className="grow overflow-x-hidden overflow-y-auto bg-white shadow-xs md:rounded-l-xl">
+      <main className="scrollable-container w-full grow overflow-x-hidden overflow-y-auto bg-white shadow-xs md:rounded-l-xl">
         {children}
       </main>
     </main>
@@ -86,7 +74,7 @@ function VerticalNav() {
   return (
     <ul className="flex h-full w-full flex-col">
       {navItems.map((item, index) => {
-        const isActive: boolean = pathname === item.link;
+        const isActive: boolean = pathname.startsWith(item.path);
 
         return (
           <Link
@@ -115,7 +103,7 @@ function HorizontalNav() {
   return (
     <ul className="flex h-full w-full items-center justify-around">
       {navItems.map((item, index) => {
-        const isActive: boolean = pathname === item.link;
+        const isActive: boolean = pathname.startsWith(item.path);
 
         return (
           <Link
@@ -145,44 +133,5 @@ function HorizontalNav() {
         );
       })}
     </ul>
-  );
-}
-
-function LogoutButton({
-  isLoading,
-  setIsLoading,
-}: {
-  isLoading: boolean;
-  setIsLoading: (value: boolean) => void;
-}) {
-  const logout = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    setIsLoading(true);
-    await logoutConsumer();
-    setIsLoading(false);
-  };
-
-  return (
-    <form onSubmit={logout} className="mb-8 px-4">
-      <Button
-        type="submit"
-        className="w-full transition-all"
-        disabled={isLoading}
-      >
-        {isLoading ? (
-          <>
-            <LoaderCircle
-              className="-ms-1 animate-spin"
-              size={16}
-              strokeWidth={2}
-              aria-hidden="true"
-            />
-            Logging out
-          </>
-        ) : (
-          'Log out'
-        )}
-      </Button>
-    </form>
   );
 }

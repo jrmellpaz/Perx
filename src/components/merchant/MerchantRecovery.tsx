@@ -6,7 +6,7 @@ import { Button } from '../ui/button';
 import { motion } from 'framer-motion';
 import { useState } from 'react';
 import PerxAlert from '../custom/PerxAlert';
-import { recoverPassword } from '@/actions/merchant/auth';
+import { recoverPassword } from '@/actions/merchantAuth';
 import { LoaderCircle } from 'lucide-react';
 
 export default function MerchantPasswordRecovery() {

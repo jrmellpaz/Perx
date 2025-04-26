@@ -8,42 +8,38 @@ import {
   useForm,
   UseFormRegister,
 } from 'react-hook-form';
-import {
-  EditProfileInputs,
-  editProfileSchema,
-  MerchantProfile,
-} from '@/lib/merchant/profileSchema';
 import { zodResolver } from '@hookform/resolvers/zod';
 import PerxTextarea from '../custom/PerxTextarea';
 import { motion } from 'framer-motion';
 import { LoaderCircle } from 'lucide-react';
-import { useState } from 'react';
-import { updateMerchantProfile } from '@/actions/merchant/profile';
+import { ChangeEvent, useRef, useState } from 'react';
+import { updateMerchantProfile } from '@/actions/merchantProfile';
 import { redirect } from 'next/navigation';
+
+import type { Merchant } from '@/lib/types';
+import {
+  type EditProfileInputs,
+  editProfileSchema,
+} from '@/lib/merchantSchema';
 
 export default function MerchantEditProfile({
   profile,
 }: {
-  profile: MerchantProfile;
+  profile: Merchant;
 }) {
-  const { name, email, bio, address, logo } = profile;
+  const { name, bio, address, logo } = profile;
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
   const {
     register,
     handleSubmit,
-    watch,
-    reset,
-    trigger,
-    getValues,
     formState: { errors },
   } = useForm<EditProfileInputs>({
     resolver: zodResolver(editProfileSchema),
     defaultValues: {
       name: name,
-      bio: bio,
-      address: address,
-      // logo: logo,
+      bio: bio ?? '',
+      address: address ?? '',
     },
   });
 
@@ -55,36 +51,81 @@ export default function MerchantEditProfile({
       console.error('Error updating profile:', error);
     } finally {
       setIsSubmitting(false);
-      redirect('/merchant/profile');
+      redirect('/merchant/profile/coupons');
     }
   };
 
   return (
-    <main className="flex w-full flex-col items-center">
-      <form
-        onSubmit={handleSubmit(processForm)}
-        className="my-2 flex w-full max-w-[800px] flex-col gap-8"
-      >
-        <EditLogo logo={logo} />
-        <EditDetails
-          register={register}
-          errors={errors}
-          isSubmitting={isSubmitting}
-        />
-      </form>
-    </main>
+    <form
+      onSubmit={handleSubmit(processForm)}
+      className="my-2 flex w-9/10 max-w-[800px] flex-col gap-8"
+    >
+      <EditLogo logo={logo} register={register} errors={errors} />
+      <EditDetails
+        register={register}
+        errors={errors}
+        isSubmitting={isSubmitting}
+      />
+    </form>
   );
 }
 
-function EditLogo({ logo }: { logo: string }) {
+function EditLogo({
+  logo,
+  register,
+  errors,
+}: {
+  logo: string;
+  register: UseFormRegister<EditProfileInputs>;
+  errors: FieldErrors<EditProfileInputs>;
+}) {
+  const [previewLogo, setPreviewLogo] = useState<string>(logo);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleButtonClick = () => {
+    fileInputRef.current?.click();
+  };
+
+  const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        setPreviewLogo(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   return (
     <div className="flex flex-col items-center gap-4">
       <img
-        src={logo}
+        src={previewLogo}
         alt="Merchant profile photo"
         className="size-32 rounded-full border object-cover sm:size-48"
       />
+      <PerxInput
+        type="file"
+        label=""
+        accept="image/*"
+        placeholder="Upload logo"
+        className="hidden"
+        {...register('logo', {
+          onChange: (event) => {
+            handleFileChange(event);
+          },
+        })}
+        ref={(e) => {
+          fileInputRef.current = e;
+          register('logo').ref(e);
+        }}
+      />
+      {errors.logo?.message && (
+        <ErrorMessage message={String(errors.logo.message)} />
+      )}
       <Button
+        onClick={handleButtonClick}
         className="text-perx-blue hover:text-perx-blue"
         variant={'ghost'}
         type="button"
@@ -127,7 +168,6 @@ function EditDetails({
           label="Business description"
           placeholder="Tell us about your business"
           required
-          autofocus
           {...register('bio')}
         />
         {errors.bio?.message && <ErrorMessage message={errors.bio.message} />}

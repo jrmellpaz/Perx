@@ -60,7 +60,7 @@ const MonthlyRecords = () => {
   return (
     <div>
       <div className="flex items-center space-x-2">
-        <PerxHeader title="Monthly Records" link="/merchant/dashboard" />
+        <PerxHeader title="Monthly Records" className="bg-white shadow-md" />
       </div>
 
       {/* Month Selector */}

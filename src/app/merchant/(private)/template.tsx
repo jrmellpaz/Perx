@@ -1,6 +1,6 @@
 'use client';
 
-import { logoutMerchant } from '@/actions/merchant/auth';
+import { logoutMerchant } from '@/actions/merchantAuth';
 import { MerchantLogo } from '@/components/merchant/MerchantLogo';
 import { Button } from '@/components/ui/button';
 import {
@@ -19,28 +19,33 @@ import { motion } from 'motion/react';
 interface NavItems {
   icon: JSX.Element;
   name: string;
+  path: string;
   link: string;
 }
 
 const navItems: NavItems[] = [
   {
-    icon: <LayoutDashboard />,
+    icon: <LayoutDashboard strokeWidth={1.5} />,
     name: 'Dashboard',
+    path: '/merchant/dashboard',
     link: '/merchant/dashboard',
   },
   {
-    icon: <ScanQrCode />,
+    icon: <ScanQrCode strokeWidth={1.5} />,
     name: 'Scan QR',
+    path: '/merchant/scan-qr',
     link: '/merchant/scan-qr',
   },
   {
-    icon: <TicketPlus />,
+    icon: <TicketPlus strokeWidth={1.5} />,
     name: 'Add Coupon',
+    path: '/merchant/add-coupon',
     link: '/merchant/add-coupon',
   },
   {
-    icon: <CircleUserRound />,
+    icon: <CircleUserRound strokeWidth={1.5} />,
     name: 'Profile',
+    path: '/merchant/profile',
     link: '/merchant/profile/coupons',
   },
 ];
@@ -58,7 +63,10 @@ export default function MerchantTemplate({
         <div className="hidden h-full p-2 md:flex md:flex-col md:justify-between">
           <div>
             <div className="my-4 ml-2 h-10">
-              <MerchantLogo sublogoClass="text-[16px] mb-[1px]" />
+              <MerchantLogo
+                logoClass="text-2xl pb-2"
+                sublogoClass="text-[19px] pb-0.5"
+              />
             </div>
             <VerticalNav />
           </div>
@@ -81,7 +89,7 @@ function VerticalNav() {
   return (
     <ul className="flex h-full w-full flex-col">
       {navItems.map((item, index) => {
-        const isActive: boolean = pathname === item.link;
+        const isActive: boolean = pathname.startsWith(item.path);
 
         return (
           <Link
@@ -110,7 +118,7 @@ function HorizontalNav() {
   return (
     <ul className="flex h-full w-full items-center justify-around">
       {navItems.map((item, index) => {
-        const isActive: boolean = pathname === item.link;
+        const isActive: boolean = pathname.startsWith(item.path);
 
         return (
           <Link

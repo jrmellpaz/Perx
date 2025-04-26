@@ -1,30 +1,47 @@
-import { getMerchantProfile } from '@/actions/merchant/profile';
+import { fetchMerchantProfile } from '@/actions/merchantProfile';
 import { PerxTicket } from '@/components/custom/PerxTicket';
-import { MerchantCoupon } from '@/lib/merchant/couponSchema';
 import { redirect } from 'next/navigation';
+import { fetchCoupon } from '@/actions/coupon';
+import PerxHeader from '@/components/custom/PerxHeader';
+import { getPrimaryAccentColor } from '@/lib/utils';
+
+import type { Coupon, Merchant } from '@/lib/types';
 
 export default async function ViewCoupon({
   searchParams,
 }: {
   searchParams: Promise<{ [key: string]: string }>;
 }) {
-  const couponData = (await searchParams).coupon;
-  const merchantId = (await searchParams).merchantId;
+  const couponId = (await searchParams).coupon;
+  const merchantId = (await searchParams).merchant;
 
-  if (!couponData || !merchantId) {
+  if (!couponId || !merchantId) {
     redirect('/not-found');
   }
 
-  const coupon: MerchantCoupon = JSON.parse(couponData);
-  const merchantData = await getMerchantProfile(merchantId);
+  const coupon: Coupon = await fetchCoupon(couponId);
+  const merchant: Merchant = await fetchMerchantProfile(merchantId);
 
   return (
-    <section className="h-full w-full overflow-hidden">
-      <PerxTicket
-        couponData={coupon}
-        merchantData={merchantData}
-        variant="merchant"
+    <section
+      className="view-container flex h-full w-full flex-col items-center overflow-y-auto bg-transparent pb-14"
+      style={{ backgroundColor: getPrimaryAccentColor(coupon.accentColor) }}
+    >
+      <PerxHeader
+        title=""
+        className="text-white"
+        style={{ backgroundColor: getPrimaryAccentColor(coupon.accentColor) }}
+        buttonStyle={{
+          backgroundColor: getPrimaryAccentColor(coupon.accentColor),
+        }}
       />
+      <div className="flex w-full grow items-center justify-center">
+        <PerxTicket
+          couponData={coupon}
+          merchantData={merchant}
+          variant="merchant"
+        ></PerxTicket>
+      </div>
     </section>
   );
 }

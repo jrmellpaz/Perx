@@ -6,14 +6,11 @@ import { Label } from '../ui/label';
 import { useState } from 'react';
 import { Checkbox } from '../ui/checkbox';
 import { motion } from 'framer-motion';
-import {
-  LoginMerchantInputs,
-  loginMerchantSchema,
-} from '@/lib/merchant/merchantSchema';
+import { LoginMerchantInputs, loginMerchantSchema } from '@/lib/merchantSchema';
 import { FieldErrors, useForm, UseFormRegister } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import PerxInput from '../custom/PerxInput';
-import { loginMerchant } from '@/actions/merchant/auth';
+import { loginMerchant } from '@/actions/merchantAuth';
 import PerxAlert from '../custom/PerxAlert';
 import { LoaderCircle } from 'lucide-react';
 

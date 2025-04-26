@@ -5,7 +5,7 @@ import {
   Step2Schema,
   Step3Schema,
   ConsumerFormInputs,
-} from '@/lib/consumer/consumerSchema';
+} from '@/lib/consumerSchema';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { motion } from 'framer-motion';
 import { useEffect, useState } from 'react';
@@ -18,20 +18,15 @@ import {
   UseFormSetValue,
 } from 'react-hook-form';
 import { Label } from '../ui/label';
-import { Input } from '../ui/input';
 import { Button } from '../ui/button';
 import { Checkbox } from '../ui/checkbox';
 import Link from 'next/link';
 import PerxInput from '../custom/PerxInput';
-import {
-  signupConsumer,
-  checkReferrer,
-  fetchTopCouponTypes,
-} from '@/actions/consumer/auth';
+import { signupConsumer, checkReferrer } from '@/actions/consumerAuth';
 import PerxAlert from '../custom/PerxAlert';
 import { LoaderCircle } from 'lucide-react';
 import PerxCheckbox from '../custom/PerxCheckbox';
-import { couponCategories } from '@/lib/merchant/couponSchema';
+import { couponCategories } from '@/lib/couponSchema';
 
 const schemas = [Step1Schema, Step2Schema, Step3Schema];
 
@@ -84,8 +79,8 @@ export default function ConsumerRegisterForm() {
       const data = getValues();
       console.log(data);
 
-      if (data.referrer_code) {
-        const isValidReferrer = await checkReferrer(data.referrer_code);
+      if (data.referrerCode) {
+        const isValidReferrer = await checkReferrer(data.referrerCode);
         if (!isValidReferrer) {
           setSubmitError('Invalid referral code');
           return;
@@ -114,13 +109,22 @@ export default function ConsumerRegisterForm() {
     if (!isValidData) return; // Prevent next step if validation fails
 
     if (currentStep === 1) {
-      const referrerCode = getValues('referrer_code');
-      if (referrerCode && referrerExists === false) {
-        setSubmitError('Invalid referral code');
-        return; // Stop next step if referral code is invalid
+      const referrerCode = getValues('referrerCode')?.trim();
+      // Accept empty code
+      if (referrerCode === '') {
+        setReferrerExists(null);
+        setSubmitError(null);
+      } else {
+        const exists = await checkReferrer(referrerCode || '');
+        setReferrerExists(exists);
+        if (!exists) {
+          return; // Stop from going to the next step
+        }
+        setSubmitError(null); // Clear error if code is valid
       }
     }
-
+    setReferrerExists(null);
+    setSubmitError(null);
     if (currentStep < steps.length - 1) {
       setPreviousStep(currentStep);
       setCurrentStep((prevStep) => prevStep + 1);
@@ -149,7 +153,7 @@ export default function ConsumerRegisterForm() {
       <Steps currentStep={currentStep} />
       <form
         onSubmit={handleSubmit(processForm)}
-        className="flex h-full flex-col justify-between"
+        className="flex h-full flex-col justify-between gap-4"
       >
         <div className="flex flex-col gap-6">
           {currentStep === 0 && (
@@ -158,13 +162,14 @@ export default function ConsumerRegisterForm() {
           {currentStep === 1 && (
             <Step2
               register={register}
-              watch={watch}
+              // watch={watch}
               delta={delta}
               referrerExists={referrerExists}
-              setReferrerExists={setReferrerExists}
+              // setReferrerExists={setReferrerExists}
             />
           )}
           {currentStep === 2 && (
+          <div className="max-h-[300px] overflow-y-auto">
             <Step3
               register={register}
               errors={errors}
@@ -172,7 +177,8 @@ export default function ConsumerRegisterForm() {
               watch={watch}
               setValue={setValue}
             />
-          )}
+          </div>
+        )}
         </div>
         <Navigation
           next={next}
@@ -306,46 +312,13 @@ function Step1({
 
 function Step2({
   register,
-  watch,
   delta,
   referrerExists,
-  setReferrerExists,
 }: {
   register: UseFormRegister<ConsumerFormInputs>;
-  watch: UseFormWatch<ConsumerFormInputs>;
   delta: number;
   referrerExists: boolean | null;
-  setReferrerExists: (exists: boolean | null) => void;
 }) {
-  // const [referrerCode, setReferrerCode] = useState('');
-  // const [debouncedReferrerCode] = useDebounce(referrerCode, 500); // Delay API call by 500ms
-
-  const referrerCode = watch('referrer_code');
-  const [debouncedCode, setDebouncedCode] = useState(referrerCode);
-
-  useEffect(() => {
-    const handler = setTimeout(() => {
-      setDebouncedCode(referrerCode);
-    }, 300); // Delay API call by 500ms
-
-    return () => clearTimeout(handler);
-  }, [referrerCode]);
-
-  useEffect(() => {
-    if (!debouncedCode?.trim()) {
-      setReferrerExists(null);
-      return;
-    }
-
-    const verifyReferrer = async () => {
-      setReferrerExists(null);
-      const exists = await checkReferrer(debouncedCode);
-      setReferrerExists(exists);
-    };
-
-    verifyReferrer();
-  }, [debouncedCode, setReferrerExists]);
-
   return (
     <motion.div
       initial={{ x: delta >= 0 ? '50%' : '-50%', opacity: 0 }}
@@ -355,10 +328,10 @@ function Step2({
     >
       <div>
         <PerxInput
-          label="Enter Code "
+          label="Enter code (Optional)"
           type="text"
           placeholder="IpSuM123"
-          {...register('referrer_code')}
+          {...register('referrerCode')}
         />
         {referrerExists === false && (
           <ErrorMessage message="Invalid referral code" />
@@ -367,6 +340,7 @@ function Step2({
     </motion.div>
   );
 }
+
 
 function Step3({
   register,
@@ -385,10 +359,10 @@ function Step3({
   const selectedInterests = watch('interests', []) || [];
 
   useEffect(() => {
-    setInterests(couponCategories.options);
+    setInterests([...couponCategories]);
     setValue('interests', []);
   }, [setValue]);
-  
+
   const handleCheckboxChange = (interest: string, checked: boolean) => {
     if (checked) {
       setValue('interests', [...selectedInterests, interest]);

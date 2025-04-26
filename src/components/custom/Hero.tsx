@@ -11,13 +11,13 @@ export default function Hero() {
         {/* Sign in merchant/consumer */}
         <div className="flex space-x-4">
           <Link
-            href="/merchant/login"
+            href="/merchant/register"
             className="bg-perx-crimson text-perx-white hover:bg-perx-cloud hover:text-perx-crimson hover:border-perx-crimson border-perx-crimson rounded-md border-2 px-6 py-2 font-mono duration-200"
           >
             Sign up as Merchant
           </Link>
           <Link
-            href="/login"
+            href="/register"
             className="border-perx-crimson text-perx-crimson hover:bg-perx-cloud hover:text-perx-white rounded-md border-2 px-6 py-2 font-mono duration-200"
           >
             Sign up as Consumer

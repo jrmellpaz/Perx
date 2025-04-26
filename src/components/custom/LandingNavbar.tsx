@@ -31,14 +31,14 @@ export default function LandingNavBar() {
             {/* <p className="text-amber-400">Gym</p> */}
           </div>
           {/* Menu Section */}
-          <div className="hidden md:block">
+          <div className="ml-60 hidden md:block">
             <ul className="flex items-center gap-6 text-gray-600">
               {LandingNavbarMenu.map((item) => {
                 return (
                   <li key={item.id}>
                     <a
                       href={item.link}
-                      className="hover: inline-block px-3 py-1 font-mono text-white"
+                      className="hover: text-perx-crimson inline-block px-3 py-1 font-mono"
                     >
                       {item.title}
                     </a>
@@ -52,13 +52,13 @@ export default function LandingNavBar() {
           <div className="hidden items-center gap-4 md:flex">
             <div>Log in as</div>
             <Link
-              href="/"
+              href="/merchant/login"
               className="bg-perx-crimson text-perx-white hover:bg-perx-cloud hover:text-perx-crimson hover:border-perx-crimson border-perx-crimson rounded-md border-2 px-6 py-2 font-mono duration-200"
             >
               Merchant
             </Link>
             <Link
-              href="/"
+              href="/login"
               className="border-perx-crimson text-perx-crimson hover:bg-perx-cloud hover:text-perx-white rounded-md border-2 px-6 py-2 font-mono duration-200"
             >
               Consumer

@@ -12,7 +12,7 @@ export const LandingNavbarMenu = [
   {
     id: 3,
     title: 'Explore',
-    link: '/',
+    link: '/explore',
   },
   {
     id: 4,

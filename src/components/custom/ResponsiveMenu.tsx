@@ -20,15 +20,18 @@ export default function ResponsiveMenu({ open }: ResponsiveMenuProps) {
         >
           <div className="bg-perx-crimson text-perx-white m-6 rounded-3xl py-10 font-mono text-xl">
             <ul className="flex flex-col items-center justify-center gap-10">
-              <li>Log in as</li>
+              {/* <li>Log in as</li>
               <Link href="/merchant/login" className="font-bold">
                 MERCHANT
               </Link>
               <Link href="/login" className="font-bold">
                 CONSUMER
-              </Link>
-              {/* <li>Features</li>
-              <li>FAQs</li> */}
+              </Link> */}
+              <li>Home</li>
+              <li>About</li>
+              <Link href="/explore">Explore</Link>
+              <li>Features</li>
+              <li>FAQs</li>
             </ul>
           </div>
         </motion.div>

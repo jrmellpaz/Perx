@@ -113,6 +113,7 @@ export type Database = {
           category: Database["public"]["Enums"]["coupon_category"]
           createdAt: string
           description: string
+          embedding: number[] | null
           id: string
           image: string
           isDeactivated: boolean
@@ -121,6 +122,7 @@ export type Database = {
           price: number
           quantity: number
           rankAvailability: number
+          text_search: unknown | null
           title: string
           validFrom: string
           validTo: string
@@ -133,6 +135,7 @@ export type Database = {
           category?: Database["public"]["Enums"]["coupon_category"]
           createdAt?: string
           description: string
+          embedding?: number[] | null
           id?: string
           image: string
           isDeactivated?: boolean
@@ -141,6 +144,7 @@ export type Database = {
           price: number
           quantity: number
           rankAvailability?: number
+          text_search?: unknown | null
           title?: string
           validFrom?: string
           validTo: string
@@ -153,6 +157,7 @@ export type Database = {
           category?: Database["public"]["Enums"]["coupon_category"]
           createdAt?: string
           description?: string
+          embedding?: string | null
           id?: string
           image?: string
           isDeactivated?: boolean
@@ -161,6 +166,7 @@ export type Database = {
           price?: number
           quantity?: number
           rankAvailability?: number
+          text_search?: unknown | null
           title?: string
           validFrom?: string
           validTo?: string
@@ -188,27 +194,33 @@ export type Database = {
           bio: string | null
           createdAt: string
           email: string
+          embedding:  number[] | null
           id: string
           logo: string
           name: string
+          text_search: unknown | null
         }
         Insert: {
           address?: string | null
           bio?: string | null
           createdAt?: string
           email: string
+          embedding?:  number[] | null
           id: string
           logo: string
           name: string
+          text_search?: unknown | null
         }
         Update: {
           address?: string | null
           bio?: string | null
           createdAt?: string
           email?: string
+          embedding?:  number[] | null
           id?: string
           logo?: string
           name?: string
+          text_search?: unknown | null
         }
         Relationships: []
       }
@@ -239,6 +251,36 @@ export type Database = {
           primaryColor?: string
           rank?: Database["public"]["Enums"]["rank"]
           secondaryColor?: string
+        }
+        Relationships: []
+      }
+      search_documents: {
+        Row: {
+          content: string | null
+          created_at: string | null
+          embedding:  number[] | null
+          id: string
+          reference_id: string
+          type: string
+          updated_at: string | null
+        }
+        Insert: {
+          content?: string | null
+          created_at?: string | null
+          embedding?:  number[] | null
+          id?: string
+          reference_id: string
+          type: string
+          updated_at?: string | null
+        }
+        Update: {
+          content?: string | null
+          created_at?: string | null
+          embedding?:  number[] | null
+          id?: string
+          reference_id?: string
+          type?: string
+          updated_at?: string | null
         }
         Relationships: []
       }
@@ -286,6 +328,48 @@ export type Database = {
       deactivate_expired_coupons: {
         Args: Record<PropertyKey, never>
         Returns: undefined
+      }
+      hybrid_search: {
+        Args: {
+          query_text: string
+          query_embedding:  number[]
+          match_threshold: number
+        }
+        Returns: {
+          id: string
+          type: string
+          title: string
+          description: string
+          similarity: number
+          rank: number
+        }[]
+      }
+      search_similar_documents: {
+        Args: {
+          query_embedding: number[]
+          match_threshold?: number
+          match_count?: number
+        }
+        Returns: {
+          id: string
+          type: string
+          reference_id: string
+          content: string
+          similarity: number
+        }[]
+      }
+      semantic_search: {
+        Args: { query_embedding: number[]; match_threshold: number }
+        Returns: {
+          id: string
+          type: string
+          title: string
+          description: string
+          name: string
+          bio: string
+          address: string
+          similarity: number
+        }[]
       }
     }
     Enums: {

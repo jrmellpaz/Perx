@@ -1,5 +1,5 @@
 import { ReactNode } from 'react';
-import { fetchMerchantProfile } from '@/actions/merchantProfile';
+import { fetchMerchant } from '@/actions/merchantProfile';
 import Tabs from '@/components/custom/PerxTabs';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
@@ -25,7 +25,7 @@ export default async function MerchantProfileLayout({
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  const data = await fetchMerchantProfile(user!.id); // Fetch profile data
+  const data = await fetchMerchant(user!.id); // Fetch profile data
 
   const tabItems = [
     {

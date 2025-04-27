@@ -5,7 +5,7 @@ import { createClient } from '@/utils/supabase/server';
 import type { Merchant } from '@/lib/types';
 import { revalidatePath } from 'next/cache';
 
-export const fetchMerchantProfile = async (
+export const fetchMerchant = async (
   merchantId: string
 ): Promise<Merchant> => {
   const supabase = await createClient();

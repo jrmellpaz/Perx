@@ -21,7 +21,7 @@ export default async function MerchantProfileLayout({
   params,
 }: {
   tabs: ReactNode;
-  params: { merchantId: string };
+  params: Promise<{ merchantId: string }>;
 }) {
   const { merchantId } = await params;
   const data = await fetchMerchant(merchantId);
@@ -29,12 +29,12 @@ export default async function MerchantProfileLayout({
     {
       name: 'Coupons',
       icon: <TicketsIcon size={20} />,
-      path: `/merchant-profile/${params.merchantId}/coupons`,
+      path: `/merchant-profile/${merchantId}/coupons`,
     },
     {
       name: 'Collections',
       icon: <SquareLibraryIcon size={20} />,
-      path: `/merchant-profile/${params.merchantId}/collections`,
+      path: `/merchant-profile/${merchantId}/collections`,
     },
   ];
 

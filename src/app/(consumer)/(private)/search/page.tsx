@@ -5,7 +5,10 @@ import { PerxCoupon } from '@/components/custom/PerxCoupon';
 import { MerchantCard } from '@/components/custom/PerxMerchant';
 import { Search } from 'lucide-react';
 
-export default async function SearchPage({ searchParams }: { searchParams: { q?: string } }) {
+export default async function SearchPage({ 
+  searchParams 
+}: { searchParams: Promise<{ q: string }>; 
+}) {
   const SearchParams = await searchParams;
   const query = SearchParams.q || '';
 

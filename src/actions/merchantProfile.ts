@@ -1,7 +1,7 @@
 'use server';
 import { EditProfileInputs } from '@/lib/merchantSchema';
 import { createClient } from '@/utils/supabase/server';
-
+import { embedText } from './embedder';
 import type { Merchant } from '@/lib/types';
 import { revalidatePath } from 'next/cache';
 
@@ -48,6 +48,12 @@ export const updateMerchantProfile = async (
     .from('perx')
     .getPublicUrl(newLogoData.path);
 
+    // Generate text_search (tsvector)
+    const textToSearch = `${profileData.name} ${profileData.bio} ${profileData.address}`.trim();
+
+    // Generate embedding (vector)
+    const embedding = await embedText(textToSearch);
+
   const { error } = await supabase
     .from('merchants')
     .update({
@@ -55,6 +61,8 @@ export const updateMerchantProfile = async (
       bio: profileData.bio,
       address: profileData.address,
       logo: logoUrl.publicUrl,
+      embedding: embedding,
+      text_search: textToSearch,
     })
     .eq('id', user!.id);
 

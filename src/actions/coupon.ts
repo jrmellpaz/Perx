@@ -1,7 +1,7 @@
 'use server';
 
 import { createClient } from '@/utils/supabase/server';
-
+import { embedText } from './embedder';
 import type {
   Coupon,
   CouponCategories,
@@ -49,6 +49,12 @@ export const addCoupon = async (
       imageUrl = publicUrl;
     }
 
+    // ✨ Combine fields for text search
+    const combinedText = `${couponData.title} ${couponData.description} ${couponData.category}`;
+
+    // ✨ Generate embedding
+    const embedding = await embedText(combinedText);
+
     const { error: insertCouponError } = await supabase.from('coupons').insert({
       accentColor: couponData.accentColor,
       merchantId: user?.id,
@@ -69,6 +75,8 @@ export const addCoupon = async (
       allowPointsPurchase: couponData.allowPointsPurchase,
       pointsAmount: couponData.pointsAmount,
       allowRepeatPurchase: couponData.allowRepeatPurchase,
+      embedding: embedding,
+      text_search: combinedText,
     } as InsertCoupon);
 
     if (insertCouponError) {

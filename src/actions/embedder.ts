@@ -1,6 +1,6 @@
-import { pipeline } from '@xenova/transformers';
+import { type FeatureExtractionPipeline, pipeline } from '@xenova/transformers';
 
-let embedder: any = null;
+let embedder: FeatureExtractionPipeline;
 
 export async function loadEmbedder() {
   if (!embedder) {

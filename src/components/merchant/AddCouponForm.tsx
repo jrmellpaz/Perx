@@ -61,13 +61,14 @@ export default function AddCouponForm({
   const processForm: SubmitHandler<AddCouponInputs> = async (data) => {
     setIsSubmitting(true);
     try {
+      console.log('Form data:', data);
       const response = await addCoupon(data);
       if (!response.success) {
         throw new Error(response.message);
       }
       toast('Coupon added successfully! 🥳');
-      reset();
-      setImagePreview(null);
+      // reset();
+      // setImagePreview(null);
     } catch (error) {
       console.error('Submission error:', error);
       toast.error(

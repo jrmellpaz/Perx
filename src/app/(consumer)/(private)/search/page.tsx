@@ -4,7 +4,7 @@ import { fetchMerchant } from '@/actions/merchantProfile';
 import { PerxCoupon } from '@/components/custom/PerxCoupon';
 import { MerchantCard } from '@/components/custom/PerxMerchant';
 import { Search } from 'lucide-react';
-import { Coupon, Coupons, Merchant, Merchants } from '@/lib/types';
+import { Coupon, Merchant } from '@/lib/types';
 
 type SearchResults = Array<{
   id: string;
@@ -49,33 +49,38 @@ export default async function SearchPage({
   }
 
   return (
-    <div className="p-4">
-      <form className="mb-4 flex items-center">
+    <div className="flex flex-col items-center-safe p-4">
+      <form className="relative mb-4 flex h-10 w-full max-w-[800px] items-center rounded-full shadow-md transition-all">
         <input
           type="text"
           name="q"
           defaultValue={query}
           placeholder="Search for coupons or merchants"
-          className="w-full border p-2 pr-10"
+          className="h-full w-full rounded-l-full border px-4 text-sm shadow-none outline-none"
         />
         <button
           type="submit"
-          className="ml-2 flex items-center rounded bg-blue-500 px-4 py-2 text-white"
+          className="relative right-0 flex h-full items-center rounded-r-full bg-blue-500 py-2 pr-6 pl-4 text-white"
         >
-          <Search />
-          <span className="ml-2">Search</span>
+          <Search size={22} />
         </button>
       </form>
 
-      <div className="grid w-full grid-cols-1 items-center gap-2 sm:grid-cols-2 md:grid-cols-3 md:gap-3">
-        {results.map((item) =>
-          item.type === 'coupon' && item.coupon ? (
-            <PerxCoupon key={item.id} coupon={item.coupon} variant="consumer" />
-          ) : item.type === 'merchant' && item.merchant ? (
-            <MerchantCard key={item.id} merchant={item.merchant} />
-          ) : null
-        )}
-      </div>
+      {results && (
+        <div className="grid w-full grid-cols-1 items-center gap-2 sm:grid-cols-2 md:grid-cols-3 md:gap-3">
+          {results.map((item) =>
+            item.type === 'coupon' && item.coupon ? (
+              <PerxCoupon
+                key={item.id}
+                coupon={item.coupon}
+                variant="consumer"
+              />
+            ) : item.type === 'merchant' && item.merchant ? (
+              <MerchantCard key={item.id} merchant={item.merchant} />
+            ) : null
+          )}
+        </div>
+      )}
     </div>
   );
 }

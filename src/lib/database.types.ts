@@ -113,7 +113,7 @@ export type Database = {
           category: Database["public"]["Enums"]["coupon_category"]
           createdAt: string
           description: string
-          embedding: number[] | null
+          embedding: string | null
           id: string
           image: string
           isDeactivated: boolean
@@ -135,7 +135,7 @@ export type Database = {
           category?: Database["public"]["Enums"]["coupon_category"]
           createdAt?: string
           description: string
-          embedding?: number[] | null
+          embedding?: string | null
           id?: string
           image: string
           isDeactivated?: boolean
@@ -194,7 +194,7 @@ export type Database = {
           bio: string | null
           createdAt: string
           email: string
-          embedding:  number[] | null
+          embedding: string | null
           id: string
           logo: string
           name: string
@@ -205,7 +205,7 @@ export type Database = {
           bio?: string | null
           createdAt?: string
           email: string
-          embedding?:  number[] | null
+          embedding?: string | null
           id: string
           logo: string
           name: string
@@ -216,7 +216,7 @@ export type Database = {
           bio?: string | null
           createdAt?: string
           email?: string
-          embedding?:  number[] | null
+          embedding?: string | null
           id?: string
           logo?: string
           name?: string
@@ -258,7 +258,7 @@ export type Database = {
         Row: {
           content: string | null
           created_at: string | null
-          embedding:  number[] | null
+          embedding: string | null
           id: string
           reference_id: string
           type: string
@@ -267,7 +267,7 @@ export type Database = {
         Insert: {
           content?: string | null
           created_at?: string | null
-          embedding?:  number[] | null
+          embedding?: string | null
           id?: string
           reference_id: string
           type: string
@@ -276,7 +276,7 @@ export type Database = {
         Update: {
           content?: string | null
           created_at?: string | null
-          embedding?:  number[] | null
+          embedding?: string | null
           id?: string
           reference_id?: string
           type?: string
@@ -332,7 +332,7 @@ export type Database = {
       hybrid_search: {
         Args: {
           query_text: string
-          query_embedding:  number[]
+          query_embedding: string
           match_threshold: number
         }
         Returns: {
@@ -346,7 +346,7 @@ export type Database = {
       }
       search_similar_documents: {
         Args: {
-          query_embedding: number[]
+          query_embedding: string
           match_threshold?: number
           match_count?: number
         }
@@ -359,7 +359,7 @@ export type Database = {
         }[]
       }
       semantic_search: {
-        Args: { query_embedding: number[]; match_threshold: number }
+        Args: { query_embedding: string; match_threshold: number }
         Returns: {
           id: string
           type: string

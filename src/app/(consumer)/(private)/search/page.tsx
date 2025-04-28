@@ -1,4 +1,4 @@
-import { hybridSearch, semanticSearch } from '@/actions/search';
+import { hybridSearch, semanticSearch, fullTextSearch } from '@/actions/search';
 import { fetchCoupon } from '@/actions/coupon';
 import { fetchMerchant } from '@/actions/merchantProfile';
 import { PerxCoupon } from '@/components/custom/PerxCoupon';
@@ -9,7 +9,7 @@ import { Coupon, Coupons, Merchant, Merchants } from '@/lib/types';
 type SearchResults = Array<{
   id: string;
   type: 'coupon' | 'merchant';
-  similarity: number;
+  // similarity: number;
   coupon?: Coupon;
   merchant?: Merchant;
 }>;
@@ -23,7 +23,7 @@ export default async function SearchPage({
 
   let results: SearchResults = [];
   if (query) {
-    const matches = await hybridSearch(query);
+    const matches = await fullTextSearch(query);
     results = await Promise.all(
       matches.map(async (match) => {
         if (match.type === 'coupon') {
@@ -32,7 +32,7 @@ export default async function SearchPage({
             id: match.id,
             coupon,
             type: 'coupon',
-            similarity: match.similarity,
+            // similarity: match.similarity,
           };
         } else {
           const merchant = await fetchMerchant(match.id);
@@ -40,12 +40,12 @@ export default async function SearchPage({
             id: match.id,
             merchant,
             type: 'merchant',
-            similarity: match.similarity,
+            // similarity: match.similarity,
           };
         }
       })
     );
-    results.sort((a, b) => b.similarity - a.similarity);
+    // results.sort((a, b) => b.similarity - a.similarity);
   }
 
   return (

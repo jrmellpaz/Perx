@@ -50,7 +50,7 @@ export const addCoupon = async (
     }
 
     // ✨ Combine fields for text search
-    const combinedText = `${couponData.title} ${couponData.description} ${couponData.category}`;
+    const combinedText = `${couponData.title} ${couponData.description} ${couponData.category}`.trim();;
 
     // ✨ Generate embedding
     const embedding = await embedText(combinedText);
@@ -75,7 +75,7 @@ export const addCoupon = async (
       allowPointsPurchase: couponData.allowPointsPurchase,
       pointsAmount: couponData.pointsAmount,
       allowRepeatPurchase: couponData.allowRepeatPurchase,
-      embedding: embedding,
+      // embedding: embedding,
       text_search: combinedText,
     } as InsertCoupon);
 
@@ -124,19 +124,28 @@ export const fetchCoupons = async (consumerId: string = ''): Promise<Coupons> =>
   const now = new Date();
 
   // Step 3: Filter and score based on interest
-  const filteredAndRanked = (couponsData || [])
-    .filter(coupon => {
+  interface FilteredCoupon {
+    quantity: number;
+    isDeactivated: boolean;
+    validFrom?: string;
+    validTo?: string;
+    category: string;
+    priority?: number;
+  }
+
+  const filteredAndRanked: FilteredCoupon[] = (couponsData || [])
+    .filter((coupon: FilteredCoupon) => {
       const hasStock = coupon.quantity > 0 && !coupon.isDeactivated;
       const isWithinDateRange = !coupon.validFrom || !coupon.validTo
         ? true
         : new Date(coupon.validFrom) <= now && now <= new Date(coupon.validTo);
       return hasStock && isWithinDateRange;
     })
-    .map(coupon => ({
+    .map((coupon: FilteredCoupon) => ({
       ...coupon,
       priority: interests.includes(coupon.category) ? 1 : 0,
     }))
-    .sort((a, b) => b.priority - a.priority); // Prioritize interest-matching coupons
+    .sort((a: FilteredCoupon, b: FilteredCoupon) => b.priority! - a.priority!); // Prioritize interest-matching coupons
 
   return filteredAndRanked as Coupons;
 };

@@ -101,7 +101,7 @@ export const signupMerchant = async (data: MerchantFormInputs) => {
       address,
       logo: logoUrl.publicUrl,
       id: merchantId,
-      embedding: embedding,
+      // embedding: embedding,
       text_search: textToSearch,
     });
 

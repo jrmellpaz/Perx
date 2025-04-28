@@ -8,7 +8,7 @@ export async function semanticSearch(query: string) {
   const supabase = await createClient();
 
   const { data, error } = await supabase.rpc('semantic_search', {
-    query_embedding: queryEmbedding,
+    query_embedding: JSON.stringify(queryEmbedding),
     match_threshold: 0.7
   });
 
@@ -35,12 +35,26 @@ export async function hybridSearch(queryText: string) {
   const supabase = await createClient();
   const { data, error } = await supabase.rpc('hybrid_search', {
     query_text: queryText,
-    query_embedding: queryEmbedding,
+    query_embedding: JSON.stringify(queryEmbedding),
     match_threshold: 0.7,
   });
 
   if (error) {
     console.error('Hybrid Search Error:', error.message);
+    throw new Error(error.message);
+  }
+
+  return data;
+}
+
+export async function fullTextSearch(queryText: string) {
+  const supabase = await createClient();
+  const { data, error } = await supabase.rpc('full_text_search', {
+    query_text: queryText,
+  });
+
+  if (error) {
+    console.error('Search Error:', error.message);
     throw new Error(error.message);
   }
 

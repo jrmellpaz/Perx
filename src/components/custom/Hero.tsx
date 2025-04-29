@@ -18,13 +18,13 @@ export default function Hero() {
         <div className="flex space-x-4">
           <Link
             href="/merchant/login"
-            className="bg-perx-crimson text-perx-white hover:bg-perx-cloud hover:text-perx-crimson hover:border-perx-crimson border-perx-crimson rounded-md border-2 px-6 py-2 font-mono duration-200"
+            className="bg-perx-crimson text-perx-white hover:bg-perx-crimson/30 hover:text-perx-crimson hover:border-perx-crimson border-perx-crimson rounded-md border-2 px-6 py-2 font-mono duration-200"
           >
             Merchant
           </Link>
           <Link
             href="/explore"
-            className="border-perx-crimson text-perx-crimson hover:bg-perx-cloud hover:text-perx-white rounded-md border-2 px-6 py-2 font-mono duration-200"
+            className="border-perx-crimson text-perx-crimson hover:bg-perx-crimson/30 hover:text-perx-crimson rounded-md border-2 px-6 py-2 font-mono duration-200"
           >
             Consumer
           </Link>

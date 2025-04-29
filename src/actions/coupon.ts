@@ -209,3 +209,25 @@ export const fetchCouponCategories = async (): Promise<CouponCategories> => {
 
   return data as CouponCategories;
 };
+
+type CouponFilters = {
+  minPrice?: number;
+  maxPrice?: number;
+  allowLimitedPurchase?: boolean;
+  allowRepeatPurchase?: boolean;
+  allowPointsPurchase?: boolean;
+  endDate?: Date;
+};
+
+export async function filterCoupons(coupons: Coupon[], filters: CouponFilters): Promise<Coupon[]> {
+  return coupons.filter((coupon) => {
+    if (filters.minPrice !== undefined && coupon.price < filters.minPrice) return false;
+    if (filters.maxPrice !== undefined && coupon.price > filters.maxPrice) return false;
+    if (filters.allowLimitedPurchase !== undefined && coupon.allowLimitedPurchase !== filters.allowLimitedPurchase) return false;
+    if (filters.allowRepeatPurchase !== undefined && coupon.allowRepeatPurchase !== filters.allowRepeatPurchase) return false;
+    if (filters.allowPointsPurchase !== undefined && coupon.allowPointsPurchase !== filters.allowPointsPurchase) return false;
+    if (filters.endDate !== undefined && new Date(coupon.validTo) > filters.endDate) return false;
+    return true;
+  });
+}
+

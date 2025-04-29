@@ -10,6 +10,8 @@ export type Coupons = Coupon[];
 export type CouponCategory =
   Database['public']['Tables']['coupon_categories']['Row'];
 export type CouponCategories = CouponCategory[];
+export type Category = Database['public']['Enums']['coupon_category'];
+export type Categories = Category[];
 export type InsertCoupon = Database['public']['Tables']['coupons']['Insert'];
 export type UserCoupon = Database['public']['Tables']['user_coupons']['Row'] & {
   coupons: Coupon;

@@ -1,6 +1,7 @@
 import { fetchCoupons } from '@/actions/coupon';
 import { PerxCoupon } from '@/components/custom/PerxCoupon';
 import { PerxLogoHeader } from '@/components/custom/PerxHeader';
+import { LoadMore } from '@/components/custom/PerxInfiniteScroll';
 import { Suspense } from 'react';
 import { createClient } from '@/utils/supabase/server';
 
@@ -18,13 +19,16 @@ export default async function Explore() {
         <div className="grid w-full grid-cols-1 items-center gap-2 sm:grid-cols-2 md:grid-cols-3 md:gap-3">
           <Suspense fallback={<ExplorePageSkeleton />}>
             {coupons.length > 0 ? (
-              coupons.map((coupon) => (
-                <PerxCoupon
-                  key={coupon.id}
-                  coupon={coupon}
-                  variant="consumer"
-                />
-              ))
+              <>
+                {coupons.map((coupon) => (
+                  <PerxCoupon
+                    key={coupon.id}
+                    coupon={coupon}
+                    variant="consumer"
+                  />
+                ))}
+                <LoadMore />
+              </>
             ) : (
               <p>No tickets available.</p>
             )}

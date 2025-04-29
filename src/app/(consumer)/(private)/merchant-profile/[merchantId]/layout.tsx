@@ -1,5 +1,5 @@
 import { ReactNode } from 'react';
-import { fetchMerchantProfile } from '@/actions/merchantProfile';
+import { fetchMerchant } from '@/actions/merchantProfile';
 import Tabs from '@/components/custom/PerxTabs';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
@@ -21,26 +21,21 @@ export default async function MerchantProfileLayout({
   params,
 }: {
   tabs: ReactNode;
-  params: { merchantId: string };
+  params: Promise<{ merchantId: string }>;
 }) {
-  const data = await fetchMerchantProfile(params.merchantId); // Fetch profile data
-  console.log('Merchant Profile Data:', data);
+  const { merchantId } = await params;
+  const data = await fetchMerchant(merchantId);
   const tabItems = [
     {
       name: 'Coupons',
       icon: <TicketsIcon size={20} />,
-      path: `/merchant-profile/${params.merchantId}/coupons`,
+      path: `/merchant-profile/${merchantId}/coupons`,
     },
     {
       name: 'Collections',
       icon: <SquareLibraryIcon size={20} />,
-      path: `/merchant-profile/${params.merchantId}/collections`,
+      path: `/merchant-profile/${merchantId}/collections`,
     },
-    // {
-    //   name: 'Archive',
-    //   icon: <ArchiveIcon size={20} />,
-    //   path: '/merchant/profile/archive',
-    // },
   ];
 
   return (

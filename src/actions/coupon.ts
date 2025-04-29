@@ -1,8 +1,10 @@
 'use server';
 
 import { createClient } from '@/utils/supabase/server';
+import { embedText } from './embedder';
 
 import type {
+  Categories,
   Coupon,
   CouponCategories,
   Coupons,
@@ -49,6 +51,13 @@ export const addCoupon = async (
       imageUrl = publicUrl;
     }
 
+    // ✨ Combine fields for text search
+    const combinedText =
+      `${couponData.title} ${couponData.description} ${couponData.category}`.trim();
+
+    // ✨ Generate embedding
+    const embedding = await embedText(combinedText);
+
     const { error: insertCouponError } = await supabase.from('coupons').insert({
       accentColor: couponData.accentColor,
       merchantId: user?.id,
@@ -82,11 +91,12 @@ export const addCoupon = async (
   }
 };
 
-export const fetchCoupons = async (consumerId: string = ''): Promise<Coupons> => {
+export const fetchCoupons = async (
+  consumerId: string = ''
+): Promise<Coupons> => {
   const supabase = await createClient();
 
-  // Step 1: Try to fetch consumer interests if ID is provided
-  let interests: string[] = [];
+  let interests: Categories = [];
 
   if (consumerId) {
     const { data: consumerData, error: consumerError } = await supabase
@@ -102,33 +112,37 @@ export const fetchCoupons = async (consumerId: string = ''): Promise<Coupons> =>
     }
   }
 
-  // Step 2: Get all coupons
   const { data: couponsData, error: couponsError } = await supabase
     .from('coupons')
     .select('*')
-    .order('createdAt', { ascending: false });
+    .eq('isDeactivated', false)
+    .gt('quantity', 0)
+    .order('created_at', { ascending: false })
+    .range(0, 9);
 
   if (couponsError) {
     console.error('Fetch Coupons Error:', couponsError);
     return [];
   }
 
-  const now = new Date();
+  type FilteredCoupon = Coupon & {
+    priority?: number;
+  };
 
-  // Step 3: Filter and score based on interest
-  const filteredAndRanked = (couponsData || [])
-    .filter(coupon => {
-      const hasStock = coupon.quantity > 0 && !coupon.isDeactivated;
-      const isWithinDateRange = !coupon.validFrom || !coupon.validTo
-        ? true
-        : new Date(coupon.validFrom) <= now && now <= new Date(coupon.validTo);
-      return hasStock && isWithinDateRange;
+  const filteredAndRanked: FilteredCoupon[] = (couponsData || [])
+    .filter((coupon: FilteredCoupon) => {
+      const isWithinDateRange =
+        !coupon.allowLimitedPurchase ||
+        (coupon.allowLimitedPurchase &&
+          new Date(coupon.validFrom).getTime() <= Date.now() &&
+          new Date(coupon.validTo).getTime() >= Date.now());
+      return isWithinDateRange;
     })
-    .map(coupon => ({
+    .map((coupon: FilteredCoupon) => ({
       ...coupon,
       priority: interests.includes(coupon.category) ? 1 : 0,
     }))
-    .sort((a, b) => b.priority - a.priority); // Prioritize interest-matching coupons
+    .sort((a: FilteredCoupon, b: FilteredCoupon) => b.priority! - a.priority!);
 
   return filteredAndRanked as Coupons;
 };
@@ -156,7 +170,7 @@ export const fetchCouponsByMerchantId = async (
     .from('coupons')
     .select('*')
     .eq('merchantId', merchantId)
-    .order('createdAt', { ascending: false });
+    .order('created_at', { ascending: false });
 
   if (error) {
     console.error('Fetch Coupons by Merchant ID Error:', error);
@@ -174,7 +188,7 @@ export const fetchCouponsByConsumerId = async (
     .from('user_coupons')
     .select('*, coupons(*)')
     .eq('consumerId', consumerId)
-    .order('createdAt', { ascending: false });
+    .order('created_at', { ascending: false });
 
   if (error) {
     console.error('Fetch Coupons by Consumer ID Error:', error);

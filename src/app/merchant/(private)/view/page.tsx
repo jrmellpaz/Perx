@@ -1,4 +1,4 @@
-import { fetchMerchantProfile } from '@/actions/merchantProfile';
+import { fetchMerchant } from '@/actions/merchantProfile';
 import { PerxTicket } from '@/components/custom/PerxTicket';
 import { redirect } from 'next/navigation';
 import { fetchCoupon } from '@/actions/coupon';
@@ -20,7 +20,7 @@ export default async function ViewCoupon({
   }
 
   const coupon: Coupon = await fetchCoupon(couponId);
-  const merchant: Merchant = await fetchMerchantProfile(merchantId);
+  const merchant: Merchant = await fetchMerchant(merchantId);
 
   return (
     <section

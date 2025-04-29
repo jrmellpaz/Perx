@@ -9,7 +9,7 @@ export function LoadMore() {
 
   useEffect(() => {
     if (inView) {
-      alert('Load more items!');
+      // alert('Load more items!');
     }
   }, [inView]);
 

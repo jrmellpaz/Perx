@@ -38,7 +38,7 @@ export type Database = {
           createdAt: string
           email: string
           id: string
-          interests: string[] | null
+          interests: Database["public"]["Enums"]["coupon_category"][] | null
           name: string
           pointsBalance: number
           pointsTotal: number
@@ -51,7 +51,7 @@ export type Database = {
           createdAt?: string
           email: string
           id: string
-          interests?: string[] | null
+          interests?: Database["public"]["Enums"]["coupon_category"][] | null
           name: string
           pointsBalance?: number
           pointsTotal?: number
@@ -64,7 +64,7 @@ export type Database = {
           createdAt?: string
           email?: string
           id?: string
-          interests?: string[] | null
+          interests?: Database["public"]["Enums"]["coupon_category"][] | null
           name?: string
           pointsBalance?: number
           pointsTotal?: number
@@ -86,19 +86,19 @@ export type Database = {
       coupon_categories: {
         Row: {
           category: Database["public"]["Enums"]["coupon_category"]
-          createdAt: string
+          created_at: string
           description: string
           id: string
         }
         Insert: {
           category: Database["public"]["Enums"]["coupon_category"]
-          createdAt?: string
+          created_at?: string
           description?: string
           id?: string
         }
         Update: {
           category?: Database["public"]["Enums"]["coupon_category"]
-          createdAt?: string
+          created_at?: string
           description?: string
           id?: string
         }

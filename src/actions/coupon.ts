@@ -2,7 +2,9 @@
 
 import { createClient } from '@/utils/supabase/server';
 import { embedText } from './embedder';
+
 import type {
+  Categories,
   Coupon,
   CouponCategories,
   Coupons,
@@ -94,8 +96,7 @@ export const fetchCoupons = async (
 ): Promise<Coupons> => {
   const supabase = await createClient();
 
-  // Step 1: Try to fetch consumer interests if ID is provided
-  let interests: string[] = [];
+  let interests: Categories = [];
 
   if (consumerId) {
     const { data: consumerData, error: consumerError } = await supabase
@@ -111,44 +112,37 @@ export const fetchCoupons = async (
     }
   }
 
-  // Step 2: Get all coupons
   const { data: couponsData, error: couponsError } = await supabase
     .from('coupons')
     .select('*')
-    .order('created_at', { ascending: false });
+    .eq('isDeactivated', false)
+    .gt('quantity', 0)
+    .order('created_at', { ascending: false })
+    .range(0, 9);
 
   if (couponsError) {
     console.error('Fetch Coupons Error:', couponsError);
     return [];
   }
 
-  const now = new Date();
-
-  // Step 3: Filter and score based on interest
-  interface FilteredCoupon {
-    quantity: number;
-    isDeactivated: boolean;
-    validFrom?: string;
-    validTo?: string;
-    category: string;
+  type FilteredCoupon = Coupon & {
     priority?: number;
-  }
+  };
 
   const filteredAndRanked: FilteredCoupon[] = (couponsData || [])
     .filter((coupon: FilteredCoupon) => {
-      const hasStock = coupon.quantity > 0 && !coupon.isDeactivated;
       const isWithinDateRange =
-        !coupon.validFrom || !coupon.validTo
-          ? true
-          : new Date(coupon.validFrom) <= now &&
-            now <= new Date(coupon.validTo);
-      return hasStock && isWithinDateRange;
+        !coupon.allowLimitedPurchase ||
+        (coupon.allowLimitedPurchase &&
+          new Date(coupon.validFrom).getTime() <= Date.now() &&
+          new Date(coupon.validTo).getTime() >= Date.now());
+      return isWithinDateRange;
     })
     .map((coupon: FilteredCoupon) => ({
       ...coupon,
       priority: interests.includes(coupon.category) ? 1 : 0,
     }))
-    .sort((a: FilteredCoupon, b: FilteredCoupon) => b.priority! - a.priority!); // Prioritize interest-matching coupons
+    .sort((a: FilteredCoupon, b: FilteredCoupon) => b.priority! - a.priority!);
 
   return filteredAndRanked as Coupons;
 };

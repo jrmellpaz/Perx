@@ -1,7 +1,6 @@
 'use client';
 
 import React from 'react';
-import { LandingNavbarMenu } from '../../mockData/data';
 import ResponsiveMenu from '@/components/custom/ResponsiveMenu';
 import { AlignJustify } from 'lucide-react';
 import Link from 'next/link';
@@ -28,23 +27,6 @@ export default function LandingNavBar() {
           {/* Perx Section */}
           <div className="flex items-center gap-2 font-sans text-2xl font-bold text-white">
             <p>Perx</p>
-          </div>
-          {/* Menu Section */}
-          <div className="ml-60 hidden md:block">
-            <ul className="flex items-center gap-6 text-gray-600">
-              {LandingNavbarMenu.map((item) => {
-                return (
-                  <li key={item.id}>
-                    <a
-                      href={item.link}
-                      className="hover: inline-block px-3 py-1 font-mono text-white"
-                    >
-                      {item.title}
-                    </a>
-                  </li>
-                );
-              })}
-            </ul>
           </div>
           {/* Log in w Google */}
 

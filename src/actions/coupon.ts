@@ -209,3 +209,54 @@ export const fetchCouponCategories = async (): Promise<CouponCategories> => {
 
   return data as CouponCategories;
 };
+
+type CouponFilters = {
+  minPrice?: number;
+  maxPrice?: number;
+  allowLimitedPurchase?: boolean;
+  allowRepeatPurchase?: boolean;
+  allowPointsPurchase?: boolean;
+  endDate?: Date;
+  query?: string;
+};
+
+export async function filterCoupons(filters: CouponFilters & { query?: string }): Promise<Coupon[]> {
+  const supabase = await createClient();
+  let queryBuilder = supabase.from('coupons').select('*');
+
+  if (filters.query) {
+    // Option 1: Use text search (requires full-text index in PostgreSQL)
+    // queryBuilder = queryBuilder.textSearch('name', filters.query);
+
+    // Option 2: Use ILIKE for case-insensitive partial matching
+    queryBuilder = queryBuilder.or(`title.ilike.%${filters.query}%,description.ilike.%${filters.query}%`);
+  }
+
+  if (filters.minPrice !== undefined) {
+    queryBuilder = queryBuilder.gte('price', filters.minPrice);
+  }
+  if (filters.maxPrice !== undefined) {
+    queryBuilder = queryBuilder.lte('price', filters.maxPrice);
+  }
+  if (filters.allowLimitedPurchase !== undefined) {
+    queryBuilder = queryBuilder.eq('allowLimitedPurchase', filters.allowLimitedPurchase);
+  }
+  if (filters.allowRepeatPurchase !== undefined) {
+    queryBuilder = queryBuilder.eq('allowRepeatPurchase', filters.allowRepeatPurchase);
+  }
+  if (filters.allowPointsPurchase !== undefined) {
+    queryBuilder = queryBuilder.eq('allowPointsPurchase', filters.allowPointsPurchase);
+  }
+  if (filters.endDate !== undefined) {
+    queryBuilder = queryBuilder.lte('validTo', filters.endDate.toISOString());
+  }
+
+  const { data, error } = await queryBuilder;
+
+  if (error) {
+    console.error('Error fetching filtered coupons:', error);
+    return [];
+  }
+
+  return data as Coupon[];
+}

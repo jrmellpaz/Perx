@@ -1,8 +1,9 @@
 import { fullTextSearch } from '@/actions/search';
-import { fetchCoupon } from '@/actions/coupon';
+import { fetchCoupon, filterCoupons } from '@/actions/coupon';
 import { fetchMerchant } from '@/actions/merchantProfile';
 import { PerxCoupon } from '@/components/custom/PerxCoupon';
 import { MerchantCard } from '@/components/custom/PerxMerchant';
+import { CouponFilterForm } from '@/components/custom/PerxFilter';
 import { Search } from 'lucide-react';
 import { Coupon, Merchant } from '@/lib/types';
 
@@ -18,22 +19,43 @@ export default async function PerxSearch({
 }: {
   searchParams: Promise<{ [key: string]: string }>;
 }) {
-  const query = (await searchParams).q ?? '';
+  const params = await searchParams;
+  const query = params.q ?? '';
+  const minPrice = params.minPrice ? parseFloat(params.minPrice) : undefined;
+  const maxPrice = params.maxPrice ? parseFloat(params.maxPrice) : undefined;
+  const allowLimitedPurchase = params.allowLimitedPurchase === 'true' ? true : undefined;
+  const allowRepeatPurchase = params.allowRepeatPurchase === 'true' ? true : undefined;
+  const allowPointsPurchase = params.allowPointsPurchase === 'true' ? true : undefined;
+  const endDate = params.endDate ? new Date(params.endDate) : undefined;
 
   let results: ResultItem[] = [];
+
   if (query) {
     const matches = await fullTextSearch(query);
-    results = await Promise.all(
-      matches.map(async (match) => {
-        if (match.type === 'coupon') {
-          const coupon = await fetchCoupon(match.id);
-          return { id: match.id, type: 'coupon', coupon };
-        } else {
-          const merchant = await fetchMerchant(match.id);
-          return { id: match.id, type: 'merchant', merchant };
-        }
-      })
-    );
+  
+    const merchants: Merchant[] = [];
+  
+    for (const match of matches) {
+      if (match.type === 'merchant') {
+        const merchant = await fetchMerchant(match.id);
+        if (merchant) merchants.push(merchant);
+      }
+    }
+  
+    const filteredCoupons = await filterCoupons({
+      query, // Optional: You can add this support to filterCoupons() if you want to search by name/desc
+      minPrice,
+      maxPrice,
+      allowLimitedPurchase,
+      allowRepeatPurchase,
+      allowPointsPurchase,
+      endDate,
+    });
+  
+    results = [
+      ...filteredCoupons.map((c) => ({ id: c.id, type: 'coupon' as const, coupon: c })),
+      ...merchants.map((m) => ({ id: m.id, type: 'merchant' as const, merchant: m })),
+    ];
   }
 
   return (
@@ -54,6 +76,8 @@ export default async function PerxSearch({
           <span className="ml-2">Search</span>
         </button>
       </form>
+
+      <CouponFilterForm />
 
       <div className="grid w-full grid-cols-1 items-center gap-2 sm:grid-cols-2 md:grid-cols-3 md:gap-3">
         {results.map((item) =>

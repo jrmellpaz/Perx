@@ -50,7 +50,8 @@ export const addCoupon = async (
     }
 
     // ✨ Combine fields for text search
-    const combinedText = `${couponData.title} ${couponData.description} ${couponData.category}`.trim();;
+    const combinedText =
+      `${couponData.title} ${couponData.description} ${couponData.category}`.trim();
 
     // ✨ Generate embedding
     const embedding = await embedText(combinedText);
@@ -75,8 +76,6 @@ export const addCoupon = async (
       allowPointsPurchase: couponData.allowPointsPurchase,
       pointsAmount: couponData.pointsAmount,
       allowRepeatPurchase: couponData.allowRepeatPurchase,
-      // embedding: embedding,
-      text_search: combinedText,
     } as InsertCoupon);
 
     if (insertCouponError) {
@@ -90,7 +89,9 @@ export const addCoupon = async (
   }
 };
 
-export const fetchCoupons = async (consumerId: string = ''): Promise<Coupons> => {
+export const fetchCoupons = async (
+  consumerId: string = ''
+): Promise<Coupons> => {
   const supabase = await createClient();
 
   // Step 1: Try to fetch consumer interests if ID is provided
@@ -114,7 +115,7 @@ export const fetchCoupons = async (consumerId: string = ''): Promise<Coupons> =>
   const { data: couponsData, error: couponsError } = await supabase
     .from('coupons')
     .select('*')
-    .order('createdAt', { ascending: false });
+    .order('created_at', { ascending: false });
 
   if (couponsError) {
     console.error('Fetch Coupons Error:', couponsError);
@@ -136,9 +137,11 @@ export const fetchCoupons = async (consumerId: string = ''): Promise<Coupons> =>
   const filteredAndRanked: FilteredCoupon[] = (couponsData || [])
     .filter((coupon: FilteredCoupon) => {
       const hasStock = coupon.quantity > 0 && !coupon.isDeactivated;
-      const isWithinDateRange = !coupon.validFrom || !coupon.validTo
-        ? true
-        : new Date(coupon.validFrom) <= now && now <= new Date(coupon.validTo);
+      const isWithinDateRange =
+        !coupon.validFrom || !coupon.validTo
+          ? true
+          : new Date(coupon.validFrom) <= now &&
+            now <= new Date(coupon.validTo);
       return hasStock && isWithinDateRange;
     })
     .map((coupon: FilteredCoupon) => ({
@@ -173,7 +176,7 @@ export const fetchCouponsByMerchantId = async (
     .from('coupons')
     .select('*')
     .eq('merchantId', merchantId)
-    .order('createdAt', { ascending: false });
+    .order('created_at', { ascending: false });
 
   if (error) {
     console.error('Fetch Coupons by Merchant ID Error:', error);
@@ -191,7 +194,7 @@ export const fetchCouponsByConsumerId = async (
     .from('user_coupons')
     .select('*, coupons(*)')
     .eq('consumerId', consumerId)
-    .order('createdAt', { ascending: false });
+    .order('created_at', { ascending: false });
 
   if (error) {
     console.error('Fetch Coupons by Consumer ID Error:', error);

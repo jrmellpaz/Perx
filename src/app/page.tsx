@@ -1,12 +1,8 @@
-import Link from 'next/link';
-import LandingNavbar from '@/components/custom/LandingNavbar';
-import Hero from '@/components/custom/Hero';
-
 export default function Home() {
   return (
     <div className="overflow-x-hidden">
       {/* <LandingNavbar /> */}
-      <Hero />
+      {/* <Hero /> */}
     </div>
 
     // <div>

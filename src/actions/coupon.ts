@@ -114,7 +114,7 @@ export const fetchCoupons = async (consumerId: string = ''): Promise<Coupons> =>
   const { data: couponsData, error: couponsError } = await supabase
     .from('coupons')
     .select('*')
-    .order('createdAt', { ascending: false });
+    .order('created_at', { ascending: false });
 
   if (couponsError) {
     console.error('Fetch Coupons Error:', couponsError);

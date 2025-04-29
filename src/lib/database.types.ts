@@ -111,7 +111,7 @@ export type Database = {
           allowPointsPurchase: boolean
           allowRepeatPurchase: boolean
           category: Database["public"]["Enums"]["coupon_category"]
-          createdAt: string
+          created_at: string
           description: string
           id: string
           image: string
@@ -132,7 +132,7 @@ export type Database = {
           allowPointsPurchase?: boolean
           allowRepeatPurchase?: boolean
           category?: Database["public"]["Enums"]["coupon_category"]
-          createdAt?: string
+          created_at?: string
           description: string
           id?: string
           image: string
@@ -153,7 +153,7 @@ export type Database = {
           allowPointsPurchase?: boolean
           allowRepeatPurchase?: boolean
           category?: Database["public"]["Enums"]["coupon_category"]
-          createdAt?: string
+          created_at?: string
           description?: string
           id?: string
           image?: string
@@ -346,6 +346,22 @@ export type Database = {
           description: string
           similarity: number
           rank: number
+        }[]
+      }
+      search_and_filter_items: {
+        Args: {
+          query_text: string
+          filter_category?: string
+          filter_min_price?: number
+          filter_max_price?: number
+          filter_limited_quantity?: boolean
+          filter_end_date_before?: string
+          filter_allow_points?: boolean
+          filter_allow_repurchase?: boolean
+        }
+        Returns: {
+          id: string
+          type: string
         }[]
       }
       search_similar_documents: {

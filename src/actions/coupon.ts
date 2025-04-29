@@ -217,17 +217,46 @@ type CouponFilters = {
   allowRepeatPurchase?: boolean;
   allowPointsPurchase?: boolean;
   endDate?: Date;
+  query?: string;
 };
 
-export async function filterCoupons(coupons: Coupon[], filters: CouponFilters): Promise<Coupon[]> {
-  return coupons.filter((coupon) => {
-    if (filters.minPrice !== undefined && coupon.price < filters.minPrice) return false;
-    if (filters.maxPrice !== undefined && coupon.price > filters.maxPrice) return false;
-    if (filters.allowLimitedPurchase !== undefined && coupon.allowLimitedPurchase !== filters.allowLimitedPurchase) return false;
-    if (filters.allowRepeatPurchase !== undefined && coupon.allowRepeatPurchase !== filters.allowRepeatPurchase) return false;
-    if (filters.allowPointsPurchase !== undefined && coupon.allowPointsPurchase !== filters.allowPointsPurchase) return false;
-    if (filters.endDate !== undefined && new Date(coupon.validTo) > filters.endDate) return false;
-    return true;
-  });
-}
+export async function filterCoupons(filters: CouponFilters & { query?: string }): Promise<Coupon[]> {
+  const supabase = await createClient();
+  let queryBuilder = supabase.from('coupons').select('*');
 
+  if (filters.query) {
+    // Option 1: Use text search (requires full-text index in PostgreSQL)
+    // queryBuilder = queryBuilder.textSearch('name', filters.query);
+
+    // Option 2: Use ILIKE for case-insensitive partial matching
+    queryBuilder = queryBuilder.or(`title.ilike.%${filters.query}%,description.ilike.%${filters.query}%`);
+  }
+
+  if (filters.minPrice !== undefined) {
+    queryBuilder = queryBuilder.gte('price', filters.minPrice);
+  }
+  if (filters.maxPrice !== undefined) {
+    queryBuilder = queryBuilder.lte('price', filters.maxPrice);
+  }
+  if (filters.allowLimitedPurchase !== undefined) {
+    queryBuilder = queryBuilder.eq('allowLimitedPurchase', filters.allowLimitedPurchase);
+  }
+  if (filters.allowRepeatPurchase !== undefined) {
+    queryBuilder = queryBuilder.eq('allowRepeatPurchase', filters.allowRepeatPurchase);
+  }
+  if (filters.allowPointsPurchase !== undefined) {
+    queryBuilder = queryBuilder.eq('allowPointsPurchase', filters.allowPointsPurchase);
+  }
+  if (filters.endDate !== undefined) {
+    queryBuilder = queryBuilder.lte('validTo', filters.endDate.toISOString());
+  }
+
+  const { data, error } = await queryBuilder;
+
+  if (error) {
+    console.error('Error fetching filtered coupons:', error);
+    return [];
+  }
+
+  return data as Coupon[];
+}

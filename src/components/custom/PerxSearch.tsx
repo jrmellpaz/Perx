@@ -32,21 +32,18 @@ export default async function PerxSearch({
 
   if (query) {
     const matches = await fullTextSearch(query);
-
-    let coupons: Coupon[] = [];
-    let merchants: Merchant[] = [];
-
+  
+    const merchants: Merchant[] = [];
+  
     for (const match of matches) {
-      if (match.type === 'coupon') {
-        const coupon = await fetchCoupon(match.id);
-        if (coupon) coupons.push(coupon);
-      } else {
+      if (match.type === 'merchant') {
         const merchant = await fetchMerchant(match.id);
         if (merchant) merchants.push(merchant);
       }
     }
-
-    const filteredCoupons = await filterCoupons(coupons, {
+  
+    const filteredCoupons = await filterCoupons({
+      query, // Optional: You can add this support to filterCoupons() if you want to search by name/desc
       minPrice,
       maxPrice,
       allowLimitedPurchase,
@@ -54,7 +51,7 @@ export default async function PerxSearch({
       allowPointsPurchase,
       endDate,
     });
-
+  
     results = [
       ...filteredCoupons.map((c) => ({ id: c.id, type: 'coupon' as const, coupon: c })),
       ...merchants.map((m) => ({ id: m.id, type: 'merchant' as const, merchant: m })),

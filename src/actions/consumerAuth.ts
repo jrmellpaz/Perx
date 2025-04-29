@@ -72,7 +72,7 @@ export const signupConsumer = async (data: ConsumerFormInputs) => {
       interests,
       name,
       referralCode: uniqueCode,
-      hasPurchased: false,
+      purchased: false,
     },
   ]);
 
@@ -91,6 +91,7 @@ export const signupConsumer = async (data: ConsumerFormInputs) => {
       return { error: 'Referrer code not found.' };
     }
   }
+  console.log('Auth data:', authData, authError);
 
   revalidatePath('/explore');
   redirect('/explore');

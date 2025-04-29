@@ -18,30 +18,23 @@ import type { Merchant } from '@/lib/types';
 
 export default async function MerchantProfileLayout({
   tabs,
+  params,
 }: {
   tabs: ReactNode;
+  params: Promise<{ merchantId: string }>;
 }) {
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  const data = await fetchMerchant(user!.id); // Fetch profile data
-
+  const { merchantId } = await params;
+  const data = await fetchMerchant(merchantId);
   const tabItems = [
     {
       name: 'Coupons',
       icon: <TicketsIcon size={20} />,
-      path: '/merchant/profile/coupons',
+      path: `/merchant-profile/${merchantId}/coupons`,
     },
     {
       name: 'Collections',
       icon: <SquareLibraryIcon size={20} />,
-      path: '/merchant/profile/collections',
-    },
-    {
-      name: 'Archive',
-      icon: <ArchiveIcon size={20} />,
-      path: '/merchant/profile/archive',
+      path: `/merchant-profile/${merchantId}/collections`,
     },
   ];
 
@@ -102,15 +95,7 @@ function ProfileInfo({ data }: { data: Merchant }) {
 function ButtonGroup() {
   return (
     <div className="flex items-center justify-center gap-2 md:gap-4">
-      <Link href="/merchant/edit-profile">
-        <Button>Edit profile</Button>
-      </Link>
       <Button variant={'secondary'}>Share profile</Button>
-      <Link href="/merchant/settings">
-        <Button variant={'secondary'}>
-          <SettingsIcon />
-        </Button>
-      </Link>
     </div>
   );
 }

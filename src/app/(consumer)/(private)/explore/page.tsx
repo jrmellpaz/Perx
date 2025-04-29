@@ -3,9 +3,14 @@ import { PerxCoupon } from '@/components/custom/PerxCoupon';
 import { PerxLogoHeader } from '@/components/custom/PerxHeader';
 import { LoadMore } from '@/components/custom/PerxInfiniteScroll';
 import { Suspense } from 'react';
+import { createClient } from '@/utils/supabase/server';
 
 export default async function Explore() {
-  const coupons = await fetchCoupons();
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  const coupons = await fetchCoupons(user?.id);
 
   return (
     <>

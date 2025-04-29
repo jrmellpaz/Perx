@@ -19,12 +19,33 @@ export const purchaseCoupon = async (
   }
 
   try {
-    // TODO: Implement payment processing logic here
+    const { data: consumer, error: consumerError } = await supabase
+      .from('consumers')
+      .select('rank')
+      .eq('id', user.id)
+      .single();
 
-    if (paymentMethod === 'points') {
-      handlePointsPurchase(user.id, coupon.pointsAmount);
+    if (consumerError || !consumer) {
+      throw new Error('Unable to fetch consumer data.');
+    }
+
+    if (consumer.rank < coupon.rankAvailability) {
+      console.log('here');
+      return { success: false, message: `Heads up! This reward unlocks at a higher rank. A few more steps and it's yours! 🚀` };
+    }
+
+    if (paymentMethod === 'points' && coupon.quantity > 0) {
+      const result = await handlePointsPurchase(user.id, coupon.pointsAmount);
+      if (!result.success) {
+        return { success: false, message: result.message };
+      }
+    } else if (coupon.quantity > 0) {
+      const result = await handleCashPurchase(user.id, coupon.price);
+      if (!result.success) {
+        return { success: false, message: result.message };
+      }
     } else {
-      handleCashPurchase(user.id, coupon.price);
+      return { success: false, message: 'Coupon is out of stock.' };
     }
 
     const { error: insertUserCouponError } = await supabase
@@ -38,6 +59,20 @@ export const purchaseCoupon = async (
       throw new Error(
         `Error inserting user coupon: ${insertUserCouponError.message}`
       );
+    }
+
+    const newQuantity = coupon.quantity - 1;
+
+    const { error: updateError } = await supabase
+      .from('coupons')
+      .update({
+        quantity: newQuantity,
+        isDeactivated: newQuantity === 0, 
+      })
+      .eq('id', coupon.id);
+
+    if (updateError) {
+      throw new Error(`Error updating coupon: ${updateError.message}`);
     }
 
     return { success: true, message: 'Coupon purchased successfully!' };
@@ -128,22 +163,6 @@ export const handlePointsPurchase = async (
     if (updateConsumerError) {
       throw new Error(
         `Error updating consumer points balance: ${updateConsumerError.message}`
-      );
-    }
-
-    const rebatePoints: number = Math.round(pointsAmount * 0.01 * 100) / 100;
-    const rebatedPointsBalance: number = newPointsBalance + rebatePoints;
-    const { error: updateRebateError } = await supabase
-      .from('consumers')
-      .update({
-        pointsBalance: rebatedPointsBalance,
-        pointsTotal: consumer.pointsTotal + rebatePoints,
-      })
-      .eq('id', consumerId);
-
-    if (updateRebateError) {
-      throw new Error(
-        `Error updating consumer points balance after rebate: ${updateRebateError.message}`
       );
     }
 

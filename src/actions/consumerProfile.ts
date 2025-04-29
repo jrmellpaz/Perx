@@ -1,6 +1,6 @@
 'use server';
 
-import { Consumer, SuccessResponse } from '@/lib/types';
+import { Category, Consumer, SuccessResponse } from '@/lib/types';
 import { createClient } from '@/utils/supabase/server';
 
 import type { EditProfileInputs } from '@/lib/consumerSchema';
@@ -40,7 +40,11 @@ export const updateConsumerProfile = async (
 
   const { error } = await supabase
     .from('consumers')
-    .update(profileData)
+    .update({
+      ...profileData,
+      interests:
+        profileData.interests?.map((interest) => interest as Category) || null,
+    })
     .eq('id', user.id);
 
   if (error) {

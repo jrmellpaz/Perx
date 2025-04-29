@@ -6,6 +6,7 @@ import { createClient } from '@/utils/supabase/server';
 import { LoginConsumerInputs, ConsumerFormInputs } from '@/lib/consumerSchema';
 import { nanoid } from 'nanoid';
 import { logoutMerchant } from './merchantAuth';
+import { Category } from '@/lib/types';
 
 export const loginConsumer = async (data: LoginConsumerInputs) => {
   const supabase = await createClient();
@@ -69,7 +70,7 @@ export const signupConsumer = async (data: ConsumerFormInputs) => {
       id: userId,
       email: email,
       referrerCode: referrerCode,
-      interests,
+      interests: interests.map((interest) => interest as Category),
       name,
       referralCode: uniqueCode,
       purchased: false,

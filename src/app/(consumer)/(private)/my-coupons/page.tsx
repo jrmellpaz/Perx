@@ -40,7 +40,7 @@ function MyCoupon({ coupon }: { coupon: Coupon }) {
     <Link
       href={{
         pathname: '/view',
-        query: { coupon: coupon.id, merchant: coupon.merchantId },
+        query: { coupon: coupon.id, merchant: coupon.merchant_id },
       }}
       key={coupon.id}
     >

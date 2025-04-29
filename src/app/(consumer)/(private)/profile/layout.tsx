@@ -27,8 +27,8 @@ export default async function ConsumerProfileLayout({
 
   const {
     name,
-    pointsBalance,
-    pointsTotal,
+    points_balance,
+    points_total,
     rank: rankId,
   } = await fetchConsumerProfile(user!.id);
 
@@ -63,20 +63,20 @@ export default async function ConsumerProfileLayout({
   return (
     <section
       className="flex h-full flex-col overflow-x-hidden"
-      style={{ backgroundColor: `${rank.secondaryColor}33` }}
+      style={{ backgroundColor: `${rank.secondary_color}33` }}
     >
-      <Header name={name} primaryColor={rank.primaryColor} />
+      <Header name={name} primaryColor={rank.primary_color} />
       <main className="relative -top-20 flex grow flex-col items-center gap-4">
         <LoyaltyRewardsCard
           nextIcon={nextIcon}
           rank={rank}
-          balancePoints={pointsBalance}
-          totalPoints={pointsTotal}
+          balancePoints={points_balance}
+          totalPoints={points_total}
         />
         <div className="sticky top-0 z-50 w-full">
           <Tabs
             tabItems={profileNavItems}
-            style={{ backgroundColor: `${rank.secondaryColor}33` }}
+            style={{ backgroundColor: `${rank.secondary_color}33` }}
           />
         </div>
         <div className="w-[95%] max-w-[800px]">{tabs}</div>
@@ -149,7 +149,7 @@ function LoyaltyRewardsCard({
       <div className="relative -top-18 flex flex-col items-center gap-1">
         <img src={rank.icon} alt="Rank icon" className="size-32" />
         <h2
-          style={{ color: rank.primaryColor }}
+          style={{ color: rank.primary_color }}
           className="font-mono text-lg font-medium"
         >
           {rank.rank}
@@ -178,12 +178,12 @@ function LoyaltyRewardsCard({
             <Progress
               value={totalPoints}
               indicatorClass="bg-perx-rust"
-              max={rank.maxPoints}
+              max={rank.max_points}
               className="h-3"
             />
           </div>
           <div className="flex shrink-0 items-center gap-1">
-            <h3 className="font-mono font-medium">{rank.maxPoints}</h3>
+            <h3 className="font-mono font-medium">{rank.max_points}</h3>
             {nextIcon && (
               <img src={nextIcon} alt="Next tier icon" className="size-6" />
             )}

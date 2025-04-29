@@ -12,7 +12,7 @@ export default async function Achievements() {
     data: { user },
   } = await supabase.auth.getUser();
   const { rank } = await fetchConsumerProfile(user!.id);
-  const { primaryColor, secondaryColor } = await fetchRank(rank);
+  const { primary_color, secondary_color } = await fetchRank(rank);
 
   const achievements = await fetchAchievements();
 
@@ -24,8 +24,8 @@ export default async function Achievements() {
             key={index}
             achieved
             achievement={achievement}
-            primary={primaryColor}
-            secondary={secondaryColor}
+            primary={primary_color}
+            secondary={secondary_color}
           />
         ))}
       </Suspense>

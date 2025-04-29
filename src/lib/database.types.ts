@@ -11,21 +11,21 @@ export type Database = {
     Tables: {
       achievements: {
         Row: {
-          createdAt: string
+          created_at: string
           description: string
           id: number
           name: string
           points: number
         }
         Insert: {
-          createdAt?: string
+          created_at?: string
           description?: string
           id?: number
           name: string
           points?: number
         }
         Update: {
-          createdAt?: string
+          created_at?: string
           description?: string
           id?: number
           name?: string
@@ -35,43 +35,43 @@ export type Database = {
       }
       consumers: {
         Row: {
-          createdAt: string
+          created_at: string
           email: string
+          has_purchased: boolean
           id: string
           interests: Database["public"]["Enums"]["coupon_category"][] | null
           name: string
-          pointsBalance: number
-          pointsTotal: number
-          purchased: boolean
+          points_balance: number
+          points_total: number
           rank: number
-          referralCode: string
-          referrerCode: string | null
+          referral_code: string
+          referrer_code: string | null
         }
         Insert: {
-          createdAt?: string
+          created_at?: string
           email: string
+          has_purchased?: boolean
           id: string
           interests?: Database["public"]["Enums"]["coupon_category"][] | null
           name: string
-          pointsBalance?: number
-          pointsTotal?: number
-          purchased?: boolean
+          points_balance?: number
+          points_total?: number
           rank?: number
-          referralCode: string
-          referrerCode?: string | null
+          referral_code: string
+          referrer_code?: string | null
         }
         Update: {
-          createdAt?: string
+          created_at?: string
           email?: string
+          has_purchased?: boolean
           id?: string
           interests?: Database["public"]["Enums"]["coupon_category"][] | null
           name?: string
-          pointsBalance?: number
-          pointsTotal?: number
-          purchased?: boolean
+          points_balance?: number
+          points_total?: number
           rank?: number
-          referralCode?: string
-          referrerCode?: string | null
+          referral_code?: string
+          referrer_code?: string | null
         }
         Relationships: [
           {
@@ -106,79 +106,79 @@ export type Database = {
       }
       coupons: {
         Row: {
-          accentColor: Database["public"]["Enums"]["color"]
-          allowLimitedPurchase: boolean
-          allowPointsPurchase: boolean
-          allowRepeatPurchase: boolean
+          accent_color: Database["public"]["Enums"]["color"]
+          allow_limited_purchase: boolean
+          allow_points_purchase: boolean
+          allow_repeat_purchase: boolean
           category: Database["public"]["Enums"]["coupon_category"]
           created_at: string
           description: string
           id: string
           image: string
-          isDeactivated: boolean
-          merchantId: string
-          pointsAmount: number | null
+          is_deactivated: boolean
+          merchant_id: string
+          points_amount: number | null
           price: number
           quantity: number
-          rankAvailability: number
+          rank_availability: number
           text_search: unknown | null
           title: string
-          validFrom: string
-          validTo: string
+          valid_from: string
+          valid_to: string
         }
         Insert: {
-          accentColor?: Database["public"]["Enums"]["color"]
-          allowLimitedPurchase?: boolean
-          allowPointsPurchase?: boolean
-          allowRepeatPurchase?: boolean
+          accent_color?: Database["public"]["Enums"]["color"]
+          allow_limited_purchase?: boolean
+          allow_points_purchase?: boolean
+          allow_repeat_purchase?: boolean
           category?: Database["public"]["Enums"]["coupon_category"]
           created_at?: string
           description: string
           id?: string
           image: string
-          isDeactivated?: boolean
-          merchantId: string
-          pointsAmount?: number | null
+          is_deactivated?: boolean
+          merchant_id: string
+          points_amount?: number | null
           price: number
           quantity: number
-          rankAvailability?: number
+          rank_availability?: number
           text_search?: unknown | null
           title?: string
-          validFrom?: string
-          validTo: string
+          valid_from?: string
+          valid_to: string
         }
         Update: {
-          accentColor?: Database["public"]["Enums"]["color"]
-          allowLimitedPurchase?: boolean
-          allowPointsPurchase?: boolean
-          allowRepeatPurchase?: boolean
+          accent_color?: Database["public"]["Enums"]["color"]
+          allow_limited_purchase?: boolean
+          allow_points_purchase?: boolean
+          allow_repeat_purchase?: boolean
           category?: Database["public"]["Enums"]["coupon_category"]
           created_at?: string
           description?: string
           id?: string
           image?: string
-          isDeactivated?: boolean
-          merchantId?: string
-          pointsAmount?: number | null
+          is_deactivated?: boolean
+          merchant_id?: string
+          points_amount?: number | null
           price?: number
           quantity?: number
-          rankAvailability?: number
+          rank_availability?: number
           text_search?: unknown | null
           title?: string
-          validFrom?: string
-          validTo?: string
+          valid_from?: string
+          valid_to?: string
         }
         Relationships: [
           {
-            foreignKeyName: "coupons_merchantId_fkey"
-            columns: ["merchantId"]
+            foreignKeyName: "coupons_merchant_id_fkey"
+            columns: ["merchant_id"]
             isOneToOne: false
             referencedRelation: "merchants"
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "coupons_rankAvailability_fkey"
-            columns: ["rankAvailability"]
+            foreignKeyName: "coupons_rank_availability_fkey"
+            columns: ["rank_availability"]
             isOneToOne: false
             referencedRelation: "ranks"
             referencedColumns: ["id"]
@@ -189,7 +189,7 @@ export type Database = {
         Row: {
           address: string | null
           bio: string | null
-          createdAt: string
+          created_at: string
           email: string
           id: string
           logo: string
@@ -199,7 +199,7 @@ export type Database = {
         Insert: {
           address?: string | null
           bio?: string | null
-          createdAt?: string
+          created_at?: string
           email: string
           id: string
           logo: string
@@ -209,7 +209,7 @@ export type Database = {
         Update: {
           address?: string | null
           bio?: string | null
-          createdAt?: string
+          created_at?: string
           email?: string
           id?: string
           logo?: string
@@ -220,94 +220,64 @@ export type Database = {
       }
       ranks: {
         Row: {
-          createdAt: string
+          created_at: string
           icon: string
           id: number
-          maxPoints: number
-          primaryColor: string
+          max_points: number
+          primary_color: string
           rank: Database["public"]["Enums"]["rank"]
-          secondaryColor: string
+          secondary_color: string
         }
         Insert: {
-          createdAt?: string
+          created_at?: string
           icon?: string
           id?: number
-          maxPoints: number
-          primaryColor?: string
+          max_points: number
+          primary_color?: string
           rank?: Database["public"]["Enums"]["rank"]
-          secondaryColor?: string
+          secondary_color?: string
         }
         Update: {
-          createdAt?: string
+          created_at?: string
           icon?: string
           id?: number
-          maxPoints?: number
-          primaryColor?: string
+          max_points?: number
+          primary_color?: string
           rank?: Database["public"]["Enums"]["rank"]
-          secondaryColor?: string
-        }
-        Relationships: []
-      }
-      search_documents: {
-        Row: {
-          content: string | null
-          created_at: string | null
-          embedding: string | null
-          id: string
-          reference_id: string
-          type: string
-          updated_at: string | null
-        }
-        Insert: {
-          content?: string | null
-          created_at?: string | null
-          embedding?: string | null
-          id?: string
-          reference_id: string
-          type: string
-          updated_at?: string | null
-        }
-        Update: {
-          content?: string | null
-          created_at?: string | null
-          embedding?: string | null
-          id?: string
-          reference_id?: string
-          type?: string
-          updated_at?: string | null
+          secondary_color?: string
         }
         Relationships: []
       }
       user_coupons: {
         Row: {
-          consumerId: string
-          couponId: string
-          createdAt: string
+          consumer_id: string
+          coupon_id: string
+          created_at: string
           id: number
         }
         Insert: {
-          consumerId: string
-          couponId: string
-          createdAt?: string
+          consumer_id: string
+          coupon_id: string
+          created_at?: string
           id?: number
         }
         Update: {
-          consumerId?: string
-          couponId?: string
-          createdAt?: string
+          consumer_id?: string
+          coupon_id?: string
+          created_at?: string
           id?: number
         }
         Relationships: [
           {
-            foreignKeyName: "user_coupons_consumerId_fkey"
-            columns: ["consumerId"]
+            foreignKeyName: "user_coupons_consumer_id_fkey"
+            columns: ["consumer_id"]
             isOneToOne: false
             referencedRelation: "consumers"
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "user_coupons_couponId_fkey"
-            columns: ["couponId"]
+            foreignKeyName: "user_coupons_coupon_id_fkey"
+            columns: ["coupon_id"]
             isOneToOne: false
             referencedRelation: "coupons"
             referencedColumns: ["id"]

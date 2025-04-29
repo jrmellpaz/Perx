@@ -11,13 +11,13 @@ export async function PerxCoupon({
   coupon: Coupon;
   variant: 'merchant' | 'consumer';
 }) {
-  const { icon: rankIcon } = await fetchRank(coupon.rankAvailability);
+  const { icon: rankIcon } = await fetchRank(coupon.rank_availability);
 
   return (
     <Link
       href={{
         pathname: variant === 'merchant' ? '/merchant/view' : '/view',
-        query: { coupon: coupon.id, merchant: coupon.merchantId },
+        query: { coupon: coupon.id, merchant: coupon.merchant_id },
       }}
       key={coupon.id}
     >
@@ -37,10 +37,10 @@ export async function PerxCoupon({
             <span className="border-perx-black w-fit rounded-full border px-1.5 py-0.5">
               {coupon.category}
             </span>
-            {coupon.allowLimitedPurchase && (
+            {coupon.allow_limited_purchase && (
               <Clock size={20} strokeWidth={1.5} />
             )}
-            {coupon.allowPointsPurchase && (
+            {coupon.allow_points_purchase && (
               <img
                 src="/reward-points.svg"
                 alt="Reward Points"

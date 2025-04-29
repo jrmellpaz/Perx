@@ -69,11 +69,11 @@ export const signupConsumer = async (data: ConsumerFormInputs) => {
     {
       id: userId,
       email: email,
-      referrerCode: referrerCode,
+      referrer_code: referrerCode,
       interests: interests.map((interest) => interest as Category),
       name,
-      referralCode: uniqueCode,
-      purchased: false,
+      referral_code: uniqueCode,
+      has_purchased: false,
     },
   ]);
 
@@ -178,7 +178,7 @@ export const checkReferrer = async (referrerCode: string): Promise<boolean> => {
   const { data, error } = await supabase
     .from('consumers')
     .select('id')
-    .eq('referralCode', referrerCode)
+    .eq('referral_code', referrerCode)
     .single();
 
   if (error || !data) {

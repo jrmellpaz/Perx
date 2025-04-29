@@ -14,7 +14,7 @@ type FormInputs = {
 };
 
 export function PerxTicketSubmit({ coupon }: { coupon: Coupon }) {
-  const { allowPointsPurchase, accentColor } = coupon;
+  const { allow_points_purchase, accent_color } = coupon;
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const { register, handleSubmit, setValue } = useForm<FormInputs>();
@@ -44,7 +44,7 @@ export function PerxTicketSubmit({ coupon }: { coupon: Coupon }) {
       onSubmit={handleSubmit(onSubmit)}
       className="flex flex-col-reverse gap-2 sm:flex-row sm:gap-4"
     >
-      {allowPointsPurchase && (
+      {allow_points_purchase && (
         <button
           type="submit"
           onClick={() => setValue('paymentMethod', 'points')}
@@ -54,8 +54,8 @@ export function PerxTicketSubmit({ coupon }: { coupon: Coupon }) {
             isLoading && 'opacity-50'
           )}
           style={{
-            border: `1px solid ${getPrimaryAccentColor(accentColor)}`,
-            color: getPrimaryAccentColor(accentColor),
+            border: `1px solid ${getPrimaryAccentColor(accent_color)}`,
+            color: getPrimaryAccentColor(accent_color),
           }}
         >
           Purchase with Points
@@ -70,8 +70,8 @@ export function PerxTicketSubmit({ coupon }: { coupon: Coupon }) {
           isLoading && 'opacity-50'
         )}
         style={{
-          backgroundColor: getPrimaryAccentColor(accentColor),
-          color: getAccentColor(accentColor),
+          backgroundColor: getPrimaryAccentColor(accent_color),
+          color: getAccentColor(accent_color),
         }}
       >
         Pay with Cash

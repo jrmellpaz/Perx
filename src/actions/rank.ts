@@ -40,11 +40,11 @@ export const fetchRank = async (rankId: number): Promise<Rank> => {
 
   return {
     rank: data.rank,
-    maxPoints: data.maxPoints,
+    max_points: data.max_points,
     icon: data.icon,
-    primaryColor: data.primaryColor,
-    secondaryColor: data.secondaryColor,
-    createdAt: data.createdAt,
+    primary_color: data.primary_color,
+    secondary_color: data.secondary_color,
+    created_at: data.created_at,
     id: data.id,
   } as Rank;
 };

@@ -1,7 +1,6 @@
 'use server';
 
 import { createClient } from '@/utils/supabase/server';
-import { embedText } from './embedder';
 
 import type {
   Categories,
@@ -51,33 +50,31 @@ export const addCoupon = async (
       imageUrl = publicUrl;
     }
 
-    // ✨ Combine fields for text search
+    // Combine fields for text search
     const combinedText =
       `${couponData.title} ${couponData.description} ${couponData.category}`.trim();
 
-    // ✨ Generate embedding
-    const embedding = await embedText(combinedText);
-
     const { error: insertCouponError } = await supabase.from('coupons').insert({
-      accentColor: couponData.accentColor,
-      merchantId: user?.id,
+      accent_color: couponData.accentColor,
+      merchant_id: user?.id,
       title: couponData.title,
       category: couponData.category,
       description: couponData.description,
       price: couponData.price,
       quantity: couponData.quantity,
-      rankAvailability: couponData.rankAvailability,
-      allowLimitedPurchase: couponData.allowLimitedPurchase,
-      validFrom: couponData.allowLimitedPurchase
+      rank_availability: couponData.rankAvailability,
+      allow_limited_purchase: couponData.allowLimitedPurchase,
+      valid_from: couponData.allowLimitedPurchase
         ? couponData.dateRange?.start
         : new Date().toISOString(),
-      validTo: couponData.allowLimitedPurchase
+      valid_to: couponData.allowLimitedPurchase
         ? couponData.dateRange?.end
         : new Date(Date.now() + 1000 * 60 * 60 * 24 * 30).toISOString(),
       image: imageUrl,
-      allowPointsPurchase: couponData.allowPointsPurchase,
-      pointsAmount: couponData.pointsAmount,
-      allowRepeatPurchase: couponData.allowRepeatPurchase,
+      allow_points_purchase: couponData.allowPointsPurchase,
+      points_amount: couponData.pointsAmount,
+      allow_repeat_purchase: couponData.allowRepeatPurchase,
+      text_search: combinedText,
     } as InsertCoupon);
 
     if (insertCouponError) {
@@ -115,7 +112,7 @@ export const fetchCoupons = async (
   const { data: couponsData, error: couponsError } = await supabase
     .from('coupons')
     .select('*')
-    .eq('isDeactivated', false)
+    .eq('is_deactivated', false)
     .gt('quantity', 0)
     .order('created_at', { ascending: false })
     .range(0, 9);
@@ -132,10 +129,10 @@ export const fetchCoupons = async (
   const filteredAndRanked: FilteredCoupon[] = (couponsData || [])
     .filter((coupon: FilteredCoupon) => {
       const isWithinDateRange =
-        !coupon.allowLimitedPurchase ||
-        (coupon.allowLimitedPurchase &&
-          new Date(coupon.validFrom).getTime() <= Date.now() &&
-          new Date(coupon.validTo).getTime() >= Date.now());
+        !coupon.allow_limited_purchase ||
+        (coupon.allow_limited_purchase &&
+          new Date(coupon.valid_from).getTime() <= Date.now() &&
+          new Date(coupon.valid_to).getTime() >= Date.now());
       return isWithinDateRange;
     })
     .map((coupon: FilteredCoupon) => ({
@@ -169,7 +166,7 @@ export const fetchCouponsByMerchantId = async (
   const { data, error } = await supabase
     .from('coupons')
     .select('*')
-    .eq('merchantId', merchantId)
+    .eq('merchant_id', merchantId)
     .order('created_at', { ascending: false });
 
   if (error) {
@@ -187,7 +184,7 @@ export const fetchCouponsByConsumerId = async (
   const { data, error } = await supabase
     .from('user_coupons')
     .select('*, coupons(*)')
-    .eq('consumerId', consumerId)
+    .eq('consumer_id', consumerId)
     .order('created_at', { ascending: false });
 
   if (error) {
@@ -239,16 +236,16 @@ export async function filterCoupons(filters: CouponFilters & { query?: string })
     queryBuilder = queryBuilder.lte('price', filters.maxPrice);
   }
   if (filters.allowLimitedPurchase !== undefined) {
-    queryBuilder = queryBuilder.eq('allowLimitedPurchase', filters.allowLimitedPurchase);
+    queryBuilder = queryBuilder.eq('allow_limited_purchase', filters.allowLimitedPurchase);
   }
   if (filters.allowRepeatPurchase !== undefined) {
-    queryBuilder = queryBuilder.eq('allowRepeatPurchase', filters.allowRepeatPurchase);
+    queryBuilder = queryBuilder.eq('allow_repeat_purchase', filters.allowRepeatPurchase);
   }
   if (filters.allowPointsPurchase !== undefined) {
-    queryBuilder = queryBuilder.eq('allowPointsPurchase', filters.allowPointsPurchase);
+    queryBuilder = queryBuilder.eq('allow_points_purchase', filters.allowPointsPurchase);
   }
   if (filters.endDate !== undefined) {
-    queryBuilder = queryBuilder.lte('validTo', filters.endDate.toISOString());
+    queryBuilder = queryBuilder.lte('valid_to', filters.endDate.toISOString());
   }
 
   const { data, error } = await queryBuilder;

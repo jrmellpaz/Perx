@@ -9,15 +9,15 @@ export default async function Missions() {
     data: { user },
   } = await supabase.auth.getUser();
 
-  const { referralCode, rank: rankId } = await fetchConsumerProfile(user!.id);
+  const { referral_code, rank: rankId } = await fetchConsumerProfile(user!.id);
   const rank = await fetchRank(rankId);
 
   return (
     <section className="flex flex-col">
       <ReferralCard
-        referral_code={referralCode}
-        primary={rank.primaryColor}
-        secondary={rank.secondaryColor}
+        referral_code={referral_code}
+        primary={rank.primary_color}
+        secondary={rank.secondary_color}
       />
     </section>
   );

@@ -23,20 +23,20 @@ export async function PerxTicket({
     title,
     description,
     price,
-    allowLimitedPurchase,
-    validFrom = '',
-    validTo = '',
-    isDeactivated,
+    allow_limited_purchase,
+    valid_from = '',
+    valid_to = '',
+    is_deactivated,
     image,
     quantity,
     category,
-    accentColor,
-    rankAvailability,
-    allowPointsPurchase,
-    pointsAmount,
+    accent_color,
+    rank_availability,
+    allow_points_purchase,
+    points_amount,
   } = couponData;
 
-  const { rank, icon } = await fetchRank(rankAvailability);
+  const { rank, icon } = await fetchRank(rank_availability);
 
   return (
     // <section
@@ -47,7 +47,7 @@ export async function PerxTicket({
       className={cn(
         `relative flex w-[90%] flex-col rounded-lg shadow-xl sm:w-[60%] sm:max-w-[480px]`
       )}
-      style={{ backgroundColor: getAccentColor(accentColor) }}
+      style={{ backgroundColor: getAccentColor(accent_color) }}
     >
       <div className="flex flex-col items-center">
         <div className="h-auto w-full overflow-hidden rounded-t-lg">
@@ -60,7 +60,7 @@ export async function PerxTicket({
         <div className="flex w-full flex-col gap-4 px-6 pt-2 pb-4">
           <div className="flex flex-col gap-1.5">
             <h2
-              style={{ color: getPrimaryAccentColor(accentColor) }}
+              style={{ color: getPrimaryAccentColor(accent_color) }}
               className="font-mono text-lg/tight font-black tracking-tight"
             >
               {title}
@@ -93,7 +93,7 @@ export async function PerxTicket({
           <div className="flex items-center overflow-y-auto">
             <div className="flex shrink-0 flex-col items-center">
               <h3
-                style={{ color: getPrimaryAccentColor(accentColor) }}
+                style={{ color: getPrimaryAccentColor(accent_color) }}
                 className={`font-mono text-sm font-medium tracking-tight`}
               >
                 {quantity}
@@ -102,19 +102,19 @@ export async function PerxTicket({
                 Items left
               </p>
             </div>
-            {allowLimitedPurchase && (
+            {allow_limited_purchase && (
               <>
                 <div className="border-muted-foreground mx-3 h-6 w-[0.25px] rounded-full border-l-[0.5px]"></div>
                 <div className="flex shrink-0 flex-col items-center">
                   <Suspense fallback={<p>Loading...</p>}>
                     <PerxCountdown
-                      targetDate={validTo}
+                      targetDate={valid_to}
                       className="font-mono text-sm font-medium tracking-tight"
-                      style={{ color: getPrimaryAccentColor(accentColor) }}
+                      style={{ color: getPrimaryAccentColor(accent_color) }}
                     />
                   </Suspense>
                   <p className="text-perx-black text-xs tracking-tight">
-                    Valid until {formatDate(validTo)}
+                    Valid until {formatDate(valid_to)}
                   </p>
                 </div>
               </>
@@ -129,14 +129,14 @@ export async function PerxTicket({
           </div>
           <div className="flex flex-col">
             <h3
-              style={{ color: getPrimaryAccentColor(accentColor) }}
+              style={{ color: getPrimaryAccentColor(accent_color) }}
               className="font-mono text-xs font-medium tracking-tight"
             >
               About this coupon
             </h3>
             <PerxReadMore
               id="coupon-description"
-              accentColor={accentColor}
+              accentColor={accent_color}
               text={description}
             />
           </div>
@@ -145,17 +145,17 @@ export async function PerxTicket({
       {/* Broken Line Divider */}
       <div className="relative flex items-center">
         <div
-          style={{ borderColor: getPrimaryAccentColor(accentColor) }}
+          style={{ borderColor: getPrimaryAccentColor(accent_color) }}
           className="w-full border-t border-dashed"
         ></div>
         {/* Left Circular Div */}
         <div
-          style={{ backgroundColor: getPrimaryAccentColor(accentColor) }}
+          style={{ backgroundColor: getPrimaryAccentColor(accent_color) }}
           className={`inset-right absolute -left-3 size-6 rounded-full`}
         ></div>
         {/* Right Circular Div */}
         <div
-          style={{ backgroundColor: getPrimaryAccentColor(accentColor) }}
+          style={{ backgroundColor: getPrimaryAccentColor(accent_color) }}
           className={`inset-left absolute -right-3 size-6 rounded-full`}
         ></div>
       </div>
@@ -164,12 +164,12 @@ export async function PerxTicket({
         {/* Price Section */}
         <div className="flex flex-col items-center gap-2">
           <span
-            style={{ color: getPrimaryAccentColor(accentColor) }}
+            style={{ color: getPrimaryAccentColor(accent_color) }}
             className="font-mono text-xl font-bold"
           >
             &#8369;{price.toFixed(2)}
           </span>
-          {allowPointsPurchase && (
+          {allow_points_purchase && (
             <span className="text-perx-black flex items-center gap-1 text-sm tracking-tighter">
               or&nbsp;
               <img
@@ -179,7 +179,7 @@ export async function PerxTicket({
                 height={18}
                 className="pb-0.25"
               />{' '}
-              {pointsAmount} points
+              {points_amount} points
             </span>
           )}
         </div>

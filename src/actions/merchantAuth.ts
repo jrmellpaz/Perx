@@ -5,7 +5,6 @@ import { redirect } from 'next/navigation';
 import { createClient } from '@/utils/supabase/server';
 import { LoginMerchantInputs, MerchantFormInputs } from '@/lib/merchantSchema';
 import { logoutConsumer } from './consumerAuth';
-import { embedText } from './embedder';
 
 export const loginMerchant = async (data: LoginMerchantInputs) => {
   const supabase = await createClient();
@@ -88,9 +87,6 @@ export const signupMerchant = async (data: MerchantFormInputs) => {
    // Generate text_search (tsvector)
    const textToSearch = `${businessName} ${description} ${address}`.trim();
 
-   // Generate embedding (vector)
-   const embedding = await embedText(textToSearch);
-
   // Insert merchant details in public.merchants table
   const { error: merchantsTableError } = await supabase
     .from('merchants')
@@ -101,7 +97,6 @@ export const signupMerchant = async (data: MerchantFormInputs) => {
       address,
       logo: logoUrl.publicUrl,
       id: merchantId,
-      // embedding: embedding,
       text_search: textToSearch,
     });
 

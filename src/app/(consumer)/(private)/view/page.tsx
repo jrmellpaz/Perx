@@ -26,14 +26,14 @@ export default async function ViewCoupon({
   return (
     <section
       className="view-container flex h-full w-full flex-col items-center overflow-y-auto bg-transparent pb-14"
-      style={{ backgroundColor: getPrimaryAccentColor(coupon.accentColor) }}
+      style={{ backgroundColor: getPrimaryAccentColor(coupon.accent_color) }}
     >
       <PerxHeader
         title=""
         className="text-white"
-        style={{ backgroundColor: getPrimaryAccentColor(coupon.accentColor) }}
+        style={{ backgroundColor: getPrimaryAccentColor(coupon.accent_color) }}
         buttonStyle={{
-          backgroundColor: getPrimaryAccentColor(coupon.accentColor),
+          backgroundColor: getPrimaryAccentColor(coupon.accent_color),
         }}
       />
       <div className="flex w-full grow items-center justify-center">

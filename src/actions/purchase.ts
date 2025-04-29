@@ -29,13 +29,13 @@ export const purchaseCoupon = async (
       throw new Error('Unable to fetch consumer data.');
     }
 
-    if (consumer.rank < coupon.rankAvailability) {
+    if (consumer.rank < coupon.rank_availability) {
       console.log('here');
       return { success: false, message: `Heads up! This reward unlocks at a higher rank. A few more steps and it's yours! 🚀` };
     }
 
     if (paymentMethod === 'points' && coupon.quantity > 0) {
-      const result = await handlePointsPurchase(user.id, coupon.pointsAmount);
+      const result = await handlePointsPurchase(user.id, coupon.points_amount);
       if (!result.success) {
         return { success: false, message: result.message };
       }
@@ -51,8 +51,8 @@ export const purchaseCoupon = async (
     const { error: insertUserCouponError } = await supabase
       .from('user_coupons')
       .insert({
-        couponId: coupon.id,
-        consumerId: user.id,
+        coupon_id: coupon.id,
+        consumer_id: user.id,
       });
 
     if (insertUserCouponError) {
@@ -67,7 +67,7 @@ export const purchaseCoupon = async (
       .from('coupons')
       .update({
         quantity: newQuantity,
-        isDeactivated: newQuantity === 0, 
+        is_deactivated: newQuantity === 0, 
       })
       .eq('id', coupon.id);
 
@@ -102,8 +102,8 @@ export const handleCashPurchase = async (
     const { error: updateRebateError } = await supabase
       .from('consumers')
       .update({
-        pointsBalance: consumer.pointsBalance + rebatePoints,
-        pointsTotal: consumer.pointsTotal + rebatePoints,
+        points_balance: consumer.points_balance + rebatePoints,
+        points_total: consumer.points_total + rebatePoints,
       })
       .eq('id', consumerId);
 
@@ -113,18 +113,18 @@ export const handleCashPurchase = async (
       );
     }
 
-    if (!consumer.purchased) {
+    if (!consumer.has_purchased) {
       const { error: updateError } = await supabase
         .from('consumers')
-        .update({ 'purchased': true })
+        .update({ has_purchased : true })
         .eq('id', consumerId);
 
       if (updateError) {
         console.error('Error updating hasPurchased:', updateError.message);
       }
 
-      if (consumer.referrerCode) {
-        rewardReferrer(consumer.referrerCode);
+      if (consumer.referrer_code) {
+        rewardReferrer(consumer.referrer_code);
       }
     }
     return { success: true, message: 'Cash purchase successful!' };
@@ -150,14 +150,14 @@ export const handlePointsPurchase = async (
       throw new Error(`Error fetching consumer: ${fetchConsumerError.message}`);
     }
 
-    if (pointsAmount === null || consumer.pointsBalance < pointsAmount) {
+    if (pointsAmount === null || consumer.points_balance < pointsAmount) {
       return { success: false, message: 'Insufficient points balance' };
     }
 
-    const newPointsBalance: number = consumer.pointsBalance - pointsAmount;
+    const newPointsBalance: number = consumer.points_balance - pointsAmount;
     const { error: updateConsumerError } = await supabase
       .from('consumers')
-      .update({ pointsBalance: newPointsBalance })
+      .update({ points_balance: newPointsBalance })
       .eq('id', consumerId);
 
     if (updateConsumerError) {
@@ -166,15 +166,15 @@ export const handlePointsPurchase = async (
       );
     }
 
-    if (!consumer.purchased) {
+    if (!consumer.has_purchased) {
       await supabase
         .from('consumers')
-        .update({ purchased: true })
+        .update({ has_purchased: true })
         .eq('id', consumerId);
 
       // Reward referrer
-      if (consumer.referrerCode) {
-        rewardReferrer(consumer.referrerCode);
+      if (consumer.referrer_code) {
+        rewardReferrer(consumer.referrer_code);
       }
     }
 
@@ -190,7 +190,7 @@ const rewardReferrer = async (referrerId: string): Promise<void> => {
   const { data: referrer, error: fetchReferrerError } = await supabase
     .from('consumers')
     .select('*')
-    .eq('referralCode', referrerId)
+    .eq('referral_code', referrerId)
     .single();
 
   if (fetchReferrerError) {
@@ -198,13 +198,13 @@ const rewardReferrer = async (referrerId: string): Promise<void> => {
   }
 
   const REWARD: number = 50;
-  const newReferrerPointsBalance: number = referrer.pointsBalance + REWARD;
+  const newReferrerPointsBalance: number = referrer.points_balance + REWARD;
 
   const { error: updateReferrerError } = await supabase
     .from('consumers')
     .update({
-      pointsBalance: newReferrerPointsBalance,
-      pointsTotal: referrer.pointsTotal + REWARD,
+      points_balance: newReferrerPointsBalance,
+      points_total: referrer.points_total + REWARD,
     })
     .eq('id', referrer.id);
 

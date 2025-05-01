@@ -89,7 +89,7 @@ export const addCoupon = async (
 };
 
 export const fetchCoupons = async (
-  consumerId: string = ''
+  consumerId: string | undefined
 ): Promise<Coupons> => {
   const supabase = await createClient();
 
@@ -217,7 +217,9 @@ type CouponFilters = {
   query?: string;
 };
 
-export async function filterCoupons(filters: CouponFilters & { query?: string }): Promise<Coupon[]> {
+export async function filterCoupons(
+  filters: CouponFilters & { query?: string }
+): Promise<Coupon[]> {
   const supabase = await createClient();
   let queryBuilder = supabase.from('coupons').select('*');
 
@@ -226,7 +228,9 @@ export async function filterCoupons(filters: CouponFilters & { query?: string })
     // queryBuilder = queryBuilder.textSearch('name', filters.query);
 
     // Option 2: Use ILIKE for case-insensitive partial matching
-    queryBuilder = queryBuilder.or(`title.ilike.%${filters.query}%,description.ilike.%${filters.query}%`);
+    queryBuilder = queryBuilder.or(
+      `title.ilike.%${filters.query}%,description.ilike.%${filters.query}%`
+    );
   }
 
   if (filters.minPrice !== undefined) {
@@ -236,13 +240,22 @@ export async function filterCoupons(filters: CouponFilters & { query?: string })
     queryBuilder = queryBuilder.lte('price', filters.maxPrice);
   }
   if (filters.allowLimitedPurchase !== undefined) {
-    queryBuilder = queryBuilder.eq('allow_limited_purchase', filters.allowLimitedPurchase);
+    queryBuilder = queryBuilder.eq(
+      'allow_limited_purchase',
+      filters.allowLimitedPurchase
+    );
   }
   if (filters.allowRepeatPurchase !== undefined) {
-    queryBuilder = queryBuilder.eq('allow_repeat_purchase', filters.allowRepeatPurchase);
+    queryBuilder = queryBuilder.eq(
+      'allow_repeat_purchase',
+      filters.allowRepeatPurchase
+    );
   }
   if (filters.allowPointsPurchase !== undefined) {
-    queryBuilder = queryBuilder.eq('allow_points_purchase', filters.allowPointsPurchase);
+    queryBuilder = queryBuilder.eq(
+      'allow_points_purchase',
+      filters.allowPointsPurchase
+    );
   }
   if (filters.endDate !== undefined) {
     queryBuilder = queryBuilder.lte('valid_to', filters.endDate.toISOString());

@@ -1,5 +1,10 @@
 import { Database } from './database.types';
 
+// Combination
+export type CouponWithRank = Database['public']['Tables']['coupons']['Row'] & {
+  ranks: Database['public']['Tables']['ranks']['Row'];
+};
+
 // Rank
 export type Rank = Database['public']['Tables']['ranks']['Row'];
 export type Ranks = Rank[];

@@ -1,15 +1,20 @@
 'use client';
 
-import { LoaderCircle } from 'lucide-react';
+import { on } from 'events';
 import { useEffect } from 'react';
 import { useInView } from 'react-intersection-observer';
 
-export function LoadMore() {
+interface LoadMoreProps {
+  onLoadMore: () => void;
+  isLoading: boolean;
+}
+
+export function LoadMore({ onLoadMore, isLoading }: LoadMoreProps) {
   const { ref, inView } = useInView();
 
   useEffect(() => {
-    if (inView) {
-      alert('Load more items!');
+    if (inView && !isLoading) {
+      onLoadMore();
     }
   }, [inView]);
 

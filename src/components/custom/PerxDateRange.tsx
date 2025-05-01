@@ -28,12 +28,16 @@ export default function PerxDateRange({
         <DatePicker
           id="startDate"
           selected={value.start ? new Date(value.start) : null} // Convert string to Date
-          onChange={(date) =>
+          onChange={(date) => {
+            if (date) {
+              date.setHours(0, 0, 0, 0);
+            }
+
             onChange({
               ...value,
               start: date ? date.toISOString() : null, // Convert Date to ISO string
-            })
-          }
+            });
+          }}
           selectsStart
           startDate={value.start ? new Date(value.start) : null}
           endDate={value.end ? new Date(value.end) : null}
@@ -52,12 +56,16 @@ export default function PerxDateRange({
         <DatePicker
           id="endDate"
           selected={value.end ? new Date(value.end) : null} // Convert string to Date
-          onChange={(date) =>
+          onChange={(date) => {
+            if (date) {
+              date.setHours(0, 0, 0, 0);
+            }
+
             onChange({
               ...value,
               end: date ? date.toISOString() : null, // Convert Date to ISO string
-            })
-          }
+            });
+          }}
           selectsEnd
           startDate={value.start ? new Date(value.start) : null}
           endDate={value.end ? new Date(value.end) : null}

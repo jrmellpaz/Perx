@@ -3,7 +3,7 @@
 import { fetchCoupons } from '@/actions/coupon';
 import { CouponWithRank } from '@/lib/types';
 import { useEffect, useState } from 'react';
-import { LoadMore } from '../custom/PerxInfiniteScroll';
+import { LoadMore } from '../custom/PerxLoadMore';
 import { Coupon } from '../custom/Coupon';
 
 interface ExploreListProps {

@@ -17,7 +17,6 @@ type FormInputs = {
 export function PerxTicketSubmit({ coupon }: { coupon: Coupon }) {
   const { allow_points_purchase, accent_color } = coupon;
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const urlPath = useSearchParams();
 
   const { register, handleSubmit, setValue } = useForm<FormInputs>();
 
@@ -25,7 +24,7 @@ export function PerxTicketSubmit({ coupon }: { coupon: Coupon }) {
     setIsLoading(true);
 
     try {
-      const result = await purchaseCoupon(coupon, data.paymentMethod, urlPath);
+      const result = await purchaseCoupon(coupon, data.paymentMethod);
 
       if (result.success) {
         toast(result.message);

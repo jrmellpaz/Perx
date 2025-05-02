@@ -1,14 +1,13 @@
 'use server';
 
 import { createClient } from '@/utils/supabase/server';
-import { ReadonlyURLSearchParams, redirect } from 'next/navigation';
+import { redirect } from 'next/navigation';
 
 import type { Coupon, SuccessResponse } from '@/lib/types';
 
 export const purchaseCoupon = async (
   coupon: Coupon,
-  paymentMethod: 'cash' | 'points',
-  url: ReadonlyURLSearchParams
+  paymentMethod: 'cash' | 'points'
 ): Promise<SuccessResponse> => {
   const supabase = await createClient();
   const {
@@ -16,9 +15,9 @@ export const purchaseCoupon = async (
   } = await supabase.auth.getUser();
 
   if (!user) {
-    const coupon = url.get('coupon');
-    const merchant = url.get('merchant');
-    redirect(`/login?next=/view?coupon=${coupon}&merchant=${merchant}`);
+    redirect(
+      `/login?next=${encodeURIComponent(`/view?coupon=${coupon.id}&merchant=${coupon.merchant_id}`)}`
+    );
   }
 
   try {

@@ -114,7 +114,7 @@ export const logoutConsumer = async () => {
   }
 
   revalidatePath('/', 'layout');
-  redirect('/login');
+  redirect('/explore');
 };
 
 export const recoverPassword = async (email: string) => {

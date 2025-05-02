@@ -1,4 +1,3 @@
-import { fetchCoupons } from '@/actions/coupon';
 import { PerxLogoHeader } from '@/components/custom/PerxHeader';
 import { createClient } from '@/utils/supabase/server';
 import { ExploreList } from '@/components/consumer/ExploreList';
@@ -8,7 +7,6 @@ export default async function Explore() {
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  const coupons = await fetchCoupons(user?.id);
 
   return (
     <>

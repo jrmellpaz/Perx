@@ -97,7 +97,7 @@ export const addCoupon = async (
 export const fetchCoupons = async (
   consumerId: string | undefined,
   offset: number = 0,
-  limit: number = 9
+  limit: number = 12
 ): Promise<FetchCouponsResponse> => {
   const supabase = await createClient();
 
@@ -121,7 +121,6 @@ export const fetchCoupons = async (
     .from('coupons')
     .select('*, ranks(*)')
     .eq('is_deactivated', false)
-    .gt('quantity', 0)
     .order('created_at', { ascending: false })
     .range(offset, offset + limit - 1);
 
@@ -172,21 +171,30 @@ export const fetchCoupon = async (couponId: string): Promise<Coupon> => {
 };
 
 export const fetchCouponsByMerchantId = async (
-  merchantId: string
-): Promise<Coupons> => {
+  merchantId: string,
+  offset: number = 0,
+  limit: number = 12,
+  {
+    isDeactivated = false,
+  }: {
+    isDeactivated: boolean;
+  }
+): Promise<FetchCouponsResponse> => {
   const supabase = await createClient();
   const { data, error } = await supabase
     .from('coupons')
-    .select('*')
+    .select('*, ranks(*)')
     .eq('merchant_id', merchantId)
-    .order('created_at', { ascending: false });
+    .eq('is_deactivated', isDeactivated)
+    .order('created_at', { ascending: false })
+    .range(offset, offset + limit - 1);
 
   if (error) {
     console.error('Fetch Coupons by Merchant ID Error:', error);
-    return [];
+    return { coupons: [], count: 0 };
   }
 
-  return data as Coupons;
+  return { coupons: data as CouponWithRank[], count: data.length };
 };
 
 export const fetchCouponsByConsumerId = async (

@@ -56,7 +56,7 @@ export function LoginSection() {
       <h2 className="text-muted-foreground mb-2 text-sm font-medium">
         Log Out
       </h2>
-      <div className="w-full rounded-md bg-white">
+      <div className="divide-border w-full divide-y rounded-md bg-white">
         <LogoutButton />
       </div>
     </div>

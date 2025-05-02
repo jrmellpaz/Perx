@@ -1,5 +1,4 @@
-import { fetchCouponsByMerchantId } from '@/actions/coupon';
-import { PerxCoupon } from '@/components/custom/PerxCoupon';
+import { MerchantCouponList } from '@/components/custom/MerchantCouponList';
 import { createClient } from '@/utils/supabase/server';
 import { redirect } from 'next/navigation';
 
@@ -13,13 +12,5 @@ export default async function CouponsTab() {
     redirect('/not-found');
   }
 
-  const coupons = await fetchCouponsByMerchantId(user.id);
-
-  return (
-    <div className="mb-4 grid grid-cols-1 gap-0.5 sm:grid-cols-2 sm:px-8 md:grid-cols-3 md:gap-1">
-      {coupons.map((coupon) => (
-        <PerxCoupon coupon={coupon} key={coupon.id} variant="merchant" />
-      ))}
-    </div>
-  );
+  return <MerchantCouponList userId={user.id} />;
 }

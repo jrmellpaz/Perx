@@ -1,18 +1,18 @@
 'use client';
 
-import { fetchCoupons } from '@/actions/coupon';
 import { useEffect, useState } from 'react';
-import { LoadMore } from '../custom/PerxLoadMore';
-import { Coupon } from '../custom/Coupon';
-import { CouponGridSkeleton } from '../custom/PerxSkeleton';
+import { Coupon } from './Coupon';
+import { fetchCouponsByMerchantId } from '@/actions/coupon';
+import { LoadMore } from './PerxLoadMore';
 
 import type { CouponWithRank } from '@/lib/types';
+import { CouponGridSkeleton } from './PerxSkeleton';
 
-interface ExploreListProps {
-  userId: string | undefined;
+interface CouponListProps {
+  userId: string;
 }
 
-export function ExploreList({ userId }: ExploreListProps) {
+export function MerchantCouponList({ userId }: CouponListProps) {
   const [coupons, setCoupons] = useState<CouponWithRank[]>([]);
   const [offset, setOffset] = useState<number>(0);
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -22,11 +22,11 @@ export function ExploreList({ userId }: ExploreListProps) {
 
   const loadCoupons = async () => {
     setIsLoading(true);
-    const { coupons: newCoupons, count: fetchCount } = await fetchCoupons(
-      userId,
-      offset,
-      LIMIT
-    );
+
+    const { coupons: newCoupons, count: fetchCount } =
+      await fetchCouponsByMerchantId(userId, offset, LIMIT, {
+        isDeactivated: false,
+      });
 
     if (fetchCount < LIMIT) {
       setHasMore(false);
@@ -43,11 +43,11 @@ export function ExploreList({ userId }: ExploreListProps) {
   }, []);
 
   return (
-    <div className="grid w-full grid-cols-1 items-center gap-2 sm:grid-cols-2 md:grid-cols-3 md:gap-3">
+    <div className="mb-4 grid grid-cols-1 gap-0.5 sm:grid-cols-2 sm:px-8 md:grid-cols-3 md:gap-1">
       {coupons.length > 0 ? (
         <>
           {coupons.map((coupon, index) => (
-            <Coupon key={index} coupon={coupon} variant="consumer" />
+            <Coupon coupon={coupon} key={index} variant="merchant" />
           ))}
           {hasMore && (
             <LoadMore onLoadMore={loadCoupons} isLoading={isLoading} />

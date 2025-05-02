@@ -1,6 +1,7 @@
 import Link from 'next/link';
 
 import type { Merchant } from '@/lib/types';
+import { MapIcon, MapPinIcon, PinIcon } from 'lucide-react';
 
 export function MerchantCard({ merchant }: { merchant: Merchant }) {
   return (
@@ -14,7 +15,10 @@ export function MerchantCard({ merchant }: { merchant: Merchant }) {
           <h2 className="font-mono text-lg font-bold">{merchant.name}</h2>
         </div>
         <p className="text-sm text-gray-600">{merchant.bio}</p>
-        <p className="text-xs text-gray-400">{merchant.address}</p>
+        <div className="flex items-center gap-0.5 text-gray-400">
+          <MapPinIcon className="size-3.5" />
+          <p className="text-xs">{merchant.address}</p>
+        </div>
       </div>
     </Link>
   );

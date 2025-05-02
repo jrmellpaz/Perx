@@ -51,8 +51,8 @@ export default function ConsumerTemplate({
       <nav className="bg-perx-white h-18 w-dvw shrink-0 shadow-md md:h-dvh md:w-64 md:shadow-none">
         <div className="hidden h-full p-2 md:flex md:flex-col md:justify-between">
           <div>
-            <div className="my-4 ml-2 h-10">
-              <ConsumerLogo />
+            <div className="my-4 ml-2 h-8">
+              <ConsumerLogo logoClass="text-2xl pb-2" />
             </div>
             <VerticalNav />
           </div>

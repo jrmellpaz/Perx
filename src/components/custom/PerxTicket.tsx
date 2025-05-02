@@ -39,10 +39,6 @@ export async function PerxTicket({
   const { rank, icon } = await fetchRank(rank_availability);
 
   return (
-    // <section
-    //   style={{ backgroundColor: getPrimaryAccentColor(accentColor) }}
-    //   className={`flex h-full w-full items-center justify-center pb-16`}
-    // >
     <div
       className={cn(
         `relative flex w-[90%] flex-col rounded-lg shadow-xl sm:w-[60%] sm:max-w-[480px]`
@@ -186,7 +182,6 @@ export async function PerxTicket({
         <div>{children}</div>
       </div>
     </div>
-    // </section>
   );
 }
 

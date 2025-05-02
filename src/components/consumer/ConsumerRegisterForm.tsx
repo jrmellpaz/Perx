@@ -48,7 +48,13 @@ const steps = [
   },
 ];
 
-export default function ConsumerRegisterForm() {
+interface ConsumerRegisterFormProps {
+  redirectUrl: string;
+}
+
+export default function ConsumerRegisterForm({
+  redirectUrl,
+}: ConsumerRegisterFormProps) {
   const [previousStep, setPreviousStep] = useState<number>(0);
   const [currentStep, setCurrentStep] = useState<number>(0);
   const [submitError, setSubmitError] = useState<string | null>(null);
@@ -86,7 +92,7 @@ export default function ConsumerRegisterForm() {
           return;
         }
       }
-      await signupConsumer(data);
+      await signupConsumer(data, { redirectUrl });
       reset();
       setSubmitError(null);
     } catch (error: unknown) {
@@ -169,16 +175,16 @@ export default function ConsumerRegisterForm() {
             />
           )}
           {currentStep === 2 && (
-          <div className="max-h-[300px] overflow-y-auto">
-            <Step3
-              register={register}
-              errors={errors}
-              delta={delta}
-              watch={watch}
-              setValue={setValue}
-            />
-          </div>
-        )}
+            <div className="max-h-[300px] overflow-y-auto">
+              <Step3
+                register={register}
+                errors={errors}
+                delta={delta}
+                watch={watch}
+                setValue={setValue}
+              />
+            </div>
+          )}
         </div>
         <Navigation
           next={next}
@@ -340,7 +346,6 @@ function Step2({
     </motion.div>
   );
 }
-
 
 function Step3({
   register,

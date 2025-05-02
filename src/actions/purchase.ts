@@ -1,13 +1,14 @@
 'use server';
 
 import { createClient } from '@/utils/supabase/server';
-import { redirect } from 'next/navigation';
+import { ReadonlyURLSearchParams, redirect } from 'next/navigation';
 
 import type { Coupon, SuccessResponse } from '@/lib/types';
 
 export const purchaseCoupon = async (
   coupon: Coupon,
-  paymentMethod: 'cash' | 'points'
+  paymentMethod: 'cash' | 'points',
+  url: ReadonlyURLSearchParams
 ): Promise<SuccessResponse> => {
   const supabase = await createClient();
   const {
@@ -15,7 +16,9 @@ export const purchaseCoupon = async (
   } = await supabase.auth.getUser();
 
   if (!user) {
-    redirect('/login');
+    const coupon = url.get('coupon');
+    const merchant = url.get('merchant');
+    redirect(`/login?next=/view?coupon=${coupon}&merchant=${merchant}`);
   }
 
   try {
@@ -31,7 +34,10 @@ export const purchaseCoupon = async (
 
     if (consumer.rank < coupon.rank_availability) {
       console.log('here');
-      return { success: false, message: `Heads up! This reward unlocks at a higher rank. A few more steps and it's yours! 🚀` };
+      return {
+        success: false,
+        message: `Heads up! This reward unlocks at a higher rank. A few more steps and it's yours! 🚀`,
+      };
     }
 
     if (paymentMethod === 'points' && coupon.quantity > 0) {
@@ -67,7 +73,7 @@ export const purchaseCoupon = async (
       .from('coupons')
       .update({
         quantity: newQuantity,
-        is_deactivated: newQuantity === 0, 
+        is_deactivated: newQuantity === 0,
       })
       .eq('id', coupon.id);
 
@@ -116,7 +122,7 @@ export const handleCashPurchase = async (
     if (!consumer.has_purchased) {
       const { error: updateError } = await supabase
         .from('consumers')
-        .update({ has_purchased : true })
+        .update({ has_purchased: true })
         .eq('id', consumerId);
 
       if (updateError) {

@@ -15,7 +15,13 @@ import PerxAlert from '../custom/PerxAlert';
 import { LoaderCircle } from 'lucide-react';
 import SignInWithGoogle from './SignInWithGoogle';
 
-export default function ConsumerLoginForm() {
+interface ConsumerLoginFormProps {
+  redirectUrl: string;
+}
+
+export default function ConsumerLoginForm({
+  redirectUrl,
+}: ConsumerLoginFormProps) {
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
@@ -31,7 +37,7 @@ export default function ConsumerLoginForm() {
   const onSubmit = async (data: LoginConsumerInputs) => {
     setIsLoading(true);
     try {
-      const result = await loginConsumer(data);
+      const result = await loginConsumer(data, { redirectUrl });
       if (result?.error) {
         setSubmitError(result.error);
       } else {
@@ -61,7 +67,7 @@ export default function ConsumerLoginForm() {
         className="flex flex-col justify-between"
       >
         <InputFields register={register} errors={errors} />
-        <ButtonGroup isLoading={isLoading} />
+        <ButtonGroup isLoading={isLoading} redirectUrl={redirectUrl} />
       </form>
     </section>
   );
@@ -134,7 +140,13 @@ function InputFields({
   );
 }
 
-function ButtonGroup({ isLoading }: { isLoading: boolean }) {
+function ButtonGroup({
+  isLoading,
+  redirectUrl,
+}: {
+  isLoading: boolean;
+  redirectUrl: string;
+}) {
   return (
     <div className="flex flex-col gap-4">
       <div className="mt-8 flex w-full justify-end">
@@ -158,7 +170,7 @@ function ButtonGroup({ isLoading }: { isLoading: boolean }) {
           )}
         </Button>
       </div>
-      <Link href="/register">
+      <Link href={{ pathname: '/register', query: { next: redirectUrl } }}>
         <Button
           type="button"
           variant="link"

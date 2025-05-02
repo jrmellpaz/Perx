@@ -6,7 +6,8 @@ import { useForm, SubmitHandler } from 'react-hook-form';
 import { toast } from 'sonner';
 import { getAccentColor, getPrimaryAccentColor } from '@/lib/utils';
 import { purchaseCoupon } from '@/actions/purchase';
-import { createClient } from '@/utils/supabase/server';
+import { useSearchParams } from 'next/navigation';
+
 import type { Coupon } from '@/lib/types';
 
 type FormInputs = {
@@ -16,6 +17,7 @@ type FormInputs = {
 export function PerxTicketSubmit({ coupon }: { coupon: Coupon }) {
   const { allow_points_purchase, accent_color } = coupon;
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const urlPath = useSearchParams();
 
   const { register, handleSubmit, setValue } = useForm<FormInputs>();
 
@@ -23,8 +25,8 @@ export function PerxTicketSubmit({ coupon }: { coupon: Coupon }) {
     setIsLoading(true);
 
     try {
-      const result = await purchaseCoupon(coupon, data.paymentMethod);
-    
+      const result = await purchaseCoupon(coupon, data.paymentMethod, urlPath);
+
       if (result.success) {
         toast(result.message);
         window.location.reload();
@@ -32,12 +34,14 @@ export function PerxTicketSubmit({ coupon }: { coupon: Coupon }) {
         toast.error(result.message);
       }
     } catch (error) {
-      console.error('Purchase error:', error);
-      toast.error('Something went wrong. Please try again later.');
+      if (error instanceof Error && !error.message.includes('NEXT_REDIRECT')) {
+        console.error('Purchase error:', error);
+        toast.error('Something went wrong. Please try again later.');
+      }
     } finally {
       setIsLoading(false);
     }
-  }    
+  };
 
   return (
     <form

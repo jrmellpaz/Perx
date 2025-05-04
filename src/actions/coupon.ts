@@ -7,11 +7,17 @@ import type {
   Coupon,
   CouponCategories,
   Coupons,
+  CouponWithRank,
   InsertCoupon,
   SuccessResponse,
   UserCoupons,
 } from '@/lib/types';
 import type { AddCouponInputs } from '@/lib/couponSchema';
+
+type FetchCouponsResponse = {
+  coupons: CouponWithRank[];
+  count: number;
+};
 
 export const addCoupon = async (
   couponData: AddCouponInputs
@@ -89,8 +95,10 @@ export const addCoupon = async (
 };
 
 export const fetchCoupons = async (
-  consumerId: string = ''
-): Promise<Coupons> => {
+  consumerId: string | undefined,
+  offset: number = 0,
+  limit: number = 12
+): Promise<FetchCouponsResponse> => {
   const supabase = await createClient();
 
   let interests: Categories = [];
@@ -111,18 +119,17 @@ export const fetchCoupons = async (
 
   const { data: couponsData, error: couponsError } = await supabase
     .from('coupons')
-    .select('*')
+    .select('*, ranks(*)')
     .eq('is_deactivated', false)
-    .gt('quantity', 0)
     .order('created_at', { ascending: false })
-    .range(0, 9);
+    .range(offset, offset + limit - 1);
 
   if (couponsError) {
     console.error('Fetch Coupons Error:', couponsError);
-    return [];
+    return { coupons: [], count: 0 };
   }
 
-  type FilteredCoupon = Coupon & {
+  type FilteredCoupon = CouponWithRank & {
     priority?: number;
   };
 
@@ -133,6 +140,7 @@ export const fetchCoupons = async (
         (coupon.allow_limited_purchase &&
           new Date(coupon.valid_from).getTime() <= Date.now() &&
           new Date(coupon.valid_to).getTime() >= Date.now());
+
       return isWithinDateRange;
     })
     .map((coupon: FilteredCoupon) => ({
@@ -141,7 +149,10 @@ export const fetchCoupons = async (
     }))
     .sort((a: FilteredCoupon, b: FilteredCoupon) => b.priority! - a.priority!);
 
-  return filteredAndRanked as Coupons;
+  return {
+    coupons: filteredAndRanked as CouponWithRank[],
+    count: couponsData.length,
+  };
 };
 
 export const fetchCoupon = async (couponId: string): Promise<Coupon> => {
@@ -160,21 +171,30 @@ export const fetchCoupon = async (couponId: string): Promise<Coupon> => {
 };
 
 export const fetchCouponsByMerchantId = async (
-  merchantId: string
-): Promise<Coupons> => {
+  merchantId: string,
+  offset: number = 0,
+  limit: number = 12,
+  {
+    isDeactivated = false,
+  }: {
+    isDeactivated: boolean;
+  }
+): Promise<FetchCouponsResponse> => {
   const supabase = await createClient();
   const { data, error } = await supabase
     .from('coupons')
-    .select('*')
+    .select('*, ranks(*)')
     .eq('merchant_id', merchantId)
-    .order('created_at', { ascending: false });
+    .eq('is_deactivated', isDeactivated)
+    .order('created_at', { ascending: false })
+    .range(offset, offset + limit - 1);
 
   if (error) {
     console.error('Fetch Coupons by Merchant ID Error:', error);
-    return [];
+    return { coupons: [], count: 0 };
   }
 
-  return data as Coupons;
+  return { coupons: data as CouponWithRank[], count: data.length };
 };
 
 export const fetchCouponsByConsumerId = async (
@@ -217,7 +237,9 @@ type CouponFilters = {
   query?: string;
 };
 
-export async function filterCoupons(filters: CouponFilters & { query?: string }): Promise<Coupon[]> {
+export async function filterCoupons(
+  filters: CouponFilters & { query?: string }
+): Promise<Coupon[]> {
   const supabase = await createClient();
   let queryBuilder = supabase.from('coupons').select('*');
 
@@ -226,7 +248,9 @@ export async function filterCoupons(filters: CouponFilters & { query?: string })
     // queryBuilder = queryBuilder.textSearch('name', filters.query);
 
     // Option 2: Use ILIKE for case-insensitive partial matching
-    queryBuilder = queryBuilder.or(`title.ilike.%${filters.query}%,description.ilike.%${filters.query}%`);
+    queryBuilder = queryBuilder.or(
+      `title.ilike.%${filters.query}%,description.ilike.%${filters.query}%`
+    );
   }
 
   if (filters.minPrice !== undefined) {
@@ -236,13 +260,22 @@ export async function filterCoupons(filters: CouponFilters & { query?: string })
     queryBuilder = queryBuilder.lte('price', filters.maxPrice);
   }
   if (filters.allowLimitedPurchase !== undefined) {
-    queryBuilder = queryBuilder.eq('allow_limited_purchase', filters.allowLimitedPurchase);
+    queryBuilder = queryBuilder.eq(
+      'allow_limited_purchase',
+      filters.allowLimitedPurchase
+    );
   }
   if (filters.allowRepeatPurchase !== undefined) {
-    queryBuilder = queryBuilder.eq('allow_repeat_purchase', filters.allowRepeatPurchase);
+    queryBuilder = queryBuilder.eq(
+      'allow_repeat_purchase',
+      filters.allowRepeatPurchase
+    );
   }
   if (filters.allowPointsPurchase !== undefined) {
-    queryBuilder = queryBuilder.eq('allow_points_purchase', filters.allowPointsPurchase);
+    queryBuilder = queryBuilder.eq(
+      'allow_points_purchase',
+      filters.allowPointsPurchase
+    );
   }
   if (filters.endDate !== undefined) {
     queryBuilder = queryBuilder.lte('valid_to', filters.endDate.toISOString());

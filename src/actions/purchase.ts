@@ -15,7 +15,9 @@ export const purchaseCoupon = async (
   } = await supabase.auth.getUser();
 
   if (!user) {
-    redirect('/login');
+    redirect(
+      `/login?next=${encodeURIComponent(`/view?coupon=${coupon.id}&merchant=${coupon.merchant_id}`)}`
+    );
   }
 
   try {
@@ -31,7 +33,10 @@ export const purchaseCoupon = async (
 
     if (consumer.rank < coupon.rank_availability) {
       console.log('here');
-      return { success: false, message: `Heads up! This reward unlocks at a higher rank. A few more steps and it's yours! 🚀` };
+      return {
+        success: false,
+        message: `Heads up! This reward unlocks at a higher rank. A few more steps and it's yours! 🚀`,
+      };
     }
 
     if (paymentMethod === 'points' && coupon.quantity > 0) {
@@ -67,7 +72,7 @@ export const purchaseCoupon = async (
       .from('coupons')
       .update({
         quantity: newQuantity,
-        is_deactivated: newQuantity === 0, 
+        is_deactivated: newQuantity === 0,
       })
       .eq('id', coupon.id);
 
@@ -116,7 +121,7 @@ export const handleCashPurchase = async (
     if (!consumer.has_purchased) {
       const { error: updateError } = await supabase
         .from('consumers')
-        .update({ has_purchased : true })
+        .update({ has_purchased: true })
         .eq('id', consumerId);
 
       if (updateError) {

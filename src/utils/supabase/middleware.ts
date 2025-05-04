@@ -85,6 +85,7 @@ export async function updateSession(request: NextRequest) {
         url.pathname = '/merchant/login';
       } else {
         url.pathname = '/login';
+        url.searchParams.set('next', request.nextUrl.pathname);
       }
       return NextResponse.redirect(url);
     } else if (request.nextUrl.pathname === '/merchant') {
@@ -95,7 +96,6 @@ export async function updateSession(request: NextRequest) {
   } else {
     // Fetch user role from database
     const userRole: UserRole = user.user_metadata.role as UserRole;
-    console.log('role:', userRole);
 
     // Redirect authenticated users to dashboard / home page
     if (authPages.includes(request.nextUrl.pathname)) {
@@ -131,7 +131,7 @@ export async function updateSession(request: NextRequest) {
       consumerPages.private.includes(request.nextUrl.pathname)
     ) {
       const url = request.nextUrl.clone();
-      url.pathname = '/merchant/login';
+      url.pathname = `/merchant/login`;
       return NextResponse.redirect(url);
     }
 

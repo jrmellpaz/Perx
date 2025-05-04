@@ -8,7 +8,10 @@ import { nanoid } from 'nanoid';
 import { logoutMerchant } from './merchantAuth';
 import { Category } from '@/lib/types';
 
-export const loginConsumer = async (data: LoginConsumerInputs) => {
+export const loginConsumer = async (
+  data: LoginConsumerInputs,
+  { redirectUrl }: { redirectUrl: string }
+) => {
   const supabase = await createClient();
 
   const { data: authData, error: authError } =
@@ -33,11 +36,14 @@ export const loginConsumer = async (data: LoginConsumerInputs) => {
     return { error: 'No consumer account exists.' };
   }
 
-  revalidatePath('/explore');
-  redirect('/explore');
+  revalidatePath(redirectUrl);
+  redirect(redirectUrl);
 };
 
-export const signupConsumer = async (data: ConsumerFormInputs) => {
+export const signupConsumer = async (
+  data: ConsumerFormInputs,
+  { redirectUrl }: { redirectUrl: string }
+) => {
   const supabase = await createClient();
 
   const { name, email, password, referrerCode, interests } = data;
@@ -94,8 +100,8 @@ export const signupConsumer = async (data: ConsumerFormInputs) => {
   }
   console.log('Auth data:', authData, authError);
 
-  revalidatePath('/explore');
-  redirect('/explore');
+  revalidatePath(redirectUrl);
+  redirect(redirectUrl);
 };
 
 export const logoutConsumer = async () => {
@@ -108,7 +114,7 @@ export const logoutConsumer = async () => {
   }
 
   revalidatePath('/', 'layout');
-  redirect('/login');
+  redirect('/explore');
 };
 
 export const recoverPassword = async (email: string) => {

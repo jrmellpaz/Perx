@@ -1,4 +1,3 @@
-import { Coupon, Merchant } from '@/lib/types';
 import PerxSearch from '@/components/custom/PerxSearch';
 
 export default function SearchPage({

@@ -3,7 +3,7 @@ import Link from 'next/link';
 export default function Home() {
   return (
     <div className="overflow-x-hidden">
-      <div className="flex min-h-screen w-full flex-col items-center justify-center bg-[url('/bgLPF.png')] bg-cover bg-center">
+      <div className="flex min-h-screen w-full flex-col items-center justify-center bg-[url('/FBG.png')] bg-cover bg-center">
         {/* Logo */}
         <div className="flex flex-col items-center space-y-8">
           <img src="/perxIcon.png" className="h-85 w-85" alt="Perx Logo" />

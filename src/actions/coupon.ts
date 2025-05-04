@@ -239,9 +239,9 @@ type CouponFilters = {
 
 export async function filterCoupons(
   filters: CouponFilters & { query?: string }
-): Promise<Coupon[]> {
+): Promise<CouponWithRank[]> {
   const supabase = await createClient();
-  let queryBuilder = supabase.from('coupons').select('*');
+  let queryBuilder = supabase.from('coupons').select('*, ranks(*)')
 
   if (filters.query) {
     // Option 1: Use text search (requires full-text index in PostgreSQL)
@@ -288,5 +288,5 @@ export async function filterCoupons(
     return [];
   }
 
-  return data as Coupon[];
+  return data as CouponWithRank[];
 }

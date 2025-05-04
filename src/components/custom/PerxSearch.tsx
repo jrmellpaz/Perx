@@ -1,16 +1,16 @@
 import { fullTextSearch } from '@/actions/search';
 import { filterCoupons } from '@/actions/coupon';
 import { fetchMerchant } from '@/actions/merchantProfile';
-import { PerxCoupon } from '@/components/custom/PerxCoupon';
+import { Coupon } from '@/components/custom/Coupon';
 import { MerchantCard } from '@/components/custom/PerxMerchant';
 import { CouponFilterForm } from '@/components/custom/PerxFilter';
 import { Search } from 'lucide-react';
-import { Coupon, Merchant } from '@/lib/types';
+import { CouponWithRank, Merchant } from '@/lib/types';
 
 type ResultItem = {
   id: string;
   type: 'coupon' | 'merchant';
-  coupon?: Coupon;
+  coupon?: CouponWithRank ;
   merchant?: Merchant;
 };
 
@@ -93,7 +93,7 @@ export default async function PerxSearch({
       <div className="grid w-full grid-cols-1 items-center gap-2 sm:grid-cols-2 md:grid-cols-3 md:gap-3">
         {results.map((item) =>
           item.type === 'coupon' && item.coupon ? (
-            <PerxCoupon key={item.id} coupon={item.coupon} variant="consumer" />
+            <Coupon key={item.id} coupon={item.coupon} variant="consumer" />
           ) : item.type === 'merchant' && item.merchant ? (
             <MerchantCard key={item.id} merchant={item.merchant} />
           ) : null

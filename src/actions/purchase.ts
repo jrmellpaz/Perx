@@ -2,6 +2,7 @@
 
 import { createClient } from '@/utils/supabase/server';
 import { redirect } from 'next/navigation';
+import { v4 as uuidv4 } from 'uuid';
 
 import type { Coupon, SuccessResponse } from '@/lib/types';
 
@@ -53,11 +54,14 @@ export const purchaseCoupon = async (
       return { success: false, message: 'Coupon is out of stock.' };
     }
 
+    const qr_token = uuidv4(); 
+
     const { error: insertUserCouponError } = await supabase
       .from('user_coupons')
       .insert({
         coupon_id: coupon.id,
         consumer_id: user.id,
+        qr_token: qr_token
       });
 
     if (insertUserCouponError) {

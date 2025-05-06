@@ -205,6 +205,7 @@ export const fetchCouponsByConsumerId = async (
     .from('user_coupons')
     .select('*, coupons(*)')
     .eq('consumer_id', consumerId)
+    .eq('is_redeemed', false)
     .order('created_at', { ascending: false });
 
   if (error) {
@@ -289,4 +290,37 @@ export async function filterCoupons(
   }
 
   return data as CouponWithRank[];
+}
+
+export const getQRCode = async (couponId: string) => {
+  const supabase = await createClient();
+
+  const { data: coupon } = await supabase
+    .from('user_coupons')
+    .select('qr_token')
+    .eq('coupon_id', couponId)
+    .single()
+
+  if (coupon?.qr_token) 
+    return coupon.qr_token
+}
+
+export async function redeemCoupon(qrToken: string) {
+  if (!qrToken) 
+    return { success: false, message: 'Missing QR token' };
+
+  const supabase = await createClient();
+  const { error } = await supabase
+    .from('user_coupons')
+    .update({ is_redeemed: true })
+    .eq('qr_token', qrToken)
+    .eq('is_redeemed', false)
+    .select();
+
+  if (error) {
+    console.error('Redeem error:', error);
+    return { success: false, message: 'Redemption failed' };
+  }
+
+  return { success: true, message: 'Coupon successfully redeemed!' };
 }

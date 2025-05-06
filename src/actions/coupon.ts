@@ -205,6 +205,7 @@ export const fetchCouponsByConsumerId = async (
     .from('user_coupons')
     .select('*, coupons(*)')
     .eq('consumer_id', consumerId)
+    .eq('is_redeemed', false)
     .order('created_at', { ascending: false });
 
   if (error) {

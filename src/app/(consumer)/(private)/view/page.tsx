@@ -23,7 +23,7 @@ export default async function ViewCoupon({
   const coupon: Coupon = await fetchCoupon(couponId);
   const merchant: Merchant = await fetchMerchant(merchantId);
 
-  const qrToken = await getQRCode(couponId) || '';
+  const qrToken = (await getQRCode(couponId)) || '';
   console.log(qrToken);
 
   return (
@@ -34,7 +34,9 @@ export default async function ViewCoupon({
       <PerxHeader
         title=""
         className="text-white"
-        style={{ backgroundColor: getPrimaryAccentColor(coupon.accent_color) }}
+        style={{
+          backgroundColor: getPrimaryAccentColor(coupon.accent_color),
+        }}
         buttonStyle={{
           backgroundColor: getPrimaryAccentColor(coupon.accent_color),
         }}
@@ -44,7 +46,7 @@ export default async function ViewCoupon({
           couponData={coupon}
           merchantData={merchant}
           variant="consumer"
-          {...(qrToken && { qrToken })}  // Conditionally pass qrToken if it exists
+          {...(qrToken && { qrToken })} // Conditionally pass qrToken if it exists
         >
           {qrToken ? (
             <PerxTicketSubmit coupon={coupon} qrToken={qrToken} />

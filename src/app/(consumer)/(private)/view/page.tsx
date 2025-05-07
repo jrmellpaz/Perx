@@ -7,6 +7,7 @@ import PerxHeader from '@/components/custom/PerxHeader';
 import { getPrimaryAccentColor } from '@/lib/utils';
 
 import type { Coupon, Merchant } from '@/lib/types';
+import { PerxQRToken } from '@/components/custom/PerxQRToken';
 
 export default async function ViewCoupon({
   searchParams,
@@ -23,8 +24,7 @@ export default async function ViewCoupon({
   const coupon: Coupon = await fetchCoupon(couponId);
   const merchant: Merchant = await fetchMerchant(merchantId);
 
-  const qrToken = await getQRCode(couponId) || '';
-  console.log(qrToken);
+  const qrToken = (await getQRCode(couponId)) || '';
 
   return (
     <section
@@ -44,10 +44,9 @@ export default async function ViewCoupon({
           couponData={coupon}
           merchantData={merchant}
           variant="consumer"
-          {...(qrToken && { qrToken })}  // Conditionally pass qrToken if it exists
         >
           {qrToken ? (
-            <PerxTicketSubmit coupon={coupon} qrToken={qrToken} />
+            <PerxQRToken coupon={coupon} qrToken={qrToken} />
           ) : (
             <PerxTicketSubmit coupon={coupon} />
           )}

@@ -12,13 +12,11 @@ export async function PerxTicket({
   merchantData,
   variant,
   children,
-  qrToken,
 }: {
   couponData: Coupon;
   merchantData: Merchant;
   variant: 'consumer' | 'merchant';
   children?: ReactNode;
-  qrToken?: string;
 }) {
   const {
     id: couponId,
@@ -39,7 +37,6 @@ export async function PerxTicket({
   } = couponData;
 
   const { rank, icon } = await fetchRank(rank_availability);
-  console.log(qrToken, 'QR Token');
   return (
     <div
       className={cn(
@@ -88,43 +85,43 @@ export async function PerxTicket({
               {category}
             </span>
           </div>
-          {!qrToken && (
-            <div className="flex items-center overflow-y-auto">
-              <div className="flex shrink-0 flex-col items-center">
-                <h3
-                  style={{ color: getPrimaryAccentColor(accent_color) }}
-                  className={`font-mono text-sm font-medium tracking-tight`}
-                >
-                  {quantity}
-                </h3>
-                <p className="text-perx-black text-xs tracking-tight">Items left</p>
-              </div>
-              {allow_limited_purchase && !qrToken &&(
-                <>
-                  <div className="border-muted-foreground mx-3 h-6 w-[0.25px] rounded-full border-l-[0.5px]"></div>
-                  <div className="flex shrink-0 flex-col items-center">
-                    <Suspense fallback={<p>Loading...</p>}>
-                      <PerxCountdown
-                        targetDate={valid_to}
-                        className="font-mono text-sm font-medium tracking-tight"
-                        style={{ color: getPrimaryAccentColor(accent_color) }}
-                      />
-                    </Suspense>
-                    <p className="text-perx-black text-xs tracking-tight">
-                      Valid until {formatDate(valid_to)}
-                    </p>
-                  </div>
-                </>
-              )}
-              <div className="border-muted-foreground mx-3 h-6 w-[0.25px] rounded-full border-l-[0.5px]"></div>
-              <div className="flex shrink-0 flex-col items-center">
-                <img src={icon} alt="Rank icon" className="size-6" />
-                <p className="text-perx-black text-xs tracking-tight">
-                  For {rank} and up
-                </p>
-              </div>
+          <div className="flex items-center overflow-y-auto">
+            <div className="flex shrink-0 flex-col items-center">
+              <h3
+                style={{ color: getPrimaryAccentColor(accent_color) }}
+                className={`font-mono text-sm font-medium tracking-tight`}
+              >
+                {quantity}
+              </h3>
+              <p className="text-perx-black text-xs tracking-tight">
+                Items left
+              </p>
             </div>
-          )}
+            {allow_limited_purchase && (
+              <>
+                <div className="border-muted-foreground mx-3 h-6 w-[0.25px] rounded-full border-l-[0.5px]"></div>
+                <div className="flex shrink-0 flex-col items-center">
+                  <Suspense fallback={<p>Loading...</p>}>
+                    <PerxCountdown
+                      targetDate={valid_to}
+                      className="font-mono text-sm font-medium tracking-tight"
+                      style={{ color: getPrimaryAccentColor(accent_color) }}
+                    />
+                  </Suspense>
+                  <p className="text-perx-black text-xs tracking-tight">
+                    Valid until {formatDate(valid_to)}
+                  </p>
+                </div>
+              </>
+            )}
+            <div className="border-muted-foreground mx-3 h-6 w-[0.25px] rounded-full border-l-[0.5px]"></div>
+            <div className="flex shrink-0 flex-col items-center">
+              <img src={icon} alt="Rank icon" className="size-6" />
+              <p className="text-perx-black text-xs tracking-tight">
+                For {rank} and up
+              </p>
+            </div>
+          </div>
           {/* Always show the "About this coupon" section */}
           <div className="flex flex-col">
             <h3
@@ -159,33 +156,31 @@ export async function PerxTicket({
         ></div>
       </div>
       {/* Lower Half */}
-        <div className="flex flex-col gap-4 p-6">
-          {/* Price Section */}
-          {!qrToken && (
-            <div className="flex flex-col items-center gap-2">
-              <span
-                style={{ color: getPrimaryAccentColor(accent_color) }}
-                className="font-mono text-xl font-bold"
-              >
-                &#8369;{price.toFixed(2)}
-              </span>
-              {allow_points_purchase && !qrToken && (
-                <span className="text-perx-black flex items-center gap-1 text-sm tracking-tighter">
-                  or&nbsp;
-                  <img
-                    src="/reward-points.svg"
-                    alt="Reward Points"
-                    width={18}
-                    height={18}
-                    className="pb-0.25"
-                  />{' '}
-                  {points_amount} points
-                </span>
-              )}
-            </div>
+      <div className="flex flex-col gap-4 p-6">
+        {/* Price Section */}
+        <div className="flex flex-col items-center gap-2">
+          <span
+            style={{ color: getPrimaryAccentColor(accent_color) }}
+            className="font-mono text-xl font-bold"
+          >
+            &#8369;{price.toFixed(2)}
+          </span>
+          {allow_points_purchase && (
+            <span className="text-perx-black flex items-center gap-1 text-sm tracking-tighter">
+              or&nbsp;
+              <img
+                src="/reward-points.svg"
+                alt="Reward Points"
+                width={18}
+                height={18}
+                className="pb-0.25"
+              />{' '}
+              {points_amount} points
+            </span>
           )}
-          <div>{children}</div>
         </div>
+        <div>{children}</div>
+      </div>
     </div>
   );
 }

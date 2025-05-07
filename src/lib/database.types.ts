@@ -254,27 +254,21 @@ export type Database = {
           coupon_id: string
           created_at: string
           id: number
-          is_redeemed: boolean | null
           qr_token: string | null
-          redeemed_at: string | null
         }
         Insert: {
           consumer_id: string
           coupon_id: string
           created_at?: string
           id?: number
-          is_redeemed?: boolean | null
           qr_token?: string | null
-          redeemed_at?: string | null
         }
         Update: {
           consumer_id?: string
           coupon_id?: string
           created_at?: string
           id?: number
-          is_redeemed?: boolean | null
           qr_token?: string | null
-          redeemed_at?: string | null
         }
         Relationships: [
           {

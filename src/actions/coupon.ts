@@ -312,10 +312,8 @@ export async function redeemCoupon(qrToken: string) {
   const supabase = await createClient();
   const { error } = await supabase
     .from('user_coupons')
-    .update({ is_redeemed: true })
+    .delete()
     .eq('qr_token', qrToken)
-    .eq('is_redeemed', false)
-    .select();
 
   if (error) {
     console.error('Redeem error:', error);

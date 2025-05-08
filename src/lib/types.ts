@@ -35,4 +35,8 @@ export type Achievement = Database['public']['Tables']['achievements']['Row'];
 export type Achievements = Achievement[];
 
 // Success types
-export type SuccessResponse = { success: boolean; message: string };
+export type SuccessResponse<T = undefined> = {
+  success: boolean;
+  message: string;
+  data?: T;
+};

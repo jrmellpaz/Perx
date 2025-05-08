@@ -5,9 +5,9 @@ import { PerxTicketSubmit } from '@/components/custom/PerxTicketSubmit';
 import { fetchCoupon, getQRCode } from '@/actions/coupon';
 import PerxHeader from '@/components/custom/PerxHeader';
 import { getPrimaryAccentColor } from '@/lib/utils';
+import { PerxQRToken } from '@/components/custom/PerxQRToken';
 
 import type { Coupon, Merchant } from '@/lib/types';
-import { PerxQRToken } from '@/components/custom/PerxQRToken';
 
 export default async function ViewCoupon({
   searchParams,
@@ -34,7 +34,9 @@ export default async function ViewCoupon({
       <PerxHeader
         title=""
         className="text-white"
-        style={{ backgroundColor: getPrimaryAccentColor(coupon.accent_color) }}
+        style={{
+          backgroundColor: getPrimaryAccentColor(coupon.accent_color),
+        }}
         buttonStyle={{
           backgroundColor: getPrimaryAccentColor(coupon.accent_color),
         }}

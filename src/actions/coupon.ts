@@ -121,6 +121,7 @@ export const fetchCoupons = async (
     .from('coupons')
     .select('*, ranks(*)')
     .eq('is_deactivated', false)
+    .gt('quantity', 0)
     .order('created_at', { ascending: false })
     .range(offset, offset + limit - 1);
 
@@ -205,7 +206,6 @@ export const fetchCouponsByConsumerId = async (
     .from('user_coupons')
     .select('*, coupons(*)')
     .eq('consumer_id', consumerId)
-    .eq('is_redeemed', false)
     .order('created_at', { ascending: false });
 
   if (error) {
@@ -242,7 +242,7 @@ export async function filterCoupons(
   filters: CouponFilters & { query?: string }
 ): Promise<CouponWithRank[]> {
   const supabase = await createClient();
-  let queryBuilder = supabase.from('coupons').select('*, ranks(*)')
+  let queryBuilder = supabase.from('coupons').select('*, ranks(*)');
 
   if (filters.query) {
     // Option 1: Use text search (requires full-text index in PostgreSQL)
@@ -299,21 +299,19 @@ export const getQRCode = async (couponId: string) => {
     .from('user_coupons')
     .select('qr_token')
     .eq('coupon_id', couponId)
-    .single()
+    .single();
 
-  if (coupon?.qr_token) 
-    return coupon.qr_token
-}
+  if (coupon?.qr_token) return coupon.qr_token;
+};
 
 export async function redeemCoupon(qrToken: string) {
-  if (!qrToken) 
-    return { success: false, message: 'Missing QR token' };
+  if (!qrToken) return { success: false, message: 'Missing QR token' };
 
   const supabase = await createClient();
   const { error } = await supabase
     .from('user_coupons')
     .delete()
-    .eq('qr_token', qrToken)
+    .eq('qr_token', qrToken);
 
   if (error) {
     console.error('Redeem error:', error);

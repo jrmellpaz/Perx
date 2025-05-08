@@ -1,50 +1,57 @@
 import { fetchMerchant } from '@/actions/merchantProfile';
 import { PerxTicket } from '@/components/custom/PerxTicket';
 import { redirect } from 'next/navigation';
-import { PerxTicketSubmit } from '@/components/custom/PerxTicketSubmit';
-import { fetchCoupon } from '@/actions/coupon';
+import { fetchConsumerCoupon } from '@/actions/coupon';
 import PerxHeader from '@/components/custom/PerxHeader';
 import { getPrimaryAccentColor } from '@/lib/utils';
+import { PerxQRToken } from '@/components/custom/PerxQRToken';
 
-import type { Coupon, Merchant } from '@/lib/types';
+import type { Coupon, Merchant, UserCoupon } from '@/lib/types';
 
 export default async function ViewCoupon({
   searchParams,
 }: {
   searchParams: Promise<{ [key: string]: string }>;
 }) {
-  const couponId = (await searchParams).coupon;
-  const merchantId = (await searchParams).merchant;
+  const consumerCouponId = (await searchParams).coupon;
 
-  if (!couponId || !merchantId) {
+  if (!consumerCouponId) {
     redirect('/not-found');
   }
 
-  const coupon: Coupon = await fetchCoupon(couponId);
-  const merchant: Merchant = await fetchMerchant(merchantId);
+  const consumerCoupon: UserCoupon = await fetchConsumerCoupon(
+    consumerCouponId as unknown as number
+  );
+  const couponDetails: Coupon = consumerCoupon.coupons;
+  const merchant: Merchant = await fetchMerchant(couponDetails.merchant_id);
 
   return (
     <section
       className="view-container flex h-full w-full flex-col items-center overflow-y-auto bg-transparent pb-14"
-      style={{ backgroundColor: getPrimaryAccentColor(coupon.accent_color) }}
+      style={{
+        backgroundColor: getPrimaryAccentColor(couponDetails.accent_color),
+      }}
     >
       <PerxHeader
         title=""
         className="text-white"
         style={{
-          backgroundColor: getPrimaryAccentColor(coupon.accent_color),
+          backgroundColor: getPrimaryAccentColor(couponDetails.accent_color),
         }}
         buttonStyle={{
-          backgroundColor: getPrimaryAccentColor(coupon.accent_color),
+          backgroundColor: getPrimaryAccentColor(couponDetails.accent_color),
         }}
       />
       <div className="flex w-full grow items-center justify-center">
         <PerxTicket
-          couponData={coupon}
+          couponData={couponDetails}
           merchantData={merchant}
           variant="consumer"
         >
-          <PerxTicketSubmit coupon={coupon} />
+          <PerxQRToken
+            coupon={couponDetails}
+            qrToken={consumerCoupon.qr_token}
+          />
         </PerxTicket>
       </div>
     </section>

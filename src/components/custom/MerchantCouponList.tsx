@@ -10,9 +10,10 @@ import { CouponGridSkeleton } from './PerxSkeleton';
 
 interface CouponListProps {
   userId: string;
+  variant: 'merchant' | 'consumer';
 }
 
-export function MerchantCouponList({ userId }: CouponListProps) {
+export function MerchantCouponList({ userId, variant }: CouponListProps) {
   const [coupons, setCoupons] = useState<CouponWithRank[]>([]);
   const [offset, setOffset] = useState<number>(0);
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -47,7 +48,7 @@ export function MerchantCouponList({ userId }: CouponListProps) {
       {coupons.length > 0 ? (
         <>
           {coupons.map((coupon, index) => (
-            <Coupon coupon={coupon} key={index} variant="merchant" />
+            <Coupon coupon={coupon} key={index} variant={variant} />
           ))}
           {hasMore && (
             <LoadMore onLoadMore={loadCoupons} isLoading={isLoading} />

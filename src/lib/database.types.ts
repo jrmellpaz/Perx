@@ -254,21 +254,21 @@ export type Database = {
           coupon_id: string
           created_at: string
           id: number
-          qr_token: string | null
+          qr_token: string
         }
         Insert: {
           consumer_id: string
           coupon_id: string
           created_at?: string
           id?: number
-          qr_token?: string | null
+          qr_token: string
         }
         Update: {
           consumer_id?: string
           coupon_id?: string
           created_at?: string
           id?: number
-          qr_token?: string | null
+          qr_token?: string
         }
         Relationships: [
           {

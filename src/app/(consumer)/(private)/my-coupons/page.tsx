@@ -1,5 +1,5 @@
-import { fetchCouponsByConsumerId } from '@/actions/coupon';
-import { Coupon } from '@/lib/types';
+import { fetchConsumerCoupons } from '@/actions/coupon';
+import { UserCoupon } from '@/lib/types';
 import { createClient } from '@/utils/supabase/server';
 import Link from 'next/link';
 import { Suspense } from 'react';
@@ -14,7 +14,7 @@ export default async function MyCouponsPage() {
     throw new Error('Error fetching user.');
   }
 
-  const purchasedCoupons = await fetchCouponsByConsumerId(user.id);
+  const purchasedCoupons = await fetchConsumerCoupons(user.id);
 
   return (
     <section className="w-full px-2 py-4 sm:px-4">
@@ -22,9 +22,7 @@ export default async function MyCouponsPage() {
         <Suspense fallback={<MyCouponsSkeleton />}>
           {purchasedCoupons.length > 0 ? (
             purchasedCoupons.map((coupon, index) => {
-              const couponDetails = coupon.coupons;
-
-              return <MyCoupon key={index} coupon={couponDetails} />;
+              return <MyCoupon key={index} coupon={coupon} />;
             })
           ) : (
             <p>No coupons purchased yet.</p>
@@ -35,29 +33,31 @@ export default async function MyCouponsPage() {
   );
 }
 
-function MyCoupon({ coupon }: { coupon: Coupon }) {
+function MyCoupon({ coupon }: { coupon: UserCoupon }) {
+  const couponDetails = coupon.coupons;
   return (
     <Link
       href={{
-        pathname: '/view',
-        query: { coupon: coupon.id, merchant: coupon.merchant_id },
+        pathname: '/my-coupons/view',
+        query: { coupon: coupon.id },
       }}
-      key={coupon.id}
     >
       <div
         className={`bg-perx-white flex grow basis-60 flex-col gap-2 overflow-hidden rounded-md border pb-2`}
       >
         <div className="coupon-image aspect-video h-auto w-full">
           <img
-            src={coupon.image ?? ''}
-            alt={`${coupon.title} coupon`}
+            src={couponDetails.image}
+            alt={`${couponDetails.title} coupon`}
             className="aspect-video h-auto w-full rounded-sm object-cover"
           />
         </div>
         <div className="text-perx-black flex flex-col gap-1.5 px-2 py-1">
-          <p className="text-sm font-medium sm:text-base">{coupon.title}</p>
+          <p className="font-mono text-sm font-medium sm:text-base">
+            {couponDetails.title}
+          </p>
           <span className="border-perx-black w-fit rounded-full border px-1.5 py-0.5 text-[10px] md:text-xs">
-            {coupon.category}
+            {couponDetails.category}
           </span>
         </div>
       </div>

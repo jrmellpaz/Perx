@@ -10,6 +10,7 @@ import type {
   CouponWithRank,
   InsertCoupon,
   SuccessResponse,
+  UserCoupon,
   UserCoupons,
 } from '@/lib/types';
 import type { AddCouponInputs } from '@/lib/couponSchema';
@@ -198,7 +199,7 @@ export const fetchCouponsByMerchantId = async (
   return { coupons: data as CouponWithRank[], count: data.length };
 };
 
-export const fetchCouponsByConsumerId = async (
+export const fetchConsumerCoupons = async (
   consumerId: string
 ): Promise<UserCoupons> => {
   const supabase = await createClient();
@@ -214,6 +215,23 @@ export const fetchCouponsByConsumerId = async (
   }
 
   return data as UserCoupons;
+};
+
+export const fetchConsumerCoupon = async (
+  consumerCouponId: number
+): Promise<UserCoupon> => {
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from('user_coupons')
+    .select('*, coupons(*)')
+    .eq('id', consumerCouponId)
+    .single();
+
+  if (error) {
+    console.error('Fetch Consumer Coupon Error:', error);
+  }
+
+  return data as UserCoupon;
 };
 
 export const fetchCouponCategories = async (): Promise<CouponCategories> => {
@@ -291,18 +309,6 @@ export async function filterCoupons(
 
   return data as CouponWithRank[];
 }
-
-export const getQRCode = async (couponId: string) => {
-  const supabase = await createClient();
-
-  const { data: coupon } = await supabase
-    .from('user_coupons')
-    .select('qr_token')
-    .eq('coupon_id', couponId)
-    .single();
-
-  if (coupon?.qr_token) return coupon.qr_token;
-};
 
 export async function redeemCoupon(qrToken: string) {
   if (!qrToken) return { success: false, message: 'Missing QR token' };

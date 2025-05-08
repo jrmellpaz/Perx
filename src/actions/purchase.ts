@@ -3,10 +3,10 @@
 import { createClient } from '@/utils/supabase/server';
 import { redirect } from 'next/navigation';
 import { v4 as uuidv4 } from 'uuid';
-import { paypal } from './paypal';
 
 import type { Coupon, SuccessResponse } from '@/lib/types';
 import type { User } from '@supabase/supabase-js';
+import { createOrder, createPayment } from './paypal';
 
 // TODO: Disable buttons if rank is lower than coupon.rank_availability
 // TODO: Add loading state to buttons
@@ -278,7 +278,7 @@ export const createPaypalOrder = async (
         `/login?next=${encodeURIComponent(`/view?coupon=${coupon.id}&merchant=${coupon.merchant_id}`)}`
       );
     }
-    const order = await paypal.createOrder(coupon.price);
+    const order = await createOrder(coupon.price);
 
     return {
       success: true,
@@ -303,7 +303,7 @@ export const approvePaypalOrder = async (
         `/login?next=${encodeURIComponent(`/view?coupon=${coupon.id}&merchant=${coupon.merchant_id}`)}`
       );
     }
-    const captureData = await paypal.createPayment(orderId);
+    const captureData = await createPayment(orderId);
 
     if (!captureData || captureData.status !== 'COMPLETED') {
       throw new Error('PayPal order / payment capture not approved.');

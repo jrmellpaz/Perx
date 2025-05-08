@@ -148,6 +148,7 @@ function PaymentDialog({
   const handleCreatePaypalOrder: PayPalButtonsComponentProps['createOrder'] =
     async (): Promise<string> => {
       try {
+        dialogRef.current?.close();
         const result = await createPaypalOrder(coupon);
 
         if (!result.data) {

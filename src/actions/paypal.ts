@@ -1,7 +1,8 @@
-const base =
-  process.env.NEXT_PUBLIC_PAYPAL_API_URL || 'http://api-m.sandbox.paypal.com';
+'use server';
+
+const base = process.env.PAYPAL_API_URL || 'http://api-m.sandbox.paypal.com';
 const clientId = process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID;
-const appSecret = process.env.NEXT_PUBLIC_PAYPAL_APP_SECRET;
+const appSecret = process.env.PAYPAL_APP_SECRET;
 
 interface OrderData {
   id: string;
@@ -12,47 +13,46 @@ interface OrderData {
   debug_id?: string;
 }
 
-export const paypal = {
-  createOrder: async (price: number): Promise<OrderData> => {
-    const accessToken = await generateAccessToken();
+export const createOrder = async (price: number): Promise<OrderData> => {
+  const accessToken = await generateAccessToken();
 
-    const response = await fetch(base + '/v2/checkout/orders', {
+  const response = await fetch(base + '/v2/checkout/orders', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${accessToken}`,
+    },
+    body: JSON.stringify({
+      intent: 'CAPTURE',
+      purchase_units: [
+        {
+          amount: {
+            currency_code: 'USD',
+            value: price,
+          },
+        },
+      ],
+    }),
+  });
+
+  return handleResponse(response);
+};
+
+export const createPayment = async (orderId: string) => {
+  const accessToken = await generateAccessToken();
+
+  const response = await fetch(
+    `${base}/v2/checkout/orders/${orderId}/capture`,
+    {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         Authorization: `Bearer ${accessToken}`,
       },
-      body: JSON.stringify({
-        intent: 'CAPTURE',
-        purchase_units: [
-          {
-            amount: {
-              currency_code: 'USD',
-              value: price,
-            },
-          },
-        ],
-      }),
-    });
+    }
+  );
 
-    return handleResponse(response);
-  },
-  createPayment: async (orderId: string) => {
-    const accessToken = await generateAccessToken();
-
-    const response = await fetch(
-      `${base}/v2/checkout/orders/${orderId}/capture`,
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${accessToken}`,
-        },
-      }
-    );
-
-    return handleResponse(response);
-  },
+  return handleResponse(response);
 };
 
 const generateAccessToken = async () => {

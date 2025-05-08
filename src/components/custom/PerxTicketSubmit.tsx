@@ -1,35 +1,74 @@
 'use client';
 
 import { cn } from '@/lib/utils';
-import { useState, useTransition } from 'react';
-import { useForm, SubmitHandler } from 'react-hook-form';
+import { RefObject, useRef, useState } from 'react';
 import { toast } from 'sonner';
 import { getAccentColor, getPrimaryAccentColor } from '@/lib/utils';
-import { purchaseCoupon } from '@/actions/purchase';
-import { redeemCoupon } from '@/actions/coupon';
+import {
+  PayPalScriptProvider,
+  PayPalButtons,
+  usePayPalScriptReducer,
+  PayPalButtonsComponentProps,
+} from '@paypal/react-paypal-js';
+import { LoaderCircle } from 'lucide-react';
+import PerxAlert from './PerxAlert';
+import {
+  approvePaypalOrder,
+  createPaypalOrder,
+  purchaseWithRewardPoints,
+} from '@/actions/purchase';
 
 import type { Coupon } from '@/lib/types';
+import { createClient } from '@/utils/supabase/client';
+import { redirect } from 'next/navigation';
 
-type FormInputs = {
-  paymentMethod: 'points' | 'cash';
-};
-
-export function PerxTicketSubmit({
-  coupon,
-  qrToken,
-}: {
-  coupon: Coupon;
-  qrToken?: string;
-}) {
+export function PerxTicketSubmit({ coupon }: { coupon: Coupon }) {
   const { allow_points_purchase, accent_color } = coupon;
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const { register, handleSubmit, setValue } = useForm<FormInputs>();
+  const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
+  const dialogRef = useRef<HTMLDialogElement>(null);
 
-  const onSubmit: SubmitHandler<FormInputs> = async (data) => {
+  const handlePaymentDialog = async () => {
+    const supabase = createClient();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
+    if (!user) {
+      toast('Redirecting you to login');
+      redirect(
+        `/login?next=${encodeURIComponent(`/view?coupon=${coupon.id}&merchant=${coupon.merchant_id}`)}`
+      );
+    }
+
+    setIsDialogOpen(true);
+    dialogRef.current?.showModal();
+  };
+
+  const handleClosePaymentDialog = () => {
+    setIsDialogOpen(false);
+    setTimeout(() => {
+      dialogRef.current?.close();
+    }, 300);
+  };
+
+  const handlePointsPurchase = async () => {
     setIsLoading(true);
 
+    const supabase = createClient();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
+    if (!user) {
+      toast('Redirecting you to login');
+      redirect(
+        `/login?next=${encodeURIComponent(`/view?coupon=${coupon.id}&merchant=${coupon.merchant_id}`)}`
+      );
+    }
+
     try {
-      const result = await purchaseCoupon(coupon, data.paymentMethod);
+      const result = await purchaseWithRewardPoints(coupon);
 
       if (result.success) {
         toast(result.message);
@@ -48,43 +87,143 @@ export function PerxTicketSubmit({
   };
 
   return (
-    <form
-      onSubmit={handleSubmit(onSubmit)}
-      className="flex flex-col-reverse gap-2 sm:flex-row sm:gap-4"
-    >
-      {allow_points_purchase && (
+    <>
+      <div className="flex flex-col-reverse gap-2 sm:flex-row sm:gap-4">
+        {allow_points_purchase && (
+          <button
+            type="button"
+            onClick={handlePointsPurchase}
+            disabled={isLoading}
+            className={cn(
+              `flex-1 cursor-pointer rounded-lg border px-4 py-2 text-sm font-medium`,
+              isLoading && 'opacity-50'
+            )}
+            style={{
+              border: `1px solid ${getPrimaryAccentColor(accent_color)}`,
+              color: getPrimaryAccentColor(accent_color),
+            }}
+          >
+            Purchase with Points
+          </button>
+        )}
         <button
-          type="submit"
-          onClick={() => setValue('paymentMethod', 'points')}
+          type="button"
+          onClick={() => {
+            handlePaymentDialog();
+          }}
           disabled={isLoading}
           className={cn(
-            `flex-1 cursor-pointer rounded-lg border px-4 py-2 text-sm font-medium`,
+            `flex-1 cursor-pointer rounded-lg px-4 py-2 text-sm font-medium`,
             isLoading && 'opacity-50'
           )}
           style={{
-            border: `1px solid ${getPrimaryAccentColor(accent_color)}`,
-            color: getPrimaryAccentColor(accent_color),
+            backgroundColor: getPrimaryAccentColor(accent_color),
+            color: getAccentColor(accent_color),
           }}
         >
-          Purchase with Points
+          Pay with Cash
         </button>
-      )}
-      <button
-        type="submit"
-        onClick={() => setValue('paymentMethod', 'cash')}
-        disabled={isLoading}
-        className={cn(
-          `flex-1 cursor-pointer rounded-lg px-4 py-2 text-sm font-medium`,
-          isLoading && 'opacity-50'
-        )}
-        style={{
-          backgroundColor: getPrimaryAccentColor(accent_color),
-          color: getAccentColor(accent_color),
-        }}
-      >
-        Pay with Cash
-      </button>
-      <input type="hidden" {...register('paymentMethod')} />
-    </form>
+      </div>
+      <PaymentDialog
+        dialogRef={dialogRef}
+        isDialogOpen={isDialogOpen}
+        handleClosePaymentDialog={handleClosePaymentDialog}
+        coupon={coupon}
+      />
+    </>
   );
+}
+
+function PaymentDialog({
+  dialogRef,
+  isDialogOpen,
+  handleClosePaymentDialog,
+  coupon,
+}: {
+  dialogRef: RefObject<HTMLDialogElement | null>;
+  isDialogOpen: boolean;
+  handleClosePaymentDialog: () => void;
+  coupon: Coupon;
+}) {
+  const handleCreatePaypalOrder: PayPalButtonsComponentProps['createOrder'] =
+    async (): Promise<string> => {
+      try {
+        const result = await createPaypalOrder(coupon);
+
+        if (!result.data) {
+          throw new Error('Failed to create PayPal order.');
+        }
+
+        return result.data as string;
+      } catch (error) {
+        console.error('Error creating PayPal order:', error);
+        toast.error('Failed to create PayPal order. Please try again.');
+        return '';
+      }
+    };
+
+  const handleApprovePaypalOrder: PayPalButtonsComponentProps['onApprove'] =
+    async (data): Promise<void> => {
+      try {
+        await approvePaypalOrder(coupon, data.orderID);
+      } catch (error) {
+        console.error('Error approving PayPal order:', error);
+        toast.error('Failed to approve PayPal order. Please try again.');
+      }
+    };
+
+  return (
+    <dialog
+      ref={dialogRef}
+      className={cn(
+        'bg-perx-white fixed inset-0 m-auto w-9/10 rounded-lg shadow-lg transition-all duration-300 sm:max-w-[600px]',
+        isDialogOpen ? 'scale-100 opacity-100' : 'scale-50 opacity-0'
+      )}
+      onClick={(event) => {
+        if (event.target === dialogRef.current) {
+          handleClosePaymentDialog();
+        }
+      }}
+    >
+      <div className="h-full w-full p-8">
+        <PayPalScriptProvider
+          options={{ clientId: process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID! }}
+        >
+          <LoadingPaypal />
+          <PayPalButtons
+            style={{ layout: 'horizontal' }}
+            createOrder={handleCreatePaypalOrder}
+            onApprove={handleApprovePaypalOrder}
+          />
+        </PayPalScriptProvider>
+      </div>
+    </dialog>
+  );
+}
+
+function LoadingPaypal() {
+  const [{ isPending, isRejected }] = usePayPalScriptReducer();
+
+  if (isPending) {
+    return (
+      <div className="flex w-full items-center justify-center p-2">
+        <LoaderCircle
+          className="text-perx-blue -ms-1 me-2 animate-spin"
+          size={40}
+          strokeWidth={2}
+          aria-hidden="true"
+        />
+      </div>
+    );
+  } else if (isRejected) {
+    return (
+      <div className="flex w-full items-center justify-center">
+        <PerxAlert
+          heading="Fetch error"
+          message="Unable to load PayPal SDK. Refresh the page to try again."
+          variant="error"
+        />
+      </div>
+    );
+  }
 }

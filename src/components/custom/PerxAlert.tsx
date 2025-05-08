@@ -62,7 +62,7 @@ export default function PerxAlert({
         />
       ) : null}
       <div className="grow space-y-1">
-        <h1 className="text-sm font-medium">{heading}</h1>
+        <h1 className="font-mono text-sm font-medium">{heading}</h1>
         <p className="text-sm">{message}</p>
       </div>
     </div>

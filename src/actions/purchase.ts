@@ -3,17 +3,26 @@
 import { createClient } from '@/utils/supabase/server';
 import { redirect } from 'next/navigation';
 import { v4 as uuidv4 } from 'uuid';
+import { paypal } from './paypal';
 
 import type { Coupon, SuccessResponse } from '@/lib/types';
+import type { User } from '@supabase/supabase-js';
 
-export const purchaseCoupon = async (
-  coupon: Coupon,
-  paymentMethod: 'cash' | 'points'
+// TODO: Disable buttons if rank is lower than coupon.rank_availability
+// TODO: Add loading state to buttons
+// TODO: Not show coupons with quantity 0 in the list
+
+export const purchaseWithRewardPoints = async (
+  coupon: Coupon
 ): Promise<SuccessResponse> => {
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  if (!coupon.points_amount) {
+    return {
+      success: false,
+      message: 'Coupon does not allow purchase sing Reward Points.',
+    };
+  }
+
+  const user = await fetchConsumer();
 
   if (!user) {
     redirect(
@@ -22,97 +31,226 @@ export const purchaseCoupon = async (
   }
 
   try {
-    const { data: consumer, error: consumerError } = await supabase
-      .from('consumers')
-      .select('rank')
-      .eq('id', user.id)
-      .single();
+    updateCouponData(coupon.id);
+    updateRewardPoints(user.id, coupon.points_amount);
+    updateConsumerFirstPurchase(user.id);
+    insertConsumerCoupon(coupon.id, user.id);
 
-    if (consumerError || !consumer) {
-      throw new Error('Unable to fetch consumer data.');
-    }
+    return { success: true, message: 'Coupon purchased successfully!' };
+  } catch (error) {
+    console.error('Error purchasing with reward points:', error);
+    return { success: false, message: 'Failed to purchase coupon.' };
+  }
+};
 
-    if (consumer.rank < coupon.rank_availability) {
-      console.log('here');
-      return {
-        success: false,
-        message: `Heads up! This reward unlocks at a higher rank. A few more steps and it's yours! 🚀`,
-      };
-    }
+const fetchConsumer = async (): Promise<User | null> => {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
 
-    if (paymentMethod === 'points' && coupon.quantity > 0) {
-      const result = await handlePointsPurchase(user.id, coupon.points_amount);
-      if (!result.success) {
-        return { success: false, message: result.message };
-      }
-    } else if (coupon.quantity > 0) {
-      const result = await handleCashPurchase(user.id, coupon.price);
-      if (!result.success) {
-        return { success: false, message: result.message };
-      }
-    } else {
-      return { success: false, message: 'Coupon is out of stock.' };
-    }
+  return user;
+};
 
-    const qr_token = uuidv4(); 
+const insertConsumerCoupon = async (
+  couponId: string,
+  consumerId: string
+): Promise<SuccessResponse> => {
+  try {
+    const supabase = await createClient();
+    const qrToken = uuidv4();
 
-    const { error: insertUserCouponError } = await supabase
+    const { error: insertConsumerCouponError } = await supabase
       .from('user_coupons')
       .insert({
-        coupon_id: coupon.id,
-        consumer_id: user.id,
-        qr_token: qr_token
+        coupon_id: couponId,
+        consumer_id: consumerId,
+        qr_token: qrToken,
       });
 
-    if (insertUserCouponError) {
+    if (insertConsumerCouponError) {
       throw new Error(
-        `Error inserting user coupon: ${insertUserCouponError.message}`
+        `INSERT USER COUPON ERROR: ${insertConsumerCouponError.message}`
       );
     }
 
-    const newQuantity = coupon.quantity - 1;
+    return { success: true, message: 'Coupon inserted successfully!' };
+  } catch (error) {
+    console.error('Error inserting consumer coupon:', error);
+    return { success: false, message: (error as Error).message };
+  }
+};
 
+const updateCouponData = async (couponId: string): Promise<SuccessResponse> => {
+  try {
+    const supabase = await createClient();
+    const { data: couponData, error: couponError } = await supabase
+      .from('coupons')
+      .select('quantity, is_deactivated')
+      .eq('id', couponId)
+      .single();
+
+    if (couponError) {
+      throw new Error(
+        `FETCH COUPON ERROR IN UPDATE STATUS: ${couponError.message}`
+      );
+    }
+    const newQuantity = couponData.quantity - 1;
     const { error: updateError } = await supabase
       .from('coupons')
       .update({
         quantity: newQuantity,
         is_deactivated: newQuantity === 0,
       })
-      .eq('id', coupon.id);
+      .eq('id', couponId);
 
     if (updateError) {
-      throw new Error(`Error updating coupon: ${updateError.message}`);
+      throw new Error(`UPDATE COUPON ERROR: ${updateError.message}`);
     }
 
-    return { success: true, message: 'Coupon purchased successfully!' };
+    return { success: true, message: 'Coupon updated successfully!' };
   } catch (error) {
-    console.error('Error purchasing coupon:', error);
+    console.error('Error updating coupon data:', error);
     return { success: false, message: (error as Error).message };
   }
 };
 
-export const handleCashPurchase = async (
+const updateRewardPoints = async (
   consumerId: string,
-  amount: number
+  pointsAmount: number
 ): Promise<SuccessResponse> => {
   try {
     const supabase = await createClient();
-    const { data: consumer, error: fetchConsumerError } = await supabase
+    const { data: consumerData, error: fetchConsumerError } = await supabase
       .from('consumers')
       .select('*')
       .eq('id', consumerId)
       .single();
 
     if (fetchConsumerError) {
-      throw new Error(`Error fetching consumer: ${fetchConsumerError.message}`);
+      throw new Error(`FETCH CONSUMER ERROR: ${fetchConsumerError.message}`);
     }
 
-    const rebatePoints: number = Math.round(amount * 0.01 * 100) / 100;
+    const newPointsBalance: number = consumerData.points_balance - pointsAmount;
+    const { error: updateConsumerError } = await supabase
+      .from('consumers')
+      .update({ points_balance: newPointsBalance })
+      .eq('id', consumerId);
+
+    if (updateConsumerError) {
+      throw new Error(
+        `UPDATE CONSUMER POINTS BALANCE ERROR: ${updateConsumerError.message}`
+      );
+    }
+
+    return { success: true, message: 'Points updated successfully!' };
+  } catch (error) {
+    console.error('Error updating reward points:', error);
+    return { success: false, message: (error as Error).message };
+  }
+};
+
+const updateConsumerFirstPurchase = async (
+  consumerId: string
+): Promise<SuccessResponse> => {
+  try {
+    const supabase = await createClient();
+    const { data: consumerData, error: fetchConsumerError } = await supabase
+      .from('consumers')
+      .select('*')
+      .eq('id', consumerId)
+      .single();
+
+    if (fetchConsumerError) {
+      throw new Error(`FETCH CONSUMER ERROR: ${fetchConsumerError.message}`);
+    }
+
+    if (!consumerData.has_purchased) {
+      const { error: updateHasPurchasedError } = await supabase
+        .from('consumers')
+        .update({ has_purchased: true })
+        .eq('id', consumerId);
+
+      if (updateHasPurchasedError) {
+        throw new Error(
+          `UPDATE HAS PURCHASED ERROR: ${updateHasPurchasedError.message}`
+        );
+      }
+
+      if (consumerData.referrer_code) {
+        rewardReferrer(consumerData.referrer_code);
+      }
+    }
+
+    return {
+      success: true,
+      message: 'Consumer first purchase updated successfully!',
+    };
+  } catch (error) {
+    console.error('Error updating consumer first purchase:', error);
+    return { success: false, message: (error as Error).message };
+  }
+};
+
+const rewardReferrer = async (referrerId: string): Promise<SuccessResponse> => {
+  try {
+    const supabase = await createClient();
+    const { data: referrer, error: fetchReferrerError } = await supabase
+      .from('consumers')
+      .select('*')
+      .eq('referral_code', referrerId)
+      .single();
+
+    if (fetchReferrerError) {
+      throw new Error(`FETCH REFERRER ERROR: ${fetchReferrerError.message}`);
+    }
+
+    const REWARD: number = 50;
+    const newReferrerPointsBalance: number = referrer.points_balance + REWARD;
+
+    const { error: updateReferrerError } = await supabase
+      .from('consumers')
+      .update({
+        points_balance: newReferrerPointsBalance,
+        points_total: referrer.points_total + REWARD,
+      })
+      .eq('id', referrer.id);
+
+    if (updateReferrerError) {
+      throw new Error(
+        `UPDATE REFERRER POINTS BALANCE ERROR: ${updateReferrerError.message}`
+      );
+    }
+
+    return { success: true, message: 'Referrer rewarded successfully!' };
+  } catch (error) {
+    console.error('Error rewarding referrer:', error);
+    return { success: false, message: (error as Error).message };
+  }
+};
+
+const rebateConsumerPoints = async (
+  consumerId: string,
+  price: number
+): Promise<SuccessResponse> => {
+  try {
+    const supabase = await createClient();
+    const { data: consumerData, error: fetchConsumerError } = await supabase
+      .from('consumers')
+      .select('*')
+      .eq('id', consumerId)
+      .single();
+
+    if (fetchConsumerError) {
+      throw new Error(`FETCH CONSUMER ERROR: ${fetchConsumerError.message}`);
+    }
+
+    const rebatePoints: number = Math.round(price * 0.01 * 100) / 100;
     const { error: updateRebateError } = await supabase
       .from('consumers')
       .update({
-        points_balance: consumer.points_balance + rebatePoints,
-        points_total: consumer.points_total + rebatePoints,
+        points_balance: consumerData.points_balance + rebatePoints,
+        points_total: consumerData.points_total + rebatePoints,
       })
       .eq('id', consumerId);
 
@@ -122,104 +260,63 @@ export const handleCashPurchase = async (
       );
     }
 
-    if (!consumer.has_purchased) {
-      const { error: updateError } = await supabase
-        .from('consumers')
-        .update({ has_purchased: true })
-        .eq('id', consumerId);
-
-      if (updateError) {
-        console.error('Error updating hasPurchased:', updateError.message);
-      }
-
-      if (consumer.referrer_code) {
-        rewardReferrer(consumer.referrer_code);
-      }
-    }
-    return { success: true, message: 'Cash purchase successful!' };
+    return { success: true, message: 'Consumer points rebated successfully!' };
   } catch (error) {
-    console.error(`Error purchasing coupon: ${error}`);
+    console.error('Error rebating consumer points:', error);
     return { success: false, message: (error as Error).message };
   }
 };
 
-export const handlePointsPurchase = async (
-  consumerId: string,
-  pointsAmount: number | null
-): Promise<SuccessResponse> => {
+export const createPaypalOrder = async (
+  coupon: Coupon
+): Promise<SuccessResponse<string>> => {
   try {
-    const supabase = await createClient();
-    const { data: consumer, error: fetchConsumerError } = await supabase
-      .from('consumers')
-      .select('*')
-      .eq('id', consumerId)
-      .single();
+    const user = await fetchConsumer();
 
-    if (fetchConsumerError) {
-      throw new Error(`Error fetching consumer: ${fetchConsumerError.message}`);
-    }
-
-    if (pointsAmount === null || consumer.points_balance < pointsAmount) {
-      return { success: false, message: 'Insufficient points balance' };
-    }
-
-    const newPointsBalance: number = consumer.points_balance - pointsAmount;
-    const { error: updateConsumerError } = await supabase
-      .from('consumers')
-      .update({ points_balance: newPointsBalance })
-      .eq('id', consumerId);
-
-    if (updateConsumerError) {
-      throw new Error(
-        `Error updating consumer points balance: ${updateConsumerError.message}`
+    if (!user) {
+      redirect(
+        `/login?next=${encodeURIComponent(`/view?coupon=${coupon.id}&merchant=${coupon.merchant_id}`)}`
       );
     }
+    const order = await paypal.createOrder(coupon.price);
 
-    if (!consumer.has_purchased) {
-      await supabase
-        .from('consumers')
-        .update({ has_purchased: true })
-        .eq('id', consumerId);
+    return {
+      success: true,
+      message: 'PayPal order created successfully!',
+      data: order.id as string,
+    };
+  } catch (error) {
+    console.error('Error creating PayPal order:', error);
+    throw new Error('Failed to create PayPal order.');
+  }
+};
 
-      // Reward referrer
-      if (consumer.referrer_code) {
-        rewardReferrer(consumer.referrer_code);
-      }
+export const approvePaypalOrder = async (
+  coupon: Coupon,
+  orderId: string
+): Promise<SuccessResponse> => {
+  try {
+    const user = await fetchConsumer();
+
+    if (!user) {
+      redirect(
+        `/login?next=${encodeURIComponent(`/view?coupon=${coupon.id}&merchant=${coupon.merchant_id}`)}`
+      );
     }
+    const captureData = await paypal.createPayment(orderId);
+
+    if (!captureData || captureData.status !== 'COMPLETED') {
+      throw new Error('PayPal order / payment capture not approved.');
+    }
+
+    updateCouponData(coupon.id);
+    updateConsumerFirstPurchase(user.id);
+    insertConsumerCoupon(coupon.id, user.id);
+    rebateConsumerPoints(user.id, coupon.price);
 
     return { success: true, message: 'Coupon purchased successfully!' };
   } catch (error) {
-    console.error(`Error purchasing coupon: ${error}`);
-    return { success: false, message: (error as Error).message };
-  }
-};
-
-const rewardReferrer = async (referrerId: string): Promise<void> => {
-  const supabase = await createClient();
-  const { data: referrer, error: fetchReferrerError } = await supabase
-    .from('consumers')
-    .select('*')
-    .eq('referral_code', referrerId)
-    .single();
-
-  if (fetchReferrerError) {
-    throw new Error(`Error fetching referrer: ${fetchReferrerError.message}`);
-  }
-
-  const REWARD: number = 50;
-  const newReferrerPointsBalance: number = referrer.points_balance + REWARD;
-
-  const { error: updateReferrerError } = await supabase
-    .from('consumers')
-    .update({
-      points_balance: newReferrerPointsBalance,
-      points_total: referrer.points_total + REWARD,
-    })
-    .eq('id', referrer.id);
-
-  if (updateReferrerError) {
-    throw new Error(
-      `Error updating referrer points balance: ${updateReferrerError.message}`
-    );
+    console.error('Error approving PayPal order:', error);
+    return { success: false, message: 'Failed to approve PayPal order.' };
   }
 };

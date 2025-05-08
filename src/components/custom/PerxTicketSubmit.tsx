@@ -22,13 +22,22 @@ import type { Coupon } from '@/lib/types';
 import { createClient } from '@/utils/supabase/client';
 import { redirect } from 'next/navigation';
 
-export function PerxTicketSubmit({ coupon }: { coupon: Coupon }) {
+interface PerxTicketSubmitProps {
+  coupon: Coupon;
+  disabledByRank?: boolean;
+}
+
+export function PerxTicketSubmit({
+  coupon,
+  disabledByRank = false,
+}: PerxTicketSubmitProps) {
   const { allow_points_purchase, accent_color } = coupon;
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
   const dialogRef = useRef<HTMLDialogElement>(null);
 
   const handlePaymentDialog = async () => {
+    setIsLoading(true);
     const supabase = createClient();
     const {
       data: { user },
@@ -43,6 +52,7 @@ export function PerxTicketSubmit({ coupon }: { coupon: Coupon }) {
 
     setIsDialogOpen(true);
     dialogRef.current?.showModal();
+    setIsLoading(false);
   };
 
   const handleClosePaymentDialog = () => {
@@ -93,15 +103,23 @@ export function PerxTicketSubmit({ coupon }: { coupon: Coupon }) {
           <button
             type="button"
             onClick={handlePointsPurchase}
-            disabled={isLoading}
+            disabled={isLoading || disabledByRank}
             className={cn(
-              `flex-1 cursor-pointer rounded-lg border px-4 py-2 text-sm font-medium`,
+              `flex-1 cursor-pointer rounded-lg border px-4 py-2 text-sm font-medium disabled:cursor-not-allowed`,
               isLoading && 'opacity-50'
             )}
-            style={{
-              border: `1px solid ${getPrimaryAccentColor(accent_color)}`,
-              color: getPrimaryAccentColor(accent_color),
-            }}
+            style={
+              !(isLoading || disabledByRank)
+                ? {
+                    border: `1px solid ${getPrimaryAccentColor(accent_color)}`,
+                    color: getPrimaryAccentColor(accent_color),
+                  }
+                : {
+                    border: `1px solid rgba(0, 0, 0, 0.15)`,
+                    color: 'rgba(0, 0, 0, 0.2)',
+                    backgroundColor: 'rgba(0, 0, 0, 0.05)',
+                  }
+            }
           >
             Purchase with Points
           </button>
@@ -111,15 +129,22 @@ export function PerxTicketSubmit({ coupon }: { coupon: Coupon }) {
           onClick={() => {
             handlePaymentDialog();
           }}
-          disabled={isLoading}
+          disabled={isLoading || disabledByRank}
+          style={
+            !(isLoading || disabledByRank)
+              ? {
+                  backgroundColor: getPrimaryAccentColor(accent_color),
+                  color: getAccentColor(accent_color),
+                }
+              : {
+                  backgroundColor: 'rgba(0, 0, 0, 0.15)',
+                  color: 'rgba(0, 0, 0, 0.2)',
+                }
+          }
           className={cn(
-            `flex-1 cursor-pointer rounded-lg px-4 py-2 text-sm font-medium`,
+            `disabled:bg-muted flex-1 cursor-pointer rounded-lg px-4 py-2 text-sm font-medium disabled:cursor-not-allowed`,
             isLoading && 'opacity-50'
           )}
-          style={{
-            backgroundColor: getPrimaryAccentColor(accent_color),
-            color: getAccentColor(accent_color),
-          }}
         >
           Pay with Cash
         </button>

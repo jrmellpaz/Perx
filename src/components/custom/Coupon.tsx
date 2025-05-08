@@ -43,8 +43,10 @@ export function Coupon({
             )}
           />
         </div>
-        <div className="text-perx-black flex flex-col gap-1.5 px-2 py-1">
-          <p className="text-sm font-medium sm:text-base">{coupon.title}</p>
+        <div className="text-perx-black flex flex-col px-2 py-1">
+          <p className="font-mono text-sm font-medium sm:text-base">
+            {coupon.title}
+          </p>
           <div className="flex items-center gap-1 text-[10px] md:text-xs">
             <span className="border-perx-black w-fit rounded-full border px-1.5 py-0.5">
               {coupon.category}

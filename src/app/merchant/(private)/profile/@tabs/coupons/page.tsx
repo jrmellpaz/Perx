@@ -12,5 +12,5 @@ export default async function CouponsTab() {
     redirect('/not-found');
   }
 
-  return <MerchantCouponList userId={user.id} />;
+  return <MerchantCouponList userId={user.id} variant={'merchant'} />;
 }

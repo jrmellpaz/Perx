@@ -61,7 +61,7 @@ const insertConsumerCoupon = async (
     const qrToken = uuidv4();
 
     const { error: insertConsumerCouponError } = await supabase
-      .from('user_coupons')
+      .from('consumer_coupons')
       .insert({
         coupon_id: couponId,
         consumer_id: consumerId,

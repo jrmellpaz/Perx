@@ -1,5 +1,5 @@
 import { fetchConsumerCoupons } from '@/actions/coupon';
-import { UserCoupon } from '@/lib/types';
+import { ConsumerCoupon } from '@/lib/types';
 import { createClient } from '@/utils/supabase/server';
 import Link from 'next/link';
 import { Suspense } from 'react';
@@ -33,7 +33,7 @@ export default async function MyCouponsPage() {
   );
 }
 
-function MyCoupon({ coupon }: { coupon: UserCoupon }) {
+function MyCoupon({ coupon }: { coupon: ConsumerCoupon }) {
   const couponDetails = coupon.coupons;
   return (
     <Link

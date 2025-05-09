@@ -33,6 +33,45 @@ export type Database = {
         }
         Relationships: []
       }
+      consumer_coupons: {
+        Row: {
+          consumer_id: string
+          coupon_id: string
+          created_at: string
+          id: number
+          qr_token: string
+        }
+        Insert: {
+          consumer_id: string
+          coupon_id: string
+          created_at?: string
+          id?: number
+          qr_token: string
+        }
+        Update: {
+          consumer_id?: string
+          coupon_id?: string
+          created_at?: string
+          id?: number
+          qr_token?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_coupons_consumer_id_fkey"
+            columns: ["consumer_id"]
+            isOneToOne: false
+            referencedRelation: "consumers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "user_coupons_coupon_id_fkey"
+            columns: ["coupon_id"]
+            isOneToOne: false
+            referencedRelation: "coupons"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       consumers: {
         Row: {
           created_at: string
@@ -247,45 +286,6 @@ export type Database = {
           secondary_color?: string
         }
         Relationships: []
-      }
-      user_coupons: {
-        Row: {
-          consumer_id: string
-          coupon_id: string
-          created_at: string
-          id: number
-          qr_token: string
-        }
-        Insert: {
-          consumer_id: string
-          coupon_id: string
-          created_at?: string
-          id?: number
-          qr_token: string
-        }
-        Update: {
-          consumer_id?: string
-          coupon_id?: string
-          created_at?: string
-          id?: number
-          qr_token?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "user_coupons_consumer_id_fkey"
-            columns: ["consumer_id"]
-            isOneToOne: false
-            referencedRelation: "consumers"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "user_coupons_coupon_id_fkey"
-            columns: ["coupon_id"]
-            isOneToOne: false
-            referencedRelation: "coupons"
-            referencedColumns: ["id"]
-          },
-        ]
       }
     }
     Views: {

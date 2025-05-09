@@ -10,8 +10,8 @@ import type {
   CouponWithRank,
   InsertCoupon,
   SuccessResponse,
-  UserCoupon,
-  UserCoupons,
+  ConsumerCoupon,
+  ConsumerCoupons,
 } from '@/lib/types';
 import type { AddCouponInputs } from '@/lib/couponSchema';
 
@@ -201,10 +201,10 @@ export const fetchCouponsByMerchantId = async (
 
 export const fetchConsumerCoupons = async (
   consumerId: string
-): Promise<UserCoupons> => {
+): Promise<ConsumerCoupons> => {
   const supabase = await createClient();
   const { data, error } = await supabase
-    .from('user_coupons')
+    .from('consumer_coupons')
     .select('*, coupons(*)')
     .eq('consumer_id', consumerId)
     .order('created_at', { ascending: false });
@@ -214,15 +214,15 @@ export const fetchConsumerCoupons = async (
     return [];
   }
 
-  return data as UserCoupons;
+  return data as ConsumerCoupons;
 };
 
 export const fetchConsumerCoupon = async (
   consumerCouponId: number
-): Promise<UserCoupon> => {
+): Promise<ConsumerCoupon> => {
   const supabase = await createClient();
   const { data, error } = await supabase
-    .from('user_coupons')
+    .from('consumer_coupons')
     .select('*, coupons(*)')
     .eq('id', consumerCouponId)
     .single();
@@ -231,7 +231,7 @@ export const fetchConsumerCoupon = async (
     console.error('Fetch Consumer Coupon Error:', error);
   }
 
-  return data as UserCoupon;
+  return data as ConsumerCoupon;
 };
 
 export const fetchCouponCategories = async (): Promise<CouponCategories> => {
@@ -314,20 +314,20 @@ export async function redeemCoupon(qrToken: string) {
   if (!qrToken) return { success: false, message: 'Missing QR token' };
   const supabase = await createClient();
 
-  const { data: userCoupon, error: lookupError } = await supabase
-    .from('user_coupons')
+  const { data: myCoupon, error: lookupError } = await supabase
+    .from('consumer_coupons')
     .select('id')
     .eq('qr_token', qrToken)
     .maybeSingle();
 
-  if (lookupError || !userCoupon) {
+  if (lookupError || !myCoupon) {
     return { success: false, message: 'Invalid or already redeemed coupon.' };
   }
 
   const { error: deleteError } = await supabase
-    .from('user_coupons')
+    .from('consumer_coupons')
     .delete()
-    .eq('id', userCoupon.id);
+    .eq('id', myCoupon.id);
 
   if (deleteError) {
     return { success: false, message: 'Failed to redeem coupon.' };
@@ -339,19 +339,19 @@ export async function redeemCoupon(qrToken: string) {
 export async function getCouponFromToken(qrToken: string) {
   const supabase = await createClient();
   if (!qrToken) return { success: false, message: 'Missing QR token' };
-  const { data: userCoupon, error } = await supabase
-    .from('user_coupons')
+  const { data: myCoupon, error } = await supabase
+    .from('consumer_coupons')
     .select('id, coupon:coupon_id (*)')
     .eq('qr_token', qrToken)
     .maybeSingle();
 
-  if (error || !userCoupon) {
+  if (error || !myCoupon) {
     return { success: false, message: 'Invalid or expired QR code.' };
   }
 
   return {
     success: true,
-    coupon: userCoupon.coupon,
-    user_coupon_id: userCoupon.id,
+    coupon: myCoupon.coupon,
+    user_coupon_id: myCoupon.id,
   };
 }

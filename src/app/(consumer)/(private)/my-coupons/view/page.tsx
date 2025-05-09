@@ -6,7 +6,7 @@ import PerxHeader from '@/components/custom/PerxHeader';
 import { getPrimaryAccentColor } from '@/lib/utils';
 import { PerxQRToken } from '@/components/custom/PerxQRToken';
 
-import type { Coupon, Merchant, UserCoupon } from '@/lib/types';
+import type { Coupon, Merchant, ConsumerCoupon } from '@/lib/types';
 
 export default async function ViewCoupon({
   searchParams,
@@ -19,7 +19,7 @@ export default async function ViewCoupon({
     redirect('/not-found');
   }
 
-  const consumerCoupon: UserCoupon = await fetchConsumerCoupon(
+  const consumerCoupon: ConsumerCoupon = await fetchConsumerCoupon(
     consumerCouponId as unknown as number
   );
   const couponDetails: Coupon = consumerCoupon.coupons;

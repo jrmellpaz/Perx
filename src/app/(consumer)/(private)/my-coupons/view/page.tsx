@@ -4,7 +4,7 @@ import { redirect } from 'next/navigation';
 import { fetchConsumerCoupon } from '@/actions/coupon';
 import PerxHeader from '@/components/custom/PerxHeader';
 import { getPrimaryAccentColor } from '@/lib/utils';
-import { PerxQRToken } from '@/components/custom/PerxQRToken';
+import { PerxBarcodeToken } from '@/components/custom/PerxQRToken';
 
 import type { Coupon, Merchant, UserCoupon } from '@/lib/types';
 
@@ -48,7 +48,7 @@ export default async function ViewCoupon({
           merchantData={merchant}
           variant="consumer"
         >
-          <PerxQRToken
+          <PerxBarcodeToken
             coupon={couponDetails}
             qrToken={consumerCoupon.qr_token}
           />

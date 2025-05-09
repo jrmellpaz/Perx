@@ -1,7 +1,9 @@
+import MerchantScanner from '@/components/merchant/MerchantScanner';
+
 export default function ScanQR() {
   return (
-    <section>
-      <h1>Scan QR</h1>
-    </section>
+    <main className="p-4">
+      <MerchantScanner />
+    </main>
   );
 }

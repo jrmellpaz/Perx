@@ -1,6 +1,6 @@
 'use server';
 
-const base = process.env.PAYPAL_API_URL || 'http://api-m.sandbox.paypal.com';
+const base = process.env.PAYPAL_API_URL;
 const clientId = process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID;
 const appSecret = process.env.PAYPAL_APP_SECRET;
 
@@ -27,7 +27,7 @@ export const createOrder = async (price: number): Promise<OrderData> => {
       purchase_units: [
         {
           amount: {
-            currency_code: 'USD',
+            currency_code: 'PHP',
             value: price,
           },
         },

@@ -22,13 +22,22 @@ import type { Coupon } from '@/lib/types';
 import { createClient } from '@/utils/supabase/client';
 import { redirect } from 'next/navigation';
 
-export function PerxTicketSubmit({ coupon }: { coupon: Coupon }) {
+interface PerxTicketSubmitProps {
+  coupon: Coupon;
+  disabledByRank?: boolean;
+}
+
+export function PerxTicketSubmit({
+  coupon,
+  disabledByRank = false,
+}: PerxTicketSubmitProps) {
   const { allow_points_purchase, accent_color } = coupon;
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
   const dialogRef = useRef<HTMLDialogElement>(null);
 
   const handlePaymentDialog = async () => {
+    setIsLoading(true);
     const supabase = createClient();
     const {
       data: { user },
@@ -43,6 +52,7 @@ export function PerxTicketSubmit({ coupon }: { coupon: Coupon }) {
 
     setIsDialogOpen(true);
     dialogRef.current?.showModal();
+    setIsLoading(false);
   };
 
   const handleClosePaymentDialog = () => {
@@ -89,40 +99,72 @@ export function PerxTicketSubmit({ coupon }: { coupon: Coupon }) {
   return (
     <>
       <div className="flex flex-col-reverse gap-2 sm:flex-row sm:gap-4">
-        {allow_points_purchase && (
-          <button
-            type="button"
-            onClick={handlePointsPurchase}
-            disabled={isLoading}
-            className={cn(
-              `flex-1 cursor-pointer rounded-lg border px-4 py-2 text-sm font-medium`,
-              isLoading && 'opacity-50'
+        {isLoading ? (
+          <div className="flex w-full items-center justify-center gap-2">
+            <LoaderCircle
+              className="animate-spin"
+              size={18}
+              strokeWidth={2}
+              aria-hidden="true"
+              style={{ color: getPrimaryAccentColor(accent_color) }}
+            />
+            <span className="text-perx-black text-sm">
+              Processing your purchase
+            </span>
+          </div>
+        ) : (
+          <>
+            {allow_points_purchase && (
+              <button
+                type="button"
+                onClick={handlePointsPurchase}
+                disabled={isLoading || disabledByRank}
+                className={cn(
+                  `flex-1 cursor-pointer rounded-lg border px-4 py-2 text-sm font-medium disabled:cursor-not-allowed`,
+                  isLoading && 'opacity-50'
+                )}
+                style={
+                  !(isLoading || disabledByRank)
+                    ? {
+                        border: `1px solid ${getPrimaryAccentColor(accent_color)}`,
+                        color: getPrimaryAccentColor(accent_color),
+                      }
+                    : {
+                        border: `1px solid rgba(0, 0, 0, 0.15)`,
+                        color: 'rgba(0, 0, 0, 0.2)',
+                        backgroundColor: 'rgba(0, 0, 0, 0.05)',
+                      }
+                }
+              >
+                Purchase with Points
+              </button>
             )}
-            style={{
-              border: `1px solid ${getPrimaryAccentColor(accent_color)}`,
-              color: getPrimaryAccentColor(accent_color),
-            }}
-          >
-            Purchase with Points
-          </button>
+            <button
+              type="button"
+              onClick={() => {
+                handlePaymentDialog();
+              }}
+              disabled={isLoading || disabledByRank}
+              style={
+                !(isLoading || disabledByRank)
+                  ? {
+                      backgroundColor: getPrimaryAccentColor(accent_color),
+                      color: getAccentColor(accent_color),
+                    }
+                  : {
+                      backgroundColor: 'rgba(0, 0, 0, 0.15)',
+                      color: 'rgba(0, 0, 0, 0.2)',
+                    }
+              }
+              className={cn(
+                `disabled:bg-muted flex-1 cursor-pointer rounded-lg px-4 py-2 text-sm font-medium disabled:cursor-not-allowed`,
+                isLoading && 'opacity-50'
+              )}
+            >
+              Pay with Cash
+            </button>
+          </>
         )}
-        <button
-          type="button"
-          onClick={() => {
-            handlePaymentDialog();
-          }}
-          disabled={isLoading}
-          className={cn(
-            `flex-1 cursor-pointer rounded-lg px-4 py-2 text-sm font-medium`,
-            isLoading && 'opacity-50'
-          )}
-          style={{
-            backgroundColor: getPrimaryAccentColor(accent_color),
-            color: getAccentColor(accent_color),
-          }}
-        >
-          Pay with Cash
-        </button>
       </div>
       <PaymentDialog
         dialogRef={dialogRef}
@@ -186,13 +228,27 @@ function PaymentDialog({
         }
       }}
     >
-      <div className="h-full w-full p-8">
+      <div className="flex h-full w-full flex-col gap-4 p-8 font-bold">
+        <h1 className="text-perx-black font-mono text-lg tracking-tight">
+          Select your payment method
+        </h1>
         <PayPalScriptProvider
-          options={{ clientId: process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID! }}
+          options={{
+            clientId: process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID!,
+            currency: 'PHP',
+          }}
         >
           <LoadingPaypal />
           <PayPalButtons
-            style={{ layout: 'horizontal' }}
+            style={{
+              layout: 'vertical',
+              color: 'blue',
+              shape: 'rect',
+              borderRadius: 6,
+              height: 43,
+              disableMaxWidth: true,
+              label: 'pay',
+            }}
             createOrder={handleCreatePaypalOrder}
             onApprove={handleApprovePaypalOrder}
           />

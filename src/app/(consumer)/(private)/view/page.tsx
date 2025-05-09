@@ -6,7 +6,10 @@ import { fetchCoupon } from '@/actions/coupon';
 import PerxHeader from '@/components/custom/PerxHeader';
 import { getPrimaryAccentColor } from '@/lib/utils';
 
-import type { Coupon, Merchant } from '@/lib/types';
+import type { Consumer, Coupon, Merchant } from '@/lib/types';
+import { fetchConsumerProfile } from '@/actions/consumerProfile';
+import { createClient } from '@/utils/supabase/server';
+import { InfoIcon } from 'lucide-react';
 
 export default async function ViewCoupon({
   searchParams,
@@ -22,6 +25,17 @@ export default async function ViewCoupon({
 
   const coupon: Coupon = await fetchCoupon(couponId);
   const merchant: Merchant = await fetchMerchant(merchantId);
+
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  let consumerData: Consumer | null = null;
+  let rankAchieved: boolean = true;
+  if (user) {
+    consumerData = await fetchConsumerProfile(user.id);
+    rankAchieved = consumerData.rank >= coupon.rank_availability;
+  }
 
   return (
     <section
@@ -44,7 +58,16 @@ export default async function ViewCoupon({
           merchantData={merchant}
           variant="consumer"
         >
-          <PerxTicketSubmit coupon={coupon} />
+          {!rankAchieved && (
+            <div
+              className="mb-2 flex w-full items-center gap-1 text-xs"
+              style={{ color: getPrimaryAccentColor(coupon.accent_color) }}
+            >
+              <InfoIcon size={14} />
+              <span>You don't have enough Rank to purchase this coupon.</span>
+            </div>
+          )}
+          <PerxTicketSubmit coupon={coupon} disabledByRank={!rankAchieved} />
         </PerxTicket>
       </div>
     </section>

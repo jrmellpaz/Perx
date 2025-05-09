@@ -1,28 +1,31 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
-import JsBarcode from 'jsbarcode';
+import { useEffect, useState } from 'react';
+import QRCode from 'qrcode';
 
 import type { Coupon } from '@/lib/types';
 
-export function PerxBarcodeToken({ coupon, qrToken }: { coupon: Coupon; qrToken: string }) {
-  const barcodeRef = useRef<SVGSVGElement | null>(null);
+export function PerxQRToken({ coupon, qrToken }: { coupon: Coupon; qrToken: string }) {
+  const [qrImage, setQrImage] = useState<string | null>(null);
 
   useEffect(() => {
-    if (barcodeRef.current) {
-      JsBarcode(barcodeRef.current, qrToken, {
-        format: 'CODE128', // Common format
-        lineColor: '#000',
-        width: 2,
-        height: 100,
-        displayValue: true,
-      });
+    async function generate() {
+      const img = await generateQRCodeImage(qrToken);
+      setQrImage(img);
     }
+    generate();
   }, [qrToken]);
+
+  if (!qrImage) return <p>Loading QR...</p>;
 
   return (
     <div className="flex justify-center items-center">
-      <svg ref={barcodeRef} className="w-full h-auto" />
+      <img src={qrImage} alt="Coupon QR Code" className="w-48 h-48" />
     </div>
   );
+}
+
+
+async function generateQRCodeImage(token: string): Promise<string> {
+  return await QRCode.toDataURL(token); // returns base64 string
 }

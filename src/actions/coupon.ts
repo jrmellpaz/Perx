@@ -312,17 +312,46 @@ export async function filterCoupons(
 
 export async function redeemCoupon(qrToken: string) {
   if (!qrToken) return { success: false, message: 'Missing QR token' };
-
   const supabase = await createClient();
-  const { error } = await supabase
-    .from('user_coupons')
-    .delete()
-    .eq('qr_token', qrToken);
 
-  if (error) {
-    console.error('Redeem error:', error);
-    return { success: false, message: 'Redemption failed' };
+  const { data: userCoupon, error: lookupError } = await supabase
+    .from('user_coupons')
+    .select('id')
+    .eq('qr_token', qrToken)
+    .maybeSingle();
+
+  if (lookupError || !userCoupon) {
+    return { success: false, message: 'Invalid or already redeemed coupon.' };
   }
 
-  return { success: true, message: 'Coupon successfully redeemed!' };
+  const { error: deleteError } = await supabase
+    .from('user_coupons')
+    .delete()
+    .eq('id', userCoupon.id);
+
+  if (deleteError) {
+    return { success: false, message: 'Failed to redeem coupon.' };
+  }
+
+  return { success: true, message: 'Coupon successfully redeemed.' };
+}
+
+export async function getCouponFromToken(qrToken: string) {
+  const supabase = await createClient();
+  if (!qrToken) return { success: false, message: 'Missing QR token' };
+  const { data: userCoupon, error } = await supabase
+    .from('user_coupons')
+    .select('id, coupon:coupon_id (*)')
+    .eq('qr_token', qrToken)
+    .maybeSingle();
+
+  if (error || !userCoupon) {
+    return { success: false, message: 'Invalid or expired QR code.' };
+  }
+
+  return {
+    success: true,
+    coupon: userCoupon.coupon,
+    user_coupon_id: userCoupon.id,
+  };
 }

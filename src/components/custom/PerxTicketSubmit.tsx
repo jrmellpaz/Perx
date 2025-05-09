@@ -245,7 +245,7 @@ function PaymentDialog({
               color: 'blue',
               shape: 'rect',
               borderRadius: 6,
-              height: 43,
+              height: 44,
               disableMaxWidth: true,
               label: 'pay',
             }}

@@ -4,9 +4,10 @@ import { createClient } from '@/utils/supabase/server';
 import { redirect } from 'next/navigation';
 import { v4 as uuidv4 } from 'uuid';
 
-import type { Coupon, SuccessResponse } from '@/lib/types';
+import type { ConsumerCoupon, Coupon, SuccessResponse } from '@/lib/types';
 import type { User } from '@supabase/supabase-js';
 import { createOrder, createPayment } from './paypal';
+import ConsumerRecoverPasswordPage from '@/app/(consumer)/(auth)/recover-password/page';
 
 // TODO: Disable buttons if rank is lower than coupon.rank_availability
 // TODO: Add loading state to buttons
@@ -55,18 +56,21 @@ const fetchConsumer = async (): Promise<User | null> => {
 const insertConsumerCoupon = async (
   couponId: string,
   consumerId: string
-): Promise<SuccessResponse> => {
+): Promise<SuccessResponse<ConsumerCoupon>> => {
   try {
     const supabase = await createClient();
     const qrToken = uuidv4();
 
-    const { error: insertConsumerCouponError } = await supabase
-      .from('consumer_coupons')
-      .insert({
-        coupon_id: couponId,
-        consumer_id: consumerId,
-        qr_token: qrToken,
-      });
+    const { data: consumerCouponData, error: insertConsumerCouponError } =
+      await supabase
+        .from('consumer_coupons')
+        .insert({
+          coupon_id: couponId,
+          consumer_id: consumerId,
+          qr_token: qrToken,
+        })
+        .select('*, coupons(*)')
+        .single();
 
     if (insertConsumerCouponError) {
       throw new Error(
@@ -74,7 +78,15 @@ const insertConsumerCoupon = async (
       );
     }
 
-    return { success: true, message: 'Coupon inserted successfully!' };
+    if (!consumerCouponData) {
+      throw new Error('No data returned from insert operation.');
+    }
+
+    return {
+      success: true,
+      message: 'Coupon inserted successfully!',
+      data: consumerCouponData,
+    };
   } catch (error) {
     console.error('Error inserting consumer coupon:', error);
     return { success: false, message: (error as Error).message };
@@ -270,7 +282,7 @@ const rebateConsumerPoints = async (
 export const approvePaypalOrder = async (
   coupon: Coupon,
   orderId: string
-): Promise<SuccessResponse> => {
+): Promise<SuccessResponse<ConsumerCoupon>> => {
   try {
     const user = await fetchConsumer();
 
@@ -285,12 +297,19 @@ export const approvePaypalOrder = async (
       throw new Error('PayPal order / payment capture not approved.');
     }
 
-    updateCouponData(coupon.id);
-    updateConsumerFirstPurchase(user.id);
-    insertConsumerCoupon(coupon.id, user.id);
-    rebateConsumerPoints(user.id, coupon.price);
+    await updateCouponData(coupon.id);
+    await updateConsumerFirstPurchase(user.id);
+    const { data: consumerCoupon } = await insertConsumerCoupon(
+      coupon.id,
+      user.id
+    );
+    await rebateConsumerPoints(user.id, coupon.price);
 
-    return { success: true, message: 'Coupon purchased successfully!' };
+    return {
+      success: true,
+      message: 'Coupon purchased successfully!',
+      data: consumerCoupon,
+    };
   } catch (error) {
     console.error('Error approving PayPal order:', error);
     return { success: false, message: 'Failed to approve PayPal order.' };

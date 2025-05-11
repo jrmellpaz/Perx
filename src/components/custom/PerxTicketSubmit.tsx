@@ -19,7 +19,7 @@ import {
 
 import type { Coupon } from '@/lib/types';
 import { createClient } from '@/utils/supabase/client';
-import { redirect } from 'next/navigation';
+import { redirect, useRouter } from 'next/navigation';
 
 interface PerxTicketSubmitProps {
   coupon: Coupon;
@@ -186,6 +186,8 @@ function PaymentDialog({
   handleClosePaymentDialog: () => void;
   coupon: Coupon;
 }) {
+  const router = useRouter();
+
   const handleCreatePaypalOrder: PayPalButtonsComponentProps['createOrder'] =
     async (_data, actions): Promise<string> => {
       try {
@@ -220,7 +222,12 @@ function PaymentDialog({
   const handleApprovePaypalOrder: PayPalButtonsComponentProps['onApprove'] =
     async (data): Promise<void> => {
       try {
-        await approvePaypalOrder(coupon, data.orderID);
+        const { message, data: consumerCoupon } = await approvePaypalOrder(
+          coupon,
+          data.orderID
+        );
+        toast.success(`${message} Redirecting you to your coupons...`);
+        router.push(`/my-coupons/view?coupon=${consumerCoupon?.id}`);
       } catch (error) {
         console.error('Error approving PayPal order:', error);
         toast.error('Failed to approve PayPal order. Please try again.');

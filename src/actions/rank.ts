@@ -48,3 +48,50 @@ export const fetchRank = async (rankId: number): Promise<Rank> => {
     id: data.id,
   } as Rank;
 };
+
+export interface RankResult {
+  currentRank: Rank | null;
+  shouldAdvance: boolean;
+  nextRank: Rank | null;
+}
+
+export const getConsumerRankStatus = async (
+  currentPoints: number
+): Promise<RankResult> => {
+  const supabase = await createClient();
+
+  const { data, error } = await supabase
+    .from('ranks')
+    .select('*')
+    .order('max_points', { ascending: true });
+
+  if (error) {
+    console.error('Failed to fetch ranks:', error.message);
+    return {
+      currentRank: null,
+      shouldAdvance: false,
+      nextRank: null,
+    };
+  }
+
+  if (!data || data.length == 0) {
+    throw new EvalError('No rank data available');
+  }
+
+  const currentIndex = [...data]
+    .reverse()
+    .findIndex((rank) => currentPoints >= rank.max_points);
+
+  const trueIndex = currentIndex === -1 ? 0 : data.length - 1 - currentIndex;
+
+  const currentRank = data[trueIndex];
+  const nextRank = data[trueIndex + 1] || null;
+  const shouldAdvance =
+    nextRank !== null && currentPoints >= nextRank.max_points;
+
+  return {
+    currentRank,
+    shouldAdvance,
+    nextRank,
+  };
+};

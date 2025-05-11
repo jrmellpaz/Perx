@@ -8,6 +8,8 @@ import type { Coupon, SuccessResponse } from '@/lib/types';
 import type { User } from '@supabase/supabase-js';
 import { createOrder, createPayment } from './paypal';
 
+import { getConsumerRankStatus } from './rank';
+
 // TODO: Disable buttons if rank is lower than coupon.rank_availability
 // TODO: Add loading state to buttons
 // TODO: Not show coupons with quantity 0 in the list
@@ -115,35 +117,132 @@ const updateCouponData = async (couponId: string): Promise<SuccessResponse> => {
   }
 };
 
+// const updateRewardPoints = async (
+//   consumerId: string,
+//   pointsAmount: number
+// ): Promise<
+//   SuccessResponse<{
+//     newRank: any | null;
+//     pointsBalance: number;
+//     totalPoints: number;
+//   }>
+// > => {
+//   try {
+//     const supabase = await createClient();
+//     const { data: consumerData, error: fetchConsumerError } = await supabase
+//       .from('consumers')
+//       .select('*')
+//       .eq('id', consumerId)
+//       .single();
+
+//     if (fetchConsumerError) {
+//       throw new Error(`FETCH CONSUMER ERROR: ${fetchConsumerError.message}`);
+//     }
+
+//     const newPointsBalance: number = consumerData.points_balance - pointsAmount;
+//     const { error: updateConsumerError } = await supabase
+//       .from('consumers')
+//       .update({ points_balance: newPointsBalance })
+//       .eq('id', consumerId);
+
+//     if (updateConsumerError) {
+//       throw new Error(
+//         `UPDATE CONSUMER POINTS BALANCE ERROR: ${updateConsumerError.message}`
+//       );
+//     }
+
+//     const { data: updatedConsumer } = await supabase
+//       .from('consumers')
+//       .select('points_total')
+//       .eq('id', consumerId)
+//       .single();
+
+//     if (updatedConsumer) {
+//       const { shouldAdvance, nextRank } = await getConsumerRankStatus(
+//         updatedConsumer.points_total
+//       );
+
+//       if (shouldAdvance && nextRank) {
+//         const { error: rankUpdateError } = await supabase
+//           .from('consumers')
+//           .update({ rank: nextRank.id })
+//           .eq('id', consumerId);
+
+//         if (rankUpdateError) {
+//           throw new Error(
+//             `UPDATE CONSUMER RANK ERROR: ${rankUpdateError.message}`
+//           );
+//         }
+//       }
+//     }
+
+//     return { success: true, message: 'Points updated successfully!' };
+//   } catch (error) {
+//     console.error('Error updating reward points:', error);
+//     return { success: false, message: (error as Error).message };
+//   }
+// };
+
 const updateRewardPoints = async (
   consumerId: string,
   pointsAmount: number
-): Promise<SuccessResponse> => {
+): Promise<
+  SuccessResponse<{
+    newRank: any | null;
+    pointsBalance: number;
+    totalPoints: number;
+  }>
+> => {
   try {
     const supabase = await createClient();
+
+    // 1. Fetch consumer profile
     const { data: consumerData, error: fetchConsumerError } = await supabase
       .from('consumers')
-      .select('*')
+      .select('points_balance, points_total, rank')
       .eq('id', consumerId)
       .single();
 
-    if (fetchConsumerError) {
-      throw new Error(`FETCH CONSUMER ERROR: ${fetchConsumerError.message}`);
+    if (fetchConsumerError || !consumerData) {
+      throw new Error(`FETCH CONSUMER ERROR: ${fetchConsumerError?.message}`);
     }
 
-    const newPointsBalance: number = consumerData.points_balance - pointsAmount;
-    const { error: updateConsumerError } = await supabase
+    // 2. Update points
+    const newPointsBalance = consumerData.points_balance - pointsAmount;
+    const newPointsTotal = consumerData.points_total + pointsAmount;
+
+    // 3. Check for rank advancement
+    const { shouldAdvance, nextRank } =
+      await getConsumerRankStatus(newPointsTotal);
+
+    // 4. Update database
+    const updates: any = {
+      points_balance: newPointsBalance,
+      points_total: newPointsTotal,
+    };
+
+    if (shouldAdvance && nextRank) {
+      updates.rank = nextRank.id;
+    }
+
+    const { error: updateError } = await supabase
       .from('consumers')
-      .update({ points_balance: newPointsBalance })
+      .update(updates)
       .eq('id', consumerId);
 
-    if (updateConsumerError) {
-      throw new Error(
-        `UPDATE CONSUMER POINTS BALANCE ERROR: ${updateConsumerError.message}`
-      );
+    if (updateError) {
+      throw new Error(`UPDATE ERROR: ${updateError.message}`);
     }
 
-    return { success: true, message: 'Points updated successfully!' };
+    return {
+      success: true,
+      message: 'Points updated successfully!',
+      data: {
+        newRank: shouldAdvance ? nextRank : null,
+        pointsBalance: newPointsBalance,
+        totalPoints: newPointsTotal,
+      },
+    };
   } catch (error) {
     console.error('Error updating reward points:', error);
     return { success: false, message: (error as Error).message };

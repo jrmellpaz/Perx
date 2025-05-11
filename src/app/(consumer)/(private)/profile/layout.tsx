@@ -164,7 +164,7 @@ function LoyaltyRewardsCard({
         <h1 className="font-mono text-5xl font-medium">
           {balancePoints}
           <span className="text-muted-foreground font-sans text-base font-normal tracking-tighter">
-            &nbsp;&nbsp;points balance
+            {/* &nbsp;&nbsp;points balance */}
           </span>
         </h1>
       </div>

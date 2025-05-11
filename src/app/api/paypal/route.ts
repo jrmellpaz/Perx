@@ -7,7 +7,6 @@ const PAYPAL_APP_SECRET = process.env.PAYPAL_APP_SECRET;
 
 interface PaymentData {
   title: string;
-  userName: string;
   amount: string;
   orderId: string;
 }
@@ -76,7 +75,7 @@ export async function POST(request: Request) {
     const data: PaymentData = await request.json();
 
     // Validate incoming payment data
-    if (!data.title || !data.amount || !data.orderId || !data.userName) {
+    if (!data.title || !data.amount || !data.orderId) {
       return NextResponse.json(
         { error: 'Missing required fields' },
         { status: 400 }
@@ -100,5 +99,33 @@ export async function POST(request: Request) {
         { status: 400 }
       );
     }
-  } catch (error) {}
+
+    return NextResponse.json(
+      {
+        success: true,
+        message: 'Payment captured successfully',
+        data: {
+          title: data.title,
+          amount: data.amount,
+          orderId: data.orderId,
+          captureId: captureData.id,
+          status: captureData.status,
+        },
+      },
+      { status: 200 }
+    );
+  } catch (error) {
+    console.error('Payment processing error:', error);
+    return NextResponse.json(
+      { error: 'Internal server error' },
+      { status: 500 }
+    );
+  }
+}
+
+export async function GET() {
+  return NextResponse.json(
+    { message: 'Payment API endpoint' },
+    { status: 200 }
+  );
 }

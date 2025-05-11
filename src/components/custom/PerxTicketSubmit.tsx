@@ -14,7 +14,6 @@ import { LoaderCircle } from 'lucide-react';
 import PerxAlert from './PerxAlert';
 import {
   approvePaypalOrder,
-  createPaypalOrder,
   purchaseWithRewardPoints,
 } from '@/actions/purchase';
 
@@ -188,16 +187,29 @@ function PaymentDialog({
   coupon: Coupon;
 }) {
   const handleCreatePaypalOrder: PayPalButtonsComponentProps['createOrder'] =
-    async (): Promise<string> => {
+    async (_data, actions): Promise<string> => {
       try {
         dialogRef.current?.close();
-        const result = await createPaypalOrder(coupon);
+        // const result = await createPaypalOrder(coupon);
 
-        if (!result.data) {
-          throw new Error('Failed to create PayPal order.');
-        }
+        // if (!result.data) {
+        //   throw new Error('Failed to create PayPal order.');
+        // }
 
-        return result.data as string;
+        // return result.data as string;
+
+        return actions.order.create({
+          intent: 'CAPTURE',
+          purchase_units: [
+            {
+              amount: {
+                value: coupon.price.toFixed(2),
+                currency_code: 'PHP',
+              },
+              description: coupon.title,
+            },
+          ],
+        });
       } catch (error) {
         console.error('Error creating PayPal order:', error);
         toast.error('Failed to create PayPal order. Please try again.');
@@ -214,6 +226,11 @@ function PaymentDialog({
         toast.error('Failed to approve PayPal order. Please try again.');
       }
     };
+
+  const onError: PayPalButtonsComponentProps['onError'] = (error) => {
+    console.error('PayPal error:', error);
+    toast.error(`An error occurred with PayPal. ${error.message}`);
+  };
 
   return (
     <dialog
@@ -234,8 +251,9 @@ function PaymentDialog({
         </h1>
         <PayPalScriptProvider
           options={{
-            clientId: process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID!,
+            clientId: process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID || '',
             currency: 'PHP',
+            intent: 'capture',
           }}
         >
           <LoadingPaypal />
@@ -251,6 +269,7 @@ function PaymentDialog({
             }}
             createOrder={handleCreatePaypalOrder}
             onApprove={handleApprovePaypalOrder}
+            onError={onError}
           />
         </PayPalScriptProvider>
       </div>

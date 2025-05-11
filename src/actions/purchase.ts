@@ -267,29 +267,29 @@ const rebateConsumerPoints = async (
   }
 };
 
-export const createPaypalOrder = async (
-  coupon: Coupon
-): Promise<SuccessResponse<string>> => {
-  try {
-    const user = await fetchConsumer();
+// export const createPaypalOrder = async (
+//   coupon: Coupon
+// ): Promise<SuccessResponse<string>> => {
+//   try {
+//     const user = await fetchConsumer();
 
-    if (!user) {
-      redirect(
-        `/login?next=${encodeURIComponent(`/view?coupon=${coupon.id}&merchant=${coupon.merchant_id}`)}`
-      );
-    }
-    const order = await createOrder(coupon.price);
+//     if (!user) {
+//       redirect(
+//         `/login?next=${encodeURIComponent(`/view?coupon=${coupon.id}&merchant=${coupon.merchant_id}`)}`
+//       );
+//     }
+//     const order = await createOrder(coupon.price);
 
-    return {
-      success: true,
-      message: 'PayPal order created successfully!',
-      data: order.id as string,
-    };
-  } catch (error) {
-    console.error('Error creating PayPal order:', error);
-    throw new Error('Failed to create PayPal order.');
-  }
-};
+//     return {
+//       success: true,
+//       message: 'PayPal order created successfully!',
+//       data: order.id as string,
+//     };
+//   } catch (error) {
+//     console.error('Error creating PayPal order:', error);
+//     throw new Error('Failed to create PayPal order.');
+//   }
+// };
 
 export const approvePaypalOrder = async (
   coupon: Coupon,

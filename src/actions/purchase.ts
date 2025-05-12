@@ -3,15 +3,10 @@
 import { createClient } from '@/utils/supabase/server';
 import { redirect } from 'next/navigation';
 import { v4 as uuidv4 } from 'uuid';
+import { createPayment } from './paypal';
 
 import type { ConsumerCoupon, Coupon, SuccessResponse } from '@/lib/types';
 import type { User } from '@supabase/supabase-js';
-import { createOrder, createPayment } from './paypal';
-import ConsumerRecoverPasswordPage from '@/app/(consumer)/(auth)/recover-password/page';
-
-// TODO: Disable buttons if rank is lower than coupon.rank_availability
-// TODO: Add loading state to buttons
-// TODO: Not show coupons with quantity 0 in the list
 
 export const purchaseWithRewardPoints = async (
   coupon: Coupon

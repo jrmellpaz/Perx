@@ -83,7 +83,7 @@ export function CouponFilterForm() {
 
   return (
     <div className="flex w-full flex-col">
-      <details className="peer filter-details flex flex-col gap-2 px-4">
+      <details className="peer filter-details flex flex-col gap-2 px-2 md:px-4">
         <summary className="hover:bg-perx-blue/10 flex w-fit cursor-pointer items-center gap-1.5 rounded-md p-2 font-mono text-xs transition-all">
           <ListFilter size={16} /> Filters
         </summary>

@@ -70,7 +70,7 @@ function VerticalNav() {
   const pathname = usePathname();
 
   return (
-    <ul className="flex h-full w-full flex-col gap-0.5 p-2">
+    <ul className="flex h-full w-full flex-col p-2">
       {navItems.map((item, index) => {
         const isActive = pathname.startsWith(item.path);
         const iconWithDynamicStroke = React.cloneElement(item.icon, {

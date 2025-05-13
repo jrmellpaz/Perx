@@ -3,7 +3,7 @@ import { filterCoupons } from '@/actions/coupon';
 import { fetchMerchant } from '@/actions/merchantProfile';
 import { Coupon } from '@/components/custom/Coupon';
 import { MerchantCard } from '@/components/custom/PerxMerchant';
-import { CouponFilterForm } from '@/components/custom/PerxFilter';
+import { PerxSearchbar } from '@/components/custom/PerxSearchbar';
 import { Search } from 'lucide-react';
 import { CouponWithRank, Merchant } from '@/lib/types';
 
@@ -70,27 +70,25 @@ export default async function SearchPage({
   }
 
   return (
-    <div className="flex flex-col items-center-safe gap-4 p-4">
-      <header className="sticky top-4 z-50 mt-4 flex w-full max-w-[800px] flex-col items-center justify-between gap-4 rounded-md bg-white p-4 shadow-md">
-        <form className="relative flex h-12 w-full items-center rounded-lg shadow">
+    <section className="view-container flex h-full w-full flex-col items-center-safe gap-8 overflow-y-auto p-4">
+      <PerxSearchbar query={query}>
+        <form className="relative flex h-12 w-full items-center rounded-lg">
           <input
             type="text"
             name="q"
             defaultValue={query}
             placeholder="Search for coupons or merchants"
-            className="h-full w-full rounded-lg border-none px-4 py-2 text-sm outline-none md:rounded-r-none"
+            className="h-full w-full rounded-full border px-4 py-2 text-sm transition-all outline-none focus:border-none focus:shadow-md"
           />
           <button
             type="submit"
-            className="hover:bg-accent-foreground/10 md: md:bg-perx-blue md:text-perx-white md:hover:bg-perx-blue/80 absolute right-0 mr-1 flex h-full cursor-pointer items-center gap-2 rounded-full p-2 text-gray-400 transition-all md:static md:mr-0 md:rounded-lg md:rounded-l-none md:px-4 md:shadow"
+            title="Search"
+            className="hover:bg-perx-blue/10 md: text-muted-foreground/80 absolute right-0 flex aspect-square h-full w-auto cursor-pointer items-center justify-center gap-2 rounded-full transition-all"
           >
             <Search size={20} />
-            <span className="hidden md:block">Search</span>
           </button>
         </form>
-
-        {query && <CouponFilterForm />}
-      </header>
+      </PerxSearchbar>
 
       <div className="grid w-full grid-cols-1 items-center gap-2 sm:grid-cols-2 md:grid-cols-3 md:gap-3">
         {results.map((item) =>
@@ -101,6 +99,6 @@ export default async function SearchPage({
           ) : null
         )}
       </div>
-    </div>
+    </section>
   );
 }

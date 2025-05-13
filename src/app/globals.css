@@ -245,3 +245,12 @@ textarea {
     padding: 2rem;
   }
 }
+
+details:first-of-type summary::marker,
+:is(::-webkit-details-marker) {
+  content: "";
+}
+
+.filter-details[open] summary {
+  background-color: #0061FE20;
+}

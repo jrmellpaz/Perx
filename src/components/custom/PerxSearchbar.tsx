@@ -109,7 +109,9 @@ export function CouponFilterForm() {
               </div>
             </div>
             <div className="flex flex-col gap-1">
-              <span className="ml-1 font-mono text-xs font-medium">Date</span>
+              <span className="ml-1 font-mono text-xs font-medium">
+                End date
+              </span>
               <input
                 type="date"
                 placeholder="End date"

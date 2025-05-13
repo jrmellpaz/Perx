@@ -78,7 +78,7 @@ export default async function SearchPage({
             name="q"
             defaultValue={query}
             placeholder="Search for coupons or merchants"
-            className="h-full w-full rounded-full border px-4 py-2 text-sm transition-all outline-none focus:border-none focus:shadow-md"
+            className="h-full w-full rounded-full border px-4 py-3 text-sm transition-all outline-none focus:border-none focus:shadow-md"
           />
           <button
             type="submit"

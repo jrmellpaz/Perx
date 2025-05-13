@@ -1,4 +1,5 @@
 import { fetchConsumerCoupons } from '@/actions/coupon';
+import { PerxLogoHeader } from '@/components/custom/PerxHeader';
 import { ConsumerCoupon } from '@/lib/types';
 import { createClient } from '@/utils/supabase/server';
 import Link from 'next/link';
@@ -17,19 +18,22 @@ export default async function MyCouponsPage() {
   const purchasedCoupons = await fetchConsumerCoupons(user.id);
 
   return (
-    <section className="w-full px-2 py-4 sm:px-4">
-      <div className="place-start grid grid-cols-1 gap-2 sm:grid-cols-2 md:grid-cols-3 md:gap-3">
-        <Suspense fallback={<MyCouponsSkeleton />}>
-          {purchasedCoupons.length > 0 ? (
-            purchasedCoupons.map((coupon, index) => {
-              return <MyCoupon key={index} coupon={coupon} />;
-            })
-          ) : (
-            <p>No coupons purchased yet.</p>
-          )}
-        </Suspense>
-      </div>
-    </section>
+    <>
+      <PerxLogoHeader />
+      <section className="w-full px-2 py-4 sm:px-4">
+        <div className="place-start grid grid-cols-1 gap-2 sm:grid-cols-2 md:grid-cols-3 md:gap-3">
+          <Suspense fallback={<MyCouponsSkeleton />}>
+            {purchasedCoupons.length > 0 ? (
+              purchasedCoupons.map((coupon, index) => {
+                return <MyCoupon key={index} coupon={coupon} />;
+              })
+            ) : (
+              <p>No coupons purchased yet.</p>
+            )}
+          </Suspense>
+        </div>
+      </section>
+    </>
   );
 }
 

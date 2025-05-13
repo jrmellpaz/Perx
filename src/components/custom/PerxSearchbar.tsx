@@ -35,7 +35,7 @@ export function PerxSearchbar({
   return (
     <header
       className={cn(
-        'sticky top-4 z-50 flex w-full max-w-[800px] flex-col items-center justify-between gap-1.5 rounded-t-3xl rounded-b-md bg-white transition-all',
+        'sticky top-2 z-50 flex w-full max-w-[800px] flex-col items-center justify-between gap-1.5 rounded-t-3xl rounded-b-md bg-white transition-all',
         scrolled ? 'shadow-md' : 'shadow-none'
       )}
     >

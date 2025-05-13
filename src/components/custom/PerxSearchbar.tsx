@@ -88,7 +88,7 @@ export function CouponFilterForm() {
           <ListFilter size={16} /> Filters
         </summary>
         <div className="flex flex-col gap-1 pb-4">
-          <div className="grid w-full grid-cols-3 items-center gap-2 lg:grid-cols-6">
+          <div className="grid w-full grid-cols-3 items-center gap-1 gap-y-1.5 lg:grid-cols-6">
             <div className="col-span-2 flex flex-col gap-1">
               <span className="ml-1 font-mono text-xs font-medium">Price</span>
               <div className="grid grid-cols-2 gap-1">

@@ -20,7 +20,7 @@ export function PerxSearchbar({
     const handleScroll = () => {
       const scrollPosition = container?.scrollTop;
 
-      if (scrollPosition !== undefined && scrollPosition > 0) {
+      if (scrollPosition !== undefined && scrollPosition > 16) {
         setScrolled(true);
       } else {
         setScrolled(false);

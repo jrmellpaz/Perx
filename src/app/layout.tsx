@@ -33,7 +33,7 @@ export default function RootLayout({
       <body
         className={`${manrope.variable} ${spaceGrotesk.variable} antialiased`}
       >
-        <NextTopLoader color="#A50000" showSpinner={false} height={3} />
+        {/* <NextTopLoader color="#A50000" showSpinner={false} height={3} /> */}
         {children}
         <Toaster />
       </body>

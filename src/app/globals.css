@@ -255,3 +255,7 @@ details:first-of-type summary::marker,
 .filter-details[open] summary {
   background-color: #0061FE20;
 }
+
+.horizontal-navbar {
+  box-shadow: 0px -14px 28px -3px rgba(0,0,0,0.1);
+}

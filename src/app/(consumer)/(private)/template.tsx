@@ -47,7 +47,7 @@ export default function ConsumerTemplate({
   children: React.ReactNode;
 }) {
   return (
-    <main className="bg-perx-white flex h-dvh w-dvw flex-col-reverse overflow-hidden md:flex-row">
+    <main className="flex h-dvh w-dvw flex-col-reverse overflow-hidden md:flex-row">
       <nav className="bg-perx-gray h-14 w-dvw shrink-0 shadow-md md:h-dvh md:w-20 md:shadow-none lg:w-56">
         <div className="hidden h-full border-r-2 md:flex md:flex-col md:justify-between">
           <div className="my-2 h-16 w-full border-b-2 p-2 py-4 pl-6">
@@ -55,7 +55,7 @@ export default function ConsumerTemplate({
           </div>
           <VerticalNav />
         </div>
-        <div className="bg-perx-crimson/10 h-full w-full md:hidden">
+        <div className="bg-perx-crimson/10 horizontal-navbar h-full w-full md:hidden">
           <HorizontalNav />
         </div>
       </nav>
@@ -114,10 +114,10 @@ function HorizontalNav() {
           <Link
             href={item.link}
             key={index}
-            className="hover:bg-perx-cloud/20 h-full grow basis-1"
+            className="hover:bg-perx-cloud/10 h-full grow basis-1"
           >
             <li
-              className={`flex h-full flex-col items-center justify-center gap-0.5 ${isActive ? 'font-bold' : 'font-medium'}`}
+              className={`flex h-full flex-col items-center justify-center gap-0.5 ${isActive ? 'text-perx-crimson font-bold' : 'font-medium'}`}
             >
               <motion.div
                 {...(isActive && {

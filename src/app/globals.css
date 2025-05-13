@@ -32,6 +32,7 @@
   --color-perx-cloud: #B4C8E1;
   --color-perx-plum: #78286E;
   --color-perx-orchid: #C8AFF0;
+  --color-perx-gray: #F7F6F5;
 
   --color-background: hsl(var(--background));
   --color-foreground: hsl(var(--foreground));

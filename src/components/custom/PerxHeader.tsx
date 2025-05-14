@@ -46,7 +46,7 @@ export default function PerxHeader({
     <header
       style={style}
       className={cn(
-        'sticky top-0 z-10 flex h-20 w-full items-center gap-1 p-2 shadow',
+        'sticky top-0 z-10 flex h-15.25 w-full shrink-0 items-center gap-1 px-2',
         scrolled ? 'shadow-md' : 'shadow-none',
         className
       )}

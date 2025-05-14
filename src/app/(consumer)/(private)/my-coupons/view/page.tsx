@@ -1,15 +1,14 @@
 import { fetchMerchant } from '@/actions/merchantProfile';
-import { PerxTicket } from '@/components/custom/PerxTicket';
 import { redirect } from 'next/navigation';
 import { fetchConsumerCoupon } from '@/actions/coupon';
 import PerxHeader from '@/components/custom/PerxHeader';
 import { cn, getAccentColor, getPrimaryAccentColor } from '@/lib/utils';
 import { PerxQRToken } from '@/components/custom/PerxQRToken';
-
-import type { Coupon, Merchant, ConsumerCoupon } from '@/lib/types';
 import { ReactNode } from 'react';
 import Link from 'next/link';
 import { PerxReadMore } from '@/components/custom/PerxReadMore';
+
+import type { Merchant, ConsumerCoupon } from '@/lib/types';
 
 interface CouponDetails {
   title: string;
@@ -62,7 +61,7 @@ export default async function ViewCoupon({
   );
 }
 
-export async function PurchasedCoupon({
+function PurchasedCoupon({
   couponData,
   merchantData,
   children,

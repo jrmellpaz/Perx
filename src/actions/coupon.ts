@@ -223,7 +223,7 @@ export const fetchConsumerCoupon = async (
   const supabase = await createClient();
   const { data, error } = await supabase
     .from('consumer_coupons')
-    .select('*, coupons(*)')
+    .select('*')
     .eq('id', consumerCouponId)
     .single();
 

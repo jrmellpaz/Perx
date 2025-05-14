@@ -1,8 +1,5 @@
-'use client';
-
 import { Clock } from 'lucide-react';
 import Link from 'next/link';
-import { useState, useRef, useEffect } from 'react';
 import { cn } from '@/lib/utils';
 
 import type { CouponWithRank } from '@/lib/types';
@@ -31,7 +28,7 @@ export function Coupon({
           <img
             src={coupon.image}
             alt={`${coupon.title} coupon`}
-            className={cn('aspect-video size-full rounded-t-md object-cover')}
+            className={cn('aspect-video size-full rounded-t-sm object-cover')}
           />
         </div>
         <div className="text-perx-black flex flex-col px-2 py-1">

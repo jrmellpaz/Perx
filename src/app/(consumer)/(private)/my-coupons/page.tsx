@@ -38,7 +38,14 @@ export default async function MyCouponsPage() {
 }
 
 function MyCoupon({ coupon }: { coupon: ConsumerCoupon }) {
-  const couponDetails = coupon.coupons;
+  const couponDetails = coupon.details as {
+    title: string;
+    image: string;
+    category: string;
+    description: string;
+    accent_color: string;
+  };
+
   return (
     <Link
       href={{
@@ -49,11 +56,11 @@ function MyCoupon({ coupon }: { coupon: ConsumerCoupon }) {
       <div
         className={`bg-perx-white flex grow basis-60 flex-col gap-2 overflow-hidden rounded-md border pb-2`}
       >
-        <div className="coupon-image aspect-video h-auto w-full">
+        <div className="aspect-video h-full w-auto">
           <img
             src={couponDetails.image}
             alt={`${couponDetails.title} coupon`}
-            className="aspect-video size-full rounded-sm object-cover"
+            className="size-full rounded-t-sm object-cover"
           />
         </div>
         <div className="text-perx-black flex flex-col gap-1.5 px-2 py-1">

@@ -61,7 +61,7 @@ export default function MerchantTemplate({
     <main className="flex h-dvh w-dvw flex-col-reverse overflow-hidden md:flex-row">
       <nav className="bg-perx-gray h-14 w-dvw shrink-0 shadow-md md:h-dvh md:w-20 md:shadow-none lg:w-56">
         <div className="hidden h-full border-r-2 md:flex md:flex-col md:justify-between">
-          <div className="my-2 h-16 w-full border-b-2 p-2 py-4 pl-6">
+          <div className="h-15.5 w-full border-b-2 p-2 py-4 pl-6">
             <MerchantLogo
               logoClass="text-xl pb-2 hidden lg:block"
               sublogoClass="text-md pb-1 hidden lg:block"

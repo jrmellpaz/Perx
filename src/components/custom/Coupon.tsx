@@ -34,7 +34,7 @@ export function Coupon({
           )}
 
           <img
-            onLoad={() => setIsImageLoaded(true)}
+            // onLoad={() => setIsImageLoaded(true)}
             src={coupon.image}
             alt={`${coupon.title} coupon`}
             className={cn(

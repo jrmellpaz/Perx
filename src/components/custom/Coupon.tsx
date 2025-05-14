@@ -2,7 +2,7 @@
 
 import { Clock } from 'lucide-react';
 import Link from 'next/link';
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { cn } from '@/lib/utils';
 
 import type { CouponWithRank } from '@/lib/types';
@@ -14,7 +14,6 @@ export function Coupon({
   coupon: CouponWithRank;
   variant: 'merchant' | 'consumer';
 }) {
-  const [isImageLoaded, setIsImageLoaded] = useState<boolean>(false);
   const rankIcon = coupon.ranks.icon;
 
   return (
@@ -28,19 +27,11 @@ export function Coupon({
       <div
         className={`flex grow basis-60 flex-col gap-2 overflow-hidden rounded-md border pb-2 hover:shadow-md`}
       >
-        <div className="coupon-image aspect-video h-auto w-full">
-          {!isImageLoaded && (
-            <div className="bg-perx-white absolute inset-0 animate-pulse rounded-md"></div>
-          )}
-
+        <div className="aspect-video h-auto w-full">
           <img
-            // onLoad={() => setIsImageLoaded(true)}
             src={coupon.image}
             alt={`${coupon.title} coupon`}
-            className={cn(
-              'aspect-video h-auto w-full rounded-sm object-cover transition-opacity duration-1000',
-              isImageLoaded ? 'opacity-100' : 'opacity-0'
-            )}
+            className={cn('aspect-video size-full rounded-t-md object-cover')}
           />
         </div>
         <div className="text-perx-black flex flex-col px-2 py-1">

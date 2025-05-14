@@ -10,13 +10,18 @@ export function MerchantLogo({
   sublogoClass = 'text-2xl',
 }: MerchantLogoProps) {
   return (
-    <div className="flex h-full items-center gap-1">
+    <div className="flex h-full items-center">
       <img
         src="/logo.svg"
         alt="Merchant Sign-up Illustration"
-        className="aspect-square h-full w-auto"
+        className="mr-2 aspect-square h-full w-auto"
       />
-      <h1 className={cn('font-black tracking-tighter lowercase', logoClass)}>
+      <h1
+        className={cn(
+          'mr-0.5 font-black tracking-tighter lowercase',
+          logoClass
+        )}
+      >
         perx
       </h1>
       <h1 className={cn('font-mono font-semibold uppercase', sublogoClass)}>

@@ -5,6 +5,7 @@ import { useState, useEffect } from 'react';
 import { Button } from '../ui/button';
 import { ListFilter } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import PerxCheckbox from './PerxCheckbox';
 
 export function PerxSearchbar({
   children,
@@ -87,69 +88,66 @@ export function CouponFilterForm() {
         <summary className="hover:bg-perx-blue/10 flex w-fit cursor-pointer items-center gap-1.5 rounded-md p-2 font-mono text-xs transition-all">
           <ListFilter size={16} /> Filters
         </summary>
-        <div className="flex flex-col gap-1 pb-4">
-          <div className="grid w-full grid-cols-3 items-center gap-1 gap-y-1.5 lg:grid-cols-6">
-            <div className="col-span-2 flex flex-col gap-1">
-              <span className="ml-1 font-mono text-xs font-medium">Price</span>
-              <div className="grid grid-cols-2 gap-1">
+        <div className="flex flex-col gap-2 pb-4">
+          <div className="flex w-full flex-col gap-1.5">
+            <div className="flex flex-wrap gap-2">
+              <div className="col-span-2 flex flex-col gap-1">
+                <span className="ml-1 font-mono text-xs font-medium">
+                  Price
+                </span>
+                <div className="grid grid-cols-2 gap-1">
+                  <input
+                    type="number"
+                    placeholder="Min price"
+                    value={minPrice}
+                    onChange={(e) => setMinPrice(e.target.value)}
+                    className="focus-within:border-perx-blue h-8 rounded-lg border-2 p-2 text-xs transition-all outline-none"
+                  />
+                  <input
+                    type="number"
+                    placeholder="Max price"
+                    value={maxPrice}
+                    onChange={(e) => setMaxPrice(e.target.value)}
+                    className="focus-within:border-perx-blue h-8 rounded-lg border-2 p-2 text-xs transition-all outline-none"
+                  />
+                </div>
+              </div>
+              <div className="flex flex-col gap-1">
+                <span className="ml-1 font-mono text-xs font-medium">
+                  End date
+                </span>
                 <input
-                  type="number"
-                  placeholder="Min price"
-                  value={minPrice}
-                  onChange={(e) => setMinPrice(e.target.value)}
-                  className="focus-within:border-perx-blue h-8 rounded-lg border-2 p-2 text-xs transition-all outline-none"
-                />
-                <input
-                  type="number"
-                  placeholder="Max price"
-                  value={maxPrice}
-                  onChange={(e) => setMaxPrice(e.target.value)}
+                  type="date"
+                  placeholder="End date"
+                  value={endDate}
+                  onChange={(e) => setEndDate(e.target.value)}
                   className="focus-within:border-perx-blue h-8 rounded-lg border-2 p-2 text-xs transition-all outline-none"
                 />
               </div>
             </div>
-            <div className="flex flex-col gap-1">
-              <span className="ml-1 font-mono text-xs font-medium">
-                End date
-              </span>
-              <input
-                type="date"
-                placeholder="End date"
-                value={endDate}
-                onChange={(e) => setEndDate(e.target.value)}
-                className="focus-within:border-perx-blue h-8 rounded-lg border-2 p-2 text-xs transition-all outline-none"
-              />
-            </div>
             <div className="col-span-3 flex flex-col gap-1">
               <span className="ml-1 font-mono text-xs font-medium">Tags</span>
-              <div className="grid grid-cols-3 gap-1">
-                <label className="ml-1 flex h-8 cursor-pointer items-center gap-1 text-xs">
-                  <input
-                    type="checkbox"
-                    checked={allowLimitedPurchase}
-                    onChange={(e) => setAllowLimitedPurchase(e.target.checked)}
-                    className="accent-perx-blue"
-                  />
-                  Limited dates
-                </label>
-                <label className="flex cursor-pointer items-center gap-1 text-xs">
-                  <input
-                    type="checkbox"
-                    checked={allowRepeatPurchase}
-                    onChange={(e) => setAllowRepeatPurchase(e.target.checked)}
-                    className="accent-perx-blue"
-                  />
-                  Allows repeat
-                </label>
-                <label className="flex cursor-pointer items-center gap-1 text-xs">
-                  <input
-                    type="checkbox"
-                    checked={allowPointsPurchase}
-                    onChange={(e) => setAllowPointsPurchase(e.target.checked)}
-                    className="accent-perx-blue"
-                  />
-                  Buy with points
-                </label>
+              <div className="flex flex-wrap gap-2">
+                <PerxCheckbox
+                  label="Limited-time offers"
+                  checked={allowLimitedPurchase}
+                  onCheckedChange={(checked) =>
+                    setAllowLimitedPurchase(checked)
+                  }
+                  className="text-xs"
+                />
+                <PerxCheckbox
+                  label="Allows repeat purchase"
+                  checked={allowRepeatPurchase}
+                  onCheckedChange={(checked) => setAllowRepeatPurchase(checked)}
+                  className="text-xs"
+                />
+                <PerxCheckbox
+                  label="Purchasable with Points"
+                  checked={allowPointsPurchase}
+                  onCheckedChange={(checked) => setAllowPointsPurchase(checked)}
+                  className="text-xs"
+                />
               </div>
             </div>
           </div>

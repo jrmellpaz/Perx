@@ -53,7 +53,7 @@ function MyCoupon({ coupon }: { coupon: ConsumerCoupon }) {
           <img
             src={couponDetails.image}
             alt={`${couponDetails.title} coupon`}
-            className="aspect-video h-auto w-full rounded-sm object-cover"
+            className="aspect-video size-full rounded-sm object-cover"
           />
         </div>
         <div className="text-perx-black flex flex-col gap-1.5 px-2 py-1">

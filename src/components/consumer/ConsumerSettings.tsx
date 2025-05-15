@@ -56,7 +56,7 @@ export function LoginSection() {
       <h2 className="text-muted-foreground mb-2 text-sm font-medium">
         Log Out
       </h2>
-      <div className="divide-border w-full divide-y rounded-md bg-white">
+      <div className="w-full rounded-md bg-white">
         <LogoutButton />
       </div>
     </div>
@@ -144,7 +144,7 @@ function ChangePassword() {
   return (
     <>
       <button
-        className="flex w-full cursor-pointer items-center justify-between border-b-1 px-4 py-4 hover:bg-neutral-50"
+        className="flex w-full cursor-pointer items-center justify-between px-4 py-4 hover:bg-neutral-50"
         onClick={openDialog}
       >
         <div className="flex w-full items-center justify-between gap-4">
@@ -240,7 +240,7 @@ function DeleteAccount({ userId }: { userId: string }) {
   };
 
   return (
-    <>
+    <div>
       <button
         className="flex w-full cursor-pointer items-center justify-between px-4 py-4 hover:bg-red-50"
         onClick={openDialog}
@@ -322,6 +322,6 @@ function DeleteAccount({ userId }: { userId: string }) {
           </Button>
         </div>
       </dialog>
-    </>
+    </div>
   );
 }

@@ -72,6 +72,7 @@ export default async function ConsumerProfileLayout({
           rank={rank}
           balancePoints={points_balance}
           totalPoints={points_total}
+          primaryColor={rank.primary_color}
         />
         <div className="sticky top-0 z-50 w-full">
           <Tabs
@@ -138,11 +139,13 @@ function LoyaltyRewardsCard({
   rank,
   balancePoints,
   totalPoints,
+  primaryColor,
 }: {
   nextIcon: string | null;
   rank: Rank;
   balancePoints: number;
   totalPoints: number;
+  primaryColor: string;
 }) {
   return (
     <div className="bg-perx-white text-perx-black z-50 flex aspect-[7/3] h-auto w-[90%] max-w-[800px] flex-col items-center justify-around rounded-xl px-4 py-4 shadow-md sm:px-8 md:w-4/5 md:px-12">
@@ -161,24 +164,30 @@ function LoyaltyRewardsCard({
           alt="Reward points icon"
           className="aspect-sqaure size-16"
         />
-        <h1 className="font-mono text-5xl font-medium">{balancePoints}</h1>
+        <h1 className="font-mono text-5xl font-medium">
+          {balancePoints.toLocaleString()}
+        </h1>
       </div>
       <div className="relative -top-4 flex w-full flex-col justify-start gap-2">
         <h3 className="text-muted-foreground m-0 p-0 text-base tracking-tighter">
           Earn more points to unlock the next tier
         </h3>
         <div className="flex grow items-center gap-3">
-          <h3 className="font-mono font-medium">{totalPoints}</h3>
+          <h3 className="font-mono font-medium">
+            {totalPoints.toLocaleString()}
+          </h3>
           <div className="w-full">
             <Progress
               value={totalPoints}
-              indicatorClass="bg-perx-rust"
               max={rank.max_points}
               className="h-3"
+              indicatorStyle={{ backgroundColor: primaryColor }}
             />
           </div>
           <div className="flex shrink-0 items-center gap-1">
-            <h3 className="font-mono font-medium">{rank.max_points}</h3>
+            <h3 className="font-mono font-medium">
+              {rank.max_points.toLocaleString()}
+            </h3>
             {nextIcon && (
               <img src={nextIcon} alt="Next tier icon" className="size-6" />
             )}

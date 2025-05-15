@@ -7,9 +7,10 @@ import { cn } from '@/lib/utils';
 
 interface ProgressProps
   extends React.ComponentProps<typeof ProgressPrimitive.Root> {
-  indicatorClass: string;
+  indicatorClass?: string;
   max: number;
   value: number;
+  indicatorStyle?: React.CSSProperties;
 }
 
 function Progress({
@@ -17,6 +18,7 @@ function Progress({
   indicatorClass,
   max,
   value,
+  indicatorStyle,
   ...props
 }: ProgressProps) {
   return (
@@ -34,7 +36,10 @@ function Progress({
           'bg-primary h-full w-full flex-1 rounded-full transition-all',
           indicatorClass
         )}
-        style={{ transform: `translateX(-${100 - (value / max) * 100}%)` }}
+        style={{
+          transform: `translateX(-${100 - (value / max) * 100}%)`,
+          ...indicatorStyle,
+        }}
       />
     </ProgressPrimitive.Root>
   );

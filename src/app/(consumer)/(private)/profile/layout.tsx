@@ -8,6 +8,7 @@ import {
   ClipboardListIcon,
   PencilIcon,
   SettingsIcon,
+  ReceiptText,
 } from 'lucide-react';
 import { Progress } from '@/components/ui/progress';
 import Tabs from '@/components/custom/PerxTabs';
@@ -127,6 +128,14 @@ function ButtonGroup() {
           className="text-perx-white hover:bg-perx-black/10 hover:text-perx-white aspect-square h-auto rounded-full"
         >
           <SettingsIcon />
+        </Button>
+      </Link>
+      <Link href="/receipt">
+        <Button
+          variant={'ghost'}
+          className="text-perx-white hover:bg-perx-black/10 hover:text-perx-white aspect-square h-auto rounded-full"
+        >
+            <ReceiptText />
         </Button>
       </Link>
     </>

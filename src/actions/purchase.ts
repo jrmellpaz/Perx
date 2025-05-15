@@ -255,7 +255,7 @@ const rewardReferrer = async (referrerId: string): Promise<SuccessResponse> => {
   }
 };
 
-const rebateConsumerPoints = async (
+export const rebateConsumerPoints = async (
   consumerId: string,
   price: number
 ): Promise<SuccessResponse> => {
@@ -272,6 +272,7 @@ const rebateConsumerPoints = async (
     }
 
     const rebatePoints: number = Math.round(price * 0.01 * 100) / 100;
+    console.log('rebatePoints:', rebatePoints);
     const { error: updateRebateError } = await supabase
       .from('consumers')
       .update({

@@ -259,3 +259,7 @@ details:first-of-type summary::marker,
 .horizontal-navbar {
   box-shadow: 0px -14px 28px -3px rgba(0,0,0,0.1);
 }
+
+.popover-dialog::backdrop {
+  background-color: #00000000;
+}

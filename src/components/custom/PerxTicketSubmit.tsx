@@ -192,13 +192,6 @@ function PaymentDialog({
     async (_data, actions): Promise<string> => {
       try {
         dialogRef.current?.close();
-        // const result = await createPaypalOrder(coupon);
-
-        // if (!result.data) {
-        //   throw new Error('Failed to create PayPal order.');
-        // }
-
-        // return result.data as string;
 
         return actions.order.create({
           intent: 'CAPTURE',

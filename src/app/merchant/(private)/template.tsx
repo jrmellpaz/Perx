@@ -63,8 +63,8 @@ export default function MerchantTemplate({
         <div className="hidden h-full border-r-2 md:flex md:flex-col md:justify-between">
           <div className="h-15.5 w-full border-b-2 p-2 py-4 pl-6">
             <MerchantLogo
-              logoClass="text-xl pb-2 hidden lg:block"
-              sublogoClass="text-md pb-1 hidden lg:block"
+              logoClass="text-xl pb-1.5 hidden lg:block"
+              sublogoClass="text-md pb-0.5 hidden lg:block"
             />
           </div>
           <VerticalNav />

@@ -14,6 +14,7 @@ import type {
   ConsumerCoupons,
 } from '@/lib/types';
 import type { AddCouponInputs } from '@/lib/couponSchema';
+import { redirect } from 'next/navigation';
 
 type FetchCouponsResponse = {
   coupons: CouponWithRank[];
@@ -355,3 +356,40 @@ export async function getCouponFromToken(qrToken: string) {
     user_coupon_id: myCoupon.id,
   };
 }
+
+export const archiveCoupon = async (
+  couponId: string
+): Promise<SuccessResponse> => {
+  const supabase = await createClient();
+  const {
+    data: { user },
+    error: merchantAuthError,
+  } = await supabase.auth.getUser();
+
+  if (merchantAuthError) {
+    throw merchantAuthError;
+  }
+
+  const role: 'merchant' | 'consumer' = user?.user_metadata.role;
+
+  if (role !== 'merchant') {
+    redirect('/merchant/login');
+  }
+
+  try {
+    const { error: archiveError } = await supabase
+      .from('coupons')
+      .update({ is_deactivated: true })
+      .eq('id', couponId)
+      .eq('merchant_id', user?.id!);
+
+    if (archiveError) {
+      throw archiveError;
+    }
+
+    return { success: true, message: 'Coupon archived successfully!' };
+  } catch (error) {
+    console.error('Error archiving coupon:', error);
+    return { success: false, message: 'Failed to archive coupon.' };
+  }
+};

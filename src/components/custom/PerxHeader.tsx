@@ -11,11 +11,13 @@ export default function PerxHeader({
   className,
   style,
   buttonStyle,
+  children,
 }: {
   title: string;
   className: string;
   style?: React.CSSProperties;
   buttonStyle?: React.CSSProperties;
+  children?: React.ReactNode;
 }) {
   const router = useRouter();
   const [scrolled, setScrolled] = useState<boolean>(false);
@@ -59,6 +61,7 @@ export default function PerxHeader({
         <ArrowLeftIcon className="size-5" />
       </button>
       <h1 className="font-mono text-lg font-medium">{title}</h1>
+      {children}
     </header>
   );
 }

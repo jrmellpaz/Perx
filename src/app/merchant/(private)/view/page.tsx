@@ -6,6 +6,7 @@ import PerxHeader from '@/components/custom/PerxHeader';
 import { getPrimaryAccentColor } from '@/lib/utils';
 
 import type { Coupon, Merchant } from '@/lib/types';
+import { ArchiveDropdown } from '@/components/custom/PerxDropdown';
 
 export default async function ViewCoupon({
   searchParams,
@@ -22,6 +23,10 @@ export default async function ViewCoupon({
   const coupon: Coupon = await fetchCoupon(couponId);
   const merchant: Merchant = await fetchMerchant(merchantId);
 
+  const test = () => {
+    alert('test');
+  };
+
   return (
     <section
       className="view-container flex h-full w-full flex-col items-center overflow-y-auto bg-transparent pb-14"
@@ -34,7 +39,13 @@ export default async function ViewCoupon({
         buttonStyle={{
           backgroundColor: getPrimaryAccentColor(coupon.accent_color),
         }}
-      />
+      >
+        {!coupon.is_deactivated && (
+          <section className="flex w-full justify-end">
+            <ArchiveDropdown couponId={coupon.id} />
+          </section>
+        )}
+      </PerxHeader>
       <div className="flex w-full grow items-center justify-center">
         <PerxTicket
           couponData={coupon}

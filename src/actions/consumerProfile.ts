@@ -94,3 +94,5 @@ export const deleteAccount = async (
     return { success: false, message: (error as Error).message };
   }
 };
+
+export const revalidateConsumerProfile = async () => {};

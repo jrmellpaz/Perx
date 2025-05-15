@@ -161,12 +161,7 @@ function LoyaltyRewardsCard({
           alt="Reward points icon"
           className="aspect-sqaure size-16"
         />
-        <h1 className="font-mono text-5xl font-medium">
-          {balancePoints}
-          <span className="text-muted-foreground font-sans text-base font-normal tracking-tighter">
-            &nbsp;&nbsp;points balance
-          </span>
-        </h1>
+        <h1 className="font-mono text-5xl font-medium">{balancePoints}</h1>
       </div>
       <div className="relative -top-4 flex w-full flex-col justify-start gap-2">
         <h3 className="text-muted-foreground m-0 p-0 text-base tracking-tighter">

@@ -7,6 +7,7 @@ import { createPayment } from './paypal';
 
 import type { ConsumerCoupon, Coupon, SuccessResponse } from '@/lib/types';
 import type { User } from '@supabase/supabase-js';
+import { levelUpConsumerRank } from './rank';
 
 export const purchaseWithRewardPoints = async (
   coupon: Coupon
@@ -56,13 +57,31 @@ const insertConsumerCoupon = async (
     const supabase = await createClient();
     const qrToken = uuidv4();
 
+    const { data: existingConsumerCoupon, error: fetchError } = await supabase
+      .from('coupons')
+      .select('*')
+      .eq('id', couponId)
+      .single();
+
+    if (fetchError) {
+      throw new Error(`FETCH COUPON ERROR: ${fetchError.message}`);
+    }
+
     const { data: consumerCouponData, error: insertConsumerCouponError } =
       await supabase
         .from('consumer_coupons')
         .insert({
           coupon_id: couponId,
           consumer_id: consumerId,
+          merchant_id: existingConsumerCoupon.merchant_id,
           qr_token: qrToken,
+          details: {
+            title: existingConsumerCoupon.title,
+            description: existingConsumerCoupon.description,
+            image: existingConsumerCoupon.image,
+            category: existingConsumerCoupon.category,
+            accent_color: existingConsumerCoupon.accent_color,
+          },
         })
         .select('*, coupons(*)')
         .single();
@@ -299,6 +318,7 @@ export const approvePaypalOrder = async (
       user.id
     );
     await rebateConsumerPoints(user.id, coupon.price);
+    await levelUpConsumerRank(user.id);
 
     return {
       success: true,

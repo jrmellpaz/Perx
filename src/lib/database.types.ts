@@ -38,24 +38,37 @@ export type Database = {
           consumer_id: string
           coupon_id: string
           created_at: string
+          details: Json
           id: number
+          merchant_id: string
           qr_token: string
         }
         Insert: {
           consumer_id: string
           coupon_id: string
           created_at?: string
+          details?: Json
           id?: number
+          merchant_id: string
           qr_token: string
         }
         Update: {
           consumer_id?: string
           coupon_id?: string
           created_at?: string
+          details?: Json
           id?: number
+          merchant_id?: string
           qr_token?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "consumer_coupons_merchant_id_fkey"
+            columns: ["merchant_id"]
+            isOneToOne: false
+            referencedRelation: "merchants"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "user_coupons_consumer_id_fkey"
             columns: ["consumer_id"]
@@ -363,6 +376,10 @@ export type Database = {
           address: string
           similarity: number
         }[]
+      }
+      update_consumer_points: {
+        Args: { consumer_id: string; points_to_add: number }
+        Returns: Json
       }
     }
     Enums: {

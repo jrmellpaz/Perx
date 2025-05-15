@@ -5,7 +5,7 @@ import QRCode from 'qrcode';
 
 import type { Coupon } from '@/lib/types';
 
-export function PerxQRToken({ coupon, qrToken }: { coupon: Coupon; qrToken: string }) {
+export function PerxQRToken({ qrToken }: { qrToken: string }) {
   const [qrImage, setQrImage] = useState<string | null>(null);
 
   useEffect(() => {
@@ -19,12 +19,11 @@ export function PerxQRToken({ coupon, qrToken }: { coupon: Coupon; qrToken: stri
   if (!qrImage) return <p>Loading QR...</p>;
 
   return (
-    <div className="flex justify-center items-center">
-      <img src={qrImage} alt="Coupon QR Code" className="w-48 h-48" />
+    <div className="flex items-center justify-center">
+      <img src={qrImage} alt="Coupon QR Code" className="size-48 rounded-lg" />
     </div>
   );
 }
-
 
 async function generateQRCodeImage(token: string): Promise<string> {
   return await QRCode.toDataURL(token); // returns base64 string

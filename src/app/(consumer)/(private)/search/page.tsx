@@ -46,7 +46,7 @@ export default async function SearchPage({
     }
 
     const filteredCoupons = await filterCoupons({
-      query, // Optional: You can add this support to filterCoupons() if you want to search by name/desc
+      query,
       minPrice,
       maxPrice,
       allowLimitedPurchase,
@@ -79,12 +79,12 @@ export default async function SearchPage({
             defaultValue={query}
             placeholder="Search for coupons or merchants"
             autoFocus
-            className="h-full w-full rounded-full border px-4 py-3 text-sm transition-all outline-none focus:border-none focus:shadow-md"
+            className="h-full w-full rounded-full border py-3 pr-16 pl-4 text-sm transition-all outline-none focus:border-none focus:shadow-md"
           />
           <button
             type="submit"
             title="Search"
-            className="hover:bg-perx-blue/10 md: text-muted-foreground/80 absolute right-0 flex aspect-square h-full w-auto cursor-pointer items-center justify-center gap-2 rounded-full transition-all"
+            className="hover:bg-perx-blue/90 bg-perx-blue absolute right-0 flex aspect-square h-full w-14 cursor-pointer items-center justify-center rounded-r-full pr-1 text-white transition-all"
           >
             <Search size={20} />
           </button>

@@ -50,8 +50,11 @@ export default function ConsumerTemplate({
     <main className="flex h-dvh w-dvw flex-col-reverse overflow-hidden md:flex-row">
       <nav className="bg-perx-gray h-14 w-dvw shrink-0 shadow-md md:h-dvh md:w-20 md:shadow-none lg:w-56">
         <div className="hidden h-full border-r-2 md:flex md:flex-col md:justify-between">
-          <div className="my-2 h-16 w-full border-b-2 p-2 py-4 pl-6">
-            <ConsumerLogo logoClass="text-xl pb-2 hidden lg:block" />
+          <div className="h-17 w-full border-b-2 pl-6">
+            <ConsumerLogo
+              imageClass="size-8"
+              logoClass="text-2xl pb-1.75 hidden lg:block"
+            />
           </div>
           <VerticalNav />
         </div>

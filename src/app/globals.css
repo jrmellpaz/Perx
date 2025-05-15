@@ -225,7 +225,7 @@ textarea {
 }
 
 .coupon-image {
-  --mask: conic-gradient(from -45deg at bottom,#0000,#000 1deg 89deg,#0000 90deg) 50%/24px 100%;
+  --mask: conic-gradient(from -45deg at bottom,#bb393900,#9e121200 1deg 89deg,#00000000 90deg) 50%/24px 100%;
   -webkit-mask: var(--mask);
   mask: var(--mask);
 }

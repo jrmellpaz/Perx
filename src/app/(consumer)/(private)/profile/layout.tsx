@@ -119,6 +119,7 @@ function ButtonGroup() {
         <Button
           variant={'ghost'}
           className="text-perx-white hover:bg-perx-black/10 hover:text-perx-white aspect-square h-auto rounded-full"
+          title="Edit profile"
         >
           <PencilIcon />
         </Button>
@@ -127,6 +128,7 @@ function ButtonGroup() {
         <Button
           variant={'ghost'}
           className="text-perx-white hover:bg-perx-black/10 hover:text-perx-white aspect-square h-auto rounded-full"
+          title="Settings"
         >
           <SettingsIcon />
         </Button>
@@ -135,8 +137,9 @@ function ButtonGroup() {
         <Button
           variant={'ghost'}
           className="text-perx-white hover:bg-perx-black/10 hover:text-perx-white aspect-square h-auto rounded-full"
+          title="Receipt"
         >
-            <ReceiptText />
+          <ReceiptText />
         </Button>
       </Link>
     </>

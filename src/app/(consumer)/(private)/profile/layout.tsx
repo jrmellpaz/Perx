@@ -100,7 +100,7 @@ function Header({
       className="z-20 flex h-[240px] shrink-0 items-start justify-between px-6 pt-4 md:px-12"
     >
       <div className="flex grow flex-col">
-        <p className="text-perx-white text-sm/tight">Hello</p>
+        <p className="text-perx-white text-sm/tight">Hello,</p>
         <h1 className="text-perx-white font-mono text-2xl font-medium">
           {name}
         </h1>

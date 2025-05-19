@@ -40,18 +40,17 @@ export default async function Explore({
   const endDate = params.endDate ? new Date(params.endDate) : undefined;
 
   let results: ResultItem[] = [];
+  const merchants: Merchant[] = [];
 
   if (query) {
     const matches = await fullTextSearch(query);
-
-    const merchants: Merchant[] = [];
-
     for (const match of matches) {
       if (match.type === 'merchant') {
         const merchant = await fetchMerchant(match.id);
         if (merchant) merchants.push(merchant);
       }
     }
+  }
 
     const filteredCoupons = await filterCoupons({
       query,
@@ -63,19 +62,18 @@ export default async function Explore({
       endDate,
     });
 
-    results = [
-      ...filteredCoupons.map((c) => ({
-        id: c.id,
-        type: 'coupon' as const,
-        coupon: c,
-      })),
-      ...merchants.map((m) => ({
-        id: m.id,
-        type: 'merchant' as const,
-        merchant: m,
-      })),
-    ];
-  }
+  results = [
+    ...filteredCoupons.map((c) => ({
+      id: c.id,
+      type: 'coupon' as const,
+      coupon: c,
+    })),
+    ...merchants.map((m) => ({
+      id: m.id,
+      type: 'merchant' as const,
+      merchant: m,
+    })),
+  ];
 
   return (
     <>

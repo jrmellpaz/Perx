@@ -261,7 +261,10 @@ export async function filterCoupons(
   filters: CouponFilters & { query?: string }
 ): Promise<CouponWithRank[]> {
   const supabase = await createClient();
-  let queryBuilder = supabase.from('coupons').select('*, ranks(*)');
+  let queryBuilder = supabase
+    .from('coupons')
+    .select('*, ranks(*)')
+    .eq('is_deactivated', false);
 
   if (filters.query) {
     // Option 1: Use text search (requires full-text index in PostgreSQL)

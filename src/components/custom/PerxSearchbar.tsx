@@ -6,6 +6,8 @@ import { Button } from '../ui/button';
 import { ListFilter } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import PerxCheckbox from './PerxCheckbox';
+import RangeSlider from './PerxSlider'; 
+import { couponCategories } from '@/lib/couponSchema';
 
 export function PerxSearchbar({
   children,
@@ -50,8 +52,12 @@ export function CouponFilterForm() {
   const searchParams = useSearchParams();
   const router = useRouter();
 
-  const [minPrice, setMinPrice] = useState(searchParams.get('minPrice') || '');
-  const [maxPrice, setMaxPrice] = useState(searchParams.get('maxPrice') || '');
+  // const [minPrice, setMinPrice] = useState(searchParams.get('minPrice') || '');
+  // const [maxPrice, setMaxPrice] = useState(searchParams.get('maxPrice') || '');
+  const [priceRange, setPriceRange] = useState<[number, number]>([
+    Number(searchParams.get('minPrice') || 0),
+    Number(searchParams.get('maxPrice') || 10000),
+  ]);
   const [allowLimitedPurchase, setAllowLimitedPurchase] = useState(
     searchParams.get('allowLimitedPurchase') === 'true'
   );
@@ -66,8 +72,11 @@ export function CouponFilterForm() {
   const applyFilters = () => {
     const params = new URLSearchParams(searchParams.toString());
 
-    minPrice ? params.set('minPrice', minPrice) : params.delete('minPrice');
-    maxPrice ? params.set('maxPrice', maxPrice) : params.delete('maxPrice');
+    // minPrice ? params.set('minPrice', minPrice) : params.delete('minPrice');
+    // maxPrice ? params.set('maxPrice', maxPrice) : params.delete('maxPrice');
+    params.set('minPrice', String(priceRange[0]));
+    params.set('maxPrice', String(priceRange[1]));
+
     allowLimitedPurchase
       ? params.set('allowLimitedPurchase', 'true')
       : params.delete('allowLimitedPurchase');
@@ -89,25 +98,13 @@ export function CouponFilterForm() {
           <div className="flex w-full flex-col gap-1.5">
             <div className="flex flex-wrap gap-2">
               <div className="col-span-2 flex flex-col gap-1">
-                <span className="ml-1 font-mono text-xs font-medium">
-                  Price
-                </span>
-                <div className="grid grid-cols-2 gap-1">
-                  <input
-                    type="number"
-                    placeholder="Min price"
-                    value={minPrice}
-                    onChange={(e) => setMinPrice(e.target.value)}
-                    className="focus-within:border-perx-blue h-8 rounded-lg border-2 p-2 text-xs transition-all outline-none"
-                  />
-                  <input
-                    type="number"
-                    placeholder="Max price"
-                    value={maxPrice}
-                    onChange={(e) => setMaxPrice(e.target.value)}
-                    className="focus-within:border-perx-blue h-8 rounded-lg border-2 p-2 text-xs transition-all outline-none"
-                  />
-                </div>
+                <span className="ml-1 font-mono text-xs font-medium">Price</span>
+                <RangeSlider
+                  min={0}
+                  max={10000}
+                  value={priceRange}
+                  onValueChange={setPriceRange}
+                />
               </div>
               <div className="flex flex-col gap-1">
                 <span className="ml-1 font-mono text-xs font-medium">

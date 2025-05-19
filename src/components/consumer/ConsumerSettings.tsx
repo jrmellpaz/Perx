@@ -7,7 +7,6 @@ import {
   Lock,
   LogOut,
   Mail,
-  Share,
   Share2,
   Sparkles,
   Tickets,
@@ -18,9 +17,10 @@ import { useRef, useState } from 'react';
 import { toast } from 'sonner';
 import { Button } from '../ui/button';
 import { deleteAccount } from '@/actions/consumerProfile';
+import { PerxDrawer } from '../custom/PerxDrawer';
+import { FacebookShareButton } from 'react-share';
 
 import type { User } from '@supabase/supabase-js';
-import { PerxDrawer } from '../custom/PerxDrawer';
 
 export function AccountSection({ user }: { user: User }) {
   return (
@@ -39,25 +39,6 @@ export function AccountSection({ user }: { user: User }) {
           </div>
         </div>
         <ChangePassword />
-        <div className="flex size-full cursor-pointer items-center justify-between">
-          {/* <div className="flex items-center gap-4">
-            <Share2 className="text-muted-foreground h-5 w-5" />
-            <span className="text-sm">Share account</span>
-          </div>
-          <ChevronRight className="text-muted-foreground h-4 w-4" /> */}
-          <PerxDrawer
-            trigger={
-              <div className="flex size-full items-center gap-4">
-                <Share2 className="text-muted-foreground size-5" />
-                <span>Share account</span>
-              </div>
-            }
-            triggerClass="text-sm size-full p-4 cursor-pointer hover:bg-neutral-50"
-            title="Share account"
-          >
-            <div>hi!!</div>
-          </PerxDrawer>
-        </div>
         <DeleteAccount userId={user.id} />
       </div>
     </div>

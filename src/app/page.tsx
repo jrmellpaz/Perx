@@ -1,6 +1,9 @@
 import Link from 'next/link';
+import { redirect } from 'next/navigation';
 
 export default function Home() {
+  redirect('/explore');
+
   return (
     <div className="flex h-dvh w-dvw flex-col items-center justify-center bg-[url('/BGF.png')] bg-cover bg-center">
       {/* Logo */}

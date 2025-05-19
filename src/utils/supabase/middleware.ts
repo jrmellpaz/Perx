@@ -41,7 +41,7 @@ export async function updateSession(request: NextRequest) {
 
   const consumerPages = {
     auth: ['/login', '/register', '/recover-password'],
-    public: ['explore', 'search', '/change-password', '/'],
+    public: ['explore', 'search', '/change-password', '/', '/merchant-profile'],
     private: [
       '/my-coupons',
       '/profile/missions',
@@ -146,6 +146,16 @@ export async function updateSession(request: NextRequest) {
     if (request.nextUrl.pathname === '/profile') {
       const url = request.nextUrl.clone();
       url.pathname = '/profile/missions';
+      return NextResponse.redirect(url);
+    }
+
+    const segments = request.nextUrl.pathname.split('/').filter(Boolean);
+    // segments[0] === 'merchant-profile'
+    // segments[1] is the dynamic [id]
+    // segments.length === 2 means it's /merchant-profile/[id]
+    if (segments[0] === 'merchant-profile' && segments.length === 2) {
+      const url = request.nextUrl.clone();
+      url.pathname = `${request.nextUrl.pathname}/coupons`;
       return NextResponse.redirect(url);
     }
 

@@ -13,6 +13,7 @@ import {
 } from 'lucide-react';
 import { createClient } from '@/utils/supabase/server';
 import { PerxReadMore } from '@/components/custom/PerxReadMore';
+import { ShareMerchantButton } from '@/components/custom/ShareMerchantButton';
 
 import type { Merchant } from '@/lib/types';
 
@@ -77,11 +78,11 @@ function ProfileInfo({ data }: { data: Merchant }) {
             {data.name}
           </h3>
           <div className="hidden lg:flex">
-            <ButtonGroup />
+            <ButtonGroup data={data} />
           </div>
         </div>
         <div className="lg:hidden">
-          <ButtonGroup />
+          <ButtonGroup data={data} />
         </div>
         <div className="flex flex-col items-center gap-1 lg:items-start">
           <PerxReadMore id="merchant-bio" text={data.bio ?? ''} />
@@ -99,13 +100,13 @@ function ProfileInfo({ data }: { data: Merchant }) {
   );
 }
 
-function ButtonGroup() {
+function ButtonGroup({ data }: { data: Merchant }) {
   return (
     <div className="flex items-center justify-center gap-2 md:gap-4">
       <Link href="/merchant/edit-profile">
         <Button>Edit profile</Button>
       </Link>
-      <Button variant={'secondary'}>Share profile</Button>
+      <ShareMerchantButton data={data} />
       <Link href="/merchant/settings">
         <Button variant={'secondary'}>
           <SettingsIcon />

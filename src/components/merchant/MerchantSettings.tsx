@@ -14,6 +14,8 @@ import { useRef, useState } from 'react';
 import { toast } from 'sonner';
 import { Button } from '../ui/button';
 import { logoutMerchant } from '@/actions/merchantAuth';
+import { PerxDrawer } from '../custom/PerxDrawer';
+import { PerxShareSheet } from '../custom/PerxShareSheet';
 
 import type { User } from '@supabase/supabase-js';
 
@@ -34,12 +36,26 @@ export function AccountSection({ user }: { user: User }) {
           </div>
         </div>
         <ChangePassword />
-        <div className="flex cursor-pointer items-center justify-between px-4 py-4 hover:bg-neutral-50">
-          <div className="flex items-center gap-4">
-            <Share2 className="text-muted-foreground h-5 w-5" />
-            <span className="text-sm">Share account</span>
-          </div>
-          <ChevronRight className="text-muted-foreground h-4 w-4" />
+        <div className="flex cursor-pointer items-center justify-between hover:bg-neutral-50">
+          <PerxDrawer
+            trigger={
+              <div className="flex size-full items-center justify-between">
+                <div className="flex items-center gap-4">
+                  <Share2 className="text-muted-foreground size-5" />
+                  <span>Share account</span>
+                </div>
+                <ChevronRight className="text-muted-foreground h-4 w-4" />
+              </div>
+            }
+            triggerClass="text-sm size-full p-4 cursor-pointer hover:bg-neutral-50"
+            title="Share your Perx Merchant account"
+          >
+            <PerxShareSheet
+              url={`/merchant-profile/${user.id}/coupons`}
+              title={`Check out my coupons!`}
+              message="Check out my coupons!"
+            />
+          </PerxDrawer>
         </div>
       </div>
     </div>

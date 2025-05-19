@@ -10,7 +10,7 @@ import { motion } from 'motion/react';
 interface NavItems {
   icon: JSX.Element;
   name: string;
-  path: string;
+  path: string[];
   link: string;
 }
 
@@ -18,25 +18,25 @@ const navItems: NavItems[] = [
   {
     icon: <Compass strokeWidth={1.5} size={20} />,
     name: 'Explore',
-    path: '/explore',
+    path: ['/explore'],
     link: '/explore',
   },
   {
     icon: <Search strokeWidth={1.5} size={20} />,
     name: 'Search',
-    path: '/search',
+    path: ['/search', '/merchant-profile'],
     link: '/search',
   },
   {
     icon: <Ticket strokeWidth={1.5} size={20} />,
     name: 'My Coupons',
-    path: '/my-coupons',
+    path: ['/my-coupons'],
     link: '/my-coupons',
   },
   {
     icon: <CircleUserRound strokeWidth={1.5} size={20} />,
     name: 'Profile',
-    path: '/profile',
+    path: ['/profile'],
     link: '/profile/missions',
   },
 ];
@@ -75,7 +75,7 @@ function VerticalNav() {
   return (
     <ul className="flex h-full w-full flex-col p-2">
       {navItems.map((item, index) => {
-        const isActive = pathname.startsWith(item.path);
+        const isActive = item.path.some((p) => pathname.startsWith(p));
         const iconWithDynamicStroke = React.cloneElement(item.icon, {
           strokeWidth: isActive ? 2 : 1.5,
         });
@@ -108,7 +108,7 @@ function HorizontalNav() {
   return (
     <ul className="flex h-full w-full items-center justify-around">
       {navItems.map((item, index) => {
-        const isActive = pathname.startsWith(item.path);
+        const isActive = item.path.some((p) => pathname.startsWith(p));
         const iconWithDynamicStroke = React.cloneElement(item.icon, {
           strokeWidth: isActive ? 2 : 1.5,
         });

@@ -1,7 +1,6 @@
 import { ReactNode } from 'react';
 import { fetchMerchant } from '@/actions/merchantProfile';
 import Tabs from '@/components/custom/PerxTabs';
-import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import {
   ArchiveIcon,
@@ -11,10 +10,10 @@ import {
   SquareLibraryIcon,
   TicketsIcon,
 } from 'lucide-react';
-import { createClient } from '@/utils/supabase/server';
 import { PerxReadMore } from '@/components/custom/PerxReadMore';
 
 import type { Merchant } from '@/lib/types';
+import { ShareMerchantButton } from '@/components/custom/ShareMerchantButton';
 
 export default async function MerchantProfileLayout({
   tabs,
@@ -70,11 +69,11 @@ function ProfileInfo({ data }: { data: Merchant }) {
             {data.name}
           </h3>
           <div className="hidden lg:flex">
-            <ButtonGroup />
+            <ButtonGroup data={data} />
           </div>
         </div>
         <div className="lg:hidden">
-          <ButtonGroup />
+          <ButtonGroup data={data} />
         </div>
         <div className="flex flex-col items-center gap-1 lg:items-start">
           <PerxReadMore id="merchant-bio" text={data.bio ?? ''} />
@@ -92,10 +91,10 @@ function ProfileInfo({ data }: { data: Merchant }) {
   );
 }
 
-function ButtonGroup() {
+function ButtonGroup({ data }: { data: Merchant }) {
   return (
     <div className="flex items-center justify-center gap-2 md:gap-4">
-      <Button variant={'secondary'}>Share profile</Button>
+      <ShareMerchantButton data={data} />
     </div>
   );
 }

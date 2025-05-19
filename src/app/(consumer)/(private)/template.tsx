@@ -21,12 +21,12 @@ const navItems: NavItems[] = [
     path: '/explore',
     link: '/explore',
   },
-  {
-    icon: <Search strokeWidth={1.5} size={20} />,
-    name: 'Search',
-    path: '/search',
-    link: '/search',
-  },
+  // {
+  //   icon: <Search strokeWidth={1.5} size={20} />,
+  //   name: 'Search',
+  //   path: '/search',
+  //   link: '/search',
+  // },
   {
     icon: <Ticket strokeWidth={1.5} size={20} />,
     name: 'My Coupons',

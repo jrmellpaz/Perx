@@ -108,10 +108,6 @@ Perx is a web-based platform that empowers small and medium-sized enterprises (S
 4. Push to branch (`git push origin feature/feature-name`)
 5. Open a Pull Request
 
-## 📃 License
-
-MIT License. See `LICENSE` file for details.
-
 ---
 
 Crafted with ❤️ to support local businesses and make shopping more rewarding!

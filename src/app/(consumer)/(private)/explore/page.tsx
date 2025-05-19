@@ -96,10 +96,11 @@ export default async function Explore({
             >
               <Search size={20} />
             </button>
-          </form>
+          </form>        
         </PerxSearchbar>
-
-        {results.length > 0 ? (
+        {Object.keys(params).length === 0 ? (
+          <ExploreList userId={user?.id} />
+        ) : results.length > 0 ? (
           <div className="grid w-full grid-cols-1 items-center gap-2 sm:grid-cols-2 md:grid-cols-3 md:gap-3">
             {results.map((item) =>
               item.type === 'coupon' && item.coupon ? (
@@ -110,7 +111,9 @@ export default async function Explore({
             )}
           </div>
         ) : (
-          <ExploreList userId={user?.id} />
+          <div className="flex w-full justify-center items-center p-8 text-gray-500">
+            No coupons or merchants found
+          </div>
         )}
       </section>
     </>

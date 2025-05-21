@@ -3,7 +3,6 @@
 import { useSearchParams, useRouter } from 'next/navigation';
 import { useState, useEffect } from 'react';
 import { Button } from '../ui/button';
-import { ListFilter } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import PerxCheckbox from './PerxCheckbox';
 import RangeSlider from './PerxSlider'; 
@@ -16,30 +15,33 @@ export function PerxSearchbar({
   children: React.ReactNode;
   query?: string;
 }) {
-  const [scrolled, setScrolled] = useState<boolean>(false);
+  const [hidden, setHidden] = useState(false);
+  const [lastScrollY, setLastScrollY] = useState(0);
 
   useEffect(() => {
     const container = document.querySelector('.view-container');
-    const handleScroll = () => {
-      const scrollPosition = container?.scrollTop;
 
-      if (scrollPosition !== undefined && scrollPosition > 16) {
-        setScrolled(true);
+    const handleScroll = () => {
+      const currentScrollY = container?.scrollTop || 0;
+
+      if (currentScrollY > lastScrollY && currentScrollY > 100) {
+        setHidden(true); // Slide up
       } else {
-        setScrolled(false);
+        setHidden(false); // Slide down
       }
+
+      setLastScrollY(currentScrollY);
     };
 
     container?.addEventListener('scroll', handleScroll);
-
     return () => container?.removeEventListener('scroll', handleScroll);
-  }, []);
+  }, [lastScrollY]);
 
   return (
     <header
       className={cn(
-        'sticky top-2 z-50 flex w-full max-w-[800px] flex-col items-center justify-between gap-1.5 rounded-t-3xl rounded-b-md bg-white transition-all',
-        scrolled ? 'shadow-md' : 'shadow-none'
+        'sticky top-2 z-50 flex w-full max-w-[800px] flex-col items-center justify-between gap-1.5 rounded-t-3xl rounded-b-md bg-white transition-all duration-500 ease-in-out will-change-transform',
+        hidden ? '-translate-y-full opacity-0' : 'translate-y-0 opacity-100'
       )}
     >
       {children}
@@ -47,6 +49,7 @@ export function PerxSearchbar({
     </header>
   );
 }
+
 
 export function CouponFilterForm() {
   const searchParams = useSearchParams();

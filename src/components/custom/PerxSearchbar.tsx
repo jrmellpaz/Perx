@@ -6,6 +6,7 @@ import { Button } from '../ui/button';
 import { cn } from '@/lib/utils';
 import PerxCheckbox from './PerxCheckbox';
 import RangeSlider from './PerxSlider'; 
+import { ListFilter } from 'lucide-react';
 import { couponCategories } from '@/lib/couponSchema';
 
 export function PerxSearchbar({
@@ -96,67 +97,72 @@ export function CouponFilterForm() {
 
   return (
     <div className="flex w-full flex-col">
-      <div className="filter-details flex flex-col gap-2 px-2 md:px-4">
-        <div className="flex flex-col gap-2 pb-4">
-          <div className="flex w-full flex-col gap-1.5">
-            <div className="flex flex-wrap gap-2">
-              <div className="col-span-2 flex flex-col gap-1">
-                <span className="ml-1 font-mono text-xs font-medium">Price</span>
-                <RangeSlider
-                  min={0}
-                  max={10000}
-                  value={priceRange}
-                  onValueChange={setPriceRange}
-                />
-              </div>
-              <div className="flex flex-col gap-1">
-                <span className="ml-1 font-mono text-xs font-medium">
-                  End date
-                </span>
-                <input
-                  type="date"
-                  placeholder="End date"
-                  value={endDate}
-                  onChange={(e) => setEndDate(e.target.value)}
-                  className="focus-within:border-perx-blue h-8 rounded-lg border-2 p-2 text-xs transition-all outline-none"
-                />
-              </div>
-            </div>
-            <div className="col-span-3 flex flex-col gap-1">
-              <span className="ml-1 font-mono text-xs font-medium">Tags</span>
+      <details className="peer filter-details flex flex-col gap-2 px-2 md:px-4">
+        <summary className="hover:bg-perx-blue/10 flex w-fit cursor-pointer items-center gap-1.5 rounded-md p-2 font-mono text-xs transition-all">
+          <ListFilter size={16} /> Filters
+        </summary>
+        <div className="filter-details flex flex-col gap-2 px-2 md:px-4">
+          <div className="flex flex-col gap-2 pb-4">
+            <div className="flex w-full flex-col gap-1.5">
               <div className="flex flex-wrap gap-2">
-                <PerxCheckbox
-                  label="Limited-time offers"
-                  checked={allowLimitedPurchase}
-                  onCheckedChange={(checked) =>
-                    setAllowLimitedPurchase(checked)
-                  }
-                  className="text-xs"
-                />
-                <PerxCheckbox
-                  label="Allows repeat purchase"
-                  checked={allowRepeatPurchase}
-                  onCheckedChange={(checked) => setAllowRepeatPurchase(checked)}
-                  className="text-xs"
-                />
-                <PerxCheckbox
-                  label="Purchasable with Points"
-                  checked={allowPointsPurchase}
-                  onCheckedChange={(checked) => setAllowPointsPurchase(checked)}
-                  className="text-xs"
-                />
+                <div className="col-span-2 flex flex-col gap-1">
+                  <span className="ml-1 font-mono text-xs font-medium">Price</span>
+                  <RangeSlider
+                    min={0}
+                    max={10000}
+                    value={priceRange}
+                    onValueChange={setPriceRange}
+                  />
+                </div>
+                <div className="flex flex-col gap-1">
+                  <span className="ml-1 font-mono text-xs font-medium">
+                    End date
+                  </span>
+                  <input
+                    type="date"
+                    placeholder="End date"
+                    value={endDate}
+                    onChange={(e) => setEndDate(e.target.value)}
+                    className="focus-within:border-perx-blue h-8 rounded-lg border-2 p-2 text-xs transition-all outline-none"
+                  />
+                </div>
+              </div>
+              <div className="col-span-3 flex flex-col gap-1">
+                <span className="ml-1 font-mono text-xs font-medium">Tags</span>
+                <div className="flex flex-wrap gap-2">
+                  <PerxCheckbox
+                    label="Limited-time offers"
+                    checked={allowLimitedPurchase}
+                    onCheckedChange={(checked) =>
+                      setAllowLimitedPurchase(checked)
+                    }
+                    className="text-xs"
+                  />
+                  <PerxCheckbox
+                    label="Allows repeat purchase"
+                    checked={allowRepeatPurchase}
+                    onCheckedChange={(checked) => setAllowRepeatPurchase(checked)}
+                    className="text-xs"
+                  />
+                  <PerxCheckbox
+                    label="Purchasable with Points"
+                    checked={allowPointsPurchase}
+                    onCheckedChange={(checked) => setAllowPointsPurchase(checked)}
+                    className="text-xs"
+                  />
+                </div>
               </div>
             </div>
+            <Button
+              variant="outline"
+              className="h-fit w-fit cursor-pointer self-end rounded px-2 py-1.5 text-xs"
+              onClick={applyFilters}
+            >
+              Apply filters
+            </Button>
           </div>
-          <Button
-            variant="outline"
-            className="h-fit w-fit cursor-pointer self-end rounded px-2 py-1.5 text-xs"
-            onClick={applyFilters}
-          >
-            Apply filters
-          </Button>
         </div>
-      </div>
+      </details>
     </div>
   );
 }

@@ -48,8 +48,8 @@ export default function AddCouponForm({
   } = useForm<AddCouponInputs>({
     resolver: zodResolver(addCouponSchema),
     defaultValues: {
-      allowPointsPurchase: false,
-      allowLimitedPurchase: false,
+      // allowPointsPurchase: false,
+      // allowLimitedPurchase: false,
       dateRange: { start: null, end: null },
     },
   });
@@ -61,7 +61,7 @@ export default function AddCouponForm({
   const processForm: SubmitHandler<AddCouponInputs> = async (data) => {
     setIsSubmitting(true);
     try {
-      // console.log('Form data:', data);
+      console.log('Form data:', data);
       const response = await addCoupon(data);
       if (!response.success) {
         throw new Error(response.message);
@@ -131,22 +131,22 @@ function Inputs({
   ranks: Ranks;
   categories: CouponCategories;
 }) {
-  const allowLimitedPurchase = watch('allowLimitedPurchase');
-  const allowPointsPurchase = watch('allowPointsPurchase');
+  // // const allowLimitedPurchase = watch('allowLimitedPurchase');
+  // // const allowPointsPurchase = watch('allowPointsPurchase');
 
-  // Clear dateRange when allowLimitedPurchase is false
-  useEffect(() => {
-    if (!allowLimitedPurchase) {
-      setValue('dateRange', { start: null, end: null });
-    }
-  }, [allowLimitedPurchase, setValue]);
+  // // Clear dateRange when allowLimitedPurchase is false
+  // useEffect(() => {
+  //   if (!allowLimitedPurchase) {
+  //     setValue('dateRange', { start: null, end: null });
+  //   }
+  // }, [allowLimitedPurchase, setValue]);
 
-  // Clear pointsAmount when allowPointsPurchase is false
-  useEffect(() => {
-    if (!allowPointsPurchase) {
-      setValue('pointsAmount', undefined);
-    }
-  }, [allowPointsPurchase, setValue]);
+  // // Clear pointsAmount when allowPointsPurchase is false
+  // useEffect(() => {
+  //   if (!allowPointsPurchase) {
+  //     setValue('pointsAmount', undefined);
+  //   }
+  // }, [allowPointsPurchase, setValue]);
 
   const imageFile = watch('image');
 
@@ -185,7 +185,7 @@ function Inputs({
     >
       <div className="flex flex-col gap-1">
         <PerxInput
-          label="Title"
+          label="Title *"
           type="text"
           placeholder="Coupon X"
           required
@@ -203,7 +203,7 @@ function Inputs({
             value: category.category,
             label: category.description,
           }))}
-          label="Category"
+          label="Category *"
           required
           {...register('category')}
         />
@@ -216,7 +216,7 @@ function Inputs({
 
       <div className="flex flex-col gap-1">
         <PerxTextarea
-          label="Description"
+          label="Description *"
           placeholder="Coupon description"
           required
           {...register('description')}
@@ -228,28 +228,48 @@ function Inputs({
 
       <div className="flex flex-col gap-1">
         <PerxInput
-          label="Price"
+          label="Original Price *"
           type="number"
           placeholder="0.00"
           step="0.01"
           min={0}
           required
-          {...register('price', {
+          {...register('originalPrice', {
             valueAsNumber: true,
             onChange: (e) => {
               const value = parseFloat(e.target.value);
-              setValue('price', parseFloat(value.toFixed(2)));
+              setValue('originalPrice', parseFloat(value.toFixed(2)));
             },
           })}
         />
-        {errors.price?.message && (
-          <ErrorMessage message={errors.price.message} />
+        {errors.originalPrice?.message && (
+          <ErrorMessage message={errors.originalPrice.message} />
         )}
       </div>
 
       <div className="flex flex-col gap-1">
         <PerxInput
-          label="Quantity"
+          label="Discounted Price (optional)"
+          type="number"
+          placeholder="0.00"
+          step="0.01"
+          min={0}
+          {...register('discountedPrice', {
+            valueAsNumber: true,
+            onChange: (e) => {
+              const value = parseFloat(e.target.value);
+              setValue('discountedPrice', parseFloat(value.toFixed(2)));
+            },
+          })}
+        />
+        {errors.discountedPrice?.message && (
+          <ErrorMessage message={errors.discountedPrice.message} />
+        )}
+      </div>
+
+      <div className="flex flex-col gap-1">
+        <PerxInput
+          label="Quantity *"
           type="number"
           placeholder="0"
           min={1}
@@ -272,7 +292,7 @@ function Inputs({
       </div>
 
       <div className="flex flex-col gap-1">
-        <Label htmlFor="image">Image</Label>
+        <Label htmlFor="image">Image *</Label>
         <Input
           id="image"
           type="file"
@@ -300,7 +320,7 @@ function Inputs({
           render={({ field }) => (
             <PerxColors
               colors={colors}
-              label="Accent color"
+              label="Accent color *"
               value={field.value} // Controlled value
               onChange={field.onChange} // Controlled onChange handler
             />
@@ -320,7 +340,7 @@ function Inputs({
           render={({ field, fieldState }) => (
             <>
               <PerxSelect
-                label="Consumer Rank availability"
+                label="Consumer Rank availability *"
                 description="Select which consumers can avail this coupon."
                 options={ranks.map(({ id, rank, icon }) => ({
                   id: id.toString(),
@@ -338,8 +358,8 @@ function Inputs({
         />
       </div>
 
-      <div className="flex flex-col gap-4">
-        <Controller
+      {/* <div className="flex flex-col gap-4"> */}
+        {/* <Controller
           name="allowPointsPurchase"
           control={control}
           defaultValue={false} // Default value
@@ -358,32 +378,58 @@ function Inputs({
               </Label>
             </div>
           )}
+        /> */}
+        
+        <div className="flex flex-col gap-1">
+          <PerxInput
+            label="Points required for this purchase (optional)"
+            type="number"
+            placeholder="0.00"
+            step="0.01"
+            min={0}
+            {...register('pointsAmount', {
+              valueAsNumber: true,
+              onChange: (e) => {
+                const value = parseFloat(e.target.value);
+                setValue('pointsAmount', parseFloat(value.toFixed(2)));
+              },
+            })}
+          />
+          {errors.pointsAmount?.message && (
+            <ErrorMessage message={errors.pointsAmount.message} />
+          )}
+        </div>
+      {/* </div> */}
+    
+      <div className="flex flex-col gap-1">
+        <PerxInput
+          label="Purchase limit per user (optional)"
+          type="number"
+          placeholder="0"
+          min={1}
+          {...register('maxPurchaseLimitPerUser', { valueAsNumber: true })}
         />
-        {allowPointsPurchase && (
-          <div className="flex flex-col gap-1">
-            <PerxInput
-              label="Amount of points"
-              type="number"
-              placeholder="0.00"
-              step="0.01"
-              min={0}
-              {...register('pointsAmount', {
-                valueAsNumber: true,
-                onChange: (e) => {
-                  const value = parseFloat(e.target.value);
-                  setValue('pointsAmount', parseFloat(value.toFixed(2)));
-                },
-              })}
-            />
-            {errors.pointsAmount?.message && (
-              <ErrorMessage message={errors.pointsAmount.message} />
-            )}
-          </div>
+        {errors.maxPurchaseLimitPerUser?.message && (
+          <ErrorMessage message={errors.maxPurchaseLimitPerUser.message} />
         )}
       </div>
 
-      <div className="flex w-full flex-col gap-4">
-        <Controller
+      <div className="flex flex-col gap-1">
+        <PerxInput
+          label="Redemption period in days (optional)"
+          type="number"
+          placeholder="0"
+          min={1}
+          {...register('redemptionValidity', { valueAsNumber: true })}
+        />
+        {errors.redemptionValidity?.message && (
+          <ErrorMessage message={errors.redemptionValidity.message} />
+        )}
+      </div>
+
+      {/* <div className="flex w-full flex-col gap-4"> */}
+        
+        {/* <Controller
           name="allowLimitedPurchase"
           control={control}
           defaultValue={false}
@@ -402,8 +448,9 @@ function Inputs({
               </Label>
             </div>
           )}
-        />
-        {allowLimitedPurchase && (
+        /> */}
+        <div className="flex flex-col gap-1">
+          <Label htmlFor="date">Purchase Date Range (optional)</Label>
           <Controller
             name="dateRange"
             control={control}
@@ -428,10 +475,10 @@ function Inputs({
               </div>
             )}
           />
-        )}
-      </div>
+        </div>
+      {/* </div> */}
 
-      <div className="flex flex-col gap-4">
+      {/* <div className="flex flex-col gap-4">
         <Controller
           name="allowRepeatPurchase"
           control={control}
@@ -452,7 +499,7 @@ function Inputs({
             </div>
           )}
         />
-      </div>
+      </div> */}
 
       <div className="mt-2 flex justify-end">
         <Button

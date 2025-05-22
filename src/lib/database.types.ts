@@ -42,6 +42,7 @@ export type Database = {
           id: number
           merchant_id: string
           qr_token: string
+          rebated_points: number
         }
         Insert: {
           consumer_id: string
@@ -51,6 +52,7 @@ export type Database = {
           id?: number
           merchant_id: string
           qr_token: string
+          rebated_points: number
         }
         Update: {
           consumer_id?: string
@@ -60,6 +62,7 @@ export type Database = {
           id?: number
           merchant_id?: string
           qr_token?: string
+          rebated_points?: number
         }
         Relationships: [
           {
@@ -159,66 +162,66 @@ export type Database = {
       coupons: {
         Row: {
           accent_color: Database["public"]["Enums"]["color"]
-          allow_limited_purchase: boolean
-          allow_points_purchase: boolean
-          allow_repeat_purchase: boolean
           category: Database["public"]["Enums"]["coupon_category"]
           created_at: string
           description: string
+          discounted_price: number
           id: string
           image: string
           is_deactivated: boolean
+          max_purchase_limit_per_user: number
           merchant_id: string
-          points_amount: number | null
-          price: number
+          original_price: number
+          points_amount: number
           quantity: number
           rank_availability: number
+          redemption_validity: number
           text_search: unknown | null
           title: string
-          valid_from: string
-          valid_to: string
+          valid_from: string | null
+          valid_to: string | null
         }
         Insert: {
           accent_color?: Database["public"]["Enums"]["color"]
-          allow_limited_purchase?: boolean
-          allow_points_purchase?: boolean
-          allow_repeat_purchase?: boolean
           category?: Database["public"]["Enums"]["coupon_category"]
           created_at?: string
           description: string
+          discounted_price?: number
           id?: string
           image: string
           is_deactivated?: boolean
+          max_purchase_limit_per_user?: number
           merchant_id: string
-          points_amount?: number | null
-          price: number
+          original_price: number
+          points_amount?: number
           quantity: number
           rank_availability?: number
+          redemption_validity: number
           text_search?: unknown | null
           title?: string
-          valid_from?: string
-          valid_to: string
+          valid_from?: string | null
+          valid_to?: string | null
         }
         Update: {
           accent_color?: Database["public"]["Enums"]["color"]
-          allow_limited_purchase?: boolean
-          allow_points_purchase?: boolean
-          allow_repeat_purchase?: boolean
           category?: Database["public"]["Enums"]["coupon_category"]
           created_at?: string
           description?: string
+          discounted_price?: number
           id?: string
           image?: string
           is_deactivated?: boolean
+          max_purchase_limit_per_user?: number
           merchant_id?: string
-          points_amount?: number | null
-          price?: number
+          original_price?: number
+          points_amount?: number
           quantity?: number
           rank_availability?: number
+          redemption_validity?: number
           text_search?: unknown | null
           title?: string
-          valid_from?: string
-          valid_to?: string
+          valid_from?: string | null
+          valid_to?: string | null
         }
         Relationships: [
           {

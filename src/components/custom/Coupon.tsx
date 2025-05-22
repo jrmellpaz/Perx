@@ -39,10 +39,10 @@ export function Coupon({
             <span className="border-perx-black w-fit rounded-full border px-1.5 py-0.5">
               {coupon.category}
             </span>
-            {coupon.allow_limited_purchase && (
+            {/* {coupon.allow_limited_purchase && (
               <Clock size={20} strokeWidth={1.5} />
-            )}
-            {coupon.allow_points_purchase && (
+            )} */}
+            {coupon.points_amount !== 0 && (
               <img
                 src="/reward-points.svg"
                 alt="Reward Points"

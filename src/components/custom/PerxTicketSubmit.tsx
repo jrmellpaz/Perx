@@ -30,7 +30,7 @@ export function PerxTicketSubmit({
   coupon,
   disabledByRank = false,
 }: PerxTicketSubmitProps) {
-  const { allow_points_purchase, accent_color } = coupon;
+  const { points_amount, accent_color } = coupon;
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
   const dialogRef = useRef<HTMLDialogElement>(null);
@@ -113,7 +113,7 @@ export function PerxTicketSubmit({
           </div>
         ) : (
           <>
-            {allow_points_purchase && (
+            {points_amount > 0 && (
               <button
                 type="button"
                 onClick={handlePointsPurchase}
@@ -198,7 +198,9 @@ function PaymentDialog({
           purchase_units: [
             {
               amount: {
-                value: coupon.price.toFixed(2),
+                value: coupon.discounted_price !== 0 
+                  ? coupon.discounted_price.toFixed(2)
+                  : coupon.original_price.toFixed(2),
                 currency_code: 'PHP',
               },
               description: coupon.title,

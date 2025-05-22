@@ -22,8 +22,9 @@ export async function PerxTicket({
     id: couponId,
     title,
     description,
-    price,
-    allow_limited_purchase,
+    original_price,
+    discounted_price,
+    // allow_limited_purchase,
     valid_from = '',
     valid_to = '',
     is_deactivated,
@@ -32,8 +33,9 @@ export async function PerxTicket({
     category,
     accent_color,
     rank_availability,
-    allow_points_purchase,
+    // allow_points_purchase,
     points_amount,
+    max_purchase_limit_per_user
   } = couponData;
 
   const { rank, icon } = await fetchRank(rank_availability);
@@ -97,7 +99,7 @@ export async function PerxTicket({
                 Items left
               </p>
             </div>
-            {allow_limited_purchase && (
+            {valid_from && valid_to && (
               <>
                 <div className="border-muted-foreground mx-3 h-6 w-[0.25px] rounded-full border-l-[0.5px]"></div>
                 <div className="flex shrink-0 flex-col items-center">
@@ -159,13 +161,35 @@ export async function PerxTicket({
       <div className="flex flex-col gap-4 p-6">
         {/* Price Section */}
         <div className="flex flex-col items-center gap-2">
-          <span
-            style={{ color: getPrimaryAccentColor(accent_color) }}
-            className="font-mono text-xl font-bold"
-          >
-            &#8369;{price.toFixed(2)}
-          </span>
-          {allow_points_purchase && (
+          <div className="flex items-center gap-2">
+            {discounted_price ? (
+              <>
+                <span
+                  style={{ color: getPrimaryAccentColor(accent_color) }}
+                  className="font-mono text-sm font-medium line-through opacity-75"
+                >
+                  &#8369;{original_price.toFixed(2)}
+                </span>
+                <span
+                  style={{ color: getPrimaryAccentColor(accent_color) }}
+                  className="font-mono text-xl font-bold"
+                >
+                  &#8369;{discounted_price.toFixed(2)}
+                </span>
+                <span className="rounded-full bg-green-100 px-2 py-1 text-xs font-medium text-green-800">
+                  {Math.round(((original_price - discounted_price) / original_price) * 100)}% OFF
+                </span>
+              </>
+            ) : (
+              <span
+                style={{ color: getPrimaryAccentColor(accent_color) }}
+                className="font-mono text-xl font-bold"
+              >
+                &#8369;{original_price.toFixed(2)}
+              </span>
+            )}
+          </div>
+          {points_amount > 0 && (
             <span className="text-perx-black flex items-center gap-1 text-sm tracking-tighter">
               or&nbsp;
               <img

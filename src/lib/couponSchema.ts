@@ -38,9 +38,18 @@ export const addCouponSchema = z
     title: z.string().nonempty('Title is required'),
     category: couponCategoriesEnum,
     description: z.string().nonempty('Description is required'),
-    price: z
-      .number({ message: 'Price is required.' })
-      .positive('Price must be greater than 0'),
+    originalPrice: z
+      .number({ message: 'Original price is required.' })
+      .positive('Original price must be greater than 0'),
+    discountedPrice: z.preprocess(
+      (val) => {
+        const parsed = Number(val);
+        return isNaN(parsed) ? 0 : parsed;
+      },
+      z.number()
+        .min(0, 'Discounted Price cannot be negative')
+        .optional()
+    ),
     quantity: z
       .number({ message: 'Quantity is required.' })
       .int()
@@ -51,6 +60,7 @@ export const addCouponSchema = z
         start: z.union([z.string().datetime('Invalid start date'), z.null()]),
         end: z.union([z.string().datetime('Invalid end date'), z.null()]),
       })
+      .nullable()
       .optional(),
     image: z
       .any()
@@ -64,35 +74,68 @@ export const addCouponSchema = z
         message: `Image size should be less than ${MAX_IMAGE_SIZE_MB}MB.`,
       }),
     accentColor: ColorEnum.default('perx-blue'),
-    allowPointsPurchase: z.boolean().default(false),
-    pointsAmount: z
-      .number({
-        message: 'Amount is required when points purchase is allowed.',
-      })
-      .positive('Points amount must be greater than 0')
-      .optional(),
-    allowRepeatPurchase: z.boolean().default(false),
+    // allowPointsPurchase: z.boolean().default(false),
+
+    pointsAmount: z.preprocess(
+      (val) => {
+        const parsed = Number(val);
+        return isNaN(parsed) ? 0 : parsed;
+      },
+      z.number()
+        .min(0, 'Discounted Price cannot be negative')
+        .optional()
+    ),
+
+    maxPurchaseLimitPerUser: z.preprocess(
+      (val) => {
+        const parsed = Number(val);
+        return isNaN(parsed) ? 1 : parsed;
+      },
+      z.number().int().positive('Maximum purchase per limit must be greater than 0').optional()
+    ),
+
     rankAvailability: z.number().int().default(1),
+    redemptionValidity: z.preprocess(
+      (val) => {
+        const parsed = Number(val);
+        return isNaN(parsed) ? 7 : parsed;
+      },
+      z.number().int().positive('Redemption validity must be greater than 0').optional()
+    ),
   })
   .refine(
-    (data) =>
-      !data.allowLimitedPurchase ||
-      (data.allowLimitedPurchase &&
-        data.dateRange?.start !== null &&
-        data.dateRange?.end !== null),
+    (data) => {
+      // If dateRange is null or undefined, it's valid
+      if (!data.dateRange) return true;
+      
+      // If dateRange exists, both start and end must be provided
+      if (data.dateRange.start && data.dateRange.end) return true;
+      
+      // If only one date is provided, it's invalid
+      return !data.dateRange.start && !data.dateRange.end;
+    },
     {
-      message: 'Date range is required when limited purchase is enabled.',
+      message: 'Both start and end dates must be provided together',
       path: ['dateRange'],
     }
   )
-  .refine(
-    (data) =>
-      !data.allowPointsPurchase ||
-      (data.allowPointsPurchase && data.pointsAmount !== undefined),
-    {
-      message: 'Points amount is required when points purchase is enabled.',
-      path: ['pointsAmount'],
-    }
-  );
+  // .refine(
+  //   (data) =>
+  //     ( data.dateRange?.start !== null &&
+  //       data.dateRange?.end !== null),
+  //   {
+  //     message: 'Date range is required when limited purchase is enabled.',
+  //     path: ['dateRange'],
+  //   }
+  // )
+  // .refine(
+  //   (data) =>
+  //     !data.allowPointsPurchase ||
+  //     (data.allowPointsPurchase && data.pointsAmount !== undefined),
+  //   {
+  //     message: 'Points amount is required when points purchase is enabled.',
+  //     path: ['pointsAmount'],
+  //   }
+  // );
 
 export type AddCouponInputs = z.infer<typeof addCouponSchema>;

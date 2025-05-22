@@ -68,20 +68,23 @@ export const addCoupon = async (
       title: couponData.title,
       category: couponData.category,
       description: couponData.description,
-      price: couponData.price,
+      original_price: couponData.originalPrice,
+      discounted_price: couponData.discountedPrice,
       quantity: couponData.quantity,
       rank_availability: couponData.rankAvailability,
-      allow_limited_purchase: couponData.allowLimitedPurchase,
-      valid_from: couponData.allowLimitedPurchase
+      // allow_limited_purchase: couponData.allowLimitedPurchase,
+      valid_from: couponData.dateRange?.start !== null
         ? couponData.dateRange?.start
-        : new Date().toISOString(),
-      valid_to: couponData.allowLimitedPurchase
+        : null,
+      valid_to: couponData.dateRange?.end !== null
         ? couponData.dateRange?.end
-        : new Date(Date.now() + 1000 * 60 * 60 * 24 * 30).toISOString(),
+        : null,
       image: imageUrl,
-      allow_points_purchase: couponData.allowPointsPurchase,
+      // allow_points_purchase: couponData.allowPointsPurchase,
       points_amount: couponData.pointsAmount,
-      allow_repeat_purchase: couponData.allowRepeatPurchase,
+      // allow_repeat_purchase: couponData.allowRepeatPurchase,
+      max_purchase_limit_per_user: couponData.maxPurchaseLimitPerUser,
+      redemption_validity: couponData.redemptionValidity,
       text_search: combinedText,
     } as InsertCoupon);
 
@@ -139,8 +142,7 @@ export const fetchCoupons = async (
   const filteredAndRanked: FilteredCoupon[] = (couponsData || [])
     .filter((coupon: FilteredCoupon) => {
       const isWithinDateRange =
-        !coupon.allow_limited_purchase ||
-        (coupon.allow_limited_purchase &&
+        (coupon.valid_from !== null && coupon.valid_to !== null &&
           new Date(coupon.valid_from).getTime() <= Date.now() &&
           new Date(coupon.valid_to).getTime() >= Date.now());
 

@@ -81,7 +81,12 @@ const insertConsumerCoupon = async (
             image: existingConsumerCoupon.image,
             category: existingConsumerCoupon.category,
             accent_color: existingConsumerCoupon.accent_color,
+            original_price: existingConsumerCoupon.original_price,
+            discounted_price: existingConsumerCoupon.discounted_price,
           },
+          rebated_points: Math.round((existingConsumerCoupon.discounted_price === 0 
+            ? existingConsumerCoupon.original_price 
+            : existingConsumerCoupon.discounted_price) * 0.01 * 100) / 100,
         })
         .select('*, coupons(*)')
         .single();
@@ -318,7 +323,12 @@ export const approvePaypalOrder = async (
       coupon.id,
       user.id
     );
-    await rebateConsumerPoints(user.id, coupon.price);
+
+    if (coupon.discounted_price === 0)
+      await rebateConsumerPoints(user.id, coupon.original_price);
+    else 
+      await rebateConsumerPoints(user.id, coupon.discounted_price);
+
     await levelUpConsumerRank(user.id);
 
     return {

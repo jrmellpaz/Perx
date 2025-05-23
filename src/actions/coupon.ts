@@ -35,6 +35,24 @@ export const addCoupon = async (
       throw new Error(`FETCH USER ERROR: ${fetchUserError.message}`);
     }
 
+    if (
+      couponData.discountedPrice != null &&
+      couponData.discountedPrice >= couponData.originalPrice
+    ) {
+      return { success: false, message: 'Discounted Price must be less than Original Price' };
+    }
+
+    const comparePrice = couponData.discountedPrice || couponData.originalPrice;
+    if (
+      couponData.cashAmount !== undefined &&
+      couponData.cashAmount >= comparePrice
+    ) {
+      return {
+        success: false,
+        message: 'Cash amount must be less than the Discounted Price (or Original Price if no Discount Price)',
+      };
+    }
+
     let imageUrl: string | null = null;
 
     if (couponData.image) {
@@ -72,7 +90,6 @@ export const addCoupon = async (
       discounted_price: couponData.discountedPrice,
       quantity: couponData.quantity,
       rank_availability: couponData.rankAvailability,
-      // allow_limited_purchase: couponData.allowLimitedPurchase,
       valid_from: couponData.dateRange?.start !== null
         ? couponData.dateRange?.start
         : null,
@@ -80,9 +97,8 @@ export const addCoupon = async (
         ? couponData.dateRange?.end
         : null,
       image: imageUrl,
-      // allow_points_purchase: couponData.allowPointsPurchase,
       points_amount: couponData.pointsAmount,
-      // allow_repeat_purchase: couponData.allowRepeatPurchase,
+      cash_amount: couponData.cashAmount,
       max_purchase_limit_per_user: couponData.maxPurchaseLimitPerUser,
       redemption_validity: couponData.redemptionValidity,
       text_search: combinedText,
@@ -141,10 +157,10 @@ export const fetchCoupons = async (
 
   const filteredAndRanked: FilteredCoupon[] = (couponsData || [])
     .filter((coupon: FilteredCoupon) => {
+      const now = Date.now();
       const isWithinDateRange =
-        (coupon.valid_from !== null && coupon.valid_to !== null &&
-          new Date(coupon.valid_from).getTime() <= Date.now() &&
-          new Date(coupon.valid_to).getTime() >= Date.now());
+        (!coupon.valid_from || new Date(coupon.valid_from).getTime() <= now) &&
+        (!coupon.valid_to || new Date(coupon.valid_to).getTime() >= now);
 
       return isWithinDateRange;
     })
@@ -329,13 +345,11 @@ export async function redeemCoupon(qrToken: string) {
   if (lookupError || !myCoupon) {
     return { success: false, message: 'Invalid or already redeemed coupon.' };
   }
-
-  const { error: deleteError } = await supabase
+  const { error: updateError } = await supabase
     .from('consumer_coupons')
-    .delete()
+    .update({ is_redeemed: true })
     .eq('id', myCoupon.id);
-
-  if (deleteError) {
+  if (updateError) {
     return { success: false, message: 'Failed to redeem coupon.' };
   }
 

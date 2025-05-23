@@ -10,12 +10,15 @@ import type { User } from '@supabase/supabase-js';
 import { levelUpConsumerRank } from './rank';
 
 export const purchaseWithRewardPoints = async (
-  coupon: Coupon
+  coupon: Coupon,
+  options?: { hybrid?: boolean }
 ): Promise<SuccessResponse> => {
+  const { hybrid = false } = options || {};
+
   if (!coupon.points_amount) {
     return {
       success: false,
-      message: 'Coupon does not allow purchase sing Reward Points.',
+      message: 'Coupon does not allow purchase using Reward Points.',
     };
   }
 
@@ -28,12 +31,20 @@ export const purchaseWithRewardPoints = async (
   }
 
   try {
-    updateCouponData(coupon.id);
     updateRewardPoints(user.id, coupon.points_amount);
     updateConsumerFirstPurchase(user.id);
-    insertConsumerCoupon(coupon.id, user.id);
 
-    return { success: true, message: 'Coupon purchased successfully!' };
+    if (!hybrid) {
+      insertConsumerCoupon(coupon.id, user.id);
+      updateCouponData(coupon.id);
+    }
+
+    return {
+      success: true,
+      message: hybrid
+        ? 'Points deducted. Proceed with cash payment to complete purchase.'
+        : 'Coupon purchased successfully!',
+    };
   } catch (error) {
     console.error('Error purchasing with reward points:', error);
     return { success: false, message: 'Failed to purchase coupon.' };
@@ -84,9 +95,11 @@ const insertConsumerCoupon = async (
             original_price: existingConsumerCoupon.original_price,
             discounted_price: existingConsumerCoupon.discounted_price,
           },
-          rebated_points: Math.round((existingConsumerCoupon.discounted_price === 0 
-            ? existingConsumerCoupon.original_price 
-            : existingConsumerCoupon.discounted_price) * 0.01 * 100) / 100,
+          rebated_points: Math.round(
+            (existingConsumerCoupon.discounted_price === 0
+              ? existingConsumerCoupon.original_price
+              : existingConsumerCoupon.discounted_price) * 0.01
+          ),
         })
         .select('*, coupons(*)')
         .single();
@@ -276,7 +289,8 @@ export const rebateConsumerPoints = async (
       throw new Error(`FETCH CONSUMER ERROR: ${fetchConsumerError.message}`);
     }
 
-    const rebatePoints: number = Math.round(price * 0.01 * 100) / 100;
+    const rebatePoints: number = Number((price * 0.01).toFixed(2));
+
     console.log('rebatePoints:', rebatePoints);
     const { error: updateRebateError } = await supabase
       .from('consumers')

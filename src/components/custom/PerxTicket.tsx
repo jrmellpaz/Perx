@@ -35,7 +35,8 @@ export async function PerxTicket({
     rank_availability,
     // allow_points_purchase,
     points_amount,
-    max_purchase_limit_per_user
+    max_purchase_limit_per_user,
+    cash_amount,
   } = couponData;
 
   const { rank, icon } = await fetchRank(rank_availability);
@@ -189,7 +190,7 @@ export async function PerxTicket({
               </span>
             )}
           </div>
-          {points_amount > 0 && (
+          {points_amount > 0 && cash_amount === 0 ? (
             <span className="text-perx-black flex items-center gap-1 text-sm tracking-tighter">
               or&nbsp;
               <img
@@ -201,7 +202,20 @@ export async function PerxTicket({
               />{' '}
               {points_amount} points
             </span>
-          )}
+          ) : (points_amount > 0 && cash_amount > 0 ? (
+            <span className="text-perx-black flex items-center gap-1 text-sm tracking-tighter">
+              or&nbsp;
+              <img
+                src="/reward-points.svg"
+                alt="Reward Points"
+                width={18}
+                height={18}
+                className="pb-0.25"
+              />{' '}
+              {points_amount} points + &#8369;{cash_amount} cash
+            </span>
+          ) : null)
+          }
         </div>
         <div>{children}</div>
       </div>

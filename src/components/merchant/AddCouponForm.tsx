@@ -23,6 +23,14 @@ import { Checkbox } from '../ui/checkbox';
 import { PerxDatalist } from '../custom/PerxDatalist';
 import { toast } from 'sonner';
 import { addCoupon } from '@/actions/coupon';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from '../ui/dialog';
 
 import { type AddCouponInputs, addCouponSchema } from '@/lib/couponSchema';
 import type { CouponCategories, Ranks } from '@/lib/types';
@@ -36,6 +44,9 @@ export default function AddCouponForm({
 }) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [showPointsOnlyDialog, setShowPointsOnlyDialog] = useState(false);
+  const [showNoDiscountDialog, setShowNoDiscountDialog] = useState(false);
+  const [pendingFormData, setPendingFormData] = useState<AddCouponInputs | null>(null);
 
   const {
     register,
@@ -48,8 +59,6 @@ export default function AddCouponForm({
   } = useForm<AddCouponInputs>({
     resolver: zodResolver(addCouponSchema),
     defaultValues: {
-      // allowPointsPurchase: false,
-      // allowLimitedPurchase: false,
       dateRange: { start: null, end: null },
     },
   });
@@ -58,7 +67,30 @@ export default function AddCouponForm({
     console.log('Errors:', errors);
   }, [errors]);
 
+  // Watch the relevant fields for validation
+  const pointsAmount = watch('pointsAmount');
+  const originalPrice = watch('originalPrice');
+  const discountedPrice = watch('discountedPrice');
+
   const processForm: SubmitHandler<AddCouponInputs> = async (data) => {
+    // Check if discounted price is 0 but original price exists
+    const hasNoDiscount = data.originalPrice > 0 && (!data.discountedPrice || data.discountedPrice === 0);
+    // Check if this is a points-only coupon
+    const isPointsOnly = data.pointsAmount && data.pointsAmount > 0 && 
+      (!data.cashAmount || data.cashAmount === 0) 
+
+    if (hasNoDiscount && !pendingFormData) {
+      setPendingFormData(data);
+      setShowNoDiscountDialog(true);
+      return;
+    }
+
+    if (isPointsOnly && !pendingFormData) {
+      setPendingFormData(data);
+      setShowPointsOnlyDialog(true);
+      return;
+    }
+
     setIsSubmitting(true);
     try {
       console.log('Form data:', data);
@@ -69,6 +101,7 @@ export default function AddCouponForm({
       toast('Coupon added successfully! 🥳');
       reset();
       setImagePreview(null);
+      setPendingFormData(null);
     } catch (error) {
       console.error('Submission error:', error);
       toast.error(
@@ -77,6 +110,26 @@ export default function AddCouponForm({
       );
     } finally {
       setIsSubmitting(false);
+    }
+  };
+
+  const handleDialogClose = (type: 'points' | 'discount') => {
+    if (type === 'discount') {
+      setShowNoDiscountDialog(false);
+    } else {
+      setShowPointsOnlyDialog(false);
+    }
+    setPendingFormData(null);
+  };
+
+  const handleConfirm = (type: 'points' | 'discount') => {
+    if (pendingFormData) {
+      processForm(pendingFormData);
+    }
+    if (type === 'discount') {
+      setShowNoDiscountDialog(false);
+    } else {
+      setShowPointsOnlyDialog(false);
     }
   };
 
@@ -104,6 +157,64 @@ export default function AddCouponForm({
           categories={categories}
         />
       </form>
+
+      <Dialog open={showPointsOnlyDialog} onOpenChange={() => handleDialogClose('points')}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Confirm Points-Only Coupon</DialogTitle>
+            <DialogDescription>
+              You are creating a coupon that can only be purchased with points (no cash price).
+              This means consumers will use only their points to acquire this coupon.
+              Are you sure you want to proceed?
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter className="flex gap-2">
+            <Button
+              variant="outline"
+              onClick={() => handleDialogClose('points')}
+              type="button"
+            >
+              Cancel
+            </Button>
+            <Button
+              onClick={() => handleConfirm('points')}
+              type="button"
+              className="bg-perx-blue"
+            >
+              Yes, Create Points-Only Coupon
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={showNoDiscountDialog} onOpenChange={() => handleDialogClose('discount')}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>No Discounted Price Specified</DialogTitle>
+            <DialogDescription>
+              You have not specified a discounted price. The discounted price will be set to ₱0.00,
+              and the original price (₱{pendingFormData?.originalPrice?.toFixed(2)}) will be used as the selling price.
+              Would you like to proceed?
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter className="flex gap-2">
+            <Button
+              variant="outline"
+              onClick={() => handleDialogClose('discount')}
+              type="button"
+            >
+              Cancel
+            </Button>
+            <Button
+              onClick={() => handleConfirm('discount')}
+              type="button"
+              className="bg-perx-blue"
+            >
+              Yes, Use Original Price
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </section>
   );
 }
@@ -131,23 +242,6 @@ function Inputs({
   ranks: Ranks;
   categories: CouponCategories;
 }) {
-  // // const allowLimitedPurchase = watch('allowLimitedPurchase');
-  // // const allowPointsPurchase = watch('allowPointsPurchase');
-
-  // // Clear dateRange when allowLimitedPurchase is false
-  // useEffect(() => {
-  //   if (!allowLimitedPurchase) {
-  //     setValue('dateRange', { start: null, end: null });
-  //   }
-  // }, [allowLimitedPurchase, setValue]);
-
-  // // Clear pointsAmount when allowPointsPurchase is false
-  // useEffect(() => {
-  //   if (!allowPointsPurchase) {
-  //     setValue('pointsAmount', undefined);
-  //   }
-  // }, [allowPointsPurchase, setValue]);
-
   const imageFile = watch('image');
 
   useEffect(() => {
@@ -357,49 +451,47 @@ function Inputs({
           )}
         />
       </div>
-
-      {/* <div className="flex flex-col gap-4"> */}
-        {/* <Controller
-          name="allowPointsPurchase"
-          control={control}
-          defaultValue={false} // Default value
-          render={({ field }) => (
-            <div className="flex items-center gap-2">
-              <Checkbox
-                id="allowPointsPurchase"
-                checked={field.value} // Controlled value
-                onCheckedChange={field.onChange} // Controlled onChange handler
-              />
-              <Label
-                htmlFor="allowPointsPurchase"
-                className="mt-[1px] cursor-pointer text-sm"
-              >
-                Allow points purchase
-              </Label>
-            </div>
-          )}
-        /> */}
         
-        <div className="flex flex-col gap-1">
-          <PerxInput
-            label="Points required for this purchase (optional)"
-            type="number"
-            placeholder="0.00"
-            step="0.01"
-            min={0}
-            {...register('pointsAmount', {
-              valueAsNumber: true,
-              onChange: (e) => {
-                const value = parseFloat(e.target.value);
-                setValue('pointsAmount', parseFloat(value.toFixed(2)));
-              },
-            })}
-          />
-          {errors.pointsAmount?.message && (
-            <ErrorMessage message={errors.pointsAmount.message} />
-          )}
-        </div>
-      {/* </div> */}
+      <div className="flex flex-col gap-1">
+        <PerxInput
+          label="Points required for this purchase (optional)"
+          type="number"
+          placeholder="0.00"
+          step="0.01"
+          min={0}
+          {...register('pointsAmount', {
+            valueAsNumber: true,
+            onChange: (e) => {
+              const value = parseFloat(e.target.value);
+              setValue('pointsAmount', parseFloat(value.toFixed(2)));
+            },
+          })}
+        />
+        {errors.pointsAmount?.message && (
+          <ErrorMessage message={errors.pointsAmount.message} />
+        )}
+      </div>
+
+              
+      <div className="flex flex-col gap-1">
+        <PerxInput
+          label="Cash amount required for this purchase (optional)"
+          type="number"
+          placeholder="0.00"
+          step="0.01"
+          min={0}
+          {...register('cashAmount', {
+            valueAsNumber: true,
+            onChange: (e) => {
+              const value = parseFloat(e.target.value);
+              setValue('cashAmount', parseFloat(value.toFixed(2)));
+            },
+          })}
+        />
+        {errors.pointsAmount?.message && (
+          <ErrorMessage message={errors.pointsAmount.message} />
+        )}
+      </div>
     
       <div className="flex flex-col gap-1">
         <PerxInput
@@ -427,79 +519,33 @@ function Inputs({
         )}
       </div>
 
-      {/* <div className="flex w-full flex-col gap-4"> */}
-        
-        {/* <Controller
-          name="allowLimitedPurchase"
-          control={control}
-          defaultValue={false}
-          render={({ field }) => (
-            <div className="flex items-center gap-2">
-              <Checkbox
-                id="allowLimitedPurchase"
-                checked={field.value}
-                onCheckedChange={field.onChange}
-              />
-              <Label
-                htmlFor="allowLimitedPurchase"
-                className="mt-[1px] cursor-pointer text-sm"
-              >
-                Limit purchase to a date range
-              </Label>
-            </div>
-          )}
-        /> */}
-        <div className="flex flex-col gap-1">
-          <Label htmlFor="date">Purchase Date Range (optional)</Label>
-          <Controller
-            name="dateRange"
-            control={control}
-            defaultValue={{ start: null, end: null }} // Default to null values
-            render={({ field }) => (
-              <div className="flex w-full flex-col gap-2">
-                <PerxDateRange
-                  value={field.value} // Pass strings or null
-                  onChange={field.onChange} // Handle changes
-                />
-                <div className="flex flex-col">
-                  {errors.dateRange?.start?.message && (
-                    <ErrorMessage message={errors.dateRange.start.message} />
-                  )}
-                  {errors.dateRange?.end?.message && (
-                    <ErrorMessage message={errors.dateRange.end.message} />
-                  )}
-                  {errors.dateRange?.message && (
-                    <ErrorMessage message={errors.dateRange.message} />
-                  )}
-                </div>
-              </div>
-            )}
-          />
-        </div>
-      {/* </div> */}
-
-      {/* <div className="flex flex-col gap-4">
+      <div className="flex flex-col gap-1">
+        <Label htmlFor="date">Purchase Date Range (optional)</Label>
         <Controller
-          name="allowRepeatPurchase"
+          name="dateRange"
           control={control}
-          defaultValue={false} // Default value
+          defaultValue={{ start: null, end: null }} // Default to null values
           render={({ field }) => (
-            <div className="flex items-center gap-2">
-              <Checkbox
-                id="allowRepeatPurchase"
-                checked={field.value} // Controlled value
-                onCheckedChange={field.onChange} // Controlled onChange handler
+            <div className="flex w-full flex-col gap-2">
+              <PerxDateRange
+                value={field.value} // Pass strings or null
+                onChange={field.onChange} // Handle changes
               />
-              <Label
-                htmlFor="allowRepeatPurchase"
-                className="mt-[1px] cursor-pointer text-sm"
-              >
-                Allow repeat purchase
-              </Label>
+              <div className="flex flex-col">
+                {errors.dateRange?.start?.message && (
+                  <ErrorMessage message={errors.dateRange.start.message} />
+                )}
+                {errors.dateRange?.end?.message && (
+                  <ErrorMessage message={errors.dateRange.end.message} />
+                )}
+                {errors.dateRange?.message && (
+                  <ErrorMessage message={errors.dateRange.message} />
+                )}
+              </div>
             </div>
           )}
         />
-      </div> */}
+      </div>
 
       <div className="mt-2 flex justify-end">
         <Button

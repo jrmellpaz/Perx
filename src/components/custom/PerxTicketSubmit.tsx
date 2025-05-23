@@ -30,12 +30,13 @@ export function PerxTicketSubmit({
   coupon,
   disabledByRank = false,
 }: PerxTicketSubmitProps) {
-  const { points_amount, accent_color } = coupon;
+  const { points_amount, cash_amount, accent_color } = coupon;
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
+  const [paymentMode, setPaymentMode] = useState<'cash' | 'hybrid'>('cash');
   const dialogRef = useRef<HTMLDialogElement>(null);
 
-  const handlePaymentDialog = async () => {
+  const handlePaymentDialog = async (mode: 'cash' | 'hybrid') => {
     setIsLoading(true);
     const supabase = createClient();
     const {
@@ -48,7 +49,7 @@ export function PerxTicketSubmit({
         `/login?next=${encodeURIComponent(`/view?coupon=${coupon.id}&merchant=${coupon.merchant_id}`)}`
       );
     }
-
+    setPaymentMode(mode);
     setIsDialogOpen(true);
     dialogRef.current?.showModal();
     setIsLoading(false);
@@ -113,7 +114,7 @@ export function PerxTicketSubmit({
           </div>
         ) : (
           <>
-            {points_amount > 0 && (
+            {points_amount > 0 && cash_amount === 0 && (
               <button
                 type="button"
                 onClick={handlePointsPurchase}
@@ -138,10 +139,43 @@ export function PerxTicketSubmit({
                 Purchase with Points
               </button>
             )}
+            {points_amount > 0 && cash_amount > 0 && (
+              <button
+                type="button"
+                onClick={async () => {
+                  setIsLoading(true);
+                  const result = await purchaseWithRewardPoints(coupon, { hybrid: true });
+
+                  if (result.success) {
+                    toast(result.message);
+                    handlePaymentDialog('hybrid'); // opens PayPal for cash portion
+                  } else {
+                    toast.error(result.message);
+                    setIsLoading(false);
+                  }
+                }}
+                disabled={isLoading || disabledByRank}
+                className={cn(
+                  `flex-1 cursor-pointer rounded-lg px-4 py-2 text-sm font-medium disabled:cursor-not-allowed`,
+                  isLoading && 'opacity-50'
+                )}
+                style={!(isLoading || disabledByRank)
+                  ? {
+                      backgroundColor: getPrimaryAccentColor(accent_color),
+                      color: getAccentColor(accent_color),
+                    }
+                  : {
+                      backgroundColor: 'rgba(0, 0, 0, 0.15)',
+                      color: 'rgba(0, 0, 0, 0.2)',
+                    }}
+              >
+                Use Points + Pay Cash
+              </button>
+            )}
             <button
               type="button"
               onClick={() => {
-                handlePaymentDialog();
+                handlePaymentDialog('cash');
               }}
               disabled={isLoading || disabledByRank}
               style={
@@ -170,6 +204,7 @@ export function PerxTicketSubmit({
         isDialogOpen={isDialogOpen}
         handleClosePaymentDialog={handleClosePaymentDialog}
         coupon={coupon}
+        paymentMode={paymentMode} 
       />
     </>
   );
@@ -180,39 +215,47 @@ function PaymentDialog({
   isDialogOpen,
   handleClosePaymentDialog,
   coupon,
+  paymentMode,
 }: {
   dialogRef: RefObject<HTMLDialogElement | null>;
   isDialogOpen: boolean;
   handleClosePaymentDialog: () => void;
   coupon: Coupon;
+  paymentMode: 'cash' | 'hybrid';
 }) {
   const router = useRouter();
 
   const handleCreatePaypalOrder: PayPalButtonsComponentProps['createOrder'] =
-    async (_data, actions): Promise<string> => {
-      try {
-        dialogRef.current?.close();
+  async (_data, actions): Promise<string> => {
+    try {
+      dialogRef.current?.close();
 
-        return actions.order.create({
-          intent: 'CAPTURE',
-          purchase_units: [
-            {
-              amount: {
-                value: coupon.discounted_price !== 0 
-                  ? coupon.discounted_price.toFixed(2)
-                  : coupon.original_price.toFixed(2),
-                currency_code: 'PHP',
-              },
-              description: coupon.title,
+      const amountToPay =
+        paymentMode === 'hybrid'
+          ? coupon.cash_amount
+          : coupon.discounted_price !== 0
+            ? coupon.discounted_price
+            : coupon.original_price;
+
+
+      return actions.order.create({
+        intent: 'CAPTURE',
+        purchase_units: [
+          {
+            amount: {
+              value: amountToPay.toFixed(2),
+              currency_code: 'PHP',
             },
-          ],
-        });
-      } catch (error) {
-        console.error('Error creating PayPal order:', error);
-        toast.error('Failed to create PayPal order. Please try again.');
-        return '';
-      }
-    };
+            description: coupon.title,
+          },
+        ],
+      });
+    } catch (error) {
+      console.error('Error creating PayPal order:', error);
+      toast.error('Failed to create PayPal order. Please try again.');
+      return '';
+    }
+  };
 
   const handleApprovePaypalOrder: PayPalButtonsComponentProps['onApprove'] =
     async (data): Promise<void> => {

@@ -40,6 +40,7 @@ export type Database = {
           created_at: string
           details: Json
           id: number
+          is_redeemed: boolean
           merchant_id: string
           qr_token: string
           rebated_points: number
@@ -50,6 +51,7 @@ export type Database = {
           created_at?: string
           details?: Json
           id?: number
+          is_redeemed?: boolean
           merchant_id: string
           qr_token: string
           rebated_points: number
@@ -60,6 +62,7 @@ export type Database = {
           created_at?: string
           details?: Json
           id?: number
+          is_redeemed?: boolean
           merchant_id?: string
           qr_token?: string
           rebated_points?: number
@@ -162,6 +165,7 @@ export type Database = {
       coupons: {
         Row: {
           accent_color: Database["public"]["Enums"]["color"]
+          cash_amount: number
           category: Database["public"]["Enums"]["coupon_category"]
           created_at: string
           description: string
@@ -183,6 +187,7 @@ export type Database = {
         }
         Insert: {
           accent_color?: Database["public"]["Enums"]["color"]
+          cash_amount: number
           category?: Database["public"]["Enums"]["coupon_category"]
           created_at?: string
           description: string
@@ -204,6 +209,7 @@ export type Database = {
         }
         Update: {
           accent_color?: Database["public"]["Enums"]["color"]
+          cash_amount?: number
           category?: Database["public"]["Enums"]["coupon_category"]
           created_at?: string
           description?: string

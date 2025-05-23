@@ -54,7 +54,6 @@ export const addCouponSchema = z
       .number({ message: 'Quantity is required.' })
       .int()
       .positive('Quantity must be greater than 0'),
-    allowLimitedPurchase: z.boolean().default(false),
     dateRange: z
       .object({
         start: z.union([z.string().datetime('Invalid start date'), z.null()]),
@@ -74,18 +73,24 @@ export const addCouponSchema = z
         message: `Image size should be less than ${MAX_IMAGE_SIZE_MB}MB.`,
       }),
     accentColor: ColorEnum.default('perx-blue'),
-    // allowPointsPurchase: z.boolean().default(false),
-
     pointsAmount: z.preprocess(
       (val) => {
         const parsed = Number(val);
         return isNaN(parsed) ? 0 : parsed;
       },
       z.number()
-        .min(0, 'Discounted Price cannot be negative')
+        .min(0, 'Points amount cannot be negative')
         .optional()
     ),
-
+    cashAmount: z.preprocess(
+      (val) => {
+        const parsed = Number(val);
+        return isNaN(parsed) ? 0 : parsed;
+      },
+      z.number()
+        .min(0, 'Cash amount cannot be negative')
+        .optional()
+    ),
     maxPurchaseLimitPerUser: z.preprocess(
       (val) => {
         const parsed = Number(val);
@@ -93,7 +98,6 @@ export const addCouponSchema = z
       },
       z.number().int().positive('Maximum purchase per limit must be greater than 0').optional()
     ),
-
     rankAvailability: z.number().int().default(1),
     redemptionValidity: z.preprocess(
       (val) => {
@@ -105,37 +109,14 @@ export const addCouponSchema = z
   })
   .refine(
     (data) => {
-      // If dateRange is null or undefined, it's valid
-      if (!data.dateRange) return true;
-      
-      // If dateRange exists, both start and end must be provided
-      if (data.dateRange.start && data.dateRange.end) return true;
-      
-      // If only one date is provided, it's invalid
-      return !data.dateRange.start && !data.dateRange.end;
+      if (!data.dateRange) return true; // If dateRange is null or undefined, it's valid
+      if (data.dateRange.start && data.dateRange.end) return true; // If dateRange exists, both start and end must be provided
+      return !data.dateRange.start && !data.dateRange.end; // If only one date is provided, it's invalid
     },
     {
       message: 'Both start and end dates must be provided together',
       path: ['dateRange'],
     }
   )
-  // .refine(
-  //   (data) =>
-  //     ( data.dateRange?.start !== null &&
-  //       data.dateRange?.end !== null),
-  //   {
-  //     message: 'Date range is required when limited purchase is enabled.',
-  //     path: ['dateRange'],
-  //   }
-  // )
-  // .refine(
-  //   (data) =>
-  //     !data.allowPointsPurchase ||
-  //     (data.allowPointsPurchase && data.pointsAmount !== undefined),
-  //   {
-  //     message: 'Points amount is required when points purchase is enabled.',
-  //     path: ['pointsAmount'],
-  //   }
-  // );
 
 export type AddCouponInputs = z.infer<typeof addCouponSchema>;

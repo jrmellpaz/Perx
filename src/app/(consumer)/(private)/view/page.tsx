@@ -32,7 +32,8 @@ export default async function ViewCoupon({
   } = await supabase.auth.getUser();
   let consumerData: Consumer | null = null;
   let rankAchieved: boolean = true;
-  if (user) {
+
+  if (user !== null) {
     consumerData = await fetchConsumerProfile(user.id);
     rankAchieved = consumerData.rank >= coupon.rank_availability;
   }

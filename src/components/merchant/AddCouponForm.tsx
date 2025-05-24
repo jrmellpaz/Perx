@@ -46,7 +46,8 @@ export default function AddCouponForm({
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [showPointsOnlyDialog, setShowPointsOnlyDialog] = useState(false);
   const [showNoDiscountDialog, setShowNoDiscountDialog] = useState(false);
-  const [pendingFormData, setPendingFormData] = useState<AddCouponInputs | null>(null);
+  const [pendingFormData, setPendingFormData] =
+    useState<AddCouponInputs | null>(null);
 
   const {
     register,
@@ -67,17 +68,16 @@ export default function AddCouponForm({
     console.log('Errors:', errors);
   }, [errors]);
 
-  // Watch the relevant fields for validation
-  const pointsAmount = watch('pointsAmount');
-  const originalPrice = watch('originalPrice');
-  const discountedPrice = watch('discountedPrice');
-
   const processForm: SubmitHandler<AddCouponInputs> = async (data) => {
     // Check if discounted price is 0 but original price exists
-    const hasNoDiscount = data.originalPrice > 0 && (!data.discountedPrice || data.discountedPrice === 0);
+    const hasNoDiscount =
+      data.originalPrice > 0 &&
+      (!data.discountedPrice || data.discountedPrice === 0);
     // Check if this is a points-only coupon
-    const isPointsOnly = data.pointsAmount && data.pointsAmount > 0 && 
-      (!data.cashAmount || data.cashAmount === 0) 
+    const isPointsOnly =
+      data.pointsAmount &&
+      data.pointsAmount > 0 &&
+      (!data.cashAmount || data.cashAmount === 0);
 
     if (hasNoDiscount && !pendingFormData) {
       setPendingFormData(data);
@@ -158,14 +158,17 @@ export default function AddCouponForm({
         />
       </form>
 
-      <Dialog open={showPointsOnlyDialog} onOpenChange={() => handleDialogClose('points')}>
+      <Dialog
+        open={showPointsOnlyDialog}
+        onOpenChange={() => handleDialogClose('points')}
+      >
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Confirm Points-Only Coupon</DialogTitle>
             <DialogDescription>
-              You are creating a coupon that can only be purchased with points (no cash price).
-              This means consumers will use only their points to acquire this coupon.
-              Are you sure you want to proceed?
+              You are creating a coupon that can only be purchased with points
+              (no cash price). This means consumers will use only their points
+              to acquire this coupon. Are you sure you want to proceed?
             </DialogDescription>
           </DialogHeader>
           <DialogFooter className="flex gap-2">
@@ -187,14 +190,18 @@ export default function AddCouponForm({
         </DialogContent>
       </Dialog>
 
-      <Dialog open={showNoDiscountDialog} onOpenChange={() => handleDialogClose('discount')}>
+      <Dialog
+        open={showNoDiscountDialog}
+        onOpenChange={() => handleDialogClose('discount')}
+      >
         <DialogContent>
           <DialogHeader>
             <DialogTitle>No Discounted Price Specified</DialogTitle>
             <DialogDescription>
-              You have not specified a discounted price. The discounted price will be set to ₱0.00,
-              and the original price (₱{pendingFormData?.originalPrice?.toFixed(2)}) will be used as the selling price.
-              Would you like to proceed?
+              You have not specified a discounted price. The discounted price
+              will be set to ₱0.00, and the original price (₱
+              {pendingFormData?.originalPrice?.toFixed(2)}) will be used as the
+              selling price. Would you like to proceed?
             </DialogDescription>
           </DialogHeader>
           <DialogFooter className="flex gap-2">
@@ -210,7 +217,7 @@ export default function AddCouponForm({
               type="button"
               className="bg-perx-blue"
             >
-              Yes, Use Original Price
+              Yes, use original price
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -451,7 +458,7 @@ function Inputs({
           )}
         />
       </div>
-        
+
       <div className="flex flex-col gap-1">
         <PerxInput
           label="Points required for this purchase (optional)"
@@ -472,7 +479,6 @@ function Inputs({
         )}
       </div>
 
-              
       <div className="flex flex-col gap-1">
         <PerxInput
           label="Cash amount required for this purchase (optional)"
@@ -492,7 +498,7 @@ function Inputs({
           <ErrorMessage message={errors.pointsAmount.message} />
         )}
       </div>
-    
+
       <div className="flex flex-col gap-1">
         <PerxInput
           label="Purchase limit per user (optional)"

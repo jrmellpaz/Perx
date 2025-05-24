@@ -525,7 +525,7 @@ function Inputs({
         )}
       </div>
 
-      <div className="flex flex-col gap-1">
+      <div className="flex flex-col gap-3">
         <Label htmlFor="date">Purchase Date Range (optional)</Label>
         <Controller
           name="dateRange"

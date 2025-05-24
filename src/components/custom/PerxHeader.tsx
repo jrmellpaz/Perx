@@ -66,37 +66,37 @@ export default function PerxHeader({
   );
 }
 
-export function PerxLogoHeader({ scrollContainerSelector = '.view-container' }: { scrollContainerSelector?: string }) {
+export function PerxLogoHeader() {
   const [hidden, setHidden] = useState<boolean>(false);
   const [lastScrollY, setLastScrollY] = useState<number>(0);
 
   useEffect(() => {
-    const container = document.querySelector(scrollContainerSelector);
-    if (!container) return;
+    const container = document.querySelector('.scrollable-container');
 
     const handleScroll = () => {
-      const currentScrollY = container.scrollTop;
-
-      if (currentScrollY > lastScrollY && currentScrollY > 150) {
-        setHidden(true);
-      } else {
-        setHidden(false);
-      }
-
+      const currentScrollY = container?.scrollTop || 0;
+      const shouldHide = currentScrollY > lastScrollY && currentScrollY > 150;
+      setHidden(shouldHide);
       setLastScrollY(currentScrollY);
+      // Dispatch event for searchbar
+      window.dispatchEvent(
+        new CustomEvent('perx-logo-header-visibility', {
+          detail: { hidden: shouldHide },
+        })
+      );
     };
 
-    container.addEventListener('scroll', handleScroll);
-    return () => container.removeEventListener('scroll', handleScroll);
-  }, [scrollContainerSelector, lastScrollY]);
+    container?.addEventListener('scroll', handleScroll);
+
+    return () => container?.removeEventListener('scroll', handleScroll);
+  }, [lastScrollY]);
 
   return (
     <header
       className={cn(
-        'w-full flex h-12 items-center justify-center bg-white shadow-md transition-transform duration-500 ease-in-out md:hidden',
+        'sticky top-0 z-50 flex h-12 w-full items-center justify-center bg-white shadow-md transition-all duration-300 md:hidden',
         hidden ? '-translate-y-full' : 'translate-y-0'
       )}
-      style={{ position: 'relative', top: 0, zIndex: 40 }}
     >
       <div className="h-8">
         <ConsumerLogo logoClass="text-xl pb-[8px]" />

@@ -8,7 +8,8 @@ import { Coupon } from '@/components/custom/Coupon';
 import { MerchantCard } from '@/components/custom/PerxMerchant';
 import { PerxSearchbar } from '@/components/custom/PerxSearchbar';
 import { Search } from 'lucide-react';
-import { CouponWithRank, Merchant } from '@/lib/types';
+
+import type { CouponWithRank, Merchant } from '@/lib/types';
 
 type ResultItem = {
   id: string;
@@ -21,12 +22,12 @@ export default async function Explore({
   searchParams,
 }: {
   searchParams: Promise<{ [key: string]: string }>;
-}) { 
+}) {
   const supabase = await createClient();
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  
+
   const params = await searchParams;
   const query = params.q;
   const minPrice = params.minPrice ? parseFloat(params.minPrice) : undefined;
@@ -52,15 +53,15 @@ export default async function Explore({
     }
   }
 
-    const filteredCoupons = await filterCoupons({
-      query,
-      minPrice,
-      maxPrice,
-      allowLimitedPurchase,
-      allowRepeatPurchase,
-      allowPointsPurchase,
-      endDate,
-    });
+  const filteredCoupons = await filterCoupons({
+    query,
+    minPrice,
+    maxPrice,
+    allowLimitedPurchase,
+    allowRepeatPurchase,
+    allowPointsPurchase,
+    endDate,
+  });
 
   results = [
     ...filteredCoupons.map((c) => ({
@@ -78,7 +79,7 @@ export default async function Explore({
   return (
     <>
       <PerxLogoHeader />
-      <section className="view-container flex h-full w-full flex-col items-center-safe gap-8 overflow-y-auto p-4">
+      <section className="flex w-full flex-col items-center-safe gap-8 p-4">
         <PerxSearchbar query={query}>
           <form className="relative flex h-12 w-full items-center rounded-lg">
             <input
@@ -96,7 +97,7 @@ export default async function Explore({
             >
               <Search size={20} />
             </button>
-          </form>        
+          </form>
         </PerxSearchbar>
         {Object.keys(params).length === 0 ? (
           <ExploreList userId={user?.id} />
@@ -111,7 +112,7 @@ export default async function Explore({
             )}
           </div>
         ) : (
-          <div className="flex w-full justify-center items-center p-8 text-gray-500">
+          <div className="flex w-full items-center justify-center p-8 text-gray-500">
             No coupons or merchants found
           </div>
         )}

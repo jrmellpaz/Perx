@@ -19,8 +19,8 @@ export default async function MyCouponsPage() {
 
   return (
     <>
-      <PerxLogoHeader scrollContainerSelector=".my-coupons-scroll" />
-      <section className="my-coupons-scroll h-[100vh] overflow-y-auto px-2 py-4 sm:px-4">
+      <PerxLogoHeader />
+      <section className="overflow-y-auto px-2 py-4 sm:px-4">
         <div className="place-start grid grid-cols-1 gap-2 sm:grid-cols-2 md:grid-cols-3 md:gap-3">
           <Suspense fallback={<MyCouponsSkeleton />}>
             {purchasedCoupons.length > 0 ? (

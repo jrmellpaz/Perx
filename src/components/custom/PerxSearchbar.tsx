@@ -5,9 +5,8 @@ import { useState, useEffect } from 'react';
 import { Button } from '../ui/button';
 import { cn } from '@/lib/utils';
 import PerxCheckbox from './PerxCheckbox';
-import RangeSlider from './PerxSlider'; 
+import RangeSlider from './PerxSlider';
 import { ListFilter } from 'lucide-react';
-import { couponCategories } from '@/lib/couponSchema';
 
 export function PerxSearchbar({
   children,
@@ -16,33 +15,44 @@ export function PerxSearchbar({
   children: React.ReactNode;
   query?: string;
 }) {
-  const [hidden, setHidden] = useState(false);
-  const [lastScrollY, setLastScrollY] = useState(0);
+  const [scrolled, setScrolled] = useState<boolean>(false);
 
   useEffect(() => {
-    const container = document.querySelector('.view-container');
-
+    const container = document.querySelector('.scrollable-container');
     const handleScroll = () => {
-      const currentScrollY = container?.scrollTop || 0;
+      const scrollPosition = container?.scrollTop;
 
-      if (currentScrollY > lastScrollY && currentScrollY > 100) {
-        setHidden(true); // Slide up
+      if (scrollPosition !== undefined && scrollPosition > 16) {
+        setScrolled(true);
       } else {
-        setHidden(false); // Slide down
+        setScrolled(false);
       }
-
-      setLastScrollY(currentScrollY);
     };
 
     container?.addEventListener('scroll', handleScroll);
+
     return () => container?.removeEventListener('scroll', handleScroll);
-  }, [lastScrollY]);
+  }, []);
+
+  const [logoHeaderHidden, setLogoHeaderHidden] = useState(false);
+
+  useEffect(() => {
+    const handler = (e: any) => setLogoHeaderHidden(e.detail.hidden);
+    window.addEventListener('perx-logo-header-visibility', handler);
+    return () =>
+      window.removeEventListener('perx-logo-header-visibility', handler);
+  }, []);
 
   return (
     <header
       className={cn(
-        'sticky top-2 z-50 flex w-full max-w-[800px] flex-col items-center justify-between gap-1.5 rounded-t-3xl rounded-b-md bg-white transition-all duration-500 ease-in-out will-change-transform',
-        hidden ? '-translate-y-full opacity-0' : 'translate-y-0 opacity-100'
+        'sticky z-50 flex w-full max-w-[800px] flex-col items-center justify-between gap-1.5 rounded-t-3xl rounded-b-md bg-white will-change-transform md:top-2',
+        scrolled ? 'shadow-md' : 'shadow-none',
+        logoHeaderHidden
+          ? 'perx-searchbar-top-hidden'
+          : 'perx-searchbar-top-visible',
+        'perx-searchbar-transition',
+        'md:perx-searchbar-no-transition'
       )}
     >
       {children}
@@ -50,7 +60,6 @@ export function PerxSearchbar({
     </header>
   );
 }
-
 
 export function CouponFilterForm() {
   const searchParams = useSearchParams();
@@ -105,8 +114,10 @@ export function CouponFilterForm() {
           <div className="flex flex-col gap-2 pb-4">
             <div className="flex w-full flex-col gap-1.5">
               <div className="flex flex-wrap gap-2">
-                <div className="col-span-2 flex flex-col gap-1">
-                  <span className="ml-1 font-mono text-xs font-medium">Price</span>
+                <div className="col-span-2 flex flex-col gap-3">
+                  <span className="ml-1 font-mono text-xs font-medium">
+                    Price
+                  </span>
                   <RangeSlider
                     min={0}
                     max={10000}
@@ -114,7 +125,7 @@ export function CouponFilterForm() {
                     onValueChange={setPriceRange}
                   />
                 </div>
-                <div className="flex flex-col gap-1">
+                <div className="flex flex-col gap-3">
                   <span className="ml-1 font-mono text-xs font-medium">
                     End date
                   </span>
@@ -141,13 +152,17 @@ export function CouponFilterForm() {
                   <PerxCheckbox
                     label="Allows repeat purchase"
                     checked={allowRepeatPurchase}
-                    onCheckedChange={(checked) => setAllowRepeatPurchase(checked)}
+                    onCheckedChange={(checked) =>
+                      setAllowRepeatPurchase(checked)
+                    }
                     className="text-xs"
                   />
                   <PerxCheckbox
                     label="Purchasable with Points"
                     checked={allowPointsPurchase}
-                    onCheckedChange={(checked) => setAllowPointsPurchase(checked)}
+                    onCheckedChange={(checked) =>
+                      setAllowPointsPurchase(checked)
+                    }
                     className="text-xs"
                   />
                 </div>

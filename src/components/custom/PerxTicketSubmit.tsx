@@ -144,7 +144,9 @@ export function PerxTicketSubmit({
                 type="button"
                 onClick={async () => {
                   setIsLoading(true);
-                  const result = await purchaseWithRewardPoints(coupon, { hybrid: true });
+                  const result = await purchaseWithRewardPoints(coupon, {
+                    hybrid: true,
+                  });
 
                   if (result.success) {
                     toast(result.message);
@@ -156,18 +158,21 @@ export function PerxTicketSubmit({
                 }}
                 disabled={isLoading || disabledByRank}
                 className={cn(
-                  `flex-1 cursor-pointer rounded-lg px-4 py-2 text-sm font-medium disabled:cursor-not-allowed`,
+                  `flex-1 cursor-pointer rounded-lg border px-4 py-2 text-sm font-medium disabled:cursor-not-allowed`,
                   isLoading && 'opacity-50'
                 )}
-                style={!(isLoading || disabledByRank)
-                  ? {
-                      backgroundColor: getPrimaryAccentColor(accent_color),
-                      color: getAccentColor(accent_color),
-                    }
-                  : {
-                      backgroundColor: 'rgba(0, 0, 0, 0.15)',
-                      color: 'rgba(0, 0, 0, 0.2)',
-                    }}
+                style={
+                  !(isLoading || disabledByRank)
+                    ? {
+                        border: `1px solid ${getPrimaryAccentColor(accent_color)}`,
+                        color: getPrimaryAccentColor(accent_color),
+                      }
+                    : {
+                        border: `1px solid rgba(0, 0, 0, 0.15)`,
+                        color: 'rgba(0, 0, 0, 0.2)',
+                        backgroundColor: 'rgba(0, 0, 0, 0.05)',
+                      }
+                }
               >
                 Use Points + Pay Cash
               </button>
@@ -204,7 +209,7 @@ export function PerxTicketSubmit({
         isDialogOpen={isDialogOpen}
         handleClosePaymentDialog={handleClosePaymentDialog}
         coupon={coupon}
-        paymentMode={paymentMode} 
+        paymentMode={paymentMode}
       />
     </>
   );
@@ -226,36 +231,35 @@ function PaymentDialog({
   const router = useRouter();
 
   const handleCreatePaypalOrder: PayPalButtonsComponentProps['createOrder'] =
-  async (_data, actions): Promise<string> => {
-    try {
-      dialogRef.current?.close();
+    async (_data, actions): Promise<string> => {
+      try {
+        dialogRef.current?.close();
 
-      const amountToPay =
-        paymentMode === 'hybrid'
-          ? coupon.cash_amount
-          : coupon.discounted_price !== 0
-            ? coupon.discounted_price
-            : coupon.original_price;
+        const amountToPay =
+          paymentMode === 'hybrid'
+            ? coupon.cash_amount
+            : coupon.discounted_price !== 0
+              ? coupon.discounted_price
+              : coupon.original_price;
 
-
-      return actions.order.create({
-        intent: 'CAPTURE',
-        purchase_units: [
-          {
-            amount: {
-              value: amountToPay.toFixed(2),
-              currency_code: 'PHP',
+        return actions.order.create({
+          intent: 'CAPTURE',
+          purchase_units: [
+            {
+              amount: {
+                value: amountToPay.toFixed(2),
+                currency_code: 'PHP',
+              },
+              description: coupon.title,
             },
-            description: coupon.title,
-          },
-        ],
-      });
-    } catch (error) {
-      console.error('Error creating PayPal order:', error);
-      toast.error('Failed to create PayPal order. Please try again.');
-      return '';
-    }
-  };
+          ],
+        });
+      } catch (error) {
+        console.error('Error creating PayPal order:', error);
+        toast.error('Failed to create PayPal order. Please try again.');
+        return '';
+      }
+    };
 
   const handleApprovePaypalOrder: PayPalButtonsComponentProps['onApprove'] =
     async (data): Promise<void> => {

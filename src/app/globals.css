@@ -263,3 +263,20 @@ details:first-of-type summary::marker,
 .popover-dialog::backdrop {
   background-color: #00000000;
 }
+
+/* PerxSearchbar sticky top and transition utility classes */
+.perx-searchbar-top-visible {
+  top: 56px;
+}
+.perx-searchbar-top-hidden {
+  top: 8px;
+}
+.perx-searchbar-transition {
+  transition: top 0.3s;
+}
+@media (min-width: 768px) {
+  .md\:perx-searchbar-no-transition {
+    transition: none !important;
+    top: 8px !important;
+  }
+}

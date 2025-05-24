@@ -33,7 +33,7 @@ export default async function ViewCoupon({
   let consumerData: Consumer | null = null;
   let rankAchieved: boolean = true;
 
-  if (user !== null) {
+  if (user !== null && user.app_metadata.role === 'consumer') {
     consumerData = await fetchConsumerProfile(user.id);
     rankAchieved = consumerData.rank >= coupon.rank_availability;
   }

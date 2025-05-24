@@ -39,9 +39,9 @@ export function Coupon({
             <span className="border-perx-black w-fit rounded-full border px-1.5 py-0.5">
               {coupon.category}
             </span>
-            {/* {coupon.allow_limited_purchase && (
+            {coupon.valid_from && coupon.valid_to && (
               <Clock size={20} strokeWidth={1.5} />
-            )} */}
+            )}
             {coupon.points_amount !== 0 && (
               <img
                 src="/reward-points.svg"

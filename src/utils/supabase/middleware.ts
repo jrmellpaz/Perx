@@ -161,7 +161,7 @@ export async function updateSession(request: NextRequest) {
 
     if (request.nextUrl.pathname === '/merchant') {
       const url = request.nextUrl.clone();
-      url.pathname = '/merchant/explore';
+      url.pathname = '/merchant/login';
       return NextResponse.redirect(url);
     }
   }

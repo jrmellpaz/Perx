@@ -43,6 +43,14 @@ export function PerxTicketSubmit({
       data: { user },
     } = await supabase.auth.getUser();
 
+    if (user?.app_metadata.role !== 'consumer') {
+      toast.error(
+        'You must be logged in as a consumer to purchase this coupon.'
+      );
+      setIsLoading(false);
+      redirect('/merchant');
+    }
+
     if (!user) {
       toast('Redirecting you to login');
       redirect(
@@ -69,6 +77,14 @@ export function PerxTicketSubmit({
     const {
       data: { user },
     } = await supabase.auth.getUser();
+
+    if (user?.app_metadata.role !== 'consumer') {
+      toast.error(
+        'You must be logged in as a consumer to purchase this coupon.'
+      );
+      setIsLoading(false);
+      redirect('/merchant');
+    }
 
     if (!user) {
       toast('Redirecting you to login');

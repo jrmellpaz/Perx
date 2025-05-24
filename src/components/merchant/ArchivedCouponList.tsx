@@ -7,6 +7,7 @@ import { Coupon } from '../custom/Coupon';
 import { LoadMore } from '../custom/PerxLoadMore';
 
 import type { CouponWithRank } from '@/lib/types';
+import { PackageOpen } from 'lucide-react';
 
 interface CouponListProps {
   userId: string;
@@ -54,7 +55,22 @@ export function ArchivedCouponList({ userId }: CouponListProps) {
           )}
         </>
       ) : (
-        <CouponGridSkeleton />
+        // <CouponGridSkeleton />
+        <div className="col-span-full flex size-full flex-col items-center-safe justify-center-safe gap-4 p-12">
+          <PackageOpen
+            size={120}
+            strokeWidth={1}
+            className="text-perx-crimson"
+          />
+          <div className="flex flex-col items-center gap-1">
+            <h1 className="font-mono text-2xl font-bold">
+              No archived coupons
+            </h1>
+            <p className="text-mono text-sm text-neutral-500">
+              Your deactivated and expired coupons will appear here.
+            </p>
+          </div>
+        </div>
       )}
     </div>
   );

@@ -9,6 +9,36 @@ import type { ConsumerCoupon, Coupon, SuccessResponse } from '@/lib/types';
 import type { User } from '@supabase/supabase-js';
 import { levelUpConsumerRank } from './rank';
 
+export const checkPurchaseLimit = async (
+  consumerId: string,
+  couponId: string,
+  existingConsumerCoupon: { max_purchase_limit_per_consumer?: number }
+): Promise<SuccessResponse> => {
+  try {
+    const supabase = await createClient();
+    const { count, error: countError } = await supabase
+      .from('consumer_coupons')
+      .select('*', { count: 'exact' })
+      .eq('consumer_id', consumerId)
+      .eq('coupon_id', couponId);
+
+    if (countError) {
+      throw new Error('Failed to count existing purchases.');
+    }
+
+    const purchaseCount = count ?? 0;
+    
+    if (purchaseCount >= (existingConsumerCoupon.max_purchase_limit_per_consumer ?? 1)) {
+      return { success: false, message: "You have already purchased the maximum limit purchase of this coupon." };
+    }
+
+    return { success: true, message: "Within purchase limit" };
+  } catch (error) {
+    console.error('Error checking purchase limit:', error);
+    return { success: false, message: (error as Error).message };
+  }
+};
+
 export const purchaseWithRewardPoints = async (
   coupon: Coupon,
   options?: { hybrid?: boolean }
@@ -31,10 +61,28 @@ export const purchaseWithRewardPoints = async (
   }
 
   try {
+    const supabase = await createClient();
+
     updateRewardPoints(user.id, coupon.points_amount);
     updateConsumerFirstPurchase(user.id);
 
     if (!hybrid) {
+      const { data: existingConsumerCoupon, error: fetchError } = await supabase
+        .from('coupons')
+        .select('*')
+        .eq('id', coupon.id)
+        .single();
+
+      if (fetchError) {
+        throw new Error(`FETCH COUPON ERROR: ${fetchError.message}`);
+      }
+
+      // const purchaseLimitCheck = await checkPurchaseLimit(user.id, coupon.id, existingConsumerCoupon);
+
+      // if (!purchaseLimitCheck.success) {
+      //   return purchaseLimitCheck;
+      // }
+
       insertConsumerCoupon(coupon.id, user.id, -1); 
       updateCouponData(coupon.id);
     }
@@ -78,6 +126,11 @@ const insertConsumerCoupon = async (
     if (fetchError) {
       throw new Error(`FETCH COUPON ERROR: ${fetchError.message}`);
     }
+
+    // const purchaseLimitCheck = await checkPurchaseLimit(consumerId, couponId, existingConsumerCoupon);
+    // if (!purchaseLimitCheck.success) {
+    //   return { success: false, message: "You have already purchased the maximum limit purchase of this coupon." };
+    // }
 
     const { data: consumerCouponData, error: insertConsumerCouponError } =
       await supabase
@@ -344,6 +397,12 @@ export const approvePaypalOrder = async (
         `/login?next=${encodeURIComponent(`/view?coupon=${coupon.id}&merchant=${coupon.merchant_id}`)}`
       );
     }
+    
+    // const purchaseLimitCheck = await checkPurchaseLimit(user.id, coupon.id, coupon);
+    // if (!purchaseLimitCheck.success) {
+    //   return { success: false, message: "You have already purchased the maximum limit purchase of this coupon." };
+    // }
+
     const captureData = await createPayment(orderId);
 
     if (!captureData || captureData.status !== 'COMPLETED') {
@@ -358,13 +417,17 @@ export const approvePaypalOrder = async (
       ? coupon.cash_amount // Hybrid payment - only record cash portion
       : coupon.discounted_price !== 0 // Cash only payment - use full price
         ? coupon.discounted_price 
-        : coupon.original_price;
-
-    const { data: consumerCoupon } = await insertConsumerCoupon(
+        : coupon.original_price;   
+        
+    const { success, message, data: consumerCoupon } = await insertConsumerCoupon(
       coupon.id,
       user.id,
       amountPaid
     );
+
+    if (!success) {
+      return { success: false, message: message || 'Failed to insert consumer coupon.' };
+    }
 
     await rebateConsumerPoints(user.id, amountPaid);
 

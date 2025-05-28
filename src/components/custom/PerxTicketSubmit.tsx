@@ -15,6 +15,7 @@ import PerxAlert from './PerxAlert';
 import {
   approvePaypalOrder,
   purchaseWithRewardPoints,
+  checkPurchaseLimit,
 } from '@/actions/purchase';
 
 import type { Coupon } from '@/lib/types';
@@ -57,9 +58,23 @@ export function PerxTicketSubmit({
         `/login?next=${encodeURIComponent(`/view?coupon=${coupon.id}&merchant=${coupon.merchant_id}`)}`
       );
     }
-    setPaymentMode(mode);
-    setIsDialogOpen(true);
-    dialogRef.current?.showModal();
+
+    try {
+      // Check purchase limit before proceeding
+      const purchaseLimitResult = await checkPurchaseLimit(user.id, coupon.id, coupon);
+      if (!purchaseLimitResult.success) {
+        toast.error(purchaseLimitResult.message);
+        setIsLoading(false);
+        return;
+      }
+
+      setPaymentMode(mode);
+      setIsDialogOpen(true);
+      dialogRef.current?.showModal();
+    } catch (error) {
+      toast.error('Failed to validate purchase eligibility');
+      console.error('Purchase limit check error:', error);
+    }
     setIsLoading(false);
   };
 
@@ -94,6 +109,13 @@ export function PerxTicketSubmit({
     }
 
     try {
+      // Check purchase limit before proceeding
+      const purchaseLimitResult = await checkPurchaseLimit(user.id, coupon.id, coupon);
+      if (!purchaseLimitResult.success) {
+        toast.error(purchaseLimitResult.message);
+        return;
+      }
+
       const result = await purchaseWithRewardPoints(coupon);
 
       if (result.success) {

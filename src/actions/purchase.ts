@@ -35,7 +35,7 @@ export const purchaseWithRewardPoints = async (
     updateConsumerFirstPurchase(user.id);
 
     if (!hybrid) {
-      insertConsumerCoupon(coupon.id, user.id);
+      insertConsumerCoupon(coupon.id, user.id, -1); 
       updateCouponData(coupon.id);
     }
 
@@ -62,7 +62,8 @@ const fetchConsumer = async (): Promise<User | null> => {
 
 const insertConsumerCoupon = async (
   couponId: string,
-  consumerId: string
+  consumerId: string,
+  paymentAmount?: number // Add optional payment amount parameter
 ): Promise<SuccessResponse<ConsumerCoupon>> => {
   try {
     const supabase = await createClient();
@@ -94,12 +95,8 @@ const insertConsumerCoupon = async (
             accent_color: existingConsumerCoupon.accent_color,
             original_price: existingConsumerCoupon.original_price,
             discounted_price: existingConsumerCoupon.discounted_price,
+            max_purchase_limit_per_consumer: existingConsumerCoupon.max_purchase_limit_per_consumer,
           },
-          rebated_points: Math.round(
-            (existingConsumerCoupon.discounted_price === 0
-              ? existingConsumerCoupon.original_price
-              : existingConsumerCoupon.discounted_price) * 0.01
-          ),
         })
         .select('*, coupons(*)')
         .single();
@@ -112,6 +109,27 @@ const insertConsumerCoupon = async (
 
     if (!consumerCouponData) {
       throw new Error('No data returned from insert operation.');
+    }    
+    
+    // Use provided payment amount or fall back to standard pricing
+    const transactionPrice = paymentAmount === -1 
+      ? null 
+      : paymentAmount ?? (existingConsumerCoupon.discounted_price || existingConsumerCoupon.original_price);
+    
+    const { error: insertTransactionError } =
+      await supabase
+        .from('transaction_history')
+        .insert({
+            coupon_id: couponId,
+            merchant_id: existingConsumerCoupon.merchant_id,
+            consumer_id: consumerId,
+            price: transactionPrice
+          });
+
+    if (insertTransactionError) {
+      throw new Error(
+        `INSERT TRANSACTION ERROR: ${insertTransactionError.message}`
+      );
     }
 
     return {
@@ -315,7 +333,8 @@ export const rebateConsumerPoints = async (
 
 export const approvePaypalOrder = async (
   coupon: Coupon,
-  orderId: string
+  orderId: string,
+  paymentMode: 'cash' | 'hybrid' = 'cash' // Add payment mode parameter
 ): Promise<SuccessResponse<ConsumerCoupon>> => {
   try {
     const user = await fetchConsumer();
@@ -333,15 +352,21 @@ export const approvePaypalOrder = async (
 
     await updateCouponData(coupon.id);
     await updateConsumerFirstPurchase(user.id);
+    
+    // Record the appropriate amount based on payment mode
+    const amountPaid = paymentMode === 'hybrid'
+      ? coupon.cash_amount // Hybrid payment - only record cash portion
+      : coupon.discounted_price !== 0 // Cash only payment - use full price
+        ? coupon.discounted_price 
+        : coupon.original_price;
+
     const { data: consumerCoupon } = await insertConsumerCoupon(
       coupon.id,
-      user.id
+      user.id,
+      amountPaid
     );
 
-    if (coupon.discounted_price === 0)
-      await rebateConsumerPoints(user.id, coupon.original_price);
-    else 
-      await rebateConsumerPoints(user.id, coupon.discounted_price);
+    await rebateConsumerPoints(user.id, amountPaid);
 
     await levelUpConsumerRank(user.id);
 

@@ -43,7 +43,6 @@ export type Database = {
           is_redeemed: boolean
           merchant_id: string
           qr_token: string
-          rebated_points: number
         }
         Insert: {
           consumer_id: string
@@ -54,7 +53,6 @@ export type Database = {
           is_redeemed?: boolean
           merchant_id: string
           qr_token: string
-          rebated_points: number
         }
         Update: {
           consumer_id?: string
@@ -65,7 +63,6 @@ export type Database = {
           is_redeemed?: boolean
           merchant_id?: string
           qr_token?: string
-          rebated_points?: number
         }
         Relationships: [
           {
@@ -173,7 +170,7 @@ export type Database = {
           id: string
           image: string
           is_deactivated: boolean
-          max_purchase_limit_per_user: number
+          max_purchase_limit_per_consumer: number
           merchant_id: string
           original_price: number
           points_amount: number
@@ -195,7 +192,7 @@ export type Database = {
           id?: string
           image: string
           is_deactivated?: boolean
-          max_purchase_limit_per_user?: number
+          max_purchase_limit_per_consumer?: number
           merchant_id: string
           original_price: number
           points_amount?: number
@@ -217,7 +214,7 @@ export type Database = {
           id?: string
           image?: string
           is_deactivated?: boolean
-          max_purchase_limit_per_user?: number
+          max_purchase_limit_per_consumer?: number
           merchant_id?: string
           original_price?: number
           points_amount?: number
@@ -308,6 +305,55 @@ export type Database = {
           secondary_color?: string
         }
         Relationships: []
+      }
+      transaction_history: {
+        Row: {
+          consumer_id: string
+          coupon_id: string
+          created_at: string
+          id: string
+          merchant_id: string
+          price: number | null
+        }
+        Insert: {
+          consumer_id: string
+          coupon_id: string
+          created_at?: string
+          id?: string
+          merchant_id: string
+          price?: number | null
+        }
+        Update: {
+          consumer_id?: string
+          coupon_id?: string
+          created_at?: string
+          id?: string
+          merchant_id?: string
+          price?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "transaction_history_consumer_id_fkey"
+            columns: ["consumer_id"]
+            isOneToOne: false
+            referencedRelation: "consumers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "transaction_history_coupon_id_fkey"
+            columns: ["coupon_id"]
+            isOneToOne: false
+            referencedRelation: "coupons"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "transaction_history_merchant_id_fkey"
+            columns: ["merchant_id"]
+            isOneToOne: false
+            referencedRelation: "merchants"
+            referencedColumns: ["id"]
+          },
+        ]
       }
     }
     Views: {

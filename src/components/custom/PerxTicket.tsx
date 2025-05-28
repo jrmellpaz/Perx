@@ -35,7 +35,7 @@ export async function PerxTicket({
     rank_availability,
     // allow_points_purchase,
     points_amount,
-    max_purchase_limit_per_user,
+    max_purchase_limit_per_consumer,
     cash_amount,
   } = couponData;
 

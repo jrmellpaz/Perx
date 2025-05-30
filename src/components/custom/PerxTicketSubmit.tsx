@@ -16,12 +16,14 @@ import {
   approvePaypalOrder,
   purchaseWithRewardPoints,
   checkPurchaseLimit,
+  checkConsumerPointsBalance,
 } from '@/actions/purchase';
-
-import type { Coupon } from '@/lib/types';
 import { createClient } from '@/utils/supabase/client';
 import { redirect, useRouter } from 'next/navigation';
 import PerxCounter from './PerxCounter';
+
+import type { Coupon } from '@/lib/types';
+import { userAgent } from 'next/server';
 
 interface PerxTicketSubmitProps {
   coupon: Coupon;
@@ -44,6 +46,11 @@ export function PerxTicketSubmit({
   const [paymentMode, setPaymentMode] = useState<'cash' | 'hybrid'>('cash');
   const [quantity, setQuantity] = useState<number>(1);
   const dialogRef = useRef<HTMLDialogElement>(null);
+
+  const totalPrice =
+    (discounted_price !== 0 ? discounted_price : original_price) * quantity;
+  const totalPoints = points_amount * quantity;
+  const adjustedPrice = cash_amount * quantity;
 
   const handlePaymentDialog = async (mode: 'cash' | 'hybrid') => {
     setIsLoading(true);
@@ -177,10 +184,7 @@ export function PerxTicketSubmit({
             </span>
             <h1 className="text-perx-black text-xl tracking-tight">
               &#8369;
-              {(discounted_price !== 0
-                ? discounted_price * quantity
-                : original_price * quantity
-              ).toLocaleString('en-US', {
+              {totalPrice.toLocaleString('en-US', {
                 minimumFractionDigits: 2,
                 maximumFractionDigits: 2,
               })}
@@ -195,7 +199,7 @@ export function PerxTicketSubmit({
                   height={18}
                   className="pb-0.25"
                 />{' '}
-                {(points_amount * quantity).toLocaleString('en-US', {
+                {totalPoints.toLocaleString('en-US', {
                   minimumFractionDigits: 2,
                   maximumFractionDigits: 2,
                 })}{' '}
@@ -211,12 +215,12 @@ export function PerxTicketSubmit({
                   height={18}
                   className="pb-0.25"
                 />
-                {(points_amount * quantity).toLocaleString('en-US', {
+                {totalPoints.toLocaleString('en-US', {
                   minimumFractionDigits: 2,
                   maximumFractionDigits: 2,
                 })}{' '}
                 pts&nbsp;&nbsp;+&nbsp;&nbsp;&#8369;
-                {(cash_amount * quantity).toLocaleString('en-US', {
+                {adjustedPrice.toLocaleString('en-US', {
                   minimumFractionDigits: 2,
                   maximumFractionDigits: 2,
                 })}
@@ -271,9 +275,8 @@ export function PerxTicketSubmit({
                   type="button"
                   onClick={async () => {
                     setIsLoading(true);
-                    const result = await purchaseWithRewardPoints(coupon, {
-                      hybrid: true,
-                    });
+                    const result =
+                      await checkConsumerPointsBalance(totalPoints);
 
                     if (result.success) {
                       toast(result.message);
@@ -338,6 +341,9 @@ export function PerxTicketSubmit({
         handleClosePaymentDialog={handleClosePaymentDialog}
         coupon={coupon}
         paymentMode={paymentMode}
+        totalPrice={totalPrice}
+        totalPoints={totalPoints}
+        adjustedPrice={adjustedPrice}
       />
     </>
   );
@@ -349,26 +355,26 @@ function PaymentDialog({
   handleClosePaymentDialog,
   coupon,
   paymentMode,
+  totalPrice,
+  totalPoints,
+  adjustedPrice,
 }: {
   dialogRef: RefObject<HTMLDialogElement | null>;
   isDialogOpen: boolean;
   handleClosePaymentDialog: () => void;
   coupon: Coupon;
   paymentMode: 'cash' | 'hybrid';
+  totalPrice: number;
+  totalPoints: number;
+  adjustedPrice: number;
 }) {
   const router = useRouter();
+  const amountToPay = paymentMode === 'hybrid' ? adjustedPrice : totalPrice;
 
   const handleCreatePaypalOrder: PayPalButtonsComponentProps['createOrder'] =
     async (_data, actions): Promise<string> => {
       try {
         dialogRef.current?.close();
-
-        const amountToPay =
-          paymentMode === 'hybrid'
-            ? coupon.cash_amount
-            : coupon.discounted_price !== 0
-              ? coupon.discounted_price
-              : coupon.original_price;
 
         return actions.order.create({
           intent: 'CAPTURE',
@@ -395,7 +401,8 @@ function PaymentDialog({
         const { message, data: consumerCoupon } = await approvePaypalOrder(
           coupon,
           data.orderID,
-          paymentMode // Pass the payment mode to backend
+          paymentMode, // Pass the payment mode to backend
+          amountToPay
         );
         toast.success(`${message} Redirecting you to your coupons...`);
         router.push(`/my-coupons/view?coupon=${consumerCoupon?.id}`);

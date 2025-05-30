@@ -112,13 +112,13 @@ export function PerxTicketSubmit({
       data: { user },
     } = await supabase.auth.getUser();
 
-    // if (user?.app_metadata.role !== 'consumer') {
-    //   toast.error(
-    //     'You must be logged in as a consumer to purchase this coupon.'
-    //   );
-    //   setIsLoading(false);
-    //   redirect('/merchant');
-    // }
+    if (user?.app_metadata.role !== 'consumer') {
+      toast.error(
+        'You must be logged in as a consumer to purchase this coupon.'
+      );
+      setIsLoading(false);
+      redirect('/merchant');
+    }
 
     if (!user) {
       toast('Redirecting you to login');
@@ -279,7 +279,6 @@ export function PerxTicketSubmit({
                       await checkConsumerPointsBalance(totalPoints);
 
                     if (result.success) {
-                      toast(result.message);
                       handlePaymentDialog('hybrid'); // opens PayPal for cash portion
                     } else {
                       toast.error(result.message);

@@ -21,6 +21,7 @@ import {
 import type { Coupon } from '@/lib/types';
 import { createClient } from '@/utils/supabase/client';
 import { redirect, useRouter } from 'next/navigation';
+import PerxCounter from './PerxCounter';
 
 interface PerxTicketSubmitProps {
   coupon: Coupon;
@@ -31,10 +32,17 @@ export function PerxTicketSubmit({
   coupon,
   disabledByRank = false,
 }: PerxTicketSubmitProps) {
-  const { points_amount, cash_amount, accent_color } = coupon;
+  const {
+    points_amount,
+    cash_amount,
+    accent_color,
+    discounted_price,
+    original_price,
+  } = coupon;
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
   const [paymentMode, setPaymentMode] = useState<'cash' | 'hybrid'>('cash');
+  const [quantity, setQuantity] = useState<number>(1);
   const dialogRef = useRef<HTMLDialogElement>(null);
 
   const handlePaymentDialog = async (mode: 'cash' | 'hybrid') => {
@@ -61,7 +69,11 @@ export function PerxTicketSubmit({
 
     try {
       // Check purchase limit before proceeding
-      const purchaseLimitResult = await checkPurchaseLimit(user.id, coupon.id, coupon);
+      const purchaseLimitResult = await checkPurchaseLimit(
+        user.id,
+        coupon.id,
+        coupon
+      );
       if (!purchaseLimitResult.success) {
         toast.error(purchaseLimitResult.message);
         setIsLoading(false);
@@ -110,7 +122,11 @@ export function PerxTicketSubmit({
 
     try {
       // Check purchase limit before proceeding
-      const purchaseLimitResult = await checkPurchaseLimit(user.id, coupon.id, coupon);
+      const purchaseLimitResult = await checkPurchaseLimit(
+        user.id,
+        coupon.id,
+        coupon
+      );
       if (!purchaseLimitResult.success) {
         toast.error(purchaseLimitResult.message);
         return;
@@ -136,111 +152,185 @@ export function PerxTicketSubmit({
 
   return (
     <>
-      <div className="flex flex-col-reverse gap-2 sm:flex-row sm:gap-4">
-        {isLoading ? (
-          <div className="flex w-full items-center justify-center gap-2">
-            <LoaderCircle
-              className="animate-spin"
-              size={18}
-              strokeWidth={2}
-              aria-hidden="true"
+      <div className="flex w-full flex-col gap-3 md:flex-row md:items-center md:justify-between md:gap-8">
+        <div className="flex w-fit shrink-0 flex-row-reverse items-center justify-between gap-8 md:flex-row md:justify-start md:gap-6">
+          <div className="flex flex-col items-start justify-center gap-2 text-xs">
+            <span
+              className="font-mono font-bold"
               style={{ color: getPrimaryAccentColor(accent_color) }}
-            />
-            <span className="text-perx-black text-sm">
-              Processing your purchase
+            >
+              Quantity
             </span>
+            <PerxCounter
+              max={coupon.max_purchase_limit_per_consumer}
+              className="h-6 text-xs"
+              accentColor={accent_color}
+              onChange={(value) => setQuantity(value)}
+            />
           </div>
-        ) : (
-          <>
-            {points_amount > 0 && cash_amount === 0 && (
-              <button
-                type="button"
-                onClick={handlePointsPurchase}
-                disabled={isLoading || disabledByRank}
-                className={cn(
-                  `flex-1 cursor-pointer rounded-lg border px-4 py-2 text-sm font-medium disabled:cursor-not-allowed`,
-                  isLoading && 'opacity-50'
-                )}
-                style={
-                  !(isLoading || disabledByRank)
-                    ? {
-                        border: `1px solid ${getPrimaryAccentColor(accent_color)}`,
-                        color: getPrimaryAccentColor(accent_color),
-                      }
-                    : {
-                        border: `1px solid rgba(0, 0, 0, 0.15)`,
-                        color: 'rgba(0, 0, 0, 0.2)',
-                        backgroundColor: 'rgba(0, 0, 0, 0.05)',
-                      }
-                }
-              >
-                Purchase with Points
-              </button>
-            )}
-            {points_amount > 0 && cash_amount > 0 && (
-              <button
-                type="button"
-                onClick={async () => {
-                  setIsLoading(true);
-                  const result = await purchaseWithRewardPoints(coupon, {
-                    hybrid: true,
-                  });
+          <div className="flex w-fit flex-col">
+            <span
+              className="font-mono text-xs font-bold"
+              style={{ color: getPrimaryAccentColor(accent_color) }}
+            >
+              Total order
+            </span>
+            <h1 className="text-perx-black text-xl tracking-tight">
+              &#8369;
+              {(discounted_price !== 0
+                ? discounted_price * quantity
+                : original_price * quantity
+              ).toLocaleString('en-US', {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2,
+              })}
+            </h1>
+            {points_amount > 0 && cash_amount === 0 ? (
+              <span className="text-perx-black flex items-center gap-1 text-sm tracking-tighter">
+                or&nbsp;
+                <img
+                  src="/reward-points.svg"
+                  alt="Reward Points"
+                  width={18}
+                  height={18}
+                  className="pb-0.25"
+                />{' '}
+                {(points_amount * quantity).toLocaleString('en-US', {
+                  minimumFractionDigits: 2,
+                  maximumFractionDigits: 2,
+                })}{' '}
+                pts
+              </span>
+            ) : points_amount > 0 && cash_amount > 0 ? (
+              <span className="text-perx-black flex items-center gap-1 text-sm tracking-tighter">
+                or
+                <img
+                  src="/reward-points.svg"
+                  alt="Reward Points"
+                  width={18}
+                  height={18}
+                  className="pb-0.25"
+                />
+                {(points_amount * quantity).toLocaleString('en-US', {
+                  minimumFractionDigits: 2,
+                  maximumFractionDigits: 2,
+                })}{' '}
+                pts&nbsp;&nbsp;+&nbsp;&nbsp;&#8369;
+                {(cash_amount * quantity).toLocaleString('en-US', {
+                  minimumFractionDigits: 2,
+                  maximumFractionDigits: 2,
+                })}
+              </span>
+            ) : null}
+          </div>
+        </div>
 
-                  if (result.success) {
-                    toast(result.message);
-                    handlePaymentDialog('hybrid'); // opens PayPal for cash portion
-                  } else {
-                    toast.error(result.message);
-                    setIsLoading(false);
+        <div className="flex w-full flex-col-reverse gap-2 whitespace-nowrap lg:w-fit lg:flex-row lg:gap-4">
+          {isLoading ? (
+            <div className="flex w-full items-center justify-center gap-2">
+              <LoaderCircle
+                className="animate-spin"
+                size={18}
+                strokeWidth={2}
+                aria-hidden="true"
+                style={{ color: getPrimaryAccentColor(accent_color) }}
+              />
+              <span className="text-perx-black text-sm">
+                Processing your purchase
+              </span>
+            </div>
+          ) : (
+            <>
+              {points_amount > 0 && cash_amount === 0 && (
+                <button
+                  type="button"
+                  onClick={handlePointsPurchase}
+                  disabled={isLoading || disabledByRank}
+                  className={cn(
+                    `flex-1 cursor-pointer rounded-lg border px-4 py-2 text-sm font-medium disabled:cursor-not-allowed`,
+                    isLoading && 'opacity-50'
+                  )}
+                  style={
+                    !(isLoading || disabledByRank)
+                      ? {
+                          border: `1px solid ${getPrimaryAccentColor(accent_color)}`,
+                          color: getPrimaryAccentColor(accent_color),
+                        }
+                      : {
+                          border: `1px solid rgba(0, 0, 0, 0.15)`,
+                          color: 'rgba(0, 0, 0, 0.2)',
+                          backgroundColor: 'rgba(0, 0, 0, 0.05)',
+                        }
                   }
+                >
+                  Purchase with Points
+                </button>
+              )}
+              {points_amount > 0 && cash_amount > 0 && (
+                <button
+                  type="button"
+                  onClick={async () => {
+                    setIsLoading(true);
+                    const result = await purchaseWithRewardPoints(coupon, {
+                      hybrid: true,
+                    });
+
+                    if (result.success) {
+                      toast(result.message);
+                      handlePaymentDialog('hybrid'); // opens PayPal for cash portion
+                    } else {
+                      toast.error(result.message);
+                      setIsLoading(false);
+                    }
+                  }}
+                  disabled={isLoading || disabledByRank}
+                  className={cn(
+                    `flex-1 cursor-pointer rounded-lg border px-4 py-2 text-sm font-medium disabled:cursor-not-allowed`,
+                    isLoading && 'opacity-50'
+                  )}
+                  style={
+                    !(isLoading || disabledByRank)
+                      ? {
+                          border: `1px solid ${getPrimaryAccentColor(accent_color)}`,
+                          color: getPrimaryAccentColor(accent_color),
+                        }
+                      : {
+                          border: `1px solid rgba(0, 0, 0, 0.15)`,
+                          color: 'rgba(0, 0, 0, 0.2)',
+                          backgroundColor: 'rgba(0, 0, 0, 0.05)',
+                        }
+                  }
+                >
+                  Use Points + Pay Cash
+                </button>
+              )}
+              <button
+                type="button"
+                onClick={() => {
+                  handlePaymentDialog('cash');
                 }}
                 disabled={isLoading || disabledByRank}
-                className={cn(
-                  `flex-1 cursor-pointer rounded-lg border px-4 py-2 text-sm font-medium disabled:cursor-not-allowed`,
-                  isLoading && 'opacity-50'
-                )}
                 style={
                   !(isLoading || disabledByRank)
                     ? {
-                        border: `1px solid ${getPrimaryAccentColor(accent_color)}`,
-                        color: getPrimaryAccentColor(accent_color),
+                        backgroundColor: getPrimaryAccentColor(accent_color),
+                        color: getAccentColor(accent_color),
                       }
                     : {
-                        border: `1px solid rgba(0, 0, 0, 0.15)`,
+                        backgroundColor: 'rgba(0, 0, 0, 0.15)',
                         color: 'rgba(0, 0, 0, 0.2)',
-                        backgroundColor: 'rgba(0, 0, 0, 0.05)',
                       }
                 }
+                className={cn(
+                  `disabled:bg-muted flex-1 cursor-pointer rounded-lg px-4 py-2 text-sm font-medium disabled:cursor-not-allowed`,
+                  isLoading && 'opacity-50'
+                )}
               >
-                Use Points + Pay Cash
+                Pay with Cash
               </button>
-            )}
-            <button
-              type="button"
-              onClick={() => {
-                handlePaymentDialog('cash');
-              }}
-              disabled={isLoading || disabledByRank}
-              style={
-                !(isLoading || disabledByRank)
-                  ? {
-                      backgroundColor: getPrimaryAccentColor(accent_color),
-                      color: getAccentColor(accent_color),
-                    }
-                  : {
-                      backgroundColor: 'rgba(0, 0, 0, 0.15)',
-                      color: 'rgba(0, 0, 0, 0.2)',
-                    }
-              }
-              className={cn(
-                `disabled:bg-muted flex-1 cursor-pointer rounded-lg px-4 py-2 text-sm font-medium disabled:cursor-not-allowed`,
-                isLoading && 'opacity-50'
-              )}
-            >
-              Pay with Cash
-            </button>
-          </>
-        )}
+            </>
+          )}
+        </div>
       </div>
       <PaymentDialog
         dialogRef={dialogRef}

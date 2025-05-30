@@ -4,7 +4,7 @@ import { redirect } from 'next/navigation';
 import { PerxTicketSubmit } from '@/components/custom/PerxTicketSubmit';
 import { fetchCoupon } from '@/actions/coupon';
 import PerxHeader from '@/components/custom/PerxHeader';
-import { getPrimaryAccentColor } from '@/lib/utils';
+import { getAccentColor, getPrimaryAccentColor } from '@/lib/utils';
 
 import type { Consumer, Coupon, Merchant } from '@/lib/types';
 import { fetchConsumerProfile } from '@/actions/consumerProfile';
@@ -40,7 +40,7 @@ export default async function ViewCoupon({
 
   return (
     <section
-      className="view-container flex h-full w-full flex-col items-center overflow-y-auto bg-transparent pb-14"
+      className="view-container flex h-full w-full flex-col items-center overflow-y-auto bg-transparent"
       style={{ backgroundColor: getPrimaryAccentColor(coupon.accent_color) }}
     >
       <PerxHeader
@@ -53,7 +53,7 @@ export default async function ViewCoupon({
           backgroundColor: getPrimaryAccentColor(coupon.accent_color),
         }}
       />
-      <div className="flex w-full grow items-center justify-center">
+      <div className="mb-8 flex w-full grow items-center justify-center">
         <PerxTicket
           couponData={coupon}
           merchantData={merchant}
@@ -68,8 +68,13 @@ export default async function ViewCoupon({
               <span>You don't have enough Rank to purchase this coupon.</span>
             </div>
           )}
-          <PerxTicketSubmit coupon={coupon} disabledByRank={!rankAchieved} />
         </PerxTicket>
+      </div>
+      <div
+        className="custom-shadow sticky bottom-0 box-border w-full max-w-[800px] p-2 md:bottom-4 md:mx-auto md:w-9/10 md:rounded-lg md:p-4"
+        style={{ backgroundColor: getAccentColor(coupon.accent_color) }}
+      >
+        <PerxTicketSubmit coupon={coupon} disabledByRank={!rankAchieved} />
       </div>
     </section>
   );

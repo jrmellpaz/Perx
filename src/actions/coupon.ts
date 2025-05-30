@@ -39,7 +39,10 @@ export const addCoupon = async (
       couponData.discountedPrice != null &&
       couponData.discountedPrice >= couponData.originalPrice
     ) {
-      return { success: false, message: 'Discounted Price must be less than Original Price' };
+      return {
+        success: false,
+        message: 'Discounted Price must be less than Original Price',
+      };
     }
 
     const comparePrice = couponData.discountedPrice || couponData.originalPrice;
@@ -49,7 +52,8 @@ export const addCoupon = async (
     ) {
       return {
         success: false,
-        message: 'Cash amount must be less than the Discounted Price (or Original Price if no Discount Price)',
+        message:
+          'Cash amount must be less than the Discounted Price (or Original Price if no Discount Price)',
       };
     }
 
@@ -90,16 +94,16 @@ export const addCoupon = async (
       discounted_price: couponData.discountedPrice,
       quantity: couponData.quantity,
       rank_availability: couponData.rankAvailability,
-      valid_from: couponData.dateRange?.start !== null
-        ? couponData.dateRange?.start
-        : null,
-      valid_to: couponData.dateRange?.end !== null
-        ? couponData.dateRange?.end
-        : null,
+      valid_from:
+        couponData.dateRange?.start !== null
+          ? couponData.dateRange?.start
+          : null,
+      valid_to:
+        couponData.dateRange?.end !== null ? couponData.dateRange?.end : null,
       image: imageUrl,
       points_amount: couponData.pointsAmount,
       cash_amount: couponData.cashAmount,
-      max_purchase_limit_per_user: couponData.maxPurchaseLimitPerUser,
+      max_purchase_limit_per_consumer: couponData.maxPurchaseLimitPerUser,
       redemption_validity: couponData.redemptionValidity,
       text_search: combinedText,
     } as InsertCoupon);

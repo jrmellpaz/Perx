@@ -24,7 +24,6 @@ export async function PerxTicket({
     description,
     original_price,
     discounted_price,
-    // allow_limited_purchase,
     valid_from = '',
     valid_to = '',
     is_deactivated,
@@ -33,7 +32,6 @@ export async function PerxTicket({
     category,
     accent_color,
     rank_availability,
-    // allow_points_purchase,
     points_amount,
     max_purchase_limit_per_consumer,
     cash_amount,
@@ -178,7 +176,10 @@ export async function PerxTicket({
                   &#8369;{discounted_price.toFixed(2)}
                 </span>
                 <span className="rounded-full bg-green-100 px-2 py-1 text-xs font-medium text-green-800">
-                  {Math.round(((original_price - discounted_price) / original_price) * 100)}% OFF
+                  {Math.round(
+                    ((original_price - discounted_price) / original_price) * 100
+                  )}
+                  % OFF
                 </span>
               </>
             ) : (
@@ -202,7 +203,7 @@ export async function PerxTicket({
               />{' '}
               {points_amount} points
             </span>
-          ) : (points_amount > 0 && cash_amount > 0 ? (
+          ) : points_amount > 0 && cash_amount > 0 ? (
             <span className="text-perx-black flex items-center gap-1 text-sm tracking-tighter">
               or&nbsp;
               <img
@@ -214,8 +215,7 @@ export async function PerxTicket({
               />{' '}
               {points_amount} points + &#8369;{cash_amount} cash
             </span>
-          ) : null)
-          }
+          ) : null}
         </div>
         <div>{children}</div>
       </div>

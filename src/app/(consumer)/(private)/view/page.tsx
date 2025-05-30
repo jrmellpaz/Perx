@@ -5,11 +5,11 @@ import { PerxTicketSubmit } from '@/components/custom/PerxTicketSubmit';
 import { fetchCoupon } from '@/actions/coupon';
 import PerxHeader from '@/components/custom/PerxHeader';
 import { getAccentColor, getPrimaryAccentColor } from '@/lib/utils';
-
-import type { Consumer, Coupon, Merchant } from '@/lib/types';
 import { fetchConsumerProfile } from '@/actions/consumerProfile';
 import { createClient } from '@/utils/supabase/server';
 import { InfoIcon } from 'lucide-react';
+
+import type { Consumer, Coupon, Merchant } from '@/lib/types';
 
 export default async function ViewCoupon({
   searchParams,
@@ -71,7 +71,7 @@ export default async function ViewCoupon({
         </PerxTicket>
       </div>
       <div
-        className="custom-shadow sticky bottom-0 box-border w-full max-w-[800px] p-2 md:bottom-4 md:mx-auto md:w-9/10 md:rounded-lg md:p-4"
+        className="custom-shadow sticky bottom-0 box-border w-full max-w-[800px] p-3 md:bottom-4 md:mx-auto md:w-9/10 md:rounded-lg md:p-4"
         style={{ backgroundColor: getAccentColor(coupon.accent_color) }}
       >
         <PerxTicketSubmit coupon={coupon} disabledByRank={!rankAchieved} />

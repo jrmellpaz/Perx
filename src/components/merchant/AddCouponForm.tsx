@@ -19,7 +19,6 @@ import { Input } from '../ui/input';
 import { LoaderCircle } from 'lucide-react';
 import PerxColors from '../custom/PerxColors';
 import PerxSelect from '../custom/PerxSelect';
-import { Checkbox } from '../ui/checkbox';
 import { PerxDatalist } from '../custom/PerxDatalist';
 import { toast } from 'sonner';
 import { addCoupon } from '@/actions/coupon';

@@ -52,6 +52,28 @@ export function PerxTicketSubmit({
   const totalPoints = points_amount * quantity;
   const adjustedPrice = cash_amount * quantity;
 
+  const checkConsumerLogin = (): Promise<boolean> => {
+    const supabase = createClient();
+    return supabase.auth.getUser().then(({ data }) => {
+      const user = data.user;
+      if (user?.app_metadata.role === 'merchant') {
+        toast.error(
+          'You must be logged in as a consumer to purchase this coupon.'
+        );
+        setIsLoading(false);
+        redirect('/merchant');
+      }
+
+      if (!user) {
+        toast('Redirecting you to login');
+        redirect(
+          `/login?next=${encodeURIComponent(`/view?coupon=${coupon.id}&merchant=${coupon.merchant_id}`)}`
+        );
+      }
+      return true;
+    });
+  };
+
   const handlePaymentDialog = async (mode: 'cash' | 'hybrid') => {
     setIsLoading(true);
     const supabase = createClient();
@@ -59,25 +81,12 @@ export function PerxTicketSubmit({
       data: { user },
     } = await supabase.auth.getUser();
 
-    // if (user?.app_metadata.role !== 'consumer') {
-    //   toast.error(
-    //     'You must be logged in as a consumer to purchase this coupon.'
-    //   );
-    //   setIsLoading(false);
-    //   redirect('/merchant');
-    // }
-
-    if (!user) {
-      toast('Redirecting you to login');
-      redirect(
-        `/login?next=${encodeURIComponent(`/view?coupon=${coupon.id}&merchant=${coupon.merchant_id}`)}`
-      );
-    }
+    checkConsumerLogin();
 
     try {
       // Check purchase limit before proceeding
       const purchaseLimitResult = await checkPurchaseLimit(
-        user.id,
+        user!.id,
         coupon.id,
         coupon
       );
@@ -112,25 +121,12 @@ export function PerxTicketSubmit({
       data: { user },
     } = await supabase.auth.getUser();
 
-    if (user?.app_metadata.role !== 'consumer') {
-      toast.error(
-        'You must be logged in as a consumer to purchase this coupon.'
-      );
-      setIsLoading(false);
-      redirect('/merchant');
-    }
-
-    if (!user) {
-      toast('Redirecting you to login');
-      redirect(
-        `/login?next=${encodeURIComponent(`/view?coupon=${coupon.id}&merchant=${coupon.merchant_id}`)}`
-      );
-    }
+    checkConsumerLogin();
 
     try {
       // Check purchase limit before proceeding
       const purchaseLimitResult = await checkPurchaseLimit(
-        user.id,
+        user!.id,
         coupon.id,
         coupon
       );
@@ -275,6 +271,7 @@ export function PerxTicketSubmit({
                   type="button"
                   onClick={async () => {
                     setIsLoading(true);
+                    checkConsumerLogin();
                     const result =
                       await checkConsumerPointsBalance(totalPoints);
 

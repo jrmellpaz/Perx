@@ -263,7 +263,7 @@ export function PerxTicketSubmit({
                         }
                   }
                 >
-                  Purchase with Points
+                  Buy with Points
                 </button>
               )}
               {points_amount > 0 && cash_amount > 0 && (
@@ -300,7 +300,7 @@ export function PerxTicketSubmit({
                         }
                   }
                 >
-                  Use Points + Pay Cash
+                  Buy with Points + Cash
                 </button>
               )}
               <button
@@ -325,7 +325,7 @@ export function PerxTicketSubmit({
                   isLoading && 'opacity-50'
                 )}
               >
-                Pay with Cash
+                Buy with Cash
               </button>
             </>
           )}

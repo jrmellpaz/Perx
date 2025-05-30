@@ -230,6 +230,7 @@ export const fetchConsumerCoupons = async (
     .from('consumer_coupons')
     .select('*, coupons(*)')
     .eq('consumer_id', consumerId)
+    .eq('is_redeemed', false)
     .order('created_at', { ascending: false });
 
   if (error) {
@@ -336,7 +337,9 @@ export async function filterCoupons(
   return data as CouponWithRank[];
 }
 
-export async function redeemCoupon(qrToken: string) {
+export async function redeemCoupon(
+  qrToken: string
+) : Promise<SuccessResponse> {
   if (!qrToken) return { success: false, message: 'Missing QR token' };
   const supabase = await createClient();
 
@@ -360,7 +363,9 @@ export async function redeemCoupon(qrToken: string) {
   return { success: true, message: 'Coupon successfully redeemed.' };
 }
 
-export async function getCouponFromToken(qrToken: string) {
+export async function getCouponFromToken(
+  qrToken: string
+): Promise<SuccessResponse | Coupon>{
   const supabase = await createClient();
   if (!qrToken) return { success: false, message: 'Missing QR token' };
   const { data: myCoupon, error } = await supabase
@@ -373,12 +378,8 @@ export async function getCouponFromToken(qrToken: string) {
     return { success: false, message: 'Invalid or expired QR code.' };
   }
 
-  return {
-    success: true,
-    coupon: myCoupon.coupon,
-    user_coupon_id: myCoupon.id,
-  };
-}
+  return myCoupon.coupon as Coupon;
+};
 
 export const archiveCoupon = async (
   couponId: string

@@ -9,6 +9,8 @@ import type { ConsumerCoupon, Coupon, SuccessResponse } from '@/lib/types';
 import type { User } from '@supabase/supabase-js';
 import { levelUpConsumerRank } from './rank';
 
+import { toast } from 'sonner';
+
 export const checkPurchaseLimit = async (
   consumerId: string,
   couponId: string,
@@ -86,6 +88,8 @@ export const purchaseWithRewardPoints = async (
 
       insertConsumerCoupon(coupon.id, user.id, -1);
       updateCouponData(coupon.id);
+      toast.success(`Redirecting you to your coupons...`);
+      redirect(`/my-coupons/view?coupon=${existingConsumerCoupon?.id}`);
     }
 
     return {

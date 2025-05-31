@@ -283,273 +283,294 @@ function Inputs({
       transition={{ duration: 0.3, ease: 'easeInOut' }}
       className="bg-perx- flex flex-col gap-5"
     >
-      <div className="flex flex-col gap-1">
-        <PerxInput
-          label="Title *"
-          type="text"
-          placeholder="Coupon X"
-          required
-          autofocus={true}
-          {...register('title')}
-        />
-        {errors.title?.message && (
-          <ErrorMessage message={errors.title.message} />
-        )}
-      </div>
-
-      <div className="flex flex-col gap-1">
-        <PerxDatalist
-          options={categories.map((category) => ({
-            value: category.category,
-            label: category.description,
-          }))}
-          label="Category *"
-          required
-          {...register('category')}
-        />
-        {errors.category?.message && (
-          <ErrorMessage
-            message={'Invalid category. Select from the given list only.'}
+      <div className="flex flex-col gap-8 rounded-lg bg-white px-4 py-6 shadow-md md:p-12">
+        <h1 className="font-mono text-xl font-medium">Coupon details</h1>
+        <div className="flex flex-col gap-1">
+          <PerxInput
+            label="Title"
+            type="text"
+            placeholder="Coupon X"
+            required
+            autofocus={true}
+            {...register('title')}
           />
-        )}
-      </div>
+          {errors.title?.message && (
+            <ErrorMessage message={errors.title.message} />
+          )}
+        </div>
 
-      <div className="flex flex-col gap-1">
-        <PerxTextarea
-          label="Description *"
-          placeholder="Coupon description"
-          required
-          {...register('description')}
-        />
-        {errors.description?.message && (
-          <ErrorMessage message={errors.description.message} />
-        )}
-      </div>
-
-      <div className="flex flex-col gap-1">
-        <PerxInput
-          label="Original Price *"
-          type="number"
-          placeholder="0.00"
-          step="0.01"
-          min={0}
-          required
-          {...register('originalPrice', {
-            valueAsNumber: true,
-            onChange: (e) => {
-              const value = parseFloat(e.target.value);
-              setValue('originalPrice', parseFloat(value.toFixed(2)));
-            },
-          })}
-        />
-        {errors.originalPrice?.message && (
-          <ErrorMessage message={errors.originalPrice.message} />
-        )}
-      </div>
-
-      <div className="flex flex-col gap-1">
-        <PerxInput
-          label="Discounted Price (optional)"
-          type="number"
-          placeholder="0.00"
-          step="0.01"
-          min={0}
-          {...register('discountedPrice', {
-            valueAsNumber: true,
-            onChange: (e) => {
-              const value = parseFloat(e.target.value);
-              setValue('discountedPrice', parseFloat(value.toFixed(2)));
-            },
-          })}
-        />
-        {errors.discountedPrice?.message && (
-          <ErrorMessage message={errors.discountedPrice.message} />
-        )}
-      </div>
-
-      <div className="flex flex-col gap-1">
-        <PerxInput
-          label="Quantity *"
-          type="number"
-          placeholder="0"
-          min={1}
-          required
-          {...register('quantity', { valueAsNumber: true })}
-        />
-        {errors.quantity?.message && (
-          <ErrorMessage message={errors.quantity.message} />
-        )}
-      </div>
-
-      <div className="flex flex-col items-center justify-center">
-        {imagePreview && (
-          <img
-            src={imagePreview}
-            alt="Your coupon image"
-            className="border-input aspect-video h-64 w-auto rounded-md border object-cover"
+        <div className="flex flex-col gap-1">
+          <PerxDatalist
+            options={categories.map((category) => ({
+              value: category.category,
+              label: category.description,
+            }))}
+            label="Category"
+            required
+            {...register('category')}
           />
-        )}
-      </div>
-
-      <div className="flex flex-col gap-1">
-        <Label htmlFor="image">Image *</Label>
-        <Input
-          id="image"
-          type="file"
-          accept="image/png, image/jpeg, image/jpg"
-          placeholder="Attach your coupon image"
-          {...register('image')}
-          required={imagePreview === null ? true : false}
-        />
-        {errors.image?.message && (
-          <ErrorMessage
-            message={
-              typeof errors.image.message === 'string'
-                ? errors.image.message
-                : 'Something went wrong'
-            }
-          />
-        )}
-      </div>
-
-      <div className="flex flex-col gap-1">
-        <Controller
-          name="accentColor" // Field name for react-hook-form
-          control={control}
-          defaultValue="perx-blue" // Default value
-          render={({ field }) => (
-            <PerxColors
-              colors={colors}
-              label="Accent color *"
-              value={field.value} // Controlled value
-              onChange={field.onChange} // Controlled onChange handler
+          {errors.category?.message && (
+            <ErrorMessage
+              message={'Invalid category. Select from the given list only.'}
             />
           )}
-        />
-        {errors.accentColor?.message && (
-          <ErrorMessage message={errors.accentColor.message} />
+        </div>
+
+        <div className="flex flex-col gap-1">
+          <PerxTextarea
+            label="Description"
+            placeholder="Coupon description"
+            required
+            {...register('description')}
+          />
+          {errors.description?.message && (
+            <ErrorMessage message={errors.description.message} />
+          )}
+        </div>
+
+        <div className="flex flex-col gap-1">
+          <PerxInput
+            label="Original price"
+            type="number"
+            placeholder="0.00"
+            step="0.01"
+            min={0}
+            required
+            {...register('originalPrice', {
+              valueAsNumber: true,
+              onChange: (e) => {
+                const value = parseFloat(e.target.value);
+                setValue('originalPrice', parseFloat(value.toFixed(2)));
+              },
+            })}
+          />
+          {errors.originalPrice?.message && (
+            <ErrorMessage message={errors.originalPrice.message} />
+          )}
+        </div>
+
+        <div className="flex flex-col gap-1">
+          <PerxInput
+            label="Discounted price (Optional)"
+            type="number"
+            placeholder="0.00"
+            step="0.01"
+            min={0}
+            {...register('discountedPrice', {
+              valueAsNumber: true,
+              onChange: (e) => {
+                const value = parseFloat(e.target.value);
+                setValue('discountedPrice', parseFloat(value.toFixed(2)));
+              },
+            })}
+          />
+          {errors.discountedPrice?.message && (
+            <ErrorMessage message={errors.discountedPrice.message} />
+          )}
+        </div>
+
+        <div className="flex flex-col gap-1">
+          <PerxInput
+            label="Quantity"
+            type="number"
+            placeholder="0"
+            min={1}
+            required
+            {...register('quantity', { valueAsNumber: true })}
+          />
+          {errors.quantity?.message && (
+            <ErrorMessage message={errors.quantity.message} />
+          )}
+        </div>
+        <div className="flex flex-col gap-1">
+          <Controller
+            name="rankAvailability" // Field name for react-hook-form
+            control={control}
+            defaultValue={1} // Default value
+            rules={{ required: 'Required' }} // Validation rules
+            render={({ field, fieldState }) => (
+              <>
+                <PerxSelect
+                  label="Consumer Rank availability"
+                  description="Select which consumers can avail this coupon."
+                  options={ranks.map(({ id, rank, icon }) => ({
+                    id: id.toString(),
+                    title: rank,
+                    icon,
+                  }))}
+                  value={field.value.toString()} // Controlled value
+                  onValueChange={(value) => field.onChange(Number(value))} // Controlled onChange handler
+                />
+                {errors.rankAvailability?.message && (
+                  <ErrorMessage message={errors.rankAvailability.message} />
+                )}
+              </>
+            )}
+          />
+        </div>
+      </div>
+      <div className="flex flex-col gap-6 rounded-lg bg-white px-4 py-6 shadow-md md:p-12">
+        <h1 className="font-mono text-xl font-medium">Coupon design</h1>
+        {imagePreview && (
+          <div className="flex flex-col items-center justify-center">
+            <img
+              src={imagePreview}
+              alt="Your coupon image"
+              className="border-input aspect-video h-64 w-auto rounded-md border object-cover"
+            />
+          </div>
         )}
+
+        <div className="flex flex-col gap-1">
+          <Label htmlFor="image">Image</Label>
+          <Input
+            id="image"
+            type="file"
+            accept="image/png, image/jpeg, image/jpg"
+            placeholder="Attach your coupon image"
+            {...register('image')}
+            required={imagePreview === null ? true : false}
+          />
+          {errors.image?.message && (
+            <ErrorMessage
+              message={
+                typeof errors.image.message === 'string'
+                  ? errors.image.message
+                  : 'Something went wrong'
+              }
+            />
+          )}
+        </div>
+
+        <div className="flex flex-col gap-1">
+          <Controller
+            name="accentColor" // Field name for react-hook-form
+            control={control}
+            defaultValue="perx-blue" // Default value
+            render={({ field }) => (
+              <PerxColors
+                colors={colors}
+                label="Accent color"
+                value={field.value} // Controlled value
+                onChange={field.onChange} // Controlled onChange handler
+              />
+            )}
+          />
+          {errors.accentColor?.message && (
+            <ErrorMessage message={errors.accentColor.message} />
+          )}
+        </div>
       </div>
 
-      <div className="flex flex-col gap-1">
-        <Controller
-          name="rankAvailability" // Field name for react-hook-form
-          control={control}
-          defaultValue={1} // Default value
-          rules={{ required: 'Required' }} // Validation rules
-          render={({ field, fieldState }) => (
-            <>
-              <PerxSelect
-                label="Consumer Rank availability *"
-                description="Select which consumers can avail this coupon."
-                options={ranks.map(({ id, rank, icon }) => ({
-                  id: id.toString(),
-                  title: rank,
-                  icon,
-                }))}
-                value={field.value.toString()} // Controlled value
-                onValueChange={(value) => field.onChange(Number(value))} // Controlled onChange handler
+      <div className="flex flex-col gap-6 rounded-lg bg-white px-4 py-6 shadow-md md:p-12">
+        <h1 className="font-mono text-xl font-medium">
+          Purchase & redemption details
+        </h1>
+        <div className="flex flex-col gap-1">
+          <PerxInput
+            label="Quantity per user"
+            type="number"
+            description="Maximum number of coupons a user can buy."
+            placeholder="0"
+            defaultValue={1}
+            min={1}
+            {...register('maxPurchaseLimitPerUser', { valueAsNumber: true })}
+          />
+          {errors.maxPurchaseLimitPerUser?.message && (
+            <ErrorMessage message={errors.maxPurchaseLimitPerUser.message} />
+          )}
+        </div>
+        <div className="flex flex-col gap-1">
+          <PerxInput
+            label="Redemption validity in days"
+            type="number"
+            defaultValue={7}
+            description="Number of days this coupon can be redeemed after purchase."
+            placeholder="0"
+            min={1}
+            {...register('redemptionValidity', { valueAsNumber: true })}
+          />
+          {errors.redemptionValidity?.message && (
+            <ErrorMessage message={errors.redemptionValidity.message} />
+          )}
+        </div>
+        <div className="flex flex-col gap-5">
+          <Label>Alternative payment option: Points + Cash</Label>
+          <div className="flex flex-col gap-6">
+            <div className="flex flex-col gap-1">
+              <PerxInput
+                label="Points (Optional)"
+                description="Amount of points consumers will pay in exchange for a lowered price if they choose to pay with Points + Cash."
+                type="number"
+                placeholder="0.00"
+                step="0.01"
+                min={0}
+                {...register('pointsAmount', {
+                  valueAsNumber: true,
+                  onChange: (e) => {
+                    const value = parseFloat(e.target.value);
+                    setValue('pointsAmount', parseFloat(value.toFixed(2)));
+                  },
+                })}
               />
-              {errors.rankAvailability?.message && (
-                <ErrorMessage message={errors.rankAvailability.message} />
+              {errors.pointsAmount?.message && (
+                <ErrorMessage message={errors.pointsAmount.message} />
               )}
-            </>
-          )}
-        />
-      </div>
-
-      <div className="flex flex-col gap-1">
-        <PerxInput
-          label="Points required for this purchase (optional)"
-          type="number"
-          placeholder="0.00"
-          step="0.01"
-          min={0}
-          {...register('pointsAmount', {
-            valueAsNumber: true,
-            onChange: (e) => {
-              const value = parseFloat(e.target.value);
-              setValue('pointsAmount', parseFloat(value.toFixed(2)));
-            },
-          })}
-        />
-        {errors.pointsAmount?.message && (
-          <ErrorMessage message={errors.pointsAmount.message} />
-        )}
-      </div>
-
-      <div className="flex flex-col gap-1">
-        <PerxInput
-          label="Cash amount required for this purchase (optional)"
-          type="number"
-          placeholder="0.00"
-          step="0.01"
-          min={0}
-          {...register('cashAmount', {
-            valueAsNumber: true,
-            onChange: (e) => {
-              const value = parseFloat(e.target.value);
-              setValue('cashAmount', parseFloat(value.toFixed(2)));
-            },
-          })}
-        />
-        {errors.pointsAmount?.message && (
-          <ErrorMessage message={errors.pointsAmount.message} />
-        )}
-      </div>
-
-      <div className="flex flex-col gap-1">
-        <PerxInput
-          label="Purchase limit per user (optional)"
-          type="number"
-          placeholder="0"
-          min={1}
-          {...register('maxPurchaseLimitPerUser', { valueAsNumber: true })}
-        />
-        {errors.maxPurchaseLimitPerUser?.message && (
-          <ErrorMessage message={errors.maxPurchaseLimitPerUser.message} />
-        )}
-      </div>
-
-      <div className="flex flex-col gap-1">
-        <PerxInput
-          label="Redemption period in days (optional)"
-          type="number"
-          placeholder="0"
-          min={1}
-          {...register('redemptionValidity', { valueAsNumber: true })}
-        />
-        {errors.redemptionValidity?.message && (
-          <ErrorMessage message={errors.redemptionValidity.message} />
-        )}
-      </div>
-
-      <div className="flex flex-col gap-3">
-        <Label htmlFor="date">Purchase Date Range (optional)</Label>
-        <Controller
-          name="dateRange"
-          control={control}
-          defaultValue={{ start: null, end: null }} // Default to null values
-          render={({ field }) => (
-            <div className="flex w-full flex-col gap-2">
-              <PerxDateRange
-                value={field.value} // Pass strings or null
-                onChange={field.onChange} // Handle changes
-              />
-              <div className="flex flex-col">
-                {errors.dateRange?.start?.message && (
-                  <ErrorMessage message={errors.dateRange.start.message} />
-                )}
-                {errors.dateRange?.end?.message && (
-                  <ErrorMessage message={errors.dateRange.end.message} />
-                )}
-                {errors.dateRange?.message && (
-                  <ErrorMessage message={errors.dateRange.message} />
-                )}
-              </div>
             </div>
-          )}
-        />
+            <div className="flex flex-col gap-1">
+              <PerxInput
+                label="Adjusted price (Optional)"
+                description="Adjusted amount consumers will pay if they choose to pay with Points + Cash."
+                type="number"
+                placeholder="0.00"
+                step="0.01"
+                min={0}
+                {...register('cashAmount', {
+                  valueAsNumber: true,
+                  onChange: (e) => {
+                    const value = parseFloat(e.target.value);
+                    setValue('cashAmount', parseFloat(value.toFixed(2)));
+                  },
+                })}
+              />
+              {errors.pointsAmount?.message && (
+                <ErrorMessage message={errors.pointsAmount.message} />
+              )}
+            </div>
+          </div>
+        </div>
+        <div className="flex flex-col gap-4">
+          <div className="flex flex-col gap-1">
+            <Label htmlFor="date">Purchase date range </Label>
+            <p className="text-muted-foreground/70 text-xs">
+              This coupon won't be visible until the specified date.
+            </p>
+          </div>
+          <Controller
+            name="dateRange"
+            control={control}
+            defaultValue={{ start: null, end: null }} // Default to null values
+            render={({ field }) => (
+              <div className="flex w-full flex-col gap-2">
+                <PerxDateRange
+                  value={field.value} // Pass strings or null
+                  onChange={field.onChange} // Handle changes
+                />
+                <div className="flex flex-col">
+                  {errors.dateRange?.start?.message && (
+                    <ErrorMessage message={errors.dateRange.start.message} />
+                  )}
+                  {errors.dateRange?.end?.message && (
+                    <ErrorMessage message={errors.dateRange.end.message} />
+                  )}
+                  {errors.dateRange?.message && (
+                    <ErrorMessage message={errors.dateRange.message} />
+                  )}
+                </div>
+              </div>
+            )}
+          />
+        </div>
       </div>
 
       <div className="mt-2 flex justify-end">
@@ -566,10 +587,10 @@ function Inputs({
                 strokeWidth={2}
                 aria-hidden="true"
               />
-              Add coupon
+              Creating coupon
             </>
           ) : (
-            'Add coupon'
+            'Create coupon'
           )}
         </Button>
       </div>

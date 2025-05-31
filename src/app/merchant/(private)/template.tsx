@@ -38,9 +38,9 @@ const navItems: NavItems[] = [
   },
   {
     icon: <TicketPlus strokeWidth={1.5} size={20} />,
-    name: 'Add Coupon',
-    path: '/merchant/add-coupon',
-    link: '/merchant/add-coupon',
+    name: 'Create coupon',
+    path: '/merchant/create-coupon',
+    link: '/merchant/create-coupon',
   },
   {
     icon: <CircleUserRound strokeWidth={1.5} size={20} />,

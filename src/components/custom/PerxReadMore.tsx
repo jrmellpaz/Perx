@@ -32,7 +32,7 @@ export const PerxReadMore = ({
   };
 
   return (
-    <p id={id} className="text-sm">
+    <p id={id} className="text-sm whitespace-pre-line">
       {beginText}
       {itCanOverflow && (
         <>

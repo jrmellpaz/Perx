@@ -8,6 +8,7 @@ import { Coupon } from '@/components/custom/Coupon';
 import { MerchantCard } from '@/components/custom/PerxMerchant';
 import { PerxSearchbar } from '@/components/custom/PerxSearchbar';
 import { Search } from 'lucide-react';
+import { ConsumerLogo } from '@/components/consumer/ConsumerLogo';
 
 import type { CouponWithRank, Merchant } from '@/lib/types';
 
@@ -78,7 +79,9 @@ export default async function Explore({
 
   return (
     <>
-      <PerxLogoHeader />
+      <PerxLogoHeader>
+        <ConsumerLogo logoClass="text-xl pb-[8px]" />
+      </PerxLogoHeader>
       <section className="flex w-full flex-col items-center-safe gap-8 p-4">
         <PerxSearchbar query={query}>
           <form className="relative flex h-12 w-full items-center rounded-lg">

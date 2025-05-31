@@ -63,7 +63,7 @@ export async function updateSession(request: NextRequest) {
       '/merchant/profile/archive',
       '/merchant/settings',
       '/merchant/scan-qr',
-      '/merchant/add-coupon',
+      '/merchant/create-coupon',
       '/merchant/edit-profile',
       '/merchant/monthly-records',
       '/merchant/trans-details',

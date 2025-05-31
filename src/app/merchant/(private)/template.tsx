@@ -74,7 +74,7 @@ export default function MerchantTemplate({
           <HorizontalNav />
         </div>
       </nav>
-      <main className="scrollable-container w-full grow overflow-x-hidden overflow-y-auto bg-white">
+      <main className="scrollable-container w-full grow overflow-x-hidden overflow-y-auto bg-neutral-50">
         {children}
       </main>
     </main>

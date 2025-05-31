@@ -4,6 +4,7 @@ import './globals.css';
 import Head from 'next/head';
 import NextTopLoader from 'nextjs-toploader';
 import { Toaster } from '@/components/ui/toaster';
+import ServiceWorkerRegister from '@/components/custom/ServiceWorkerRegister';
 
 const manrope = Manrope({
   variable: '--font-manrope',
@@ -36,6 +37,7 @@ export default function RootLayout({
         <NextTopLoader color="#A50000" showSpinner={false} height={3} />
         {children}
         <Toaster />
+        <ServiceWorkerRegister />
       </body>
     </html>
   );

@@ -389,8 +389,6 @@ function PaymentDialog({
   const handleCreatePaypalOrder: PayPalButtonsComponentProps['createOrder'] =
     async (_data, actions): Promise<string> => {
       try {
-        // dialogRef.current?.close();
-
         return actions.order.create({
           intent: 'CAPTURE',
           purchase_units: [

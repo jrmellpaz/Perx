@@ -357,7 +357,6 @@ export function PerxTicketSubmit({
         coupon={coupon}
         paymentMode={paymentMode}
         totalPrice={totalPrice}
-        totalPoints={totalPoints}
         adjustedPrice={adjustedPrice}
       />
     </>
@@ -371,7 +370,6 @@ function PaymentDialog({
   coupon,
   paymentMode,
   totalPrice,
-  totalPoints,
   adjustedPrice,
 }: {
   dialogRef: RefObject<HTMLDialogElement | null>;
@@ -380,7 +378,6 @@ function PaymentDialog({
   coupon: Coupon;
   paymentMode: 'cash' | 'hybrid';
   totalPrice: number;
-  totalPoints: number;
   adjustedPrice: number;
 }) {
   const router = useRouter();

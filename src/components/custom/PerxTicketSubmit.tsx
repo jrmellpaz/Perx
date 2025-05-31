@@ -52,26 +52,27 @@ export function PerxTicketSubmit({
   const totalPoints = points_amount * quantity;
   const adjustedPrice = cash_amount * quantity;
 
-  const checkConsumerLogin = (): Promise<boolean> => {
+  const checkConsumerLogin = async (): Promise<boolean> => {
     const supabase = createClient();
-    return supabase.auth.getUser().then(({ data }) => {
-      const user = data.user;
-      if (user?.app_metadata.role === 'merchant') {
-        toast.error(
-          'You must be logged in as a consumer to purchase this coupon.'
-        );
-        setIsLoading(false);
-        redirect('/merchant');
-      }
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
 
-      if (!user) {
-        toast('Redirecting you to login');
-        redirect(
-          `/login?next=${encodeURIComponent(`/view?coupon=${coupon.id}&merchant=${coupon.merchant_id}`)}`
-        );
-      }
-      return true;
-    });
+    if (user?.app_metadata.role === 'merchant') {
+      toast.error(
+        'You must be logged in as a consumer to purchase this coupon.'
+      );
+      setIsLoading(false);
+      redirect('/merchant');
+    }
+
+    if (!user) {
+      toast('Redirecting you to login');
+      redirect(
+        `/login?next=${encodeURIComponent(`/view?coupon=${coupon.id}&merchant=${coupon.merchant_id}`)}`
+      );
+    }
+    return true;
   };
 
   const handlePaymentDialog = async (mode: 'cash' | 'hybrid') => {

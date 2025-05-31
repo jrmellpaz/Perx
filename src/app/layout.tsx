@@ -4,7 +4,10 @@ import './globals.css';
 import Head from 'next/head';
 import NextTopLoader from 'nextjs-toploader';
 import { Toaster } from '@/components/ui/toaster';
-import ServiceWorkerRegister from '@/components/custom/ServiceWorkerRegister';
+import {
+  InstallPWAButton,
+  ServiceWorkerRegister,
+} from '@/components/custom/PWA';
 
 const manrope = Manrope({
   variable: '--font-manrope',
@@ -38,6 +41,7 @@ export default function RootLayout({
         {children}
         <Toaster />
         <ServiceWorkerRegister />
+        <InstallPWAButton />
       </body>
     </html>
   );

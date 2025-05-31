@@ -2,19 +2,6 @@
 
 import { useEffect, useState } from 'react';
 
-export function ServiceWorkerRegister() {
-  useEffect(() => {
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker
-        .register('/service-worker.js')
-        .then((reg) => console.log('SW registered:', reg))
-        .catch((err) => console.error('SW registration failed:', err));
-    }
-  }, []);
-
-  return null;
-}
-
 interface BeforeInstallPromptEvent extends Event {
   readonly platforms: string[];
   readonly userChoice: Promise<{

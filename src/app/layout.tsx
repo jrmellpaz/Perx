@@ -1,13 +1,11 @@
 import type { Metadata } from 'next';
-import { Inter, Space_Grotesk, Manrope } from 'next/font/google';
+import { Space_Grotesk, Manrope } from 'next/font/google';
 import './globals.css';
 import Head from 'next/head';
 import NextTopLoader from 'nextjs-toploader';
 import { Toaster } from '@/components/ui/toaster';
-import {
-  InstallPWAButton,
-  ServiceWorkerRegister,
-} from '@/components/custom/PWA';
+import { ServiceWorkerRegister } from '@/components/pwa/ServiceWorkerRegister';
+import { InstallPWAButton } from '@/components/pwa/Install';
 
 const manrope = Manrope({
   variable: '--font-manrope',

@@ -23,7 +23,7 @@ export default function PerxTabs({
   const pathname = usePathname();
 
   return (
-    <Tabs defaultValue="tab-1" className="m-0 w-full bg-white p-0">
+    <Tabs defaultValue="tab-1" className="m-0 w-full p-0">
       <ScrollArea>
         <TabsList
           className="h-auto w-full gap-8 rounded-none border-b bg-transparent px-0 py-2 shadow-none"

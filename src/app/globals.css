@@ -224,10 +224,19 @@ textarea {
   resize: none;
 }
 
-.coupon-image {
+/* .coupon-image {
   --mask: conic-gradient(from -45deg at bottom,#bb393900,#9e121200 1deg 89deg,#00000000 90deg) 50%/24px 100%;
   -webkit-mask: var(--mask);
   mask: var(--mask);
+} */
+
+.coupon {
+  -webkit-mask-image: radial-gradient(circle at 14px 50%, transparent 14px, red 14.5px), linear-gradient(90deg, transparent 25%, red 0, red 75%, transparent 0);
+  -webkit-mask-size: 100%, 16px 3px;
+  -webkit-mask-repeat: repeat, repeat-x;
+  -webkit-mask-position: -14px, 50% 50%;
+  -webkit-mask-composite: source-out;
+  mask-composite: subtract;
 }
 
 .inset-right {

@@ -46,7 +46,8 @@ export function PerxSearchbar({
   return (
     <header
       className={cn(
-        'sticky z-50 flex w-full max-w-[800px] flex-col items-center justify-between gap-1.5 rounded-t-3xl rounded-b-md bg-white will-change-transform md:top-2',
+        'sticky z-50 flex w-full max-w-[800px] flex-col items-center justify-between gap-1.5 bg-white will-change-transform md:top-2',
+        query ? 'rounded-t-3xl rounded-b-md' : 'rounded-full',
         scrolled ? 'shadow-md' : 'shadow-none',
         logoHeaderHidden
           ? 'perx-searchbar-top-hidden'
@@ -56,7 +57,7 @@ export function PerxSearchbar({
       )}
     >
       {children}
-      <CouponFilterForm />
+      {query && <CouponFilterForm />}
     </header>
   );
 }

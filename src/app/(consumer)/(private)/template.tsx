@@ -78,7 +78,7 @@ export default function ConsumerTemplate({
           <HorizontalNav />
         </div>
       </nav>
-      <main className="scrollable-container w-full grow overflow-x-hidden overflow-y-auto bg-neutral-50">
+      <main className="scrollable-container w-full grow overflow-x-hidden overflow-y-auto bg-white">
         {children}
       </main>
     </main>

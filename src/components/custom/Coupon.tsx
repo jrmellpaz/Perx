@@ -22,7 +22,7 @@ export function Coupon({
       key={coupon.id}
     >
       <div
-        className={`flex grow basis-60 flex-col gap-2 overflow-hidden rounded-md border bg-white pb-2 hover:shadow-md`}
+        className={`flex grow basis-60 flex-col gap-2 overflow-hidden rounded-md border pb-2 hover:shadow-md`}
       >
         <div className="aspect-video h-auto w-full">
           <img

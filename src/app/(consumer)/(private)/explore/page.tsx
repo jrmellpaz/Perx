@@ -83,7 +83,7 @@ export default async function Explore({
         <PerxSearchbar query={query}>
           <form className="relative flex h-12 w-full items-center rounded-lg">
             <input
-              type="search"
+              type="text"
               name="q"
               defaultValue={query}
               placeholder="Search for coupons or merchants"

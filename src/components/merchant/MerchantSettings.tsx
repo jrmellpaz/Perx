@@ -36,7 +36,7 @@ export function AccountSection({ user }: { user: User }) {
           </div>
         </div>
         <ChangePassword />
-        <div className="flex cursor-pointer items-center justify-between hover:bg-neutral-50">
+        <div className="flex cursor-pointer items-center justify-between">
           <PerxDrawer
             trigger={
               <div className="flex size-full items-center justify-between">
@@ -47,7 +47,7 @@ export function AccountSection({ user }: { user: User }) {
                 <ChevronRight className="text-muted-foreground h-4 w-4" />
               </div>
             }
-            triggerClass="text-sm size-full p-4 cursor-pointer hover:bg-neutral-50"
+            triggerClass="text-sm size-full p-4 cursor-pointer hover:bg-neutral-100"
             title="Share your Perx Merchant account"
           >
             <PerxShareSheet
@@ -95,7 +95,7 @@ function LogoutButton() {
   return (
     <>
       <button
-        className="flex w-full cursor-pointer items-center justify-between px-4 py-4 hover:bg-neutral-50"
+        className="flex w-full cursor-pointer items-center justify-between px-4 py-4 hover:bg-neutral-100"
         onClick={handleLogout}
       >
         <div className="flex items-center gap-4">
@@ -156,7 +156,7 @@ function ChangePassword() {
   return (
     <>
       <button
-        className="flex w-full cursor-pointer items-center justify-between border-b-1 px-4 py-4 hover:bg-neutral-50"
+        className="flex w-full cursor-pointer items-center justify-between border-b-1 px-4 py-4 hover:bg-neutral-100"
         onClick={openDialog}
       >
         <div className="flex w-full items-center justify-between gap-4">

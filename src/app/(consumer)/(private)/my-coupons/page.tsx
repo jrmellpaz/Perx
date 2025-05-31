@@ -54,7 +54,7 @@ function MyCoupon({ coupon }: { coupon: ConsumerCoupon }) {
       }}
     >
       <div
-        className={`bg-perx-white flex grow basis-60 flex-col gap-2 overflow-hidden rounded-md border pb-2`}
+        className={`flex grow basis-60 flex-col gap-2 overflow-hidden rounded-md border bg-white pb-2`}
       >
         <div className="aspect-video h-full w-auto">
           <img

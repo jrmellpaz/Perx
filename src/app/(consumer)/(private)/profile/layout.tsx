@@ -64,7 +64,7 @@ export default async function ConsumerProfileLayout({
   return (
     <section
       className="flex h-full flex-col overflow-x-hidden"
-      style={{ backgroundColor: `${rank.secondary_color}33` }}
+      style={{ backgroundColor: `${rank.secondary_color}50` }}
     >
       <Header name={name} primaryColor={rank.primary_color} />
       <main className="relative -top-20 flex grow flex-col items-center gap-4">
@@ -76,10 +76,7 @@ export default async function ConsumerProfileLayout({
           primaryColor={rank.primary_color}
         />
         <div className="sticky top-0 z-50 w-full">
-          <Tabs
-            tabItems={profileNavItems}
-            style={{ backgroundColor: `${rank.secondary_color}33` }}
-          />
+          <Tabs tabItems={profileNavItems} />
         </div>
         <div className="w-[95%] max-w-[800px]">{tabs}</div>
       </main>

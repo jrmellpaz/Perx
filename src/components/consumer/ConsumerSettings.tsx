@@ -7,7 +7,6 @@ import {
   Lock,
   LogOut,
   Mail,
-  Share2,
   Sparkles,
   Tickets,
   Trash2,
@@ -17,8 +16,6 @@ import { useRef, useState } from 'react';
 import { toast } from 'sonner';
 import { Button } from '../ui/button';
 import { deleteAccount } from '@/actions/consumerProfile';
-import { PerxDrawer } from '../custom/PerxDrawer';
-import { FacebookShareButton } from 'react-share';
 
 import type { User } from '@supabase/supabase-js';
 
@@ -78,7 +75,7 @@ function LogoutButton() {
   return (
     <>
       <button
-        className="flex w-full cursor-pointer items-center justify-between px-4 py-4 hover:bg-neutral-50"
+        className="flex w-full cursor-pointer items-center justify-between px-4 py-4 hover:bg-neutral-100"
         onClick={handleLogout}
       >
         <div className="flex items-center gap-4">
@@ -139,7 +136,7 @@ function ChangePassword() {
   return (
     <>
       <button
-        className="flex w-full cursor-pointer items-center justify-between px-4 py-4 hover:bg-neutral-50"
+        className="flex w-full cursor-pointer items-center justify-between px-4 py-4 hover:bg-neutral-100"
         onClick={openDialog}
       >
         <div className="flex w-full items-center justify-between gap-4">

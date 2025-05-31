@@ -167,7 +167,7 @@ export function PerxTicketSubmit({
   return (
     <>
       <div className="flex w-full flex-col gap-3 md:flex-row md:items-center md:justify-between md:gap-8">
-        <div className="flex w-fit shrink-0 flex-row-reverse items-center justify-between gap-8 md:flex-row md:justify-start md:gap-6">
+        <div className="flex w-full shrink-0 flex-row-reverse items-center justify-between gap-8 md:w-fit md:flex-row md:justify-start md:gap-6">
           <div className="flex flex-col items-start justify-center gap-2 text-xs">
             <span
               className="font-mono font-bold"

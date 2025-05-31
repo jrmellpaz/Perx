@@ -97,7 +97,10 @@ export async function PerxTicket({
                 {(discounted_price !== 0
                   ? discounted_price
                   : original_price
-                ).toFixed(2)}
+                ).toLocaleString('en-US', {
+                  minimumFractionDigits: 2,
+                  maximumFractionDigits: 2,
+                })}
               </span>
               {discounted_price > 0 && original_price && (
                 <>
@@ -105,7 +108,11 @@ export async function PerxTicket({
                     style={{ color: getPrimaryAccentColor(accent_color) }}
                     className="font-mono text-sm font-medium line-through opacity-75"
                   >
-                    &#8369;{original_price.toFixed(2)}
+                    &#8369;
+                    {original_price.toLocaleString('en-US', {
+                      minimumFractionDigits: 2,
+                      maximumFractionDigits: 2,
+                    })}
                   </span>
                   <span className="rounded-full bg-green-100 px-2 py-1 text-xs font-medium text-green-800">
                     Save{' '}
@@ -129,11 +136,19 @@ export async function PerxTicket({
                     height={20}
                     className="pb-0.25"
                   />{' '}
-                  {points_amount} points
+                  {points_amount.toLocaleString('en-US', {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2,
+                  })}{' '}
+                  points
                 </span>
                 {cash_amount > 0 && (
                   <span className="text-perx-black flex items-center gap-1 text-sm tracking-tighter">
-                    + &#8369;{cash_amount}
+                    + &#8369;
+                    {cash_amount.toLocaleString('en-US', {
+                      minimumFractionDigits: 2,
+                      maximumFractionDigits: 2,
+                    })}
                   </span>
                 )}
               </div>

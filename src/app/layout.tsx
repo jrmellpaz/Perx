@@ -20,6 +20,7 @@ const spaceGrotesk = Space_Grotesk({
 export const metadata: Metadata = {
   title: 'Perx',
   description: 'A coupon collection app',
+  manifest: '/web.manifest',
 };
 
 export default function RootLayout({

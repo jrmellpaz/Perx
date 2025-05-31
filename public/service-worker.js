@@ -1,8 +1,8 @@
-const CACHE_NAME = 'my-pwa-cache-v1';
+const CACHE_NAME = 'PERX_V1';
 const urlsToCache = [
   '/',
   '/favicon.ico',
-  '/manifest.json',
+  '/web.manifest',
   '/icons/icon-192x192.png',
   '/icons/icon-512x512.png',
 ];
@@ -14,6 +14,7 @@ self.addEventListener('install', (event) => {
       return cache.addAll(urlsToCache);
     })
   );
+  self.skipWaiting();
 });
 
 // Activate event: clean up old caches
@@ -29,6 +30,7 @@ self.addEventListener('activate', (event) => {
       );
     })
   );
+  self.clients.claim();
 });
 
 // Fetch event: serve cached content when offline

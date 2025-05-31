@@ -18,21 +18,21 @@
       "form_factor": "wide"
     },
     {
-      "src":"/screenshots/1.jpg",
-      "type":"image/jpg",
-      "sizes": "978x2048",
+      "src":"/screenshots/1.png",
+      "type":"image/png",
+      "sizes": "1082x2402",
       "form_factor": "narrow"
     },
     {
-      "src":"/screenshots/2.jpg",
-      "type":"image/jpg",
-      "sizes": "978x2048",
+      "src":"/screenshots/2.png",
+      "type":"image/png",
+      "sizes": "1082x2402",
       "form_factor": "narrow"
     },
     {
-      "src":"/screenshots/3.jpg",
-      "type":"image/jpg",
-      "sizes": "978x2048",
+      "src":"/screenshots/3.png",
+      "type":"image/png",
+      "sizes": "1082x2402",
       "form_factor": "narrow"
     },
     {
@@ -95,7 +95,7 @@
     }
   ],
   "lang": "en",
-  "orientation": "natural",
+  "orientation": "any",
   "short_name": "Perx",
   "icons": [
     {

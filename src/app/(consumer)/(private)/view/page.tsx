@@ -33,7 +33,7 @@ export default async function ViewCoupon({
   let consumerData: Consumer | null = null;
   let rankAchieved: boolean = true;
 
-  if (user !== null && user.app_metadata.role === 'consumer') {
+  if (user !== null && user.user_metadata.role === 'consumer') {
     consumerData = await fetchConsumerProfile(user.id);
     rankAchieved = consumerData.rank >= coupon.rank_availability;
   }
@@ -58,7 +58,13 @@ export default async function ViewCoupon({
           couponData={coupon}
           merchantData={merchant}
           variant="consumer"
-        >
+        ></PerxTicket>
+      </div>
+      <div
+        className="custom-shadow sticky bottom-0 box-border w-full max-w-[800px] p-3 md:bottom-4 md:mx-auto md:w-[95%] md:rounded-lg md:p-4"
+        style={{ backgroundColor: getAccentColor(coupon.accent_color) }}
+      >
+        <PerxTicketSubmit coupon={coupon} disabledByRank={!rankAchieved}>
           {!rankAchieved && (
             <div
               className="mb-2 flex w-full items-center gap-1 text-xs"
@@ -68,13 +74,7 @@ export default async function ViewCoupon({
               <span>You don't have enough Rank to purchase this coupon.</span>
             </div>
           )}
-        </PerxTicket>
-      </div>
-      <div
-        className="custom-shadow sticky bottom-0 box-border w-full max-w-[800px] p-3 md:bottom-4 md:mx-auto md:w-9/10 md:rounded-lg md:p-4"
-        style={{ backgroundColor: getAccentColor(coupon.accent_color) }}
-      >
-        <PerxTicketSubmit coupon={coupon} disabledByRank={!rankAchieved} />
+        </PerxTicketSubmit>
       </div>
     </section>
   );

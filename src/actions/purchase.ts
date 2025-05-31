@@ -490,3 +490,14 @@ export const approvePaypalOrder = async (
     return { success: false, message: 'Failed to approve PayPal order.' };
   }
 };
+
+export const getHighestOriginalPrice = async (): Promise<number> => {
+  try {
+    const supabase = await createClient();
+    const { data: maxPriceData } = await supabase.rpc('get_highest_original_price');
+    return Number(maxPriceData)
+  } catch (error) {
+    console.error('Error getting highest price:', error);
+    return 1000000; // fallback value
+  }
+};

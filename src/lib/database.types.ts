@@ -431,6 +431,10 @@ export type Database = {
           rank: number
         }[]
       }
+      get_highest_original_price: {
+        Args: Record<PropertyKey, never>
+        Returns: number
+      }
       update_consumer_points: {
         Args: { consumer_id: string; points_to_add: number }
         Returns: Json

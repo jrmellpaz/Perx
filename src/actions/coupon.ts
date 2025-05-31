@@ -300,27 +300,27 @@ export async function filterCoupons(
   }
 
   if (filters.minPrice !== undefined) {
-    queryBuilder = queryBuilder.gte('price', filters.minPrice);
+    queryBuilder = queryBuilder.gte('original_price', filters.minPrice);
   }
   if (filters.maxPrice !== undefined) {
-    queryBuilder = queryBuilder.lte('price', filters.maxPrice);
+    queryBuilder = queryBuilder.lte('original_price', filters.maxPrice);
   }
-  if (filters.allowLimitedPurchase !== undefined) {
-    queryBuilder = queryBuilder.eq(
-      'allow_limited_purchase',
-      filters.allowLimitedPurchase
-    );
-  }
+  // if (filters.allowLimitedPurchase !== undefined) {
+  //   queryBuilder = queryBuilder.eq(
+  //     'allow_limited_purchase',
+  //     filters.allowLimitedPurchase
+  //   );
+  // }
   if (filters.allowRepeatPurchase !== undefined) {
-    queryBuilder = queryBuilder.eq(
-      'allow_repeat_purchase',
-      filters.allowRepeatPurchase
+    queryBuilder = queryBuilder.gt(
+      'max_purchase_limit_per_consumer',
+      1
     );
   }
   if (filters.allowPointsPurchase !== undefined) {
-    queryBuilder = queryBuilder.eq(
-      'allow_points_purchase',
-      filters.allowPointsPurchase
+    queryBuilder = queryBuilder.gt(
+      'points_amount',
+      0
     );
   }
   if (filters.endDate !== undefined) {
@@ -417,3 +417,5 @@ export const archiveCoupon = async (
     return { success: false, message: 'Failed to archive coupon.' };
   }
 };
+
+

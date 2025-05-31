@@ -420,6 +420,7 @@ function PaymentDialog({
           amountToPay
         );
         toast.success(`${message} Redirecting you to your coupons...`);
+        dialogRef.current?.close();
         router.push(`/my-coupons/view?coupon=${consumerCoupon?.id}`);
       } catch (error) {
         console.error('Error approving PayPal order:', error);

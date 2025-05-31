@@ -88,7 +88,7 @@ export const purchaseWithRewardPoints = async (
 
       insertConsumerCoupon(coupon.id, user.id, -1);
       updateCouponData(coupon.id);
-      toast.success(`Redirecting you to your coupons...`);
+      toast.success(`Redirecting you to your coupon...`);
       redirect(`/my-coupons/view?coupon=${existingConsumerCoupon?.id}`);
     }
 
@@ -213,12 +213,10 @@ const insertConsumerCoupon = async (
     // Use provided payment amount or fall back to standard pricing
     const transactionPrice =
       paymentAmount === -1
-        ? null
-        : existingConsumerCoupon.discounted_price ||
-          existingConsumerCoupon.original_price;
+        ? null: paymentAmount
 
     const { error: insertTransactionError } = await supabase
-      .from('transaction_history')
+      .from('transactions_history')
       .insert({
         coupon_id: couponId,
         merchant_id: existingConsumerCoupon.merchant_id,

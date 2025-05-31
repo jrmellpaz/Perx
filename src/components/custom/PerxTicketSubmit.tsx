@@ -414,7 +414,7 @@ function PaymentDialog({
           paymentMode, // Pass the payment mode to backend
           amountToPay
         );
-        toast.success(`${message} Redirecting you to your coupons...`);
+        toast.success(`${message} Redirecting you to your coupon...`);
         dialogRef.current?.close();
         router.push(`/my-coupons/view?coupon=${consumerCoupon?.id}`);
       } catch (error) {

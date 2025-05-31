@@ -8,8 +8,19 @@ function extractStoreName(text: string): string {
 }
 
 function extractAmount(text: string): number {
-  const match = text.match(/(?:Total|Amount Due|Grand Total)[^\d]*([\d,]+\.\d{2})/i);
+  const match = text.match(/(?:Total|Amount Due|Grand Total|Sub-Total|Subtotal)[^\d]*([\d,]+\.\d{2})/i);
   return match ? parseFloat(match[1].replace(/,/g, '')) : 0;
+}
+
+function extractReceiptNumber(text: string): string | null {
+  const regex = /(?:OR|Invoice|Inv#?|Sales Invoice|Receipt)\s*(?:No\.?|#|Number)?\s*[:\-]?\s*([\w\-\.\/]+)/ig;
+  const matches = [];
+  let match;  while ((match = regex.exec(text)) !== null) {
+    console.log('Found match:', match[1]);
+    matches.push(match[1].trim());
+  }
+  // Return the first match that contains at least one number, or null if none found
+  return matches.find(match => /\d/.test(match)) || null;
 }
 
 export async function POST(req: NextRequest) {
@@ -23,8 +34,16 @@ export async function POST(req: NextRequest) {
 
     const storeName = extractStoreName(text);
     const amountSpent = extractAmount(text);
+    const receiptNumber = extractReceiptNumber(text);
+
+    if (!receiptNumber) {
+      return NextResponse.json({ error: 'Receipt number not found' }, { status: 400 });
+    }
+
     console.log('Store Name:', storeName);
     console.log('Amount Spent:', amountSpent);
+    console.log('Receipt Number:', receiptNumber);
+
     const { data: merchant, error: merchantError } = await supabase
       .from('merchants')
       .select('*')
@@ -35,7 +54,32 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Merchant not found' }, { status: 404 });
     }
 
-    // Optional: Store in loyalty_points table here
+    // Check if receipt number already exists for this user
+    const { data: existingReceipt, error: checkError } = await supabase
+      .from('receipts')
+      .select('*')
+      .eq('user_id', user!.id)
+      .eq('merchant_id', merchant.id)
+      .eq('receipt_number', receiptNumber)
+      .single();
+
+    if (existingReceipt) {
+      return NextResponse.json({ error: 'Duplicate receipt number' }, { status: 409 });
+    }
+
+    // Insert receipt record
+    const { error: insertError } = await supabase.from('receipts').insert([
+      {
+        consumer_id: user!.id,
+        receipt_number: receiptNumber,
+        merchant_id: merchant.id,
+        amount_paid: amountSpent,
+      },
+    ]);
+
+    if (insertError) {
+      return NextResponse.json({ error: 'Failed to store receipt' }, { status: 500 });
+    }
 
     await rebateConsumerPoints(user!.id, amountSpent);
     await levelUpConsumerRank(user!.id);
@@ -43,6 +87,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({
       success: true,
       points: Math.floor(amountSpent / 100),
+      receiptNumber,
     });
   } catch (e) {
     console.error('Error processing OCR text:', e);

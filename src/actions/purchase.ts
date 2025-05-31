@@ -72,7 +72,7 @@ export const purchaseWithRewardPoints = async (
   try {
     const supabase = await createClient();
 
-    updateRewardPoints(user.id, coupon.points_amount);
+    updateRewardPoints(user.id, -coupon.points_amount);
     updateConsumerFirstPurchase(user.id);
 
     if (!hybrid) {
@@ -275,7 +275,7 @@ const updateCouponData = async (couponId: string): Promise<SuccessResponse> => {
   }
 };
 
-const updateRewardPoints = async (
+export const updateRewardPoints = async (
   consumerId: string,
   pointsAmount: number
 ): Promise<SuccessResponse> => {
@@ -291,7 +291,7 @@ const updateRewardPoints = async (
       throw new Error(`FETCH CONSUMER ERROR: ${fetchConsumerError.message}`);
     }
 
-    const newPointsBalance: number = consumerData.points_balance - pointsAmount;
+    const newPointsBalance: number = consumerData.points_balance + pointsAmount;
     const { error: updateConsumerError } = await supabase
       .from('consumers')
       .update({ points_balance: newPointsBalance })

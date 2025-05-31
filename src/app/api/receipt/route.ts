@@ -1,7 +1,7 @@
 import { createClient } from '@/utils/supabase/server';
 import { NextRequest, NextResponse } from 'next/server';
 import { levelUpConsumerRank } from '@/actions/rank';
-import { rebateConsumerPoints } from '@/actions/purchase';
+import { updateRewardPoints } from '@/actions/purchase';
 
 function extractStoreName(text: string): string {
   return text.split('\n')[0]?.trim();
@@ -81,7 +81,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Failed to store receipt' }, { status: 500 });
     }
 
-    await rebateConsumerPoints(user!.id, amountSpent);
+    await updateRewardPoints(user!.id, 1);
     await levelUpConsumerRank(user!.id);
 
     return NextResponse.json({

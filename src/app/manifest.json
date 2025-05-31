@@ -12,6 +12,12 @@
   ],
   "screenshots": [
     {
+      "src":"/screenshots/0.jpg",
+      "type":"image/jpg",
+      "sizes": "1080x1920",
+      "form_factor": "wide"
+    },
+    {
       "src":"/screenshots/1.jpg",
       "type":"image/jpg",
       "sizes": "1080x1920",
@@ -39,17 +45,41 @@
     {
       "name": "Explore",
       "url": "/explore",
-      "description": "Discover the latest deals and offers from local stores."
+      "description": "Discover the latest deals and offers from local stores.",
+      "icons": [
+        {
+          "src": "/web-app-manifest-192x192.png",
+          "sizes": "192x192",
+          "type": "image/png",
+          "purpose": "maskable"
+        }
+      ]
     }, 
     {
       "name": "My Coupons",
       "url": "/my-coupons",
-      "description": "View and manage your digital coupons."
+      "description": "View and manage your digital coupons.",
+      "icons": [
+        {
+          "src": "/web-app-manifest-192x192.png",
+          "sizes": "192x192",
+          "type": "image/png",
+          "purpose": "maskable"
+        }
+      ]
     },
     {
       "name": "Profile",
       "url": "/profile",
-      "description": "Access and edit your profile."
+      "description": "Access and edit your profile.",
+      "icons": [
+        {
+          "src": "/web-app-manifest-192x192.png",
+          "sizes": "192x192",
+          "type": "image/png",
+          "purpose": "maskable"
+        }
+      ]
     }
   ],
   "lang": "en",
@@ -57,13 +87,13 @@
   "short_name": "Perx",
   "icons": [
     {
-      "src": "/src/app/web-app-manifest-192x192.png",
+      "src": "/web-app-manifest-192x192.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "maskable"
     },
     {
-      "src": "/src/app/web-app-manifest-512x512.png",
+      "src": "/web-app-manifest-512x512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable"

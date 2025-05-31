@@ -47,12 +47,12 @@ export default async function MerchantProfileLayout({
   ];
 
   return (
-    <section className="flex flex-col lg:px-20">
+    <section className="flex flex-col bg-inherit lg:px-20">
       {/* Static profile details at the top */}
       <ProfileInfo data={data} />
 
       {/* Tab Navigation */}
-      <div className="sticky top-0 z-50 w-full">
+      <div className="sticky top-0 z-50 w-full bg-inherit">
         <Tabs tabItems={tabItems} />
       </div>
 

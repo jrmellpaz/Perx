@@ -214,9 +214,8 @@ const insertConsumerCoupon = async (
     const transactionPrice =
       paymentAmount === -1
         ? null
-        : (paymentAmount ??
-          (existingConsumerCoupon.discounted_price ||
-            existingConsumerCoupon.original_price));
+        : existingConsumerCoupon.discounted_price ||
+          existingConsumerCoupon.original_price;
 
     const { error: insertTransactionError } = await supabase
       .from('transaction_history')

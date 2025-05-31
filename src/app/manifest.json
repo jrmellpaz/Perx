@@ -14,19 +14,19 @@
     {
       "src":"/screenshots/0.jpg",
       "type":"image/jpg",
-      "sizes": "1080x1920",
+      "sizes": "1902x912",
       "form_factor": "wide"
     },
     {
       "src":"/screenshots/1.jpg",
       "type":"image/jpg",
-      "sizes": "1080x1920",
+      "sizes": "978x2048",
       "form_factor": "narrow"
     },
     {
       "src":"/screenshots/2.jpg",
       "type":"image/jpg",
-      "sizes": "1080x1920",
+      "sizes": "978x2048",
       "form_factor": "narrow"
     },
     {
@@ -83,7 +83,7 @@
     }
   ],
   "lang": "en",
-  "orientation": "portrait-primary",
+  "orientation": "natural",
   "short_name": "Perx",
   "icons": [
     {

@@ -357,7 +357,6 @@ export function PerxTicketSubmit({
         coupon={coupon}
         paymentMode={paymentMode}
         totalPrice={totalPrice}
-        totalPoints={totalPoints}
         adjustedPrice={adjustedPrice}
       />
     </>
@@ -371,7 +370,6 @@ function PaymentDialog({
   coupon,
   paymentMode,
   totalPrice,
-  totalPoints,
   adjustedPrice,
 }: {
   dialogRef: RefObject<HTMLDialogElement | null>;
@@ -380,7 +378,6 @@ function PaymentDialog({
   coupon: Coupon;
   paymentMode: 'cash' | 'hybrid';
   totalPrice: number;
-  totalPoints: number;
   adjustedPrice: number;
 }) {
   const router = useRouter();
@@ -389,8 +386,6 @@ function PaymentDialog({
   const handleCreatePaypalOrder: PayPalButtonsComponentProps['createOrder'] =
     async (_data, actions): Promise<string> => {
       try {
-        dialogRef.current?.close();
-
         return actions.order.create({
           intent: 'CAPTURE',
           purchase_units: [
@@ -420,6 +415,7 @@ function PaymentDialog({
           amountToPay
         );
         toast.success(`${message} Redirecting you to your coupons...`);
+        dialogRef.current?.close();
         router.push(`/my-coupons/view?coupon=${consumerCoupon?.id}`);
       } catch (error) {
         console.error('Error approving PayPal order:', error);

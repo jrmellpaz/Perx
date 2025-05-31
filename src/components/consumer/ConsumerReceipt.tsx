@@ -66,7 +66,6 @@ export default function ReceiptUploader({ userId }: { userId: string }) {
 
   return (
     <div className="max-w-md mx-auto p-4 bg-white shadow-md rounded flex flex-col items-center gap-4">
-      <h2 className="text-xl font-bold">Upload Receipt</h2>
       {preview && (
         <img
           src={preview}

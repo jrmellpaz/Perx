@@ -72,7 +72,7 @@ export const purchaseWithRewardPoints = async (
   try {
     const supabase = await createClient();
 
-    updateRewardPoints(user.id, coupon.points_amount);
+    updateRewardPoints(user.id, -coupon.points_amount);
     updateConsumerFirstPurchase(user.id);
 
     if (!hybrid) {
@@ -88,7 +88,7 @@ export const purchaseWithRewardPoints = async (
 
       insertConsumerCoupon(coupon.id, user.id, -1);
       updateCouponData(coupon.id);
-      toast.success(`Redirecting you to your coupons...`);
+      toast.success(`Redirecting you to your coupon...`);
       redirect(`/my-coupons/view?coupon=${existingConsumerCoupon?.id}`);
     }
 
@@ -213,12 +213,10 @@ const insertConsumerCoupon = async (
     // Use provided payment amount or fall back to standard pricing
     const transactionPrice =
       paymentAmount === -1
-        ? null
-        : existingConsumerCoupon.discounted_price ||
-          existingConsumerCoupon.original_price;
+        ? null: paymentAmount
 
     const { error: insertTransactionError } = await supabase
-      .from('transaction_history')
+      .from('transactions_history')
       .insert({
         coupon_id: couponId,
         merchant_id: existingConsumerCoupon.merchant_id,
@@ -277,7 +275,7 @@ const updateCouponData = async (couponId: string): Promise<SuccessResponse> => {
   }
 };
 
-const updateRewardPoints = async (
+export const updateRewardPoints = async (
   consumerId: string,
   pointsAmount: number
 ): Promise<SuccessResponse> => {
@@ -293,7 +291,7 @@ const updateRewardPoints = async (
       throw new Error(`FETCH CONSUMER ERROR: ${fetchConsumerError.message}`);
     }
 
-    const newPointsBalance: number = consumerData.points_balance - pointsAmount;
+    const newPointsBalance: number = consumerData.points_balance + pointsAmount;
     const { error: updateConsumerError } = await supabase
       .from('consumers')
       .update({ points_balance: newPointsBalance })
@@ -490,5 +488,16 @@ export const approvePaypalOrder = async (
   } catch (error) {
     console.error('Error approving PayPal order:', error);
     return { success: false, message: 'Failed to approve PayPal order.' };
+  }
+};
+
+export const getHighestOriginalPrice = async (): Promise<number> => {
+  try {
+    const supabase = await createClient();
+    const { data: maxPriceData } = await supabase.rpc('get_highest_original_price');
+    return Number(maxPriceData)
+  } catch (error) {
+    console.error('Error getting highest price:', error);
+    return 1000000; // fallback value
   }
 };

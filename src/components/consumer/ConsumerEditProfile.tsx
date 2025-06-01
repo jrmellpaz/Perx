@@ -21,6 +21,7 @@ import { couponCategories } from '@/lib/couponSchema';
 
 import type { Consumer } from '@/lib/types';
 import { EditProfileInputs, editProfileSchema } from '@/lib/consumerSchema';
+import { toast } from 'sonner';
 
 export default function ConsumerEditProfile({
   profile,
@@ -52,6 +53,7 @@ export default function ConsumerEditProfile({
       console.error('Error updating profile:', error);
     } finally {
       setIsSubmitting(false);
+      toast.success('Profile updated successfully!');
       redirect('/profile');
     }
   };
@@ -105,15 +107,17 @@ function EditDetails({
       initial={{ x: '50%', opacity: 0 }}
       animate={{ x: 0, opacity: 1 }}
       transition={{ duration: 0.3, ease: 'easeInOut' }}
-      className="flex w-full flex-col gap-6"
+      className="flex w-full flex-col gap-6 bg-inherit"
     >
-      <div>
+      <div className="bg-inherit">
         <PerxInput
           label="Name"
           type="text"
           placeholder="Juan Dela Cruz"
           required
           autofocus
+          className="bg-inherit"
+          labelClassName="bg-neutral-50"
           {...register('name')}
         />
         {errors.name?.message && <ErrorMessage message={errors.name.message} />}

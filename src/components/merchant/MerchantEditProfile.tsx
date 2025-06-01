@@ -21,6 +21,7 @@ import {
   type EditProfileInputs,
   editProfileSchema,
 } from '@/lib/merchantSchema';
+import { toast } from 'sonner';
 
 export default function MerchantEditProfile({
   profile,
@@ -51,6 +52,7 @@ export default function MerchantEditProfile({
       console.error('Error updating profile:', error);
     } finally {
       setIsSubmitting(false);
+      toast.success('Profile updated successfully!');
       redirect('/merchant/profile/coupons');
     }
   };
@@ -110,7 +112,8 @@ function EditLogo({
         label=""
         accept="image/*"
         placeholder="Upload logo"
-        className="hidden"
+        className="hidden bg-inherit"
+        labelClassName="bg-neutral-50"
         {...register('logo', {
           onChange: (event) => {
             handleFileChange(event);
@@ -159,6 +162,8 @@ function EditDetails({
           placeholder="Business, Inc."
           required
           autofocus
+          className="bg-inherit"
+          labelClassName="bg-neutral-50"
           {...register('name')}
         />
         {errors.name?.message && <ErrorMessage message={errors.name.message} />}
@@ -167,6 +172,8 @@ function EditDetails({
         <PerxTextarea
           label="Business description"
           placeholder="Tell us about your business"
+          className="bg-inherit"
+          labelClassName="bg-neutral-50"
           required
           {...register('bio')}
         />
@@ -177,6 +184,8 @@ function EditDetails({
           label="Address"
           type="text"
           placeholder="123 Main St, Cebu City, Cebu 6000"
+          className="bg-inherit"
+          labelClassName="bg-neutral-50"
           required
           {...register('address')}
         />

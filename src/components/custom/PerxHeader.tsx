@@ -12,7 +12,7 @@ export default function PerxHeader({
   buttonStyle,
   children,
 }: {
-  title: string;
+  title?: string;
   className: string;
   style?: React.CSSProperties;
   buttonStyle?: React.CSSProperties;

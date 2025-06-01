@@ -75,30 +75,52 @@ export const editProfileSchema = z.object({
   logo: z
     .any()
     .optional()
-    .refine((files) => files?.length > 0, {
-      message: 'Logo is required',
-      path: ['logo'],
-    })
-    .refine(
-      (files) => {
-        const file = files[0];
-        return file.size < 3000000;
-      },
-      {
-        message: 'Logo must be less than 3MB',
-        path: ['logo'],
+    .superRefine((files, ctx) => {
+      if (!files || files.length === 0) return; // skip all checks if not provided
+
+      const file = files[0];
+      if (file.size >= 3000000) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: 'Logo must be less than 3MB',
+          path: ['logo'],
+        });
       }
-    )
-    .refine(
-      (files) => {
-        const file = files[0];
-        return file && ACCEPTED_IMAGE_TYPES.includes(file.type);
-      },
-      {
-        message: 'Only JPG, JPEG, and PNG formats are accepted',
-        path: ['logo'],
+      if (!['image/jpeg', 'image/jpg', 'image/png'].includes(file.type)) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: 'Only JPG, JPEG, and PNG formats are accepted',
+          path: ['logo'],
+        });
       }
-    ),
+    }),
+  // logo: z
+  //   .any()
+  //   .optional()
+  //   .refine((files) => files?.length > 0, {
+  //     message: 'Logo is required',
+  //     path: ['logo'],
+  //   })
+  //   .refine(
+  //     (files) => {
+  //       const file = files[0];
+  //       return file.size < 3000000;
+  //     },
+  //     {
+  //       message: 'Logo must be less than 3MB',
+  //       path: ['logo'],
+  //     }
+  //   )
+  //   .refine(
+  //     (files) => {
+  //       const file = files[0];
+  //       return file && ACCEPTED_IMAGE_TYPES.includes(file.type);
+  //     },
+  //     {
+  //       message: 'Only JPG, JPEG, and PNG formats are accepted',
+  //       path: ['logo'],
+  //     }
+  //   ),
 });
 
 export type EditProfileInputs = z.infer<typeof editProfileSchema>;

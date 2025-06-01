@@ -14,6 +14,7 @@ import { PerxReadMore } from '@/components/custom/PerxReadMore';
 
 import type { Merchant } from '@/lib/types';
 import { ShareMerchantButton } from '@/components/custom/ShareMerchantButton';
+import PerxHeader from '@/components/custom/PerxHeader';
 
 export default async function MerchantProfileLayout({
   tabs,
@@ -38,18 +39,21 @@ export default async function MerchantProfileLayout({
   ];
 
   return (
-    <section className="flex flex-col bg-inherit lg:px-20">
-      {/* Static profile details at the top */}
-      <ProfileInfo data={data} />
+    <>
+      <PerxHeader className="sticky top-0 z-50 bg-white shadow-md" />
+      <section className="flex flex-col bg-inherit lg:px-20">
+        {/* Static profile details at the top */}
+        <ProfileInfo data={data} />
 
-      {/* Tab Navigation */}
-      <div className="sticky top-0 z-50 w-full bg-inherit">
-        <Tabs tabItems={tabItems} />
-      </div>
+        {/* Tab Navigation */}
+        <div className="sticky top-15.25 z-40 w-full bg-inherit">
+          <Tabs tabItems={tabItems} />
+        </div>
 
-      {/* Render dynamic content from the parallel routes */}
-      <div>{tabs}</div>
-    </section>
+        {/* Render dynamic content from the parallel routes */}
+        <div>{tabs}</div>
+      </section>
+    </>
   );
 }
 

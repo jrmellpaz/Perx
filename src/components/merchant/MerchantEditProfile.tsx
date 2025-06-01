@@ -47,7 +47,7 @@ export default function MerchantEditProfile({
   const processForm: SubmitHandler<EditProfileInputs> = async (data) => {
     setIsSubmitting(true);
     try {
-      await updateMerchantProfile(data);
+      await updateMerchantProfile(data, logo);
     } catch (error) {
       console.error('Error updating profile:', error);
     } finally {
@@ -193,7 +193,7 @@ function EditDetails({
           <ErrorMessage message={errors.address.message} />
         )}
       </div>
-      <div className="mt-2 flex justify-end">
+      <div className="mt-2 mb-8 flex justify-end">
         <Button
           type="submit"
           disabled={isSubmitting}

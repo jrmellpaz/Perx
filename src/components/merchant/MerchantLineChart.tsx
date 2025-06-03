@@ -48,52 +48,55 @@ const data = [
   },
   {
     name: 'Aug',
-    2026: 3490,
+    2026: 5000,
     2025: 4300,
   },
   {
     name: 'Sept',
-    2026: 3490,
+    2026: 4500,
     2025: 4300,
   },
   {
     name: 'Oct',
-    2026: 3490,
+    2026: 3000,
     2025: 4300,
   },
   {
     name: 'Nov',
-    2026: 3490,
+    2026: 2000,
     2025: 4300,
   },
   {
     name: 'Dec',
-    2026: 3490,
+    2026: 2500,
     2025: 4300,
   },
 ];
 
 const MerchantLineChart = () => {
   return (
-    <div className="border-perx-crimson h-full w-full rounded-xl border-3 bg-white p-4">
+    <div
+      className="bg-perx-gray h-full w-full rounded-xl p-4"
+      style={{ boxShadow: '0 2px 5px rgba(0,0,0,0.1)' }}
+    >
       <div className="flex items-center justify-between">
-        <h1 className="font-mono-bold text-perx-black mx-1 my-1 text-2xl">
-          Sales
+        <h1 className="font-mono-bold text-perx-black mx-1 text-lg font-semibold">
+          Total Sales
         </h1>
       </div>
-      <ResponsiveContainer width="100%" height="90%">
+      <ResponsiveContainer width="100%" height={250}>
         <LineChart
-          width={500}
-          height={300}
+          // width={500}
+          // height={300}
           data={data}
           margin={{
-            top: 5,
+            top: 0,
             right: 30,
             left: 20,
             bottom: 5,
           }}
         >
-          <CartesianGrid strokeDasharray="5 5" stroke="#1E1919" />
+          <CartesianGrid strokeDasharray="0" stroke="gray" />
           <XAxis
             dataKey="name"
             axisLine={false}
@@ -111,20 +114,22 @@ const MerchantLineChart = () => {
           <Legend
             align="center"
             verticalAlign="top"
-            wrapperStyle={{ paddingTop: '10px', paddingBottom: '30px' }}
+            wrapperStyle={{ paddingBottom: '10px' }}
             className="perx-"
           />
           <Line
             type="monotone"
             dataKey="2025"
-            stroke="#FAD24B"
-            strokeWidth={5}
+            stroke="#9B0032"
+            strokeWidth={3}
+            dot={false}
           />
           <Line
             type="monotone"
             dataKey="2026"
-            stroke="#78286E"
-            strokeWidth={5}
+            stroke="#B4C8E1"
+            strokeWidth={3}
+            dot={false}
           />
         </LineChart>
       </ResponsiveContainer>

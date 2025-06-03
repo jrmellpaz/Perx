@@ -434,6 +434,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      count_unique_consumers: {
+        Args: { p_merchant_id: string }
+        Returns: number
+      }
       deactivate_expired_coupons: {
         Args: Record<PropertyKey, never>
         Returns: undefined

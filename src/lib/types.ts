@@ -1,12 +1,17 @@
 import { Database } from './database.types';
 
-export type PointsHistory = Database['public']['Tables']['points_history']['Row'];
+export type PointsHistory =
+  Database['public']['Tables']['points_history']['Row'];
 export type PointsHistories = PointsHistory[];
 
 // Combination
 export type CouponWithRank = Database['public']['Tables']['coupons']['Row'] & {
   ranks: Database['public']['Tables']['ranks']['Row'];
 };
+export type TransactionWithCoupon =
+  Database['public']['Tables']['transactions_history']['Row'] & {
+    coupons: Database['public']['Tables']['coupons']['Row'];
+  };
 
 // Rank
 export type Rank = Database['public']['Tables']['ranks']['Row'];
@@ -35,6 +40,10 @@ export type Merchants = Merchant[];
 // Achievement
 export type Achievement = Database['public']['Tables']['achievements']['Row'];
 export type Achievements = Achievement[];
+
+// Transaction
+export type Transaction =
+  Database['public']['Tables']['transactions_history']['Row'];
 
 // Success types
 export type SuccessResponse<T = undefined> = {

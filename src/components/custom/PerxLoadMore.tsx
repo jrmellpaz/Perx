@@ -1,6 +1,5 @@
 'use client';
 
-import { on } from 'events';
 import { useEffect } from 'react';
 import { useInView } from 'react-intersection-observer';
 
@@ -26,5 +25,26 @@ export function LoadMore({ onLoadMore, isLoading }: LoadMoreProps) {
         <div className="bg-muted h-4 w-1/2 animate-pulse rounded-md"></div>
       </div>
     </section>
+  );
+}
+
+export function TransactionLoading({ onLoadMore, isLoading }: LoadMoreProps) {
+  const { ref, inView } = useInView();
+
+  useEffect(() => {
+    if (inView && !isLoading) {
+      onLoadMore();
+    }
+  }, [inView]);
+
+  return (
+    <div
+      ref={ref}
+      className="mt-2 mb-6 flex w-full max-w-[800px] flex-col gap-2"
+    >
+      <div className="h-12 w-full animate-pulse rounded-md bg-neutral-200"></div>
+      <div className="h-12 w-full animate-pulse rounded-md bg-neutral-200"></div>
+      <div className="h-12 w-full animate-pulse rounded-md bg-neutral-200"></div>
+    </div>
   );
 }

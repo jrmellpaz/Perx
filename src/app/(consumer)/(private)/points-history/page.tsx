@@ -1,22 +1,21 @@
-
 import { createClient } from '@/utils/supabase/server';
 import ConsumerPointHistory from '@/components/consumer/ConsumerPointHistory';
 import PerxHeader from '@/components/custom/PerxHeader';
 
 export default async function PointsHistory() {
   const supabase = await createClient();
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
 
-    if (!user) {
-      throw new Error('Error fetching user.');
-    }
+  if (!user) {
+    throw new Error('Error fetching user.');
+  }
 
   return (
     <>
-      <PerxHeader title="Points History" className="bg-white shadow-md" />
+      <PerxHeader title="Points history" className="bg-white shadow-md" />
       <ConsumerPointHistory userId={user.id} />
     </>
   );
-};
+}

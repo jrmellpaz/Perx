@@ -2,7 +2,6 @@
 
 import React, { useEffect, useState } from 'react';
 import InfiniteScroll from 'react-infinite-scroll-component';
-import { createClient } from '@/utils/supabase/client';
 import { fetchPointsHistory } from '@/actions/consumerProfile';
 import { PointsHistories } from '@/lib/types';
 
@@ -19,10 +18,12 @@ const PointsHistoryList = ({ userId }: { userId: string }) => {
       const newEntries = await fetchPointsHistory(userId, from, to);
       setEntries((prev) => {
         // Create a Set of existing entry keys to check for duplicates
-        const existingKeys = new Set(prev.map(entry => `${entry.id}-${entry.created_at}`));
+        const existingKeys = new Set(
+          prev.map((entry) => `${entry.id}-${entry.created_at}`)
+        );
         // Filter out any new entries that already exist
         const uniqueNewEntries = newEntries.filter(
-          entry => !existingKeys.has(`${entry.id}-${entry.created_at}`)
+          (entry) => !existingKeys.has(`${entry.id}-${entry.created_at}`)
         );
         return [...prev, ...uniqueNewEntries];
       });
@@ -38,7 +39,7 @@ const PointsHistoryList = ({ userId }: { userId: string }) => {
   }, []);
 
   return (
-    <div className="p-4 max-w-xl mx-auto">
+    <div className="mx-auto max-w-xl p-4">
       <InfiniteScroll
         dataLength={entries.length}
         next={loadMore}
@@ -48,18 +49,23 @@ const PointsHistoryList = ({ userId }: { userId: string }) => {
         {entries.map((entry) => (
           <div
             key={`${entry.id}-${entry.created_at}`}
-            className="rounded-lg border p-4 shadow-sm mb-3 bg-white hover:shadow-md transition"
+            className="mb-3 rounded-lg border bg-white p-4 shadow-sm transition hover:shadow-md"
           >
-            <div className="flex justify-between items-center mb-1">              
-              <span className={`font-semibold text-lg ${entry.points_earned >= 0 ? 'text-green-600' : 'text-red-600'}`}>
-                {entry.points_earned >= 0 ? `+${entry.points_earned}` : entry.points_earned} pts
+            <div className="mb-1 flex items-center justify-between">
+              <span
+                className={`text-lg font-semibold ${entry.points_earned >= 0 ? 'text-green-600' : 'text-red-600'}`}
+              >
+                {entry.points_earned >= 0
+                  ? `+${entry.points_earned}`
+                  : entry.points_earned}{' '}
+                pts
               </span>
               <span className="text-xs text-gray-500">
                 {new Date(entry.created_at).toLocaleDateString()}
               </span>
             </div>
             {/* <p className="text-sm text-gray-700 mb-1">{entry.description}</p> */}
-            <span className="text-xs px-2 py-1 bg-gray-100 rounded-full text-gray-600 capitalize">
+            <span className="rounded-full bg-gray-100 px-2 py-1 text-xs text-gray-600 capitalize">
               {entry.source.replace('_', ' ')}
             </span>
           </div>

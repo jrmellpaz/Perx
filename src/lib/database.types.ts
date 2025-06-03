@@ -278,18 +278,35 @@ export type Database = {
       }
       points_history: {
         Row: {
+          consumer_id: string
           created_at: string
           id: number
+          points_earned: number
+          source: string
         }
         Insert: {
+          consumer_id: string
           created_at?: string
           id?: number
+          points_earned: number
+          source: string
         }
         Update: {
+          consumer_id?: string
           created_at?: string
           id?: number
+          points_earned?: number
+          source?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "points_history_consumer_id_fkey"
+            columns: ["consumer_id"]
+            isOneToOne: false
+            referencedRelation: "consumers"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       ranks: {
         Row: {

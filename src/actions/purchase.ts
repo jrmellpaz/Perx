@@ -303,6 +303,20 @@ export const updateRewardPoints = async (
       );
     }
 
+    const { error: insertPointsError } = await supabase
+      .from('points_history')
+      .insert({
+        consumer_id: consumerId,
+        source: 'Coupon Purchase',
+        points_earned: pointsAmount,
+      });
+
+    if (insertPointsError) {
+      throw new Error(
+        `UPDATE REFERRER POINTS BALANCE ERROR: ${insertPointsError.message}`
+      );
+    }
+
     return { success: true, message: 'Points updated successfully!' };
   } catch (error) {
     console.error('Error updating reward points:', error);
@@ -382,6 +396,20 @@ const rewardReferrer = async (referrerId: string): Promise<SuccessResponse> => {
       );
     }
 
+    const { error: insertPointsError } = await supabase
+      .from('points_history')
+      .insert({
+        consumer_id: referrer.id,
+        source: 'Referral Reward',
+        points_earned: REWARD,
+      });
+
+    if (insertPointsError) {
+      throw new Error(
+        `UPDATE REFERRER POINTS BALANCE ERROR: ${insertPointsError.message}`
+      );
+    }
+
     return { success: true, message: 'Referrer rewarded successfully!' };
   } catch (error) {
     console.error('Error rewarding referrer:', error);
@@ -419,6 +447,20 @@ export const rebateConsumerPoints = async (
     if (updateRebateError) {
       throw new Error(
         `Error updating consumer points balance after rebate: ${updateRebateError.message}`
+      );
+    }
+
+    const { error: insertPointsError } = await supabase
+      .from('points_history')
+      .insert({
+        consumer_id: consumerId,
+        source: 'Coupon Purchase Rebate',
+        points_earned: rebatePoints,
+      });
+
+    if (insertPointsError) {
+      throw new Error(
+        `UPDATE REFERRER POINTS BALANCE ERROR: ${insertPointsError.message}`
       );
     }
 

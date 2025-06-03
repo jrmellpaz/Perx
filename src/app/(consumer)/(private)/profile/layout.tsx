@@ -9,6 +9,7 @@ import {
   PencilIcon,
   SettingsIcon,
   ReceiptText,
+  History
 } from 'lucide-react';
 import { Progress } from '@/components/ui/progress';
 import Tabs from '@/components/custom/PerxTabs';
@@ -137,6 +138,15 @@ function ButtonGroup() {
           title="Receipt"
         >
           <ReceiptText />
+        </Button>
+      </Link>
+      <Link href="/points-history">
+        <Button
+          variant={'ghost'}
+          className="text-perx-white hover:bg-perx-black/10 hover:text-perx-white aspect-square h-auto rounded-full"
+          title="Points History"
+        >
+          <History />
         </Button>
       </Link>
     </>

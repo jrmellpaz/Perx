@@ -1,5 +1,8 @@
 import { Database } from './database.types';
 
+export type PointsHistory = Database['public']['Tables']['points_history']['Row'];
+export type PointsHistories = PointsHistory[];
+
 // Combination
 export type CouponWithRank = Database['public']['Tables']['coupons']['Row'] & {
   ranks: Database['public']['Tables']['ranks']['Row'];

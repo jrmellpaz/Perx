@@ -4,6 +4,7 @@ import { Category, Consumer, SuccessResponse } from '@/lib/types';
 import { createClient } from '@/utils/supabase/server';
 
 import type { EditProfileInputs } from '@/lib/consumerSchema';
+import { PointsHistories } from '@/lib/types';
 
 export const fetchConsumerProfile = async (
   consumerId: string
@@ -96,3 +97,23 @@ export const deleteAccount = async (
 };
 
 export const revalidateConsumerProfile = async () => {};
+
+const PAGE_SIZE = 10;
+
+export async function fetchPointsHistory(
+  consumerId: string,
+  from: number = 0,
+  to: number = PAGE_SIZE - 1
+): Promise<PointsHistories> {
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from('points_history')
+    .select('*')
+    .eq('consumer_id', consumerId)
+    .order('created_at', { ascending: false })
+    .range(from, to);
+
+  if (error) throw error;
+  return data;
+}
+

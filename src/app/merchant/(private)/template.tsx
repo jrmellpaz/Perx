@@ -15,6 +15,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import React, { JSX, useState } from 'react';
 import { motion } from 'motion/react';
+import { cn } from '@/lib/utils';
 
 interface NavItems {
   icon: JSX.Element;
@@ -57,9 +58,24 @@ export default function MerchantTemplate({
 }) {
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
+  const pathname = usePathname();
+  const hiddenNavbarMobilePaths = [
+    '/view',
+    '/settings',
+    '/edit-profile',
+    '/monthly-records',
+    '/transactions',
+  ];
+  const hidden = hiddenNavbarMobilePaths.some((p) => pathname.includes(p));
+
   return (
     <main className="flex h-dvh w-dvw flex-col-reverse overflow-hidden md:flex-row">
-      <nav className="bg-perx-gray h-14 w-dvw shrink-0 shadow-md md:h-dvh md:w-20 md:shadow-none lg:w-56">
+      <nav
+        className={cn(
+          'bg-perx-gray h-14 w-dvw shrink-0 shadow-md md:h-dvh md:w-20 md:shadow-none lg:w-56',
+          hidden && 'hidden md:block'
+        )}
+      >
         <div className="hidden h-full border-r-2 md:flex md:flex-col md:justify-between">
           <div className="h-15.5 w-full border-b-2 p-2 py-4 pl-6">
             <MerchantLogo

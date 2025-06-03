@@ -53,9 +53,9 @@ export default function ConsumerTemplate({
     '/settings',
     '/edit-profile',
     '/receipt',
+    '/points-history',
   ];
-  const hidden = hiddenNavbarMobilePaths.some((p) => pathname.startsWith(p));
-  console.log('hidden', hidden, pathname);
+  const hidden = hiddenNavbarMobilePaths.some((p) => pathname.includes(p));
 
   return (
     <main className="flex h-dvh w-dvw flex-col-reverse overflow-hidden md:flex-row">
@@ -124,7 +124,7 @@ function HorizontalNav() {
   return (
     <ul className="flex h-full w-full items-center justify-around">
       {navItems.map((item, index) => {
-        const isActive = item.path.some((p) => pathname.startsWith(p));
+        const isActive = item.path.some((p) => pathname.includes(p));
         const iconWithDynamicStroke = React.cloneElement(item.icon, {
           strokeWidth: isActive ? 2 : 1.5,
         });

@@ -6,33 +6,33 @@
 
 @theme {
   --font-*: initial;
-  --font-sans: "Manrope", sans-serif;
-  --font-mono: "Space Grotesk", sans-serif;
+  --font-sans: 'Manrope', sans-serif;
+  --font-mono: 'Space Grotesk', sans-serif;
 
   /* main brand colors */
-  --color-perx-red: #A50000;
-  --color-perx-white: #F7F5F2;
-  --color-perx-black: #1E1919;
+  --color-perx-red: #a50000;
+  --color-perx-white: #f7f5f2;
+  --color-perx-black: #1e1919;
 
   /* accent brand colors */
-  --color-perx-blue: #0061FE;
-  --color-perx-azalea: #CD2F7B;
-  --color-perx-pink: #FFAFA5;
-  --color-perx-crimson: #9B0032;
-  --color-perx-sunset: #FA551E;
-  --color-perx-rust: #BE4B0A;
-  --color-perx-orange: #FF8C19;
-  --color-perx-gold: #9B6400;
-  --color-perx-yellow: #FAD24B;
-  --color-perx-canopy: #0F503C;
-  --color-perx-lime: #B4DC19;
+  --color-perx-blue: #0061fe;
+  --color-perx-azalea: #cd2f7b;
+  --color-perx-pink: #ffafa5;
+  --color-perx-crimson: #9b0032;
+  --color-perx-sunset: #fa551e;
+  --color-perx-rust: #be4b0a;
+  --color-perx-orange: #ff8c19;
+  --color-perx-gold: #9b6400;
+  --color-perx-yellow: #fad24b;
+  --color-perx-canopy: #0f503c;
+  --color-perx-lime: #b4dc19;
   --color-perx-ocean: #007891;
-  --color-perx-zen: #14C8EB;
+  --color-perx-zen: #14c8eb;
   --color-perx-navy: #283750;
-  --color-perx-cloud: #B4C8E1;
-  --color-perx-plum: #78286E;
-  --color-perx-orchid: #C8AFF0;
-  --color-perx-gray: #F7F6F5;
+  --color-perx-cloud: #b4c8e1;
+  --color-perx-plum: #78286e;
+  --color-perx-orchid: #c8aff0;
+  --color-perx-gray: #f7f6f5;
 
   --color-background: hsl(var(--background));
   --color-foreground: hsl(var(--foreground));
@@ -82,7 +82,6 @@
   color utility to any element that depends on these defaults.
 */
 @layer base {
-
   *,
   ::after,
   ::before,
@@ -101,7 +100,6 @@
 
 @layer base {
   :root {
-
     --background: 0 0% 100%;
 
     --foreground: 0 0% 3.9%;
@@ -150,11 +148,10 @@
 
     --chart-5: 27 87% 67%;
 
-    --radius: 0.5rem
+    --radius: 0.5rem;
   }
 
   .dark {
-
     --background: 0 0% 3.9%;
 
     --foreground: 0 0% 98%;
@@ -201,7 +198,7 @@
 
     --chart-4: 280 65% 60%;
 
-    --chart-5: 340 75% 55%
+    --chart-5: 340 75% 55%;
   }
 }
 
@@ -225,17 +222,23 @@ textarea {
 }
 
 .coupon-image {
-  --mask: conic-gradient(from -45deg at bottom,#bb393900,#9e121200 1deg 89deg,#00000000 90deg) 50%/24px 100%;
+  --mask: conic-gradient(
+      from -45deg at bottom,
+      #bb393900,
+      #9e121200 1deg 89deg,
+      #00000000 90deg
+    )
+    50%/24px 100%;
   -webkit-mask: var(--mask);
   mask: var(--mask);
 }
 
 .inset-right {
-  box-shadow: inset -10px 0 5px -5px hsla(0,0%,0%,.08);
+  box-shadow: inset -10px 0 5px -5px hsla(0, 0%, 0%, 0.08);
 }
 
 .inset-left {
-  box-shadow: inset 10px 0 5px -5px hsla(0,0%,0%,.08);
+  box-shadow: inset 10px 0 5px -5px hsla(0, 0%, 0%, 0.08);
 }
 
 .container {
@@ -249,15 +252,15 @@ textarea {
 
 details:first-of-type summary::marker,
 :is(::-webkit-details-marker) {
-  content: "";
+  content: '';
 }
 
 .filter-details[open] summary {
-  background-color: #0061FE20;
+  background-color: #0061fe20;
 }
 
 .horizontal-navbar {
-  box-shadow: 0px -14px 28px -3px rgba(0,0,0,0.1);
+  box-shadow: 0px -14px 28px -3px rgba(0, 0, 0, 0.1);
 }
 
 .popover-dialog::backdrop {
@@ -279,4 +282,30 @@ details:first-of-type summary::marker,
     transition: none !important;
     top: 8px !important;
   }
+}
+
+.table {
+  background: var(--color-perx-white);
+  border-collapse: collapse;
+}
+
+.table th {
+  background: var(--color-perx-navy);
+  color: var(--color-perx-white);
+  padding: 12px;
+  text-align: left;
+}
+
+.table td {
+  padding: 10px;
+  border-bottom: 1px solid
+    color-mix(in srgb, var(--color-perx-cloud) 20%, transparent);
+}
+
+.table tr:nth-child(even) {
+  background: color-mix(in srgb, var(--color-perx-cloud) 10%, transparent);
+}
+
+.table tr:hover {
+  background: color-mix(in srgb, var(--color-perx-cloud) 15%, transparent);
 }

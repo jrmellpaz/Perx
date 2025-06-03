@@ -14,7 +14,9 @@ const ActiveCouponsTable = () => {
   return (
     <div className="h-full w-full bg-amber-100">
       table
-      <table className="h-full w-full bg-blue-700"></table>
+      <table className="h-full w-full bg-blue-700">
+        <thead></thead>
+      </table>
     </div>
   );
 };

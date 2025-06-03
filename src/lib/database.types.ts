@@ -43,7 +43,6 @@ export type Database = {
           is_redeemed: boolean
           merchant_id: string
           qr_token: string
-          rebated_points: number
         }
         Insert: {
           consumer_id: string
@@ -54,7 +53,6 @@ export type Database = {
           is_redeemed?: boolean
           merchant_id: string
           qr_token: string
-          rebated_points: number
         }
         Update: {
           consumer_id?: string
@@ -65,7 +63,6 @@ export type Database = {
           is_redeemed?: boolean
           merchant_id?: string
           qr_token?: string
-          rebated_points?: number
         }
         Relationships: [
           {
@@ -173,7 +170,7 @@ export type Database = {
           id: string
           image: string
           is_deactivated: boolean
-          max_purchase_limit_per_user: number
+          max_purchase_limit_per_consumer: number
           merchant_id: string
           original_price: number
           points_amount: number
@@ -195,7 +192,7 @@ export type Database = {
           id?: string
           image: string
           is_deactivated?: boolean
-          max_purchase_limit_per_user?: number
+          max_purchase_limit_per_consumer?: number
           merchant_id: string
           original_price: number
           points_amount?: number
@@ -217,7 +214,7 @@ export type Database = {
           id?: string
           image?: string
           is_deactivated?: boolean
-          max_purchase_limit_per_user?: number
+          max_purchase_limit_per_consumer?: number
           merchant_id?: string
           original_price?: number
           points_amount?: number
@@ -279,6 +276,21 @@ export type Database = {
         }
         Relationships: []
       }
+      points_history: {
+        Row: {
+          created_at: string
+          id: number
+        }
+        Insert: {
+          created_at?: string
+          id?: number
+        }
+        Update: {
+          created_at?: string
+          id?: number
+        }
+        Relationships: []
+      }
       ranks: {
         Row: {
           created_at: string
@@ -309,6 +321,97 @@ export type Database = {
         }
         Relationships: []
       }
+      receipts: {
+        Row: {
+          amount_paid: number
+          consumer_id: string
+          created_at: string
+          id: string | null
+          merchant_id: string
+          receipt_number: string
+        }
+        Insert: {
+          amount_paid: number
+          consumer_id: string
+          created_at?: string
+          id?: string | null
+          merchant_id: string
+          receipt_number: string
+        }
+        Update: {
+          amount_paid?: number
+          consumer_id?: string
+          created_at?: string
+          id?: string | null
+          merchant_id?: string
+          receipt_number?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "receipts_consumer_id_fkey"
+            columns: ["consumer_id"]
+            isOneToOne: false
+            referencedRelation: "consumers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "receipts_merchant_id_fkey"
+            columns: ["merchant_id"]
+            isOneToOne: false
+            referencedRelation: "merchants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      transactions_history: {
+        Row: {
+          consumer_id: string
+          coupon_id: string
+          created_at: string
+          id: string
+          merchant_id: string
+          price: number | null
+        }
+        Insert: {
+          consumer_id: string
+          coupon_id: string
+          created_at?: string
+          id?: string
+          merchant_id: string
+          price?: number | null
+        }
+        Update: {
+          consumer_id?: string
+          coupon_id?: string
+          created_at?: string
+          id?: string
+          merchant_id?: string
+          price?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "transaction_history_consumer_id_fkey"
+            columns: ["consumer_id"]
+            isOneToOne: false
+            referencedRelation: "consumers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "transaction_history_coupon_id_fkey"
+            columns: ["coupon_id"]
+            isOneToOne: false
+            referencedRelation: "coupons"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "transaction_history_merchant_id_fkey"
+            columns: ["merchant_id"]
+            isOneToOne: false
+            referencedRelation: "merchants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
@@ -328,63 +431,9 @@ export type Database = {
           rank: number
         }[]
       }
-      hybrid_search: {
-        Args: {
-          query_text: string
-          query_embedding: string
-          match_threshold: number
-        }
-        Returns: {
-          id: string
-          type: string
-          title: string
-          description: string
-          similarity: number
-          rank: number
-        }[]
-      }
-      search_and_filter_items: {
-        Args: {
-          query_text: string
-          filter_category?: string
-          filter_min_price?: number
-          filter_max_price?: number
-          filter_limited_quantity?: boolean
-          filter_end_date_before?: string
-          filter_allow_points?: boolean
-          filter_allow_repurchase?: boolean
-        }
-        Returns: {
-          id: string
-          type: string
-        }[]
-      }
-      search_similar_documents: {
-        Args: {
-          query_embedding: string
-          match_threshold?: number
-          match_count?: number
-        }
-        Returns: {
-          id: string
-          type: string
-          reference_id: string
-          content: string
-          similarity: number
-        }[]
-      }
-      semantic_search: {
-        Args: { query_embedding: string; match_threshold: number }
-        Returns: {
-          id: string
-          type: string
-          title: string
-          description: string
-          name: string
-          bio: string
-          address: string
-          similarity: number
-        }[]
+      get_highest_original_price: {
+        Args: Record<PropertyKey, never>
+        Returns: number
       }
       update_consumer_points: {
         Args: { consumer_id: string; points_to_add: number }

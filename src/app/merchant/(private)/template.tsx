@@ -38,9 +38,9 @@ const navItems: NavItems[] = [
   },
   {
     icon: <TicketPlus strokeWidth={1.5} size={20} />,
-    name: 'Add Coupon',
-    path: '/merchant/add-coupon',
-    link: '/merchant/add-coupon',
+    name: 'Create coupon',
+    path: '/merchant/create-coupon',
+    link: '/merchant/create-coupon',
   },
   {
     icon: <CircleUserRound strokeWidth={1.5} size={20} />,
@@ -74,7 +74,7 @@ export default function MerchantTemplate({
           <HorizontalNav />
         </div>
       </nav>
-      <main className="scrollable-container w-full grow overflow-x-hidden overflow-y-auto bg-white">
+      <main className="scrollable-container w-full grow overflow-x-hidden overflow-y-auto bg-neutral-50">
         {children}
       </main>
     </main>

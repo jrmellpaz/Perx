@@ -39,7 +39,10 @@ export const addCoupon = async (
       couponData.discountedPrice != null &&
       couponData.discountedPrice >= couponData.originalPrice
     ) {
-      return { success: false, message: 'Discounted Price must be less than Original Price' };
+      return {
+        success: false,
+        message: 'Discounted Price must be less than Original Price',
+      };
     }
 
     const comparePrice = couponData.discountedPrice || couponData.originalPrice;
@@ -49,7 +52,8 @@ export const addCoupon = async (
     ) {
       return {
         success: false,
-        message: 'Cash amount must be less than the Discounted Price (or Original Price if no Discount Price)',
+        message:
+          'Cash amount must be less than the Discounted Price (or Original Price if no Discount Price)',
       };
     }
 
@@ -90,16 +94,16 @@ export const addCoupon = async (
       discounted_price: couponData.discountedPrice,
       quantity: couponData.quantity,
       rank_availability: couponData.rankAvailability,
-      valid_from: couponData.dateRange?.start !== null
-        ? couponData.dateRange?.start
-        : null,
-      valid_to: couponData.dateRange?.end !== null
-        ? couponData.dateRange?.end
-        : null,
+      valid_from:
+        couponData.dateRange?.start !== null
+          ? couponData.dateRange?.start
+          : null,
+      valid_to:
+        couponData.dateRange?.end !== null ? couponData.dateRange?.end : null,
       image: imageUrl,
       points_amount: couponData.pointsAmount,
       cash_amount: couponData.cashAmount,
-      max_purchase_limit_per_user: couponData.maxPurchaseLimitPerUser,
+      max_purchase_limit_per_consumer: couponData.maxPurchaseLimitPerUser,
       redemption_validity: couponData.redemptionValidity,
       text_search: combinedText,
     } as InsertCoupon);
@@ -226,6 +230,7 @@ export const fetchConsumerCoupons = async (
     .from('consumer_coupons')
     .select('*, coupons(*)')
     .eq('consumer_id', consumerId)
+    .eq('is_redeemed', false)
     .order('created_at', { ascending: false });
 
   if (error) {
@@ -295,27 +300,27 @@ export async function filterCoupons(
   }
 
   if (filters.minPrice !== undefined) {
-    queryBuilder = queryBuilder.gte('price', filters.minPrice);
+    queryBuilder = queryBuilder.gte('original_price', filters.minPrice);
   }
   if (filters.maxPrice !== undefined) {
-    queryBuilder = queryBuilder.lte('price', filters.maxPrice);
+    queryBuilder = queryBuilder.lte('original_price', filters.maxPrice);
   }
-  if (filters.allowLimitedPurchase !== undefined) {
-    queryBuilder = queryBuilder.eq(
-      'allow_limited_purchase',
-      filters.allowLimitedPurchase
-    );
-  }
+  // if (filters.allowLimitedPurchase !== undefined) {
+  //   queryBuilder = queryBuilder.eq(
+  //     'allow_limited_purchase',
+  //     filters.allowLimitedPurchase
+  //   );
+  // }
   if (filters.allowRepeatPurchase !== undefined) {
-    queryBuilder = queryBuilder.eq(
-      'allow_repeat_purchase',
-      filters.allowRepeatPurchase
+    queryBuilder = queryBuilder.gt(
+      'max_purchase_limit_per_consumer',
+      1
     );
   }
   if (filters.allowPointsPurchase !== undefined) {
-    queryBuilder = queryBuilder.eq(
-      'allow_points_purchase',
-      filters.allowPointsPurchase
+    queryBuilder = queryBuilder.gt(
+      'points_amount',
+      0
     );
   }
   if (filters.endDate !== undefined) {
@@ -332,7 +337,9 @@ export async function filterCoupons(
   return data as CouponWithRank[];
 }
 
-export async function redeemCoupon(qrToken: string) {
+export async function redeemCoupon(
+  qrToken: string
+) : Promise<SuccessResponse> {
   if (!qrToken) return { success: false, message: 'Missing QR token' };
   const supabase = await createClient();
 
@@ -356,7 +363,9 @@ export async function redeemCoupon(qrToken: string) {
   return { success: true, message: 'Coupon successfully redeemed.' };
 }
 
-export async function getCouponFromToken(qrToken: string) {
+export async function getCouponFromToken(
+  qrToken: string
+): Promise<SuccessResponse | Coupon>{
   const supabase = await createClient();
   if (!qrToken) return { success: false, message: 'Missing QR token' };
   const { data: myCoupon, error } = await supabase
@@ -369,12 +378,8 @@ export async function getCouponFromToken(qrToken: string) {
     return { success: false, message: 'Invalid or expired QR code.' };
   }
 
-  return {
-    success: true,
-    coupon: myCoupon.coupon,
-    user_coupon_id: myCoupon.id,
-  };
-}
+  return myCoupon.coupon as Coupon;
+};
 
 export const archiveCoupon = async (
   couponId: string
@@ -412,3 +417,5 @@ export const archiveCoupon = async (
     return { success: false, message: 'Failed to archive coupon.' };
   }
 };
+
+

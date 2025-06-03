@@ -1,21 +1,126 @@
 {
   "name": "Perx",
+  "categories": [
+    "shopping",
+    "coupons",
+    "local-business",
+    "commerce",
+    "rewards",
+    "loyalty",
+    "merchant",
+    "business"
+  ],
+  "screenshots": [
+    {
+      "src":"/screenshots/0.png",
+      "type":"image/png",
+      "sizes": "1824x912",
+      "form_factor": "wide"
+    },
+    {
+      "src":"/screenshots/1.png",
+      "type":"image/png",
+      "sizes": "1082x2402",
+      "form_factor": "narrow"
+    },
+    {
+      "src":"/screenshots/2.png",
+      "type":"image/png",
+      "sizes": "1082x2402",
+      "form_factor": "narrow"
+    },
+    {
+      "src":"/screenshots/3.png",
+      "type":"image/png",
+      "sizes": "1082x2402",
+      "form_factor": "narrow"
+    },
+    {
+      "src":"/screenshots/4.png",
+      "type":"image/png",
+      "sizes": "1790x895",
+      "form_factor": "wide"
+    },
+    {
+      "src":"/screenshots/5.png",
+      "type":"image/png",
+      "sizes": "1814x907",
+      "form_factor": "wide"
+    }
+  ],
+  "id": "perx",
+  "start_url": "/explore",
+  "description": "Perx is a web-based platform that empowers small and medium-sized enterprises (SMEs) to create, distribute, and manage digital coupons. It offers consumers a seamless way to discover deals, earn loyalty points, and get rewarded for shopping at their favorite local stores.",
+  "dir": "ltr",
+  "scope": "https://perx.vercel.app",
+  "shortcuts": [
+    {
+      "name": "Explore",
+      "url": "/explore",
+      "description": "Discover the latest deals and offers from local stores.",
+      "icons": [
+        {
+          "src": "/web-app-manifest-192x192.png",
+          "sizes": "192x192",
+          "type": "image/png",
+          "purpose": "maskable"
+        }
+      ]
+    }, 
+    {
+      "name": "My Coupons",
+      "url": "/my-coupons",
+      "description": "View and manage your digital coupons.",
+      "icons": [
+        {
+          "src": "/web-app-manifest-192x192.png",
+          "sizes": "192x192",
+          "type": "image/png",
+          "purpose": "maskable"
+        }
+      ]
+    },
+    {
+      "name": "Profile",
+      "url": "/profile",
+      "description": "Access and edit your profile.",
+      "icons": [
+        {
+          "src": "/web-app-manifest-192x192.png",
+          "sizes": "192x192",
+          "type": "image/png",
+          "purpose": "maskable"
+        }
+      ]
+    }
+  ],
+  "lang": "en",
+  "orientation": "any",
   "short_name": "Perx",
   "icons": [
     {
-      "src": "/src/app/web-app-manifest-192x192.png",
+      "src": "/web-app-manifest-192x192.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "maskable"
     },
     {
-      "src": "/src/app/web-app-manifest-512x512.png",
+      "src": "/web-app-manifest-512x512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable"
     }
   ],
-  "theme_color": "#ffffff",
+  "theme_color": "#A50000",
   "background_color": "#ffffff",
-  "display": "standalone"
+  "display": "standalone",
+  "display_override": [
+    "window-controls-overlay"
+  ],
+  "protocol_handlers": [
+    {
+      "protocol": "web+perx",
+      "url": "/handle-protocol?url=%s"
+    }
+  ]
 }

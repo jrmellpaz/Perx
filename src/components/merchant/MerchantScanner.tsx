@@ -12,6 +12,7 @@ export default function QRScannerClient() {
   const [couponDetails, setCouponDetails] = useState<Coupon | null>(null);
   const [qrToken, setQrToken] = useState<string | null>(null);
   const [scannerActive, setScannerActive] = useState<boolean>(true);
+  const [loading, setLoading] = useState(false);
 
   const scannerRef = useRef<HTMLDivElement>(null);
   const html5QrCodeRef = useRef<Html5Qrcode | null>(null);
@@ -55,8 +56,11 @@ export default function QRScannerClient() {
   const stopScanner = async () => {
     try {
       await html5QrCodeRef.current?.stop();
+      await html5QrCodeRef.current?.clear();
     } catch (err) {
       console.warn('Failed to stop scanner:', err);
+    } finally {
+      html5QrCodeRef.current = null;
     }
   };
 
@@ -64,31 +68,35 @@ export default function QRScannerClient() {
     setQrToken(decodedText);
     setScanResult(`Scanned: ${decodedText}`);
 
-    const res = await getCouponFromToken(decodedText);
+    const coupon = await getCouponFromToken(decodedText);
 
-    if (!res.success || !res.coupon) {
-      toast.error(res.message || 'Coupon not found.');
+    if (!coupon || 'success' in coupon) {
+      toast.error((coupon as any)?.message || 'Coupon not found.');
       setCouponDetails(null);
       return;
     }
 
-    setCouponDetails(res.coupon);
+    setCouponDetails(coupon as Coupon);
   };
 
   const handleConfirmRedeem = async () => {
     if (!qrToken) return;
+    setLoading(true);
 
     const confirm = window.confirm('Redeem this coupon?');
-    if (!confirm) return;
+    if (!confirm) {
+      setLoading(false);
+      return;
+    }
 
-    const res = await redeemCoupon(qrToken);
+    const redeem = await redeemCoupon(qrToken);
 
-    if (res.success) {
-      toast.success(res.message);
+    if (redeem.success) {
+      toast.success(redeem.message);
       setCouponDetails(null);
       setScanResult('Coupon redeemed successfully.');
     } else {
-      toast.error(res.message);
+      toast.error(redeem.message);
     }
 
     setQrToken(null);

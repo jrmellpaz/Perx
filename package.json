@@ -41,7 +41,7 @@
     "qrcode": "^1.5.4",
     "react": "^19.1.0",
     "react-aria": "^3.38.1",
-    "react-aria-components": "^1.7.1",
+    "react-aria-components": "^1.9.0",
     "react-calendar": "^5.1.0",
     "react-datepicker": "^8.2.1",
     "react-dom": "^19.1.0",

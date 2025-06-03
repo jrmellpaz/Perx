@@ -4,9 +4,9 @@ import { useEffect, useState } from 'react';
 import { Coupon } from './Coupon';
 import { fetchCouponsByMerchantId } from '@/actions/coupon';
 import { LoadMore } from './PerxLoadMore';
+import { PackageOpen } from 'lucide-react';
 
 import type { CouponWithRank } from '@/lib/types';
-import { CouponGridSkeleton } from './PerxSkeleton';
 
 interface CouponListProps {
   userId: string;
@@ -55,7 +55,17 @@ export function MerchantCouponList({ userId, variant }: CouponListProps) {
           )}
         </>
       ) : (
-        <CouponGridSkeleton />
+        // <CouponGridSkeleton />
+        <div className="col-span-full flex size-full flex-col items-center-safe justify-center-safe gap-4 p-12">
+          <PackageOpen
+            size={120}
+            strokeWidth={1}
+            className="text-perx-crimson"
+          />
+          <div className="flex flex-col items-center gap-1">
+            <h1 className="font-mono text-2xl font-bold">No coupons</h1>
+          </div>
+        </div>
       )}
     </div>
   );

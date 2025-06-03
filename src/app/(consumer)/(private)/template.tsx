@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import React, { JSX, useState } from 'react';
 import { motion } from 'motion/react';
+import { cn } from '@/lib/utils';
 
 interface NavItems {
   icon: JSX.Element;
@@ -46,9 +47,24 @@ export default function ConsumerTemplate({
 }: {
   children: React.ReactNode;
 }) {
+  const pathname = usePathname();
+  const hiddenNavbarMobilePaths = [
+    '/view',
+    '/settings',
+    '/edit-profile',
+    '/receipt',
+  ];
+  const hidden = hiddenNavbarMobilePaths.some((p) => pathname.startsWith(p));
+  console.log('hidden', hidden, pathname);
+
   return (
     <main className="flex h-dvh w-dvw flex-col-reverse overflow-hidden md:flex-row">
-      <nav className="bg-perx-gray h-14 w-dvw shrink-0 shadow-md md:h-dvh md:w-20 md:shadow-none lg:w-56">
+      <nav
+        className={cn(
+          'bg-perx-gray h-14 w-dvw shrink-0 shadow-md md:h-dvh md:w-20 md:shadow-none lg:w-56',
+          hidden && 'hidden md:block'
+        )}
+      >
         <div className="hidden h-full border-r-2 md:flex md:flex-col md:justify-between">
           <div className="h-17 w-full border-b-2 pl-6">
             <ConsumerLogo
@@ -62,7 +78,7 @@ export default function ConsumerTemplate({
           <HorizontalNav />
         </div>
       </nav>
-      <main className="scrollable-container w-full grow overflow-x-hidden overflow-y-auto bg-white">
+      <main className="scrollable-container w-full grow overflow-x-hidden overflow-y-auto bg-neutral-50">
         {children}
       </main>
     </main>

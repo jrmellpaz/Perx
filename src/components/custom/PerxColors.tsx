@@ -41,7 +41,7 @@ export default function PerxColors({
               id={`${id}-${color.primary}`}
               aria-label={color.name}
               className={cn(
-                'size-12 shadow-none',
+                'size-12 cursor-pointer shadow-none',
                 primary === 'perx-blue'
                   ? 'border-perx-blue bg-perx-blue data-[state=checked]:border-perx-blue data-[state=checked]:bg-perx-blue'
                   : primary === 'perx-canopy'

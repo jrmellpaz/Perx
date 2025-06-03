@@ -41,12 +41,13 @@ export async function updateSession(request: NextRequest) {
 
   const consumerPages = {
     auth: ['/login', '/register', '/recover-password'],
-    public: ['explore', 'search', '/change-password', '/', '/merchant-profile'],
+    public: ['/change-password', '/', '/merchant-profile'],
     private: [
       '/my-coupons',
       '/profile/missions',
       'profile/achievements',
       '/settings',
+      '/explore',
     ],
   };
 
@@ -63,7 +64,7 @@ export async function updateSession(request: NextRequest) {
       '/merchant/profile/archive',
       '/merchant/settings',
       '/merchant/scan-qr',
-      '/merchant/add-coupon',
+      '/merchant/create-coupon',
       '/merchant/edit-profile',
       '/merchant/monthly-records',
       '/merchant/trans-details',

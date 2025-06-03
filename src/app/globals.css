@@ -284,28 +284,6 @@ details:first-of-type summary::marker,
   }
 }
 
-.table {
-  background: var(--color-perx-white);
-  border-collapse: collapse;
-}
-
-.table th {
-  background: var(--color-perx-navy);
-  color: var(--color-perx-white);
-  padding: 12px;
-  text-align: left;
-}
-
-.table td {
-  padding: 10px;
-  border-bottom: 1px solid
-    color-mix(in srgb, var(--color-perx-cloud) 20%, transparent);
-}
-
-.table tr:nth-child(even) {
-  background: color-mix(in srgb, var(--color-perx-cloud) 10%, transparent);
-}
-
-.table tr:hover {
-  background: color-mix(in srgb, var(--color-perx-cloud) 15%, transparent);
+.custom-shadow {
+  box-shadow: 0px 9px 15px 6px rgba(0, 0, 0, 0.2);
 }

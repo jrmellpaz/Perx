@@ -7,6 +7,7 @@ import { PerxQRToken } from '@/components/custom/PerxQRToken';
 import { ReactNode } from 'react';
 import Link from 'next/link';
 import { PerxReadMore } from '@/components/custom/PerxReadMore';
+import CouponRedemptionListener from '@/components/consumer/CouponRedemptionListener';
 
 import type { Merchant, ConsumerCoupon } from '@/lib/types';
 
@@ -51,10 +52,13 @@ export default async function ViewCoupon({
         buttonStyle={{
           backgroundColor: getPrimaryAccentColor(couponDetails.accent_color),
         }}
-      />
+      />      
       <div className="flex w-full grow items-center justify-center">
         <PurchasedCoupon couponData={couponDetails} merchantData={merchant}>
-          <PerxQRToken qrToken={consumerCoupon.qr_token} />
+          <div className="flex flex-col gap-4">
+            <PerxQRToken qrToken={consumerCoupon.qr_token} />
+            <CouponRedemptionListener consumerCouponId={consumerCoupon.id} />
+          </div>
         </PurchasedCoupon>
       </div>
     </section>

@@ -7,6 +7,7 @@ import { cn } from '@/lib/utils';
 import PerxCheckbox from './PerxCheckbox';
 import RangeSlider from './PerxSlider';
 import { ListFilter } from 'lucide-react';
+import { getHighestOriginalPrice } from '@/actions/purchase';
 
 export function PerxSearchbar({
   children,
@@ -46,7 +47,8 @@ export function PerxSearchbar({
   return (
     <header
       className={cn(
-        'sticky z-50 flex w-full max-w-[800px] flex-col items-center justify-between gap-1.5 rounded-t-3xl rounded-b-md bg-white will-change-transform md:top-2',
+        'sticky z-50 flex w-full max-w-[800px] flex-col items-center justify-between gap-1.5 bg-white will-change-transform md:top-2',
+        query ? 'rounded-t-3xl rounded-b-md' : 'rounded-full',
         scrolled ? 'shadow-md' : 'shadow-none',
         logoHeaderHidden
           ? 'perx-searchbar-top-hidden'
@@ -56,7 +58,7 @@ export function PerxSearchbar({
       )}
     >
       {children}
-      <CouponFilterForm />
+      {query && <CouponFilterForm />}
     </header>
   );
 }
@@ -64,16 +66,28 @@ export function PerxSearchbar({
 export function CouponFilterForm() {
   const searchParams = useSearchParams();
   const router = useRouter();
+  const [priceState, setPriceState] = useState<{
+    maxPrice: number;
+    priceRange: [number, number];
+  }>({ maxPrice: 0, priceRange: [0, 0] });
 
-  // const [minPrice, setMinPrice] = useState(searchParams.get('minPrice') || '');
-  // const [maxPrice, setMaxPrice] = useState(searchParams.get('maxPrice') || '');
-  const [priceRange, setPriceRange] = useState<[number, number]>([
-    Number(searchParams.get('minPrice') || 0),
-    Number(searchParams.get('maxPrice') || 10000),
-  ]);
-  const [allowLimitedPurchase, setAllowLimitedPurchase] = useState(
-    searchParams.get('allowLimitedPurchase') === 'true'
-  );
+  useEffect(() => {
+    const loadMaxPrice = async () => {
+      const maxPrice = await getHighestOriginalPrice();
+      setPriceState({
+        maxPrice,
+        priceRange: [
+          Number(searchParams.get('minPrice') || 0),
+          Number(searchParams.get('maxPrice') || maxPrice),
+        ],
+      });
+    };
+    loadMaxPrice();
+  }, [searchParams]);
+
+  // const [allowLimitedPurchase, setAllowLimitedPurchase] = useState(
+  //   searchParams.get('allowLimitedPurchase') === 'true'
+  // );
   const [allowRepeatPurchase, setAllowRepeatPurchase] = useState(
     searchParams.get('allowRepeatPurchase') === 'true'
   );
@@ -84,15 +98,12 @@ export function CouponFilterForm() {
 
   const applyFilters = () => {
     const params = new URLSearchParams(searchParams.toString());
+    params.set('minPrice', String(priceState.priceRange[0]));
+    params.set('maxPrice', String(priceState.priceRange[1]));
 
-    // minPrice ? params.set('minPrice', minPrice) : params.delete('minPrice');
-    // maxPrice ? params.set('maxPrice', maxPrice) : params.delete('maxPrice');
-    params.set('minPrice', String(priceRange[0]));
-    params.set('maxPrice', String(priceRange[1]));
-
-    allowLimitedPurchase
-      ? params.set('allowLimitedPurchase', 'true')
-      : params.delete('allowLimitedPurchase');
+    // allowLimitedPurchase
+    //   ? params.set('allowLimitedPurchase', 'true')
+    //   : params.delete('allowLimitedPurchase');
     allowRepeatPurchase
       ? params.set('allowRepeatPurchase', 'true')
       : params.delete('allowRepeatPurchase');
@@ -120,9 +131,11 @@ export function CouponFilterForm() {
                   </span>
                   <RangeSlider
                     min={0}
-                    max={10000}
-                    value={priceRange}
-                    onValueChange={setPriceRange}
+                    max={priceState.maxPrice}
+                    value={priceState.priceRange}
+                    onValueChange={(range) =>
+                      setPriceState((prev) => ({ ...prev, priceRange: range }))
+                    }
                   />
                 </div>
                 <div className="flex flex-col gap-3">
@@ -141,14 +154,14 @@ export function CouponFilterForm() {
               <div className="col-span-3 flex flex-col gap-1">
                 <span className="ml-1 font-mono text-xs font-medium">Tags</span>
                 <div className="flex flex-wrap gap-2">
-                  <PerxCheckbox
+                  {/* <PerxCheckbox
                     label="Limited-time offers"
                     checked={allowLimitedPurchase}
                     onCheckedChange={(checked) =>
                       setAllowLimitedPurchase(checked)
                     }
                     className="text-xs"
-                  />
+                  /> */}
                   <PerxCheckbox
                     label="Allows repeat purchase"
                     checked={allowRepeatPurchase}

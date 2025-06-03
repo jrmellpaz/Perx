@@ -1,4 +1,5 @@
 import { fetchConsumerCoupons } from '@/actions/coupon';
+import { ConsumerLogo } from '@/components/consumer/ConsumerLogo';
 import { PerxLogoHeader } from '@/components/custom/PerxHeader';
 import { ConsumerCoupon } from '@/lib/types';
 import { createClient } from '@/utils/supabase/server';
@@ -19,7 +20,9 @@ export default async function MyCouponsPage() {
 
   return (
     <>
-      <PerxLogoHeader />
+      <PerxLogoHeader>
+        <ConsumerLogo logoClass="text-xl pb-[8px]" />
+      </PerxLogoHeader>
       <section className="overflow-y-auto px-2 py-4 sm:px-4">
         <div className="place-start grid grid-cols-1 gap-2 sm:grid-cols-2 md:grid-cols-3 md:gap-3">
           <Suspense fallback={<MyCouponsSkeleton />}>
@@ -54,7 +57,7 @@ function MyCoupon({ coupon }: { coupon: ConsumerCoupon }) {
       }}
     >
       <div
-        className={`bg-perx-white flex grow basis-60 flex-col gap-2 overflow-hidden rounded-md border pb-2`}
+        className={`flex grow basis-60 flex-col gap-2 overflow-hidden rounded-md border bg-white pb-2`}
       >
         <div className="aspect-video h-full w-auto">
           <img

@@ -9,6 +9,45 @@ import type { ConsumerCoupon, Coupon, SuccessResponse } from '@/lib/types';
 import type { User } from '@supabase/supabase-js';
 import { levelUpConsumerRank } from './rank';
 
+import { toast } from 'sonner';
+
+export const checkPurchaseLimit = async (
+  consumerId: string,
+  couponId: string,
+  existingConsumerCoupon: { max_purchase_limit_per_consumer?: number }
+): Promise<SuccessResponse> => {
+  try {
+    const supabase = await createClient();
+    const { count, error: countError } = await supabase
+      .from('consumer_coupons')
+      .select('*', { count: 'exact' })
+      .eq('consumer_id', consumerId)
+      .eq('coupon_id', couponId);
+
+    if (countError) {
+      throw new Error('Failed to count existing purchases.');
+    }
+
+    const purchaseCount = count ?? 0;
+
+    if (
+      purchaseCount >=
+      (existingConsumerCoupon.max_purchase_limit_per_consumer ?? 1)
+    ) {
+      return {
+        success: false,
+        message:
+          'You have already purchased the maximum limit purchase of this coupon.',
+      };
+    }
+
+    return { success: true, message: 'Within purchase limit' };
+  } catch (error) {
+    console.error('Error checking purchase limit:', error);
+    return { success: false, message: (error as Error).message };
+  }
+};
+
 export const purchaseWithRewardPoints = async (
   coupon: Coupon,
   options?: { hybrid?: boolean }
@@ -31,12 +70,26 @@ export const purchaseWithRewardPoints = async (
   }
 
   try {
-    updateRewardPoints(user.id, coupon.points_amount);
+    const supabase = await createClient();
+
+    updateRewardPoints(user.id, -coupon.points_amount);
     updateConsumerFirstPurchase(user.id);
 
     if (!hybrid) {
-      insertConsumerCoupon(coupon.id, user.id);
+      const { data: existingConsumerCoupon, error: fetchError } = await supabase
+        .from('coupons')
+        .select('*')
+        .eq('id', coupon.id)
+        .single();
+
+      if (fetchError) {
+        throw new Error(`FETCH COUPON ERROR: ${fetchError.message}`);
+      }
+
+      insertConsumerCoupon(coupon.id, user.id, -1);
       updateCouponData(coupon.id);
+      toast.success(`Redirecting you to your coupon...`);
+      redirect(`/my-coupons/view?coupon=${existingConsumerCoupon?.id}`);
     }
 
     return {
@@ -51,6 +104,46 @@ export const purchaseWithRewardPoints = async (
   }
 };
 
+export const checkConsumerPointsBalance = async (
+  points: number
+): Promise<SuccessResponse> => {
+  try {
+    const supabase = await createClient();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
+    if (!user) {
+      return {
+        success: false,
+        message: 'You are not logged in. Please log in to continue.',
+      };
+    }
+
+    const { data: consumerData, error: fetchConsumerError } = await supabase
+      .from('consumers')
+      .select('points_balance')
+      .eq('id', user.id)
+      .single();
+
+    if (fetchConsumerError) {
+      throw new Error(`FETCH CONSUMER ERROR: ${fetchConsumerError.message}`);
+    }
+
+    if (consumerData.points_balance < points) {
+      return {
+        success: false,
+        message: 'Insufficient points balance.',
+      };
+    }
+
+    return { success: true, message: 'Sufficient points balance.' };
+  } catch (error) {
+    console.error('Error checking consumer points balance:', error);
+    return { success: false, message: (error as Error).message };
+  }
+};
+
 const fetchConsumer = async (): Promise<User | null> => {
   const supabase = await createClient();
   const {
@@ -62,7 +155,8 @@ const fetchConsumer = async (): Promise<User | null> => {
 
 const insertConsumerCoupon = async (
   couponId: string,
-  consumerId: string
+  consumerId: string,
+  paymentAmount?: number // Add optional payment amount parameter
 ): Promise<SuccessResponse<ConsumerCoupon>> => {
   try {
     const supabase = await createClient();
@@ -77,6 +171,11 @@ const insertConsumerCoupon = async (
     if (fetchError) {
       throw new Error(`FETCH COUPON ERROR: ${fetchError.message}`);
     }
+
+    // const purchaseLimitCheck = await checkPurchaseLimit(consumerId, couponId, existingConsumerCoupon);
+    // if (!purchaseLimitCheck.success) {
+    //   return { success: false, message: "You have already purchased the maximum limit purchase of this coupon." };
+    // }
 
     const { data: consumerCouponData, error: insertConsumerCouponError } =
       await supabase
@@ -94,12 +193,9 @@ const insertConsumerCoupon = async (
             accent_color: existingConsumerCoupon.accent_color,
             original_price: existingConsumerCoupon.original_price,
             discounted_price: existingConsumerCoupon.discounted_price,
+            max_purchase_limit_per_consumer:
+              existingConsumerCoupon.max_purchase_limit_per_consumer,
           },
-          rebated_points: Math.round(
-            (existingConsumerCoupon.discounted_price === 0
-              ? existingConsumerCoupon.original_price
-              : existingConsumerCoupon.discounted_price) * 0.01
-          ),
         })
         .select('*, coupons(*)')
         .single();
@@ -112,6 +208,26 @@ const insertConsumerCoupon = async (
 
     if (!consumerCouponData) {
       throw new Error('No data returned from insert operation.');
+    }
+
+    // Use provided payment amount or fall back to standard pricing
+    const transactionPrice =
+      paymentAmount === -1
+        ? null: paymentAmount
+
+    const { error: insertTransactionError } = await supabase
+      .from('transactions_history')
+      .insert({
+        coupon_id: couponId,
+        merchant_id: existingConsumerCoupon.merchant_id,
+        consumer_id: consumerId,
+        price: transactionPrice,
+      });
+
+    if (insertTransactionError) {
+      throw new Error(
+        `INSERT TRANSACTION ERROR: ${insertTransactionError.message}`
+      );
     }
 
     return {
@@ -159,7 +275,7 @@ const updateCouponData = async (couponId: string): Promise<SuccessResponse> => {
   }
 };
 
-const updateRewardPoints = async (
+export const updateRewardPoints = async (
   consumerId: string,
   pointsAmount: number
 ): Promise<SuccessResponse> => {
@@ -175,7 +291,7 @@ const updateRewardPoints = async (
       throw new Error(`FETCH CONSUMER ERROR: ${fetchConsumerError.message}`);
     }
 
-    const newPointsBalance: number = consumerData.points_balance - pointsAmount;
+    const newPointsBalance: number = consumerData.points_balance + pointsAmount;
     const { error: updateConsumerError } = await supabase
       .from('consumers')
       .update({ points_balance: newPointsBalance })
@@ -315,7 +431,9 @@ export const rebateConsumerPoints = async (
 
 export const approvePaypalOrder = async (
   coupon: Coupon,
-  orderId: string
+  orderId: string,
+  paymentMode: 'cash' | 'hybrid', // Add payment mode parameter
+  amountToPay: number
 ): Promise<SuccessResponse<ConsumerCoupon>> => {
   try {
     const user = await fetchConsumer();
@@ -325,6 +443,12 @@ export const approvePaypalOrder = async (
         `/login?next=${encodeURIComponent(`/view?coupon=${coupon.id}&merchant=${coupon.merchant_id}`)}`
       );
     }
+
+    // const purchaseLimitCheck = await checkPurchaseLimit(user.id, coupon.id, coupon);
+    // if (!purchaseLimitCheck.success) {
+    //   return { success: false, message: "You have already purchased the maximum limit purchase of this coupon." };
+    // }
+
     const captureData = await createPayment(orderId);
 
     if (!captureData || captureData.status !== 'COMPLETED') {
@@ -333,16 +457,27 @@ export const approvePaypalOrder = async (
 
     await updateCouponData(coupon.id);
     await updateConsumerFirstPurchase(user.id);
-    const { data: consumerCoupon } = await insertConsumerCoupon(
-      coupon.id,
-      user.id
-    );
 
-    if (coupon.discounted_price === 0)
-      await rebateConsumerPoints(user.id, coupon.original_price);
-    else 
-      await rebateConsumerPoints(user.id, coupon.discounted_price);
+    if (paymentMode === 'hybrid') {
+      await purchaseWithRewardPoints(coupon, {
+        hybrid: true,
+      });
+    }
 
+    const {
+      success,
+      message,
+      data: consumerCoupon,
+    } = await insertConsumerCoupon(coupon.id, user.id, amountToPay);
+
+    if (!success) {
+      return {
+        success: false,
+        message: message || 'Failed to insert consumer coupon.',
+      };
+    }
+
+    await rebateConsumerPoints(user.id, amountToPay);
     await levelUpConsumerRank(user.id);
 
     return {
@@ -353,5 +488,16 @@ export const approvePaypalOrder = async (
   } catch (error) {
     console.error('Error approving PayPal order:', error);
     return { success: false, message: 'Failed to approve PayPal order.' };
+  }
+};
+
+export const getHighestOriginalPrice = async (): Promise<number> => {
+  try {
+    const supabase = await createClient();
+    const { data: maxPriceData } = await supabase.rpc('get_highest_original_price');
+    return Number(maxPriceData)
+  } catch (error) {
+    console.error('Error getting highest price:', error);
+    return 1000000; // fallback value
   }
 };

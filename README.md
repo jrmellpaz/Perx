@@ -4,7 +4,7 @@ Perx is a web-based platform that empowers small and medium-sized enterprises (S
 
 🌐 **Live Site:**
 
-* **Consumers:** [perx.vercel.app/explore](https://perx.vercel.app/explore)
+* **Consumers:** [perx.vercel.app](https://perx.vercel.app/explore)
 * **Merchants:** [perx.vercel.app/merchant](https://perx.vercel.app/merchant)
 
 ## 🚀 Features

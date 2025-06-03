@@ -3,7 +3,6 @@
 import { cn } from '@/lib/utils';
 import { ArrowLeftIcon } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import { ConsumerLogo } from '../consumer/ConsumerLogo';
 import { useEffect, useState } from 'react';
 
 export default function PerxHeader({
@@ -13,7 +12,7 @@ export default function PerxHeader({
   buttonStyle,
   children,
 }: {
-  title: string;
+  title?: string;
   className: string;
   style?: React.CSSProperties;
   buttonStyle?: React.CSSProperties;
@@ -66,7 +65,7 @@ export default function PerxHeader({
   );
 }
 
-export function PerxLogoHeader() {
+export function PerxLogoHeader({ children }: { children?: React.ReactNode }) {
   const [hidden, setHidden] = useState<boolean>(false);
   const [lastScrollY, setLastScrollY] = useState<number>(0);
 
@@ -98,9 +97,7 @@ export function PerxLogoHeader() {
         hidden ? '-translate-y-full' : 'translate-y-0'
       )}
     >
-      <div className="h-8">
-        <ConsumerLogo logoClass="text-xl pb-[8px]" />
-      </div>
+      <div className="h-8">{children}</div>
     </header>
   );
 }

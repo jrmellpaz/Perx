@@ -7,7 +7,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { useId } from 'react';
+import { cn } from '@/lib/utils';
+import { useId, useState } from 'react';
 
 export default function PerxSelect({
   label,
@@ -27,13 +28,29 @@ export default function PerxSelect({
   onValueChange: (value: string) => void; // Controlled onChange handler
 }) {
   const id = useId();
+  const [open, setOpen] = useState<boolean>(false);
+
   return (
-    <div className="*:not-first:mt-2">
-      <Label htmlFor={id}>{label}</Label>
-      <Select value={value} onValueChange={onValueChange} defaultValue="1">
+    <div className="group relative transition-all *:not-first:mt-2">
+      <Label
+        htmlFor={id}
+        className={cn(
+          'bg-background text-muted-foreground/70 group-focus-within:text-perx-blue pointer-events-none absolute z-50 ml-2 px-1 font-mono text-xs font-medium transition-all',
+          open && 'text-perx-blue'
+        )}
+      >
+        {label}
+      </Label>
+      <Select
+        value={value}
+        onValueChange={onValueChange}
+        defaultValue="1"
+        onOpenChange={setOpen}
+        open={open}
+      >
         <SelectTrigger
           id={id}
-          className="border-input bg-background text-foreground placeholder:text-muted-foreground/70 focus-visible:border-perx-blue flex h-12 w-full shrink-0 items-center gap-2 rounded-lg border-2 px-3 py-2 text-sm transition-all focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
+          className="border-input bg-background text-foreground placeholder:text-muted-foreground/70 focus-visible:border-perx-blue focus-within:border-perx-blue data-[state=open]:border-perx-blue relative flex h-12 w-full shrink-0 items-center gap-2 rounded-lg border-2 px-3 py-2 text-sm transition-all focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
         >
           <SelectValue placeholder="Select an option" />
         </SelectTrigger>

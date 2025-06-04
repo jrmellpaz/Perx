@@ -1,4 +1,6 @@
 'use client';
+
+import { useEffect, useState } from 'react';
 import {
   LineChart,
   Line,
@@ -9,127 +11,167 @@ import {
   Legend,
   ResponsiveContainer,
 } from 'recharts';
+// Adjust the import path according to your project structure
+import {
+  fetchRevenueForYearByMonth,
+  MonthlyRevenueData,
+} from '@/actions/dashboard';
 
-const data = [
-  {
-    name: 'Jan',
-    2026: 4000,
-    2025: 2400,
-  },
-  {
-    name: 'Feb',
-    2026: 3000,
-    2025: 1398,
-  },
-  {
-    name: 'Mar',
-    2026: 2000,
-    2025: 9800,
-  },
-  {
-    name: 'Apr',
-    2026: 2780,
-    2025: 3908,
-  },
-  {
-    name: 'May',
-    2026: 1890,
-    2025: 4800,
-  },
-  {
-    name: 'Jun',
-    2026: 2390,
-    2025: 3800,
-  },
-  {
-    name: 'Jul',
-    2026: 3490,
-    2025: 4300,
-  },
-  {
-    name: 'Aug',
-    2026: 5000,
-    2025: 4300,
-  },
-  {
-    name: 'Sept',
-    2026: 4500,
-    2025: 4300,
-  },
-  {
-    name: 'Oct',
-    2026: 3000,
-    2025: 4300,
-  },
-  {
-    name: 'Nov',
-    2026: 2000,
-    2025: 4300,
-  },
-  {
-    name: 'Dec',
-    2026: 2500,
-    2025: 4300,
-  },
-];
+type MerchantLineChartProps = {
+  data: number;
+};
 
-const MerchantLineChart = () => {
+const MerchantLineChart = ({ data }: MerchantLineChartProps) => {
+  const currentYear = new Date().getFullYear(); // You can make this selectable
+
+  // Initialize state with the correct structure, including the dynamic year key
+  const initialDataForYear: MonthlyRevenueData[] = [
+    'Jan',
+    'Feb',
+    'Mar',
+    'Apr',
+    'May',
+    'Jun',
+    'Jul',
+    'Aug',
+    'Sept',
+    'Oct',
+    'Nov',
+    'Dec',
+  ].map((monthName) => ({ name: monthName, [currentYear]: 0 }));
+
+  const [chartData, setChartData] =
+    useState<MonthlyRevenueData[]>(initialDataForYear);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const loadRevenueData = async () => {
+      setIsLoading(true);
+      setError(null);
+      try {
+        const data = await fetchRevenueForYearByMonth(currentYear);
+        if (data && data.length > 0) {
+          // Ensure data has the dynamic year key correctly
+          const formattedData = data.map((d: Record<string, any>) => ({
+            name: d.name,
+            [currentYear]:
+              d[currentYear] !== undefined
+                ? d[currentYear]
+                : d[String(currentYear)] !== undefined
+                  ? d[String(currentYear)]
+                  : 0,
+          }));
+          setChartData(formattedData);
+        } else {
+          // If no data or empty data, fallback to initialized zeroed data
+          setChartData(initialDataForYear);
+        }
+      } catch (e) {
+        console.error('Failed to fetch monthly revenue:', e);
+        const errorMessage =
+          e instanceof Error ? e.message : 'An unknown error occurred';
+        setError(`Failed to load sales data. ${errorMessage}`);
+        setChartData(initialDataForYear); // Fallback to zeroed data on error
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadRevenueData();
+  }, [currentYear]); // Re-fetch if the year changes
+
+  if (isLoading) {
+    return (
+      <div className="bg-perx-gray flex h-full w-full items-center justify-center rounded-xl p-4">
+        <p className="text-perx-black">
+          Loading sales data for {currentYear}...
+        </p>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="bg-perx-gray flex h-full w-full items-center justify-center rounded-xl p-4">
+        <p className="text-red-600">{error}</p>
+      </div>
+    );
+  }
+
   return (
     <div
-      className="bg-perx-gray h-full w-full rounded-xl p-4"
+      className="bg-perx-black/3 h-full w-full rounded-xl p-3"
       style={{ boxShadow: '0 2px 5px rgba(0,0,0,0.1)' }}
     >
       <div className="flex items-center justify-between">
         <h1 className="font-mono-bold text-perx-black mx-1 text-lg font-semibold">
-          Total Sales
+          Monthly Sales
         </h1>
+        {/* You could add a year selector here that updates the `currentYear` state */}
       </div>
       <ResponsiveContainer width="100%" height={250}>
         <LineChart
-          // width={500}
-          // height={300}
-          data={data}
+          data={chartData}
           margin={{
-            top: 0,
+            top: 0, // Increased top margin for legend
             right: 30,
             left: 20,
             bottom: 5,
           }}
         >
-          <CartesianGrid strokeDasharray="0" stroke="gray" />
+          <CartesianGrid strokeDasharray="3 3" stroke="#bdbdbd" />{' '}
+          {/* Softer grid lines */}
           <XAxis
             dataKey="name"
             axisLine={false}
-            tick={{ fill: '#1E1919' }}
+            tick={{ fill: '#1E1919', fontSize: 12 }}
             tickLine={false}
             tickMargin={10}
           />
           <YAxis
             axisLine={false}
-            tick={{ fill: '#1E1919' }}
+            tick={{ fill: '#1E1919', fontSize: 12 }}
             tickLine={false}
-            tickMargin={20}
+            tickMargin={10} // Adjusted margin
+            tickFormatter={(value) =>
+              value.toLocaleString('en-PH', {
+                style: 'currency',
+                currency: 'PHP',
+                maximumFractionDigits: 0,
+              })
+            } // Format Y-axis ticks
           />
-          <Tooltip />
+          <Tooltip
+            formatter={(value: number, name: string, props: any) => [
+              value.toLocaleString('en-PH', {
+                style: 'currency',
+                currency: 'PHP',
+                maximumFractionDigits: 0,
+              }),
+              `Revenue in ${props.payload.name} ${currentYear}`,
+            ]}
+            labelStyle={{ color: '#1E1919', fontWeight: '800' }}
+            itemStyle={{ color: '#9B0032' }}
+            contentStyle={{
+              backgroundColor: 'rgba(255, 255, 255, 0.8)',
+              borderRadius: '5px',
+              border: '1px solid #ccc',
+            }}
+          />
           <Legend
             align="center"
             verticalAlign="top"
-            wrapperStyle={{ paddingBottom: '10px' }}
-            className="perx-"
+            wrapperStyle={{ paddingBottom: '20px' }} // Ensure legend doesn't overlap chart title
           />
           <Line
             type="monotone"
-            dataKey="2025"
+            dataKey={String(currentYear)} // Ensure this matches the key in your data (e.g., "2025")
             stroke="#9B0032"
             strokeWidth={3}
-            dot={false}
-          />
-          <Line
-            type="monotone"
-            dataKey="2026"
-            stroke="#B4C8E1"
-            strokeWidth={3}
-            dot={false}
+            dot={{ r: 4, strokeWidth: 2, fill: '#9B0032' }} // Style points
+            activeDot={{ r: 6, strokeWidth: 2, fill: '#9B0032' }}
+            name={`${currentYear}`} // Name for the legend
           />
         </LineChart>
       </ResponsiveContainer>

@@ -41,6 +41,90 @@ const fetchMerchant = async (): Promise<SuccessResponse<User | null>> => {
   }
 };
 
+export type MonthlyRevenueData = {
+  name: string;
+  [year: number]: number;
+};
+
+export const fetchRevenueForYearByMonth = async (
+  year: number
+): Promise<MonthlyRevenueData[]> => {
+  const monthNames = [
+    'Jan',
+    'Feb',
+    'Mar',
+    'Apr',
+    'May',
+    'Jun',
+    'Jul',
+    'Aug',
+    'Sep',
+    'Oct',
+    'Nov',
+    'Dec',
+  ];
+  const resultData: MonthlyRevenueData[] = monthNames.map((name) => ({
+    name,
+    [year]: 0,
+  }));
+
+  try {
+    const supabase = await createClient();
+    const { success, message, data: user } = await fetchMerchant();
+
+    if (!success || !user) {
+      throw new Error(
+        `FETCH REVENUE FOR YEAR ERROR: Authentication failed or user is not a merchant. ${message}`
+      );
+    }
+
+    const startDate = new Date(year, 0, 1).toISOString();
+    const endDate = new Date(year, 11, 31, 23, 59, 999).toISOString();
+
+    const { data: transactions_history, error } = await supabase
+      .from('transactions_history')
+      .select('created_at, price')
+      .eq('merchant_id', user.id)
+      .not('price', 'is', null)
+      .gte('created_at', startDate)
+      .lte('created_at', endDate);
+
+    if (error) {
+      throw new Error(
+        `FETCH REVENUE DATA FOR YEAR ${year} ERROR: ${error.message}`
+      );
+    }
+
+    if (transactions_history) {
+      const monthlyAggregates: { [monthIndex: number]: number } = {};
+
+      for (const transaction of transactions_history) {
+        if (transaction.price != null && transaction.created_at) {
+          const transactionDate = new Date(transaction.created_at);
+          if (transactionDate.getFullYear() === year) {
+            const monthIndex = transactionDate.getMonth();
+            monthlyAggregates[monthIndex] =
+              (monthlyAggregates[monthIndex] || 0) + transaction.price;
+          }
+        }
+      }
+
+      resultData.forEach((monthResult, index) => {
+        if (monthlyAggregates[index] !== undefined) {
+          monthResult[year] = monthlyAggregates[index];
+        }
+      });
+    }
+
+    return resultData;
+  } catch (error) {
+    console.error('FETCH REVENUE FOR YEAR BY MONTH ERROR:', error);
+    // In case of an error, return the initialized data (all zeros)
+    // to prevent the chart from breaking.
+    return monthNames.map((monthName) => ({ name: monthName, [year]: 0 }));
+  }
+};
+
 export const fetchMonthlyRevenue = async (): Promise<number> => {
   try {
     const supabase = await createClient();
@@ -167,7 +251,7 @@ export const fetchTransactionRecordsByMerchant = async (
       .from('transactions_history')
       .select('*, coupons(*)')
       .eq('merchant_id', user.id)
-      .not('price', 'is', null)
+      // .not('price', 'is', null)
       .order('created_at', { ascending: false })
       .range(offset, offset + limit - 1);
 

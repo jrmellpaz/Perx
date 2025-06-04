@@ -2,13 +2,12 @@ import {
   Tickets,
   UsersRound,
   ChartNoAxesCombined,
-  Download,
+  Newspaper,
   Banknote,
 } from 'lucide-react';
 import MerchantLineChart from '@/components/merchant/MerchantLineChart';
 import TodayDate from '@/components/ui/date';
 import ActiveCouponsTable from '@/components/ui/activetable';
-import QuickAct from '@/components/ui/quickaction';
 import TopCouponsRanking from '@/components/merchant/TopCouponsMonth';
 import {
   fetchMonthlyRevenue,
@@ -16,8 +15,27 @@ import {
   fetchTotalUniqueConsumersByMerchant,
 } from '@/actions/dashboard';
 import Link from 'next/link';
+import { fetchCouponsByMerchantId } from '@/actions/coupon';
+import { createClient } from '@/utils/supabase/server';
 
 export default async function DashboardPage() {
+  const supabase = createClient();
+  const {
+    data: { user },
+  } = await (await supabase).auth.getUser();
+
+  const merchantId = user?.id;
+
+  if (!merchantId) {
+    return <div>Not authorized</div>;
+  }
+
+  const { coupons } = await fetchCouponsByMerchantId(merchantId, 0, 50, {
+    isDeactivated: false,
+  });
+
+  const monthlyRevenue = await fetchMonthlyRevenue();
+
   return (
     // whole dashboard
     <div className="">
@@ -31,43 +49,28 @@ export default async function DashboardPage() {
       {/* TOP */}
       <div className="flex w-full flex-col md:flex-row">
         {/* USER CARDS */}
-        <div className="flex flex-col gap-3 px-1.5 py-1 sm:flex-row md:w-5/7">
+        <div className="grid grid-cols-1 gap-2 px-6 py-1 md:flex md:flex-row md:gap-6 lg:w-full">
           {/* mr-6 ml-3 flex w-full flex-col gap-3  sm:flex-row  */}
           <MonthlyRevenueCard />
           <TotalCouponsSoldCard />
           <TotalUniqueCustomersCard />
-        </div>
-        {/* QUICK ACTIONS */}
-        <div className="flex gap-3 px-1.5 py-1 md:w-2/7">
           <MonthlyRecords />
-          <QuickAct
-            title="CSV, PDF, etc."
-            value="Download"
-            icon={Download}
-            bgColor="bg-perx-rust/80"
-            bgColor2="bg-perx-rust"
-            link="/merchant/add-coupon"
-          />
         </div>
       </div>
       {/* BODY */}
-      {/* <div className="flex flex-col md:flex-row"> */}
-      {/* LEFT */}
-      {/* <div className="w-full md:w-5/7"> */}
-      {/* LINE CHART */}
-      {/* <div className="flex h-[325px] w-full items-center justify-center px-1.5 py-1"> */}
-      {/* <MerchantLineChart /> */}
-      {/* </div> */}
-      {/* ACTIVE COUPONS TABLE */}
-      {/* <div className="overflow-x-auto px-1.5 py-1"> */}
-      {/* <ActiveCouponsTable /> */}
-      {/* </div> */}
-      {/* </div> */}
-      {/* RIGHT */}
-      {/* <div className="w-full p-1 px-1.5 md:w-2/7"> */}
-      {/* <TopCouponsRanking /> */}
-      {/* </div> */}
-      {/* </div> */}
+      <div className="flex flex-col md:flex-row">
+        {/* LEFT */}
+        <div className="w-full">
+          {/* LINE CHART */}
+          <div className="justify-cente flex w-full items-center px-6 pt-2 pb-1.5">
+            <MerchantLineChart data={monthlyRevenue} />
+          </div>
+          {/* ACTIVE COUPONS TABLE */}
+          <div className="overflow-x-auto px-6 pt-1.5 pb-2">
+            <ActiveCouponsTable coupons={coupons} />
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
@@ -77,7 +80,7 @@ async function MonthlyRevenueCard() {
 
   return (
     <div
-      className={`bg-perx-crimson/80 flex h-20 rounded-2xl p-4 shadow-[0_2px_5px_rgba(0,0,0,0.1)] md:w-1/3`}
+      className={`bg-perx-crimson/80 flex h-20 rounded-2xl p-4 shadow-[0_2px_5px_rgba(0,0,0,0.1)] md:w-1/4`}
     >
       <div
         className={`bg-perx-crimson/90 flex w-12 items-center justify-center rounded-2xl`}
@@ -102,10 +105,10 @@ async function TotalCouponsSoldCard() {
 
   return (
     <div
-      className={`bg-perx-cloud/80 flex h-20 rounded-2xl p-4 shadow-[0_2px_5px_rgba(0,0,0,0.1)] md:w-1/3`}
+      className={`bg-perx-ocean/80 flex h-20 rounded-2xl p-4 shadow-[0_2px_5px_rgba(0,0,0,0.1)] md:w-1/4`}
     >
       <div
-        className={`bg-perx-cloud flex w-12 items-center justify-center rounded-2xl`}
+        className={`bg-perx-ocean flex w-12 items-center justify-center rounded-2xl`}
       >
         <Tickets className="text-white" />
       </div>
@@ -124,10 +127,10 @@ async function TotalUniqueCustomersCard() {
 
   return (
     <div
-      className={`bg-perx-lime/80 flex h-20 rounded-2xl p-4 shadow-[0_2px_5px_rgba(0,0,0,0.1)] md:w-1/3`}
+      className={`bg-perx-cloud/80 flex h-20 rounded-2xl p-4 shadow-[0_2px_5px_rgba(0,0,0,0.1)] md:w-1/4`}
     >
       <div
-        className={`bg-perx-lime flex w-12 items-center justify-center rounded-2xl`}
+        className={`bg-perx-cloud flex w-12 items-center justify-center rounded-2xl`}
       >
         <UsersRound className="text-white" />
       </div>
@@ -143,26 +146,28 @@ async function TotalUniqueCustomersCard() {
 
 async function MonthlyRecords() {
   return (
-    <Link href="/merchant/monthly-records" className="block w-full">
+    // <Link href="/merchant/monthly-records" className="block w-full">
+    <div
+      className={`bg-perx-yellow/80 flex h-20 rounded-2xl p-4 md:w-1/4`}
+      style={{ boxShadow: '0 2px 5px rgba(0,0,0,0.1)' }}
+    >
       <div
-        className={`bg-perx-ocean/80 flex h-20 rounded-2xl p-4`}
-        style={{ boxShadow: '0 2px 5px rgba(0,0,0,0.1)' }}
+        className={`bg-perx-yellow flex w-12 items-center justify-center rounded-2xl`}
       >
-        <div
-          className={`bg-perx-ocean flex w-12 items-center justify-center rounded-2xl`}
-        >
-          <ChartNoAxesCombined style={{ color: 'white' }} />
-        </div>
-        <div className="horizontal ml-2 flex flex-col justify-center">
-          <span className="text-perx-white text-l font-mono font-semibold">
-            View
-          </span>
-          <span className="text-perx-white font-sans text-sm">
-            Monthly records
-          </span>
-        </div>
+        <Newspaper style={{ color: 'white' }} />
       </div>
-    </Link>
+      <div className="horizontal ml-2 flex flex-col justify-center">
+        <a href="/merchant/monthly-records">
+          <span className="text-perx-white font-mono text-2xl font-semibold">
+            <u>View </u>
+          </span>
+        </a>
+        <span className="text-perx-white font-sans text-sm">
+          Transaction records
+        </span>
+      </div>
+    </div>
+    // </Link>
   );
 }
 

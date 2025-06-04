@@ -287,3 +287,8 @@ details:first-of-type summary::marker,
 .custom-shadow {
   box-shadow: 0px 9px 15px 6px rgba(0, 0, 0, 0.2);
 }
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}

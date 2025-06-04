@@ -92,7 +92,7 @@ async function MonthlyRevenueCard() {
       </div>
       <div className="horizontal ml-2 flex flex-col justify-center">
         <span className="text-perx-white font-mono text-3xl font-semibold">
-          {revenueThisMonth.toLocaleString('en-US', {
+          {Number(revenueThisMonth).toLocaleString('en-US', {
             style: 'currency',
             currency: 'PHP',
           })}

@@ -46,30 +46,36 @@ const PointsHistoryList = ({ userId }: { userId: string }) => {
         hasMore={hasMore}
         loader={<p className="text-center">Loading more...</p>}
       >
-        {entries.map((entry) => (
-          <div
-            key={`${entry.id}-${entry.created_at}`}
-            className="mb-3 rounded-lg border bg-white p-4 shadow-sm transition hover:shadow-md"
-          >
-            <div className="mb-1 flex items-center justify-between">
-              <span
-                className={`text-lg font-semibold ${entry.points_earned >= 0 ? 'text-green-600' : 'text-red-600'}`}
-              >
-                {entry.points_earned >= 0
-                  ? `+${entry.points_earned}`
-                  : entry.points_earned}{' '}
-                pts
-              </span>
-              <span className="text-xs text-gray-500">
-                {new Date(entry.created_at).toLocaleDateString()}
+        {entries.length === 0 ? (
+          <div className="flex items-center justify-center p-8">
+            <p className="text-gray-500">No points history yet</p>
+          </div>
+        ) : (
+          entries.map((entry) => (
+            <div
+              key={`${entry.id}-${entry.created_at}`}
+              className="mb-3 rounded-lg border bg-white p-4 shadow-sm transition hover:shadow-md"
+            >
+              <div className="mb-1 flex items-center justify-between">
+                <span
+                  className={`text-lg font-semibold ${entry.points_earned >= 0 ? 'text-green-600' : 'text-red-600'}`}
+                >
+                  {entry.points_earned >= 0
+                    ? `+${entry.points_earned}`
+                    : entry.points_earned}{' '}
+                  pts
+                </span>
+                <span className="text-xs text-gray-500">
+                  {new Date(entry.created_at).toLocaleDateString()}
+                </span>
+              </div>
+              {/* <p className="text-sm text-gray-700 mb-1">{entry.description}</p> */}
+              <span className="rounded-full bg-gray-100 px-2 py-1 text-xs text-gray-600">
+                {entry.source.replace('_', ' ')}
               </span>
             </div>
-            {/* <p className="text-sm text-gray-700 mb-1">{entry.description}</p> */}
-            <span className="rounded-full bg-gray-100 px-2 py-1 text-xs text-gray-600 capitalize">
-              {entry.source.replace('_', ' ')}
-            </span>
-          </div>
-        ))}
+          ))
+        )}
       </InfiniteScroll>
     </div>
   );

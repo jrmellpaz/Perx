@@ -112,23 +112,24 @@ export default function QRScannerClient() {
 
   return (
     <div className="flex flex-col items-center gap-4">
-      {scannerActive && <div id="reader" ref={scannerRef} className="w-full max-w-sm" />}
+      {scannerActive && (
+        <div id="reader" ref={scannerRef} className="w-full max-w-sm" />
+      )}
 
       {scanResult && <p className="text-gray-700">{scanResult}</p>}
 
       {couponDetails && (
-        <div className="w-full max-w-sm p-4 border rounded shadow bg-white text-left">
+        <div className="w-full max-w-sm rounded border bg-white p-4 text-left shadow">
           <img
             src={couponDetails.image}
             alt={couponDetails.title}
-            className="w-full h-40 object-cover rounded mb-2"
+            className="mb-2 h-40 w-full rounded object-cover"
           />
           <h3 className="text-lg font-bold">{couponDetails.title}</h3>
           <p className="text-sm text-gray-600">{couponDetails.description}</p>
-          {/* <p className="text-sm text-gray-500">{couponDetails.merchant_name}</p> */}
 
           <button
-            className="mt-4 w-full bg-green-600 text-white p-2 rounded"
+            className="mt-4 w-full rounded bg-green-600 p-2 text-white"
             onClick={handleConfirmRedeem}
           >
             Confirm & Redeem
@@ -138,7 +139,7 @@ export default function QRScannerClient() {
 
       {!scannerActive && (
         <button
-          className="mt-4 w-full max-w-sm bg-blue-600 text-white p-2 rounded"
+          className="mt-4 w-full max-w-sm rounded bg-blue-600 p-2 text-white"
           onClick={handleScanAgain}
         >
           Scan Again

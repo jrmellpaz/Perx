@@ -43,7 +43,7 @@ export default async function TransactionPage({
       <div className="md mx-auto flex w-full max-w-[500px] flex-col gap-4 p-4">
         <img
           src={coupon.image}
-          className="aspect-video h-auto w-full rounded-md"
+          className="aspect-video h-auto w-full rounded-md object-cover"
         />
         <div className="flex flex-col gap-8 rounded-md bg-white p-4 shadow">
           <div className="flex flex-col gap-1">

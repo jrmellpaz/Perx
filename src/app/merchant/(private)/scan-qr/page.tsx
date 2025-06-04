@@ -8,7 +8,7 @@ export const metadata: Metadata = {
 
 export default function ScanQR() {
   return (
-    <div className="p-4">
+    <div className="size-full">
       <MerchantScanner />
     </div>
   );

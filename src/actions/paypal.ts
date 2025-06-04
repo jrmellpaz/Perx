@@ -1,8 +1,29 @@
 'use server';
 
-const base = process.env.PAYPAL_API_URL;
-const clientId = process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID;
-const appSecret = process.env.PAYPAL_APP_SECRET;
+const real_base = process.env.PAYPAL_API_URL;
+const real_clientId = process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID;
+const real_appSecret = process.env.PAYPAL_APP_SECRET;
+
+const sandbox_base = process.env.SANDBOX_PAYPAL_API_URL;
+const sandbox_clientId = process.env.NEXT_PUBLIC_SANDBOX_PAYPAL_CLIENT_ID;
+const sandbox_appSecret = process.env.SANDBOX_PAYPAL_APP_SECRET;
+
+const MODE =
+  process.env.NODE_ENV === 'production' ? 'production' : 'development';
+
+let base: string;
+let clientId: string;
+let appSecret: string;
+
+if (MODE === 'production') {
+  base = real_base || 'https://api.paypal.com';
+  clientId = real_clientId!;
+  appSecret = real_appSecret!;
+} else {
+  base = sandbox_base || 'https://api-m.sandbox.paypal.com';
+  clientId = sandbox_clientId!;
+  appSecret = sandbox_appSecret!;
+}
 
 interface OrderData {
   id: string;

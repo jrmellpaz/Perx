@@ -3,13 +3,7 @@
 import { createClient } from '@/utils/supabase/server';
 
 import type { User } from '@supabase/supabase-js';
-import type {
-  SuccessResponse,
-  Transaction,
-  TransactionWithCoupon,
-} from '@/lib/types';
-import { create } from 'domain';
-import { Coupon } from '@/components/custom/Coupon';
+import type { SuccessResponse, TransactionWithCoupon } from '@/lib/types';
 
 const fetchMerchant = async (): Promise<SuccessResponse<User | null>> => {
   try {
@@ -269,5 +263,37 @@ export const fetchTransactionRecordsByMerchant = async (
       transactions: [],
       count: 0,
     };
+  }
+};
+
+export const fetchTransactionRecordById = async (
+  transactionId: string
+): Promise<TransactionWithCoupon | null> => {
+  try {
+    const supabase = await createClient();
+
+    // Check if the user is authenticated and has the merchant role
+    const { success, message, data: user } = await fetchMerchant();
+
+    if (!success || !user) {
+      throw new Error(`FETCH TRANSACTION RECORDS ERROR: ${message}`);
+    }
+
+    const { data: transaction, error } = await supabase
+      .from('transactions_history')
+      .select('*, coupons(*)')
+      .eq('merchant_id', user.id)
+      .not('price', 'is', null)
+      .eq('id', transactionId)
+      .single();
+
+    if (error) {
+      throw new Error(`FETCH TRANSACTION RECORDS ERROR: ${error.message}`);
+    }
+
+    return transaction as TransactionWithCoupon;
+  } catch (error) {
+    console.error('FETCH TRANSACTION RECORD BY ID ERROR:', error);
+    return null;
   }
 };

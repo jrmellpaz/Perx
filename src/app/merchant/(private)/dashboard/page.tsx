@@ -18,6 +18,12 @@ import Link from 'next/link';
 import { fetchCouponsByMerchantId } from '@/actions/coupon';
 import { createClient } from '@/utils/supabase/server';
 
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Dashboard',
+};
+
 export default async function DashboardPage() {
   const supabase = createClient();
   const {
@@ -89,7 +95,7 @@ async function MonthlyRevenueCard() {
       </div>
       <div className="horizontal ml-2 flex flex-col justify-center">
         <span className="text-perx-white font-mono text-3xl font-semibold">
-          {revenueThisMonth.toLocaleString('en-US', {
+          {Number(revenueThisMonth).toLocaleString('en-US', {
             style: 'currency',
             currency: 'PHP',
           })}

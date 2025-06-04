@@ -234,10 +234,7 @@ export async function PerxTicket({
           <div className="flex flex-col gap-2">
             {valid_from && (
               <div className="bg-yellow flex w-full items-center justify-between">
-                <span
-                  className="font-mono text-sm font-medium"
-                  // style={{ color: getPrimaryAccentColor(accent_color) }}
-                >
+                <span className="font-mono text-sm font-medium">
                   Available from
                 </span>
                 <p className="text-perx-black text-right text-sm">

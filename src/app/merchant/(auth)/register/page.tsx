@@ -1,6 +1,12 @@
 import { MerchantLogo } from '@/components/merchant/MerchantLogo';
 import MerchantRegisterForm from '@/components/merchant/RegisterForm';
 
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Create an account',
+};
+
 export default async function MerchantRegisterPage() {
   return (
     <div className="flex h-full w-9/10 flex-col gap-4 sm:w-4/5">

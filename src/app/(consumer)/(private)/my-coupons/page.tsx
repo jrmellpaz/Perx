@@ -6,6 +6,12 @@ import { createClient } from '@/utils/supabase/server';
 import Link from 'next/link';
 import { Suspense } from 'react';
 
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'My Coupons',
+};
+
 export default async function MyCouponsPage() {
   const supabase = await createClient();
   const {

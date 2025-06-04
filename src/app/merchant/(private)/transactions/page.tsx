@@ -1,128 +1,107 @@
-'use client';
-
-import { useEffect, useState } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
-import { ArrowLeft, Clipboard, Copy } from 'lucide-react';
+import { fetchTransactionRecordById } from '@/actions/dashboard';
 import PerxHeader from '@/components/custom/PerxHeader';
+import { createClient } from '@/utils/supabase/server';
+import { redirect } from 'next/navigation';
 
-// Mock transaction data
-// const mockTransactions = [
-//   {
-//     id: "1",
-//     title: "Coupon 72",
-//     transaction_number: "9023274475630",
-//     amount: 350.75,
-//     date: "2025-01-03T12:55:00",
-//   },
-// ];
+import type { Metadata } from 'next';
 
-// const TransactionDetails = () => {
-//   const router = useRouter();
-//   const searchParams = useSearchParams();
+export const metadata: Metadata = {
+  title: 'Transaction details',
+};
 
-//   // Extract parameters from URL
-//   const title = searchParams.get("title");
-//   const amount = searchParams.get("amount");
-//   const date = searchParams.get("date");
+export default async function TransactionPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ [key: string]: string }>;
+}) {
+  const { id } = await searchParams;
 
-//   const [transaction, setTransaction] = useState<any>(null);
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
 
-//   useEffect(() => {
-//     // Simulate fetching the transaction details
-//     const data = mockTransactions.find((t) => t.title === title);
-//     setTransaction(data);
-//   }, [title]);
-
-//   if (!transaction)
-//     return <p className="text-center p-4 text-red-500">Transaction not found</p>;
-
-//   return (
-//     <div className="max-w-md mx-auto p-4 bg-[#fff7f5] min-h-screen">
-//       {/* Back Button */}
-//       <button onClick={() => router.back()} className="mb-4 flex items-center text-gray-600">
-//         ← Transaction details
-//       </button>
-
-//       {/* Placeholder Image */}
-//       <div className="w-full h-40 bg-gray-300 flex items-center justify-center rounded-md">
-//         <div className="w-12 h-12 bg-gray-400"></div>
-//       </div>
-
-//       {/* Transaction Details */}
-//       <h2 className="text-xl font-semibold mt-4">{title}</h2>
-//       <span className="px-3 py-1 bg-gray-200 text-xs rounded-full">Type</span>
-
-//       {/* Info Section */}
-//       <div className="mt-4 text-sm">
-//         <div className="flex justify-between border-b py-2">
-//           <span className="text-gray-500">Transaction number</span>
-//           <span className="flex items-center">
-//             {transaction?.transaction_number || "N/A"}{" "}
-//             <Clipboard className="ml-2 w-4 h-4 text-red-500 cursor-pointer" />
-//           </span>
-//         </div>
-//         <div className="flex justify-between border-b py-2">
-//           <span className="text-gray-500">Amount</span>
-//           <span className="text-green-600 font-medium">{amount}</span>
-//         </div>
-//         <div className="flex justify-between border-b py-2">
-//           <span className="text-gray-500">Date</span>
-//           <span>{date}</span>
-//         </div>
-//       </div>
-//     </div>
-//   );
-// };
-
-const TransactionDetails = () => {
-  const router = useRouter();
-  const searchParams = useSearchParams();
-
-  // Extract parameters from URL
-  const title = searchParams.get('title');
-  const amount = searchParams.get('amount');
-  const date = searchParams.get('date');
-
-  if (!title || !amount || !date) {
-    return (
-      <p className="p-4 text-center text-red-500">Transaction not found</p>
-    );
+  if (!user || user.user_metadata.role !== 'merchant') {
+    redirect('/merchant/login');
   }
 
+  if (!id) {
+    redirect('/not-found');
+  }
+
+  const transaction = await fetchTransactionRecordById(id);
+
+  if (!transaction) {
+    redirect('/not-found');
+  }
+
+  const coupon = transaction.coupons;
+
   return (
-    <div className="relative flex h-full w-full flex-col items-center">
-      {/* <div> */}
-      <PerxHeader title="Transaction Details" className="bg-white shadow-md" />
-      {/* </div> */}
-
-      <div className="mt-12 w-full max-w-md p-6">
-        <div className="flex h-40 w-full items-center justify-center rounded-md bg-gray-300">
-          <div className="h-12 w-12 bg-gray-400"></div>
-        </div>
-
-        <h2 className="mt-4 font-mono text-xl font-semibold">{title}</h2>
-        <span className="border-perx-crimson/20 rounded-md border-2 px-3 py-1 text-xs">
-          Type
-        </span>
-
-        <div className="mt-4 text-sm">
-          <div className="flex justify-between border-b py-2">
-            <span className="text-perx-black">Transaction number</span>
-            <span className="text-perx-black ml-30 italic">9023274475630</span>
-            <Copy className="hover:bg-perx-crimson/20 h-4 w-4 cursor-pointer hover:rounded" />
+    <>
+      <PerxHeader title="Transaction details" className="bg-white shadow-md" />
+      <div className="md mx-auto flex w-full max-w-[500px] flex-col gap-4 p-4">
+        <img
+          src={coupon.image}
+          className="aspect-video h-auto w-full rounded-md object-cover"
+        />
+        <div className="flex flex-col gap-8 rounded-md bg-white p-4 shadow">
+          <div className="flex flex-col gap-1">
+            <p className="text-perx-black font-mono text-xl font-bold">
+              {coupon.title}
+            </p>
+            <span className="text-perx-black border-perx-black w-fit rounded-full border px-2 py-1 text-xs">
+              {coupon.category}
+            </span>
           </div>
-          <div className="flex justify-between border-b py-2">
-            <span className="text-perx-black">Amount</span>
-            <span className="text-perx-canopy font-medium">{amount}</span>
-          </div>
-          <div className="flex justify-between border-b py-2">
-            <span className="text-perx-black">Date</span>
-            <span>{date}</span>
+          <div className="flex flex-col gap-1">
+            <div className="flex items-center justify-between">
+              <span className="text-perx-black text-xs font-bold md:text-sm">
+                ID
+              </span>
+              <span className="text-perx-black text-xs md:text-sm">
+                {transaction.id}
+              </span>
+            </div>
+            <div className="flex items-center justify-between">
+              <span className="text-perx-black text-xs font-bold md:text-sm">
+                Amount
+              </span>
+              <span className="text-perx-black text-xs md:text-sm">
+                {Number(transaction.price).toLocaleString('en-US', {
+                  style: 'currency',
+                  currency: 'PHP',
+                })}
+              </span>
+            </div>
+            <div className="flex items-center justify-between">
+              <span className="text-perx-black text-xs font-bold md:text-sm">
+                Date
+              </span>
+              <span className="text-perx-black text-xs md:text-sm">
+                {new Date(transaction.created_at).toLocaleString('en-US', {
+                  year: 'numeric',
+                  month: '2-digit',
+                  day: '2-digit',
+                })}
+              </span>
+            </div>
+            <div className="flex items-center justify-between">
+              <span className="text-perx-black text-xs font-bold md:text-sm">
+                Time
+              </span>
+              <span className="text-perx-black text-xs md:text-sm">
+                {new Date(transaction.created_at).toLocaleString('en-US', {
+                  hour: '2-digit',
+                  minute: '2-digit',
+                  hour12: true,
+                })}{' '}
+                (PST)
+              </span>
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
-};
-
-export default TransactionDetails;
+}

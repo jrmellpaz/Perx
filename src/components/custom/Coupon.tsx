@@ -1,6 +1,6 @@
 import { Clock } from 'lucide-react';
 import Link from 'next/link';
-import { cn } from '@/lib/utils';
+import { cn, getPrimaryAccentColor } from '@/lib/utils';
 
 import type { CouponWithRank } from '@/lib/types';
 
@@ -53,6 +53,44 @@ export function Coupon({
             )}
             <img src={rankIcon} alt={'Rank icon'} className="size-6" />
           </div>
+        </div>
+        <div className="flex w-full items-center justify-start gap-1 px-2">
+          <span
+            style={{ color: getPrimaryAccentColor(coupon.accent_color) }}
+            className="font-mono text-xl font-bold"
+          >
+            &#8369;
+            {(coupon.discounted_price !== 0
+              ? coupon.discounted_price
+              : coupon.original_price
+            ).toLocaleString('en-US', {
+              minimumFractionDigits: 2,
+              maximumFractionDigits: 2,
+            })}
+          </span>
+          {coupon.discounted_price > 0 && coupon.original_price && (
+            <>
+              <span
+                style={{ color: getPrimaryAccentColor(coupon.accent_color) }}
+                className="font-mono text-sm font-medium line-through opacity-75"
+              >
+                &#8369;
+                {coupon.original_price.toLocaleString('en-US', {
+                  minimumFractionDigits: 2,
+                  maximumFractionDigits: 2,
+                })}
+              </span>
+              <span className="rounded-full bg-green-100 px-2 py-1 text-xs font-medium text-green-800">
+                Save{' '}
+                {Math.round(
+                  ((coupon.original_price - coupon.discounted_price) /
+                    coupon.original_price) *
+                    100
+                )}
+                %
+              </span>
+            </>
+          )}
         </div>
       </div>
     </Link>

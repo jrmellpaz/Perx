@@ -11,6 +11,11 @@ import { Search } from 'lucide-react';
 import { ConsumerLogo } from '@/components/consumer/ConsumerLogo';
 
 import type { CouponWithRank, Merchant } from '@/lib/types';
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Explore',
+};
 
 type ResultItem = {
   id: string;

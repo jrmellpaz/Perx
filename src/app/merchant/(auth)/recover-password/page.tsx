@@ -1,7 +1,11 @@
 import { MerchantLogo } from '@/components/merchant/MerchantLogo';
 import MerchantPasswordRecovery from '@/components/merchant/MerchantRecovery';
-import { createClient } from '@/utils/supabase/server';
-import { redirect } from 'next/navigation';
+
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Recover password',
+};
 
 export default async function MerchantRecoverPasswordPage() {
   return (

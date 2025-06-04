@@ -13,6 +13,9 @@ interface OrderData {
   debug_id?: string;
 }
 
+console.log('PayPal API URL:', base);
+console.log('PayPal Client ID:', clientId);
+
 export const createOrder = async (price: number): Promise<OrderData> => {
   const accessToken = await generateAccessToken();
 

@@ -1,7 +1,11 @@
 import ConsumerChangePassword from '@/components/consumer/ConsumerChangePassword';
 import { ConsumerLogo } from '@/components/consumer/ConsumerLogo';
-import { createClient } from '@/utils/supabase/server';
-import { redirect } from 'next/navigation';
+
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Change password',
+};
 
 export default async function ConsumerChangePasswordPage() {
   return (

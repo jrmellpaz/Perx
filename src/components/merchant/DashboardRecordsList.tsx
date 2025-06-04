@@ -1,14 +1,13 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { LoadMore, TransactionLoading } from '../custom/PerxLoadMore';
-import { CouponGridSkeleton } from '../custom/PerxSkeleton';
+import { TransactionLoading } from '../custom/PerxLoadMore';
 import { Button } from '../ui/button';
 import { ChevronRight, LoaderCircle } from 'lucide-react';
 import { fetchTransactionRecordsByMerchant } from '@/actions/dashboard';
 
 import type { TransactionWithCoupon } from '@/lib/types';
-import { cn } from '@/lib/utils';
+import Link from 'next/link';
 
 export function DashboardRecordsList() {
   const [transactions, setTransactions] = useState<TransactionWithCoupon[]>([]);
@@ -104,7 +103,7 @@ export function DashboardRecordsList() {
             )}
           </>
         ) : hasMore ? (
-          <Loading className={'h-full bg-red-400'} />
+          <Loading />
         ) : (
           <p>No transactions found.</p>
         )}
@@ -135,36 +134,46 @@ function TransactionRecordCard({
 }) {
   const coupon = transaction.coupons;
   return (
-    <div className="flex h-auto w-full items-center justify-between gap-4 bg-white p-4">
-      <div className="flex grow items-center justify-between">
-        <div className="flex grow flex-col">
-          <p className="text-xs text-neutral-500">
-            {new Date(transaction.created_at).toLocaleString('en-US', {
-              year: 'numeric',
-              month: '2-digit',
-              day: '2-digit',
-              hour: '2-digit',
-              minute: '2-digit',
-              hour12: true,
+    <Link
+      href={{
+        pathname: '/merchant/transactions',
+        query: { id: transaction.id },
+      }}
+    >
+      <div className="flex h-auto w-full items-center justify-between gap-4 bg-white p-4">
+        <div className="flex grow items-center justify-between">
+          <div className="flex grow flex-col">
+            <p className="text-xs text-neutral-500">
+              {new Date(transaction.created_at).toLocaleString('en-US', {
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit',
+                hour: '2-digit',
+                minute: '2-digit',
+                hour12: true,
+              })}
+            </p>
+            <p className="font-mono font-semibold">{coupon.title}</p>
+          </div>
+          <span className="font-mono font-bold text-green-600">
+            {Number(transaction.price).toLocaleString('en-US', {
+              style: 'currency',
+              currency: 'PHP',
             })}
-          </p>
-          <p className="font-mono font-semibold">{coupon.title}</p>
+          </span>
         </div>
-        <span className="font-mono font-bold text-green-600">
-          {Number(transaction.price).toLocaleString('en-US', {
-            style: 'currency',
-            currency: 'PHP',
-          })}
-        </span>
+        <Button
+          variant="ghost"
+          className="aspect-square h-auto rounded-full p-4"
+        >
+          <ChevronRight />
+        </Button>
       </div>
-      <Button variant="ghost" className="aspect-square h-auto rounded-full p-4">
-        <ChevronRight />
-      </Button>
-    </div>
+    </Link>
   );
 }
 
-function Loading({ className }: { className?: string }) {
+function Loading() {
   return (
     <div className="mt-2 mb-6 flex w-full max-w-[800px] flex-col gap-2">
       <div className="h-12 w-full animate-pulse rounded-md bg-neutral-200"></div>

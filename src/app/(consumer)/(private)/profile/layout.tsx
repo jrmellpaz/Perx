@@ -9,13 +9,18 @@ import {
   PencilIcon,
   SettingsIcon,
   ReceiptText,
-  History
+  History,
 } from 'lucide-react';
 import { Progress } from '@/components/ui/progress';
 import Tabs from '@/components/custom/PerxTabs';
 import { fetchRank } from '@/actions/rank';
 
 import type { Rank } from '@/lib/types';
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Profile',
+};
 
 export default async function ConsumerProfileLayout({
   tabs,
@@ -68,7 +73,7 @@ export default async function ConsumerProfileLayout({
       style={{ backgroundColor: `${rank.secondary_color}50` }}
     >
       <Header name={name} primaryColor={rank.primary_color} />
-      <main className="relative -top-20 flex grow flex-col items-center gap-4">
+      <main className="relative -top-20 flex grow flex-col items-center gap-8">
         <LoyaltyRewardsCard
           nextIcon={nextIcon}
           rank={rank}
@@ -76,10 +81,13 @@ export default async function ConsumerProfileLayout({
           totalPoints={points_total}
           primaryColor={rank.primary_color}
         />
-        <div className="sticky top-0 z-50 w-full">
-          <Tabs tabItems={profileNavItems} />
+        <Menu rank={rank} />
+        <div>
+          <div className="sticky top-0 z-50 w-full">
+            <Tabs tabItems={profileNavItems} />
+          </div>
+          <div className="w-[95%] max-w-[800px]">{tabs}</div>
         </div>
-        <div className="w-[95%] max-w-[800px]">{tabs}</div>
       </main>
     </section>
   );
@@ -110,6 +118,45 @@ function Header({
   );
 }
 
+function Menu({ rank }: { rank: Rank }) {
+  return (
+    <div className="flex w-[90%] max-w-[800px] gap-2">
+      <Link
+        href="/receipt"
+        className="text-perx-white flex basis-1/2 items-center rounded-xl hover:shadow-md"
+        style={{
+          backgroundColor: rank.primary_color,
+        }}
+      >
+        <div className="flex items-center gap-4 p-5">
+          <ReceiptText size={32} />
+          <div className="flex flex-col justify-start">
+            <span className="font font-mono font-bold">Scan & earn</span>
+            <p className="text-xs">
+              Scan receipts from partner merchants & earn points
+            </p>
+          </div>
+        </div>
+      </Link>
+      <Link
+        href="/points-history"
+        className="text-perx-white flex basis-1/2 items-center rounded-xl hover:shadow-md"
+        style={{
+          backgroundColor: rank.primary_color,
+        }}
+      >
+        <div className="flex items-center gap-4 p-5">
+          <History size={32} />
+          <div className="flex flex-col justify-start">
+            <span className="font font-mono font-bold">Points history</span>
+            <p className="text-xs">Check your points history</p>
+          </div>
+        </div>
+      </Link>
+    </div>
+  );
+}
+
 function ButtonGroup() {
   return (
     <>
@@ -129,24 +176,6 @@ function ButtonGroup() {
           title="Settings"
         >
           <SettingsIcon />
-        </Button>
-      </Link>
-      <Link href="/receipt">
-        <Button
-          variant={'ghost'}
-          className="text-perx-white hover:bg-perx-black/10 hover:text-perx-white aspect-square h-auto rounded-full"
-          title="Receipt"
-        >
-          <ReceiptText />
-        </Button>
-      </Link>
-      <Link href="/points-history">
-        <Button
-          variant={'ghost'}
-          className="text-perx-white hover:bg-perx-black/10 hover:text-perx-white aspect-square h-auto rounded-full"
-          title="Points History"
-        >
-          <History />
         </Button>
       </Link>
     </>
@@ -181,20 +210,19 @@ function LoyaltyRewardsCard({
         <img
           src="/reward-points.svg"
           alt="Reward points icon"
-          className="aspect-sqaure size-16"
+          className="aspect-sqaure size-12"
         />
-        <h1 className="font-mono text-5xl font-medium">
-          {balancePoints.toLocaleString()}
+        <h1 className="font-mono text-3xl font-medium md:text-4xl">
+          {balancePoints.toLocaleString('en-US', {
+            style: 'decimal',
+          })}
         </h1>
       </div>
       <div className="relative -top-4 flex w-full flex-col justify-start gap-2">
         <h3 className="text-muted-foreground m-0 p-0 text-base tracking-tighter">
           Earn more points to unlock the next tier
         </h3>
-        <div className="flex grow items-center gap-3">
-          <h3 className="font-mono font-medium">
-            {totalPoints.toLocaleString()}
-          </h3>
+        <div className="flex grow flex-col items-center gap-1">
           <div className="w-full">
             <Progress
               value={totalPoints}
@@ -203,13 +231,19 @@ function LoyaltyRewardsCard({
               indicatorStyle={{ backgroundColor: primaryColor }}
             />
           </div>
-          <div className="flex shrink-0 items-center gap-1">
+          <div className="flex w-full justify-between">
             <h3 className="font-mono font-medium">
-              {rank.max_points.toLocaleString()}
+              {totalPoints.toLocaleString()}
             </h3>
-            {nextIcon && (
-              <img src={nextIcon} alt="Next tier icon" className="size-6" />
-            )}
+
+            <div className="flex shrink-0 items-center gap-1">
+              <h3 className="font-mono font-medium">
+                {rank.max_points.toLocaleString()}
+              </h3>
+              {nextIcon && (
+                <img src={nextIcon} alt="Next tier icon" className="size-6" />
+              )}
+            </div>
           </div>
         </div>
       </div>

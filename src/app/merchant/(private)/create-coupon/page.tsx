@@ -4,6 +4,12 @@ import { PerxLogoHeader } from '@/components/custom/PerxHeader';
 import AddCouponForm from '@/components/merchant/AddCouponForm';
 import { MerchantLogo } from '@/components/merchant/MerchantLogo';
 
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Create a coupon',
+};
+
 export default async function AddCoupon() {
   const ranks = await fetchRanks();
   const categories = await fetchCouponCategories();

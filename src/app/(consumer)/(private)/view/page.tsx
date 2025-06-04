@@ -11,6 +11,51 @@ import { InfoIcon } from 'lucide-react';
 
 import type { Consumer, Coupon, Merchant } from '@/lib/types';
 
+export async function generateMetadata({
+  searchParams,
+}: {
+  searchParams: Promise<{ [key: string]: string }>;
+}) {
+  const couponId = (await searchParams).coupon;
+  const merchantId = (await searchParams).merchant;
+
+  if (!couponId || !merchantId) {
+    redirect('/not-found');
+  }
+
+  const coupon: Coupon = await fetchCoupon(couponId);
+  const merchant: Merchant = await fetchMerchant(merchantId);
+
+  return {
+    title: coupon.title,
+    description: coupon.description,
+    keywords: [coupon.category, merchant.name, 'Perx', 'Coupon'],
+    category: coupon.category,
+    openGraph: {
+      siteName: 'Perx',
+      title: coupon.title,
+      description: coupon.description,
+      type: 'article',
+      publishedTime: coupon.created_at,
+      authors: [merchant.name],
+      images: [
+        {
+          url: coupon.image,
+          alt: `${coupon.title} banner`,
+        },
+      ],
+    },
+    twitter: {
+      title: coupon.title,
+      description: coupon.description,
+      image: {
+        url: coupon.image,
+        alt: `${coupon.title} banner`,
+      },
+    },
+  };
+}
+
 export default async function ViewCoupon({
   searchParams,
 }: {

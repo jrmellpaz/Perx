@@ -31,7 +31,7 @@ export default function PerxAlert({
   variant,
 }: PerxAlertProps) {
   return (
-    <div className="border-border flex gap-0.5 rounded-lg border px-4 py-3">
+    <div className="border-border flex w-full gap-0.5 rounded-lg border px-4 py-3">
       {variant === 'default' ? (
         <Info
           className="me-3 mt-0.5 inline-flex text-blue-500"

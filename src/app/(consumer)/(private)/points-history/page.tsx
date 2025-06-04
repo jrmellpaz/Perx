@@ -2,6 +2,12 @@ import { createClient } from '@/utils/supabase/server';
 import ConsumerPointHistory from '@/components/consumer/ConsumerPointHistory';
 import PerxHeader from '@/components/custom/PerxHeader';
 
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Points history',
+};
+
 export default async function PointsHistory() {
   const supabase = await createClient();
   const {

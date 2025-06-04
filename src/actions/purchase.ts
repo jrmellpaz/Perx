@@ -72,7 +72,11 @@ export const purchaseWithRewardPoints = async (
   try {
     const supabase = await createClient();
 
-    updateRewardPoints(user.id, -coupon.points_amount);
+    const pointsUpdate = await updateRewardPoints(user.id, -coupon.points_amount);
+    if (!pointsUpdate.success) {
+      // toast('Not enough points to purchase this coupon');
+      return { success: false, message: 'Insufficient points balance.' };
+    }
     updateConsumerFirstPurchase(user.id);
 
     if (!hybrid) {
@@ -277,7 +281,8 @@ const updateCouponData = async (couponId: string): Promise<SuccessResponse> => {
 
 export const updateRewardPoints = async (
   consumerId: string,
-  pointsAmount: number
+  pointsAmount: number,
+  source?:string
 ): Promise<SuccessResponse> => {
   try {
     const supabase = await createClient();
@@ -298,16 +303,14 @@ export const updateRewardPoints = async (
       .eq('id', consumerId);
 
     if (updateConsumerError) {
-      throw new Error(
-        `UPDATE CONSUMER POINTS BALANCE ERROR: ${updateConsumerError.message}`
-      );
+      return { success: false, message: 'Insufficient points balance.' };
     }
 
     const { error: insertPointsError } = await supabase
       .from('points_history')
       .insert({
         consumer_id: consumerId,
-        source: 'Coupon Purchase',
+        source: source || 'Coupon purchase',
         points_earned: pointsAmount,
       });
 
@@ -454,7 +457,7 @@ export const rebateConsumerPoints = async (
       .from('points_history')
       .insert({
         consumer_id: consumerId,
-        source: 'Coupon Purchase Rebate',
+        source: 'Coupon purchase rebate',
         points_earned: rebatePoints,
       });
 

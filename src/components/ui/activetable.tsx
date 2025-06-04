@@ -2,20 +2,83 @@
 
 import React, { useEffect, useState } from 'react';
 
-interface ActiveCoupon {
-  id: string;
-  name: string;
-  category: string;
-  expiryDate: string;
-  itemsLeft: number;
+interface CouponTableProps {
+  coupons: {
+    id: string;
+    title: string;
+    category: string;
+    valid_to: string | null;
+    quantity: number;
+  }[];
 }
 
-const ActiveCouponsTable = () => {
+const ActiveCouponsTable: React.FC<CouponTableProps> = ({ coupons }) => {
   return (
-    <div className="h-full w-full bg-amber-100">
-      table
-      <table className="h-full w-full bg-blue-700">
-        <thead></thead>
+    <div
+      className="hide-scrollbar w-full overflow-x-auto overflow-y-auto rounded-lg sm:max-h-[200px]"
+      style={{ boxShadow: '0 2px 5px rgba(0,0,0,0.1)' }}
+    >
+      <table className="w-full min-w-[500px] border-collapse">
+        <thead
+          className="sticky top-0"
+          style={{ backgroundColor: 'var(--color-perx-navy)' }}
+        >
+          <tr>
+            <th className="text-perx-white p-2 font-sans text-sm">
+              Active Coupons
+            </th>
+            <th className="text-perx-white p-2 font-sans text-sm">Category</th>
+            <th className="text-perx-white p-2 font-sans text-sm">
+              Valid until
+            </th>
+            <th className="text-perx-white p-2 font-sans text-sm">Quantity</th>
+          </tr>
+        </thead>
+        <tbody>
+          {coupons.map((coupon, idx) => (
+            <tr
+              key={coupon.id + idx}
+              className="hover:bg-[color-mix(in_srgb,var(--color-bg-perx-cloud)_15%, transparent]"
+              style={{
+                backgroundColor:
+                  idx % 2 == 0
+                    ? 'var(--color-perx-white)'
+                    : 'color-mix(in srgb, var(--color-perx-cloud) 30%, transparent)',
+              }}
+            >
+              <td className="p-3 font-sans text-sm">{coupon.title}</td>
+              <td className="p-3 font-sans text-sm">{coupon.category}</td>
+              <td className="p-2 text-center font-sans text-sm">
+                {coupon.valid_to
+                  ? new Date(coupon.valid_to).toLocaleDateString()
+                  : 'N/A'}
+              </td>
+              <td className="p-3 text-right font-sans text-sm">
+                {coupon.quantity}
+              </td>
+            </tr>
+          ))}
+          {/* {coupons.length === 0 ? (
+            <tr>
+              <td colSpan={4} className="">
+                No active coupons found.
+              </td>
+            </tr>
+          ) : (
+            coupons.map((coupon) => (
+              <tr key={coupon.id}>
+                <td>{coupon.title}</td>
+                <td>{coupon.category}</td>
+                <td>
+                  {coupon.valid_to
+                    ? new Date(coupon.valid_to).toLocaleDateString()
+                    : 'N/A'}
+                </td>
+                <td>{coupon.quantity}</td>
+              </tr>
+            ))
+          )} */}
+        </tbody>
       </table>
     </div>
   );

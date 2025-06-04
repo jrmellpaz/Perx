@@ -277,7 +277,8 @@ const updateCouponData = async (couponId: string): Promise<SuccessResponse> => {
 
 export const updateRewardPoints = async (
   consumerId: string,
-  pointsAmount: number
+  pointsAmount: number,
+  source?:string
 ): Promise<SuccessResponse> => {
   try {
     const supabase = await createClient();
@@ -307,7 +308,7 @@ export const updateRewardPoints = async (
       .from('points_history')
       .insert({
         consumer_id: consumerId,
-        source: 'Coupon Purchase',
+        source: source || 'Coupon purchase',
         points_earned: pointsAmount,
       });
 
@@ -454,7 +455,7 @@ export const rebateConsumerPoints = async (
       .from('points_history')
       .insert({
         consumer_id: consumerId,
-        source: 'Coupon Purchase Rebate',
+        source: 'Coupon purchase rebate',
         points_earned: rebatePoints,
       });
 

@@ -81,7 +81,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Failed to store receipt' }, { status: 500 });
     }
 
-    await updateRewardPoints(user!.id, 1);
+    await updateRewardPoints(user!.id, 1, 'Valid uploaded receipt');
     await levelUpConsumerRank(user!.id);
 
     return NextResponse.json({

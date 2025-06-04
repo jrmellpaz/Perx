@@ -65,7 +65,7 @@ const PointsHistoryList = ({ userId }: { userId: string }) => {
               </span>
             </div>
             {/* <p className="text-sm text-gray-700 mb-1">{entry.description}</p> */}
-            <span className="rounded-full bg-gray-100 px-2 py-1 text-xs text-gray-600 capitalize">
+            <span className="rounded-full bg-gray-100 px-2 py-1 text-xs text-gray-600">
               {entry.source.replace('_', ' ')}
             </span>
           </div>

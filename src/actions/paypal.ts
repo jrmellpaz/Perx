@@ -9,7 +9,7 @@ const sandbox_clientId = process.env.NEXT_PUBLIC_SANDBOX_PAYPAL_CLIENT_ID;
 const sandbox_appSecret = process.env.SANDBOX_PAYPAL_APP_SECRET;
 
 const MODE =
-  process.env.NODE_ENV === 'production' ? 'production' : 'development';
+  process.env.PAYPAL_ENV === 'production' ? 'production' : 'development';
 
 let base: string;
 let clientId: string;

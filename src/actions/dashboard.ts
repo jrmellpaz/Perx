@@ -3,13 +3,7 @@
 import { createClient } from '@/utils/supabase/server';
 
 import type { User } from '@supabase/supabase-js';
-import type {
-  SuccessResponse,
-  Transaction,
-  TransactionWithCoupon,
-} from '@/lib/types';
-import { create } from 'domain';
-import { Coupon } from '@/components/custom/Coupon';
+import type { SuccessResponse, TransactionWithCoupon } from '@/lib/types';
 
 const fetchMerchant = async (): Promise<SuccessResponse<User | null>> => {
   try {

@@ -1,3 +1,12 @@
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: {
+    template: '%s - Perx Merchant',
+    default: 'Perx Merchant',
+  },
+};
+
 export default function AuthLayout({
   children,
 }: Readonly<{

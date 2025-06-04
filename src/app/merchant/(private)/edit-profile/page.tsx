@@ -3,6 +3,12 @@ import PerxHeader from '@/components/custom/PerxHeader';
 import MerchantEditProfile from '@/components/merchant/MerchantEditProfile';
 import { createClient } from '@/utils/supabase/server';
 
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Edit profile',
+};
+
 export default async function MerchantEditProfilePage() {
   const supabase = await createClient();
   const {

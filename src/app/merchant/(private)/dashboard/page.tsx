@@ -17,6 +17,12 @@ import {
 } from '@/actions/dashboard';
 import Link from 'next/link';
 
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Dashboard',
+};
+
 export default async function DashboardPage() {
   return (
     // whole dashboard

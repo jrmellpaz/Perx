@@ -1,8 +1,13 @@
 import PerxHeader from '@/components/custom/PerxHeader';
 import ConsumerEditProfile from '@/components/consumer/ConsumerEditProfile';
 import { createClient } from '@/utils/supabase/server';
-
 import { fetchConsumerProfile } from '@/actions/consumerProfile';
+
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Edit profile',
+};
 
 export default async function ConsumerEditProfilePage() {
   const supabase = await createClient();

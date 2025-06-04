@@ -4,9 +4,54 @@ import { redirect } from 'next/navigation';
 import { fetchCoupon } from '@/actions/coupon';
 import PerxHeader from '@/components/custom/PerxHeader';
 import { getPrimaryAccentColor } from '@/lib/utils';
+import { ArchiveDropdown } from '@/components/custom/PerxDropdown';
 
 import type { Coupon, Merchant } from '@/lib/types';
-import { ArchiveDropdown } from '@/components/custom/PerxDropdown';
+
+export async function generateMetadata({
+  searchParams,
+}: {
+  searchParams: Promise<{ [key: string]: string }>;
+}) {
+  const couponId = (await searchParams).coupon;
+  const merchantId = (await searchParams).merchant;
+
+  if (!couponId || !merchantId) {
+    redirect('/not-found');
+  }
+
+  const coupon: Coupon = await fetchCoupon(couponId);
+  const merchant: Merchant = await fetchMerchant(merchantId);
+
+  return {
+    title: coupon.title,
+    description: coupon.description,
+    keywords: [coupon.category, merchant.name, 'Perx', 'Coupon'],
+    category: coupon.category,
+    openGraph: {
+      siteName: 'Perx',
+      title: coupon.title,
+      description: coupon.description,
+      type: 'article',
+      publishedTime: coupon.created_at,
+      authors: [merchant.name],
+      images: [
+        {
+          url: coupon.image,
+          alt: `${coupon.title} banner`,
+        },
+      ],
+    },
+    twitter: {
+      title: coupon.title,
+      description: coupon.description,
+      image: {
+        url: coupon.image,
+        alt: `${coupon.title} banner`,
+      },
+    },
+  };
+}
 
 export default async function ViewCoupon({
   searchParams,

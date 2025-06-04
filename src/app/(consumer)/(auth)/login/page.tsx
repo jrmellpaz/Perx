@@ -1,6 +1,12 @@
 import { ConsumerLogo } from '@/components/consumer/ConsumerLogo';
 import ConsumerLoginForm from '@/components/consumer/ConsumerLogin';
 
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Login',
+};
+
 export default async function ConsumerLoginPage({
   searchParams,
 }: {

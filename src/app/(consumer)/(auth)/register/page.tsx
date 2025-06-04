@@ -1,6 +1,12 @@
 import { ConsumerLogo } from '@/components/consumer/ConsumerLogo';
 import ConsumerRegisterForm from '@/components/consumer/ConsumerRegisterForm';
 
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Create an account',
+};
+
 export default async function ConsumerRegisterPage({
   searchParams,
 }: {

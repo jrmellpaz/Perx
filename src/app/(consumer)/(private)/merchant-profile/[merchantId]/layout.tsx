@@ -1,20 +1,54 @@
 import { ReactNode } from 'react';
 import { fetchMerchant } from '@/actions/merchantProfile';
 import Tabs from '@/components/custom/PerxTabs';
-import { Button } from '@/components/ui/button';
 import {
-  ArchiveIcon,
   MailIcon,
   MapPinIcon,
-  SettingsIcon,
   SquareLibraryIcon,
   TicketsIcon,
 } from 'lucide-react';
 import { PerxReadMore } from '@/components/custom/PerxReadMore';
-
-import type { Merchant } from '@/lib/types';
 import { ShareMerchantButton } from '@/components/custom/ShareMerchantButton';
 import PerxHeader from '@/components/custom/PerxHeader';
+
+import type { Merchant } from '@/lib/types';
+import type { Metadata } from 'next';
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ merchantId: string }>;
+}) {
+  const { merchantId } = await params;
+  const merchant = await fetchMerchant(merchantId);
+
+  return {
+    title: merchant.name,
+    description: merchant.bio,
+    keywords: [merchant.name, 'Perx', 'Merchant'],
+    category: 'Merchant Profile',
+    openGraph: {
+      siteName: 'Perx',
+      title: merchant.name,
+      description: merchant.bio,
+      type: 'profile',
+      images: [
+        {
+          url: merchant.logo,
+          alt: `${merchant.name} logo`,
+        },
+      ],
+    },
+    twitter: {
+      title: merchant.name,
+      description: merchant.bio,
+      image: {
+        url: merchant.logo,
+        alt: `${merchant.name} logo`,
+      },
+    },
+  };
+}
 
 export default async function MerchantProfileLayout({
   tabs,

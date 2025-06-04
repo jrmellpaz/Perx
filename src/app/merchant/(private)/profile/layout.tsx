@@ -16,6 +16,11 @@ import { PerxReadMore } from '@/components/custom/PerxReadMore';
 import { ShareMerchantButton } from '@/components/custom/ShareMerchantButton';
 
 import type { Merchant } from '@/lib/types';
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Profile',
+};
 
 export default async function MerchantProfileLayout({
   tabs,

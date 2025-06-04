@@ -3,6 +3,12 @@ import PerxHeader from '@/components/custom/PerxHeader';
 import { createClient } from '@/utils/supabase/server';
 import { redirect } from 'next/navigation';
 
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Transaction details',
+};
+
 export default async function TransactionPage({
   searchParams,
 }: {

@@ -9,13 +9,18 @@ import {
   PencilIcon,
   SettingsIcon,
   ReceiptText,
-  History
+  History,
 } from 'lucide-react';
 import { Progress } from '@/components/ui/progress';
 import Tabs from '@/components/custom/PerxTabs';
 import { fetchRank } from '@/actions/rank';
 
 import type { Rank } from '@/lib/types';
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Profile',
+};
 
 export default async function ConsumerProfileLayout({
   tabs,

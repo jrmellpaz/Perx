@@ -5,6 +5,12 @@ import {
   LoginSection,
 } from '@/components/merchant/MerchantSettings';
 
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Settings',
+};
+
 export default async function SettingsPage() {
   const supabase = await createClient();
   const {

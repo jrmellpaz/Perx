@@ -15,8 +15,9 @@ function extractAmount(text: string): number {
 function extractReceiptNumber(text: string): string | null {
   const regex = /(?:OR|Invoice|Inv#?|Sales Invoice|Receipt)\s*(?:No\.?|#|Number)?\s*[:\-]?\s*([\w\-\.\/]+)/ig;
   const matches = [];
-  let match;  while ((match = regex.exec(text)) !== null) {
-    console.log('Found match:', match[1]);
+  let match;  
+  while ((match = regex.exec(text)) !== null) {
+    // console.log('Found match:', match[1]);
     matches.push(match[1].trim());
   }
   // Return the first match that contains at least one number, or null if none found
@@ -58,7 +59,7 @@ export async function POST(req: NextRequest) {
     const { data: existingReceipt, error: checkError } = await supabase
       .from('receipts')
       .select('*')
-      .eq('user_id', user!.id)
+      .eq('consumer_id', user!.id)
       .eq('merchant_id', merchant.id)
       .eq('receipt_number', receiptNumber)
       .single();

@@ -72,7 +72,11 @@ export const purchaseWithRewardPoints = async (
   try {
     const supabase = await createClient();
 
-    updateRewardPoints(user.id, -coupon.points_amount);
+    const pointsUpdate = await updateRewardPoints(user.id, -coupon.points_amount);
+    if (!pointsUpdate.success) {
+      // toast('Not enough points to purchase this coupon');
+      return { success: false, message: 'Insufficient points balance.' };
+    }
     updateConsumerFirstPurchase(user.id);
 
     if (!hybrid) {
@@ -299,9 +303,7 @@ export const updateRewardPoints = async (
       .eq('id', consumerId);
 
     if (updateConsumerError) {
-      throw new Error(
-        `UPDATE CONSUMER POINTS BALANCE ERROR: ${updateConsumerError.message}`
-      );
+      return { success: false, message: 'Insufficient points balance.' };
     }
 
     const { error: insertPointsError } = await supabase

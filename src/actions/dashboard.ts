@@ -187,3 +187,35 @@ export const fetchTransactionRecordsByMerchant = async (
     };
   }
 };
+
+export const fetchTransactionRecordById = async (
+  transactionId: string
+): Promise<TransactionWithCoupon | null> => {
+  try {
+    const supabase = await createClient();
+
+    // Check if the user is authenticated and has the merchant role
+    const { success, message, data: user } = await fetchMerchant();
+
+    if (!success || !user) {
+      throw new Error(`FETCH TRANSACTION RECORDS ERROR: ${message}`);
+    }
+
+    const { data: transaction, error } = await supabase
+      .from('transactions_history')
+      .select('*, coupons(*)')
+      .eq('merchant_id', user.id)
+      .not('price', 'is', null)
+      .eq('id', transactionId)
+      .single();
+
+    if (error) {
+      throw new Error(`FETCH TRANSACTION RECORDS ERROR: ${error.message}`);
+    }
+
+    return transaction as TransactionWithCoupon;
+  } catch (error) {
+    console.error('FETCH TRANSACTION RECORD BY ID ERROR:', error);
+    return null;
+  }
+};

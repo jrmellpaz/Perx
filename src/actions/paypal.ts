@@ -9,7 +9,7 @@ const sandbox_clientId = process.env.NEXT_PUBLIC_SANDBOX_PAYPAL_CLIENT_ID;
 const sandbox_appSecret = process.env.SANDBOX_PAYPAL_APP_SECRET;
 
 const MODE =
-  process.env.PAYPAL_ENV === 'production' ? 'production' : 'development';
+  process.env.PAYPAL_ENV === 'development' ? 'development' : 'production';
 
 let base: string;
 let clientId: string;
@@ -35,6 +35,8 @@ interface OrderData {
 }
 
 export const createOrder = async (price: number): Promise<OrderData> => {
+  console.log('base', base);
+
   const accessToken = await generateAccessToken();
 
   const response = await fetch(base + '/v2/checkout/orders', {
@@ -60,6 +62,7 @@ export const createOrder = async (price: number): Promise<OrderData> => {
 };
 
 export const createPayment = async (orderId: string) => {
+  console.log('base', base);
   const accessToken = await generateAccessToken();
 
   const response = await fetch(

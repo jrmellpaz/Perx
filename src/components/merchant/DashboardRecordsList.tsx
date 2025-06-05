@@ -72,8 +72,19 @@ export function DashboardRecordsList() {
     const blob = new Blob([csvContent], { type: 'text/csv:charset=utf-8;' });
     const link = document.createElement('a');
     const url = URL.createObjectURL(blob);
+    const now = new Date();
+    // Format the date for the filename (e.g., YYYY-MM-DD or YYYYMMDD)
+    // Using YYYY-MM-DD for readability
+    const year = now.getFullYear();
+    const month = (now.getMonth() + 1).toString().padStart(2, '0'); // Months are 0-indexed
+    const day = now.getDate().toString().padStart(2, '0');
+
+    const dateString = `${year}-${month}-${day}`; // Format: 2025-06-05
+    // You could also add time if you need more granularity, e.g., `${dateString}_${now.getHours()}${now.getMinutes()}${now.getSeconds()}`
+
+    const filename = `transaction_record_${dateString}.csv`;
     link.setAttribute('href', url);
-    link.setAttribute('download', 'transaction_record.csv');
+    link.setAttribute('download', filename);
     link.style.visibility = 'hidden';
     document.body.appendChild(link);
     link.click();

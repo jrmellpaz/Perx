@@ -154,7 +154,7 @@ async function TotalUniqueCustomersCard() {
 async function MonthlyRecords() {
   return (
     <div
-      className={`bg-perx-navy/80 flex h-20 rounded-2xl p-4 md:w-1/4`}
+      className={`bg-perx-navy/85 flex h-20 rounded-2xl p-4 md:w-1/4`}
       style={{ boxShadow: '0 2px 5px rgba(0,0,0,0.1)' }}
     >
       <div

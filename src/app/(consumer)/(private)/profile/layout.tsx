@@ -82,7 +82,7 @@ export default async function ConsumerProfileLayout({
           primaryColor={rank.primary_color}
         />
         <Menu rank={rank} />
-        <div className="mx-auto flex flex-col items-center-safe">
+        <div className="mx-auto flex flex-col items-center-safe gap-1">
           <div className="sticky top-0 z-50 w-full">
             <Tabs tabItems={profileNavItems} />
           </div>
@@ -196,7 +196,7 @@ function LoyaltyRewardsCard({
   primaryColor: string;
 }) {
   return (
-    <div className="bg-perx-white text-perx-black z-50 flex aspect-[7/3] h-auto w-[90%] max-w-[800px] flex-col items-center justify-around rounded-xl px-4 py-4 shadow-md sm:px-8 md:w-4/5 md:px-12">
+    <div className="text-perx-black bg-perx-white z-50 flex aspect-[7/3] h-auto w-[95%] max-w-[800px] flex-col items-center justify-around rounded-xl px-4 py-4 shadow-md sm:px-8 md:px-12">
       <div className="relative -top-18 flex flex-col items-center gap-1">
         <img src={rank.icon} alt="Rank icon" className="size-32" />
         <h2

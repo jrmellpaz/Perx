@@ -120,7 +120,7 @@ function Header({
 
 function Menu({ rank }: { rank: Rank }) {
   return (
-    <div className="flex w-[90%] max-w-[800px] gap-2">
+    <div className="flex h-auto w-[90%] max-w-[800px] flex-col gap-2 md:flex-row">
       <Link
         href="/receipt"
         className="text-perx-white flex basis-1/2 items-center rounded-xl hover:shadow-md"

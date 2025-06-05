@@ -73,7 +73,7 @@ export default async function ConsumerProfileLayout({
       style={{ backgroundColor: `${rank.secondary_color}50` }}
     >
       <Header name={name} primaryColor={rank.primary_color} />
-      <main className="relative -top-20 flex grow flex-col items-center gap-8">
+      <main className="relative -top-20 mx-auto flex grow flex-col items-center gap-8">
         <LoyaltyRewardsCard
           nextIcon={nextIcon}
           rank={rank}
@@ -82,7 +82,7 @@ export default async function ConsumerProfileLayout({
           primaryColor={rank.primary_color}
         />
         <Menu rank={rank} />
-        <div>
+        <div className="mx-auto flex flex-col items-center-safe">
           <div className="sticky top-0 z-50 w-full">
             <Tabs tabItems={profileNavItems} />
           </div>

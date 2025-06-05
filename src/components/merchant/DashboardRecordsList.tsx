@@ -131,7 +131,7 @@ export function DashboardRecordsList() {
             Downloading...
           </>
         ) : (
-          'Download full report'
+          'Export Transactions (CSV)'
         )}
       </Button>
     </>

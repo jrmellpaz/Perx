@@ -136,13 +136,13 @@ function TransactionRecordCard({
   return (
     <Link
       href={{
-        pathname: '/merchant/transactions',
-        query: { id: transaction.id },
+        pathname: '/merchant/view',
+        query: { coupon: coupon.id, merchant: coupon.merchant_id },
       }}
     >
       <div className="flex h-auto w-full items-center justify-between gap-4 bg-white p-4">
         <div className="flex grow items-center justify-between">
-          <div className="flex grow flex-col">
+          <div className="flex grow flex-col rounded-2xl">
             <p className="text-xs text-neutral-500">
               {new Date(transaction.created_at).toLocaleString('en-US', {
                 year: 'numeric',

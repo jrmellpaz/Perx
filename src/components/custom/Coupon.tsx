@@ -11,6 +11,7 @@ export function Coupon({
   coupon: CouponWithRank;
   variant: 'merchant' | 'consumer';
 }) {
+  if (!coupon) return null;
   const rankIcon = coupon.ranks.icon;
 
   return (

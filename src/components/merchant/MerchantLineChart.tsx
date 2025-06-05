@@ -108,20 +108,18 @@ const MerchantLineChart = ({ data }: MerchantLineChartProps) => {
         <h1 className="font-mono-bold text-perx-black mx-1 text-lg font-semibold">
           Monthly Sales
         </h1>
-        {/* You could add a year selector here that updates the `currentYear` state */}
       </div>
       <ResponsiveContainer width="100%" height={250}>
         <LineChart
           data={chartData}
           margin={{
-            top: 0, // Increased top margin for legend
+            top: 0,
             right: 30,
             left: 20,
             bottom: 5,
           }}
         >
           <CartesianGrid strokeDasharray="3 3" stroke="#bdbdbd" />{' '}
-          {/* Softer grid lines */}
           <XAxis
             dataKey="name"
             axisLine={false}

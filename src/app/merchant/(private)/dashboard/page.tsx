@@ -4,6 +4,7 @@ import {
   ChartNoAxesCombined,
   Newspaper,
   Banknote,
+  ChevronRight,
 } from 'lucide-react';
 import MerchantLineChart from '@/components/merchant/MerchantLineChart';
 import TodayDate from '@/components/ui/date';
@@ -86,10 +87,10 @@ async function MonthlyRevenueCard() {
 
   return (
     <div
-      className={`bg-perx-crimson/80 flex h-20 rounded-2xl p-4 shadow-[0_2px_5px_rgba(0,0,0,0.1)] md:w-1/4`}
+      className={`bg-perx-red/80 flex h-20 rounded-2xl p-4 shadow-[0_2px_5px_rgba(0,0,0,0.1)] md:w-1/4`}
     >
       <div
-        className={`bg-perx-crimson/90 flex w-12 items-center justify-center rounded-2xl`}
+        className={`bg-perx-red/90 flex w-12 items-center justify-center rounded-2xl`}
       >
         <Banknote className="text-white" />
       </div>
@@ -111,10 +112,10 @@ async function TotalCouponsSoldCard() {
 
   return (
     <div
-      className={`bg-perx-ocean/80 flex h-20 rounded-2xl p-4 shadow-[0_2px_5px_rgba(0,0,0,0.1)] md:w-1/4`}
+      className={`bg-perx-gold/80 flex h-20 rounded-2xl p-4 shadow-[0_2px_5px_rgba(0,0,0,0.1)] md:w-1/4`}
     >
       <div
-        className={`bg-perx-ocean flex w-12 items-center justify-center rounded-2xl`}
+        className={`bg-perx-gold flex w-12 items-center justify-center rounded-2xl`}
       >
         <Tickets className="text-white" />
       </div>
@@ -133,10 +134,10 @@ async function TotalUniqueCustomersCard() {
 
   return (
     <div
-      className={`bg-perx-cloud/80 flex h-20 rounded-2xl p-4 shadow-[0_2px_5px_rgba(0,0,0,0.1)] md:w-1/4`}
+      className={`bg-perx-ocean/80 flex h-20 rounded-2xl p-4 shadow-[0_2px_5px_rgba(0,0,0,0.1)] md:w-1/4`}
     >
       <div
-        className={`bg-perx-cloud flex w-12 items-center justify-center rounded-2xl`}
+        className={`bg-perx-ocean flex w-12 items-center justify-center rounded-2xl`}
       >
         <UsersRound className="text-white" />
       </div>
@@ -152,20 +153,20 @@ async function TotalUniqueCustomersCard() {
 
 async function MonthlyRecords() {
   return (
-    // <Link href="/merchant/monthly-records" className="block w-full">
     <div
-      className={`bg-perx-yellow/80 flex h-20 rounded-2xl p-4 md:w-1/4`}
+      className={`bg-perx-navy/80 flex h-20 rounded-2xl p-4 md:w-1/4`}
       style={{ boxShadow: '0 2px 5px rgba(0,0,0,0.1)' }}
     >
       <div
-        className={`bg-perx-yellow flex w-12 items-center justify-center rounded-2xl`}
+        className={`bg-perx-navy flex w-12 items-center justify-center rounded-2xl`}
       >
         <Newspaper style={{ color: 'white' }} />
       </div>
-      <div className="horizontal ml-2 flex flex-col justify-center">
-        <a href="/merchant/monthly-records">
-          <span className="text-perx-white font-mono text-2xl font-semibold">
-            <u>View </u>
+      <div className="horizontal ml-2 flex w-full flex-col justify-center">
+        <a href="/merchant/monthly-records" className="w-full">
+          <span className="text-perx-white flex items-center justify-between font-mono text-2xl font-semibold">
+            <span>View</span>
+            <ChevronRight style={{ color: 'white' }} />
           </span>
         </a>
         <span className="text-perx-white font-sans text-sm">
@@ -173,7 +174,6 @@ async function MonthlyRecords() {
         </span>
       </div>
     </div>
-    // </Link>
   );
 }
 

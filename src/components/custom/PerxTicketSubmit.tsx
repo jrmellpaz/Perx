@@ -77,7 +77,10 @@ export function PerxTicketSubmit({
     }
   };
 
-  const handlePaymentDialog = async (mode: 'cash' | 'hybrid') => {
+  const handlePaymentDialog = async (
+    mode: 'cash' | 'hybrid',
+    quantity: number
+  ) => {
     setIsLoading(true);
     const supabase = createClient();
     const {
@@ -95,7 +98,11 @@ export function PerxTicketSubmit({
       const purchaseLimitResult = await checkPurchaseLimit(
         user!.id,
         coupon.id,
-        coupon
+        {
+          max_purchase_limit_per_consumer:
+            coupon.max_purchase_limit_per_consumer,
+          quantity,
+        }
       );
       if (!purchaseLimitResult.success) {
         toast.error(purchaseLimitResult.message);
@@ -120,7 +127,7 @@ export function PerxTicketSubmit({
     }, 300);
   };
 
-  const handlePointsPurchase = async () => {
+  const handlePointsPurchase = async (quantity: number) => {
     setIsLoading(true);
 
     const supabase = createClient();
@@ -139,14 +146,20 @@ export function PerxTicketSubmit({
       const purchaseLimitResult = await checkPurchaseLimit(
         user!.id,
         coupon.id,
-        coupon
+        {
+          max_purchase_limit_per_consumer:
+            coupon.max_purchase_limit_per_consumer,
+          quantity,
+        }
       );
       if (!purchaseLimitResult.success) {
         toast.error(purchaseLimitResult.message);
         return;
       }
 
-      const result = await purchaseWithRewardPoints(coupon);
+      const result = await purchaseWithRewardPoints(coupon, {
+        quantity: quantity,
+      });
 
       if (result.success) {
         toast(result.message);
@@ -257,7 +270,7 @@ export function PerxTicketSubmit({
                 {points_amount > 0 && cash_amount === 0 && (
                   <button
                     type="button"
-                    onClick={handlePointsPurchase}
+                    onClick={() => handlePointsPurchase(quantity)}
                     disabled={isLoading || disabledByRank}
                     className={cn(
                       `flex-1 cursor-pointer rounded-lg border px-4 py-2 text-sm font-medium disabled:cursor-not-allowed`,
@@ -294,7 +307,7 @@ export function PerxTicketSubmit({
                         await checkConsumerPointsBalance(totalPoints);
 
                       if (result.success) {
-                        handlePaymentDialog('hybrid'); // opens PayPal for cash portion
+                        handlePaymentDialog('hybrid', quantity); // opens PayPal for cash portion
                       } else {
                         toast.error(result.message);
                         setIsLoading(false);
@@ -324,7 +337,7 @@ export function PerxTicketSubmit({
                 <button
                   type="button"
                   onClick={() => {
-                    handlePaymentDialog('cash');
+                    handlePaymentDialog('cash', quantity);
                   }}
                   disabled={isLoading || disabledByRank}
                   style={
@@ -358,6 +371,7 @@ export function PerxTicketSubmit({
         paymentMode={paymentMode}
         totalPrice={totalPrice}
         adjustedPrice={adjustedPrice}
+        quantity={quantity}
       />
     </>
   );
@@ -371,6 +385,7 @@ function PaymentDialog({
   paymentMode,
   totalPrice,
   adjustedPrice,
+  quantity,
 }: {
   dialogRef: RefObject<HTMLDialogElement | null>;
   isDialogOpen: boolean;
@@ -379,6 +394,7 @@ function PaymentDialog({
   paymentMode: 'cash' | 'hybrid';
   totalPrice: number;
   adjustedPrice: number;
+  quantity: number;
 }) {
   const router = useRouter();
   const amountToPay = paymentMode === 'hybrid' ? adjustedPrice : totalPrice;
@@ -408,15 +424,26 @@ function PaymentDialog({
   const handleApprovePaypalOrder: PayPalButtonsComponentProps['onApprove'] =
     async (data): Promise<void> => {
       try {
-        const { message, data: consumerCoupon } = await approvePaypalOrder(
+        const {
+          success,
+          message,
+          data: consumerCoupon,
+        } = await approvePaypalOrder(
           coupon,
           data.orderID,
           paymentMode, // Pass the payment mode to backend
-          amountToPay
+          amountToPay,
+          quantity
         );
+
+        if (!success) {
+          toast.error(message);
+          handleClosePaymentDialog();
+          return;
+        }
         toast.success(`${message} Redirecting you to your coupon...`);
         dialogRef.current?.close();
-        router.push(`/my-coupons/view?coupon=${consumerCoupon?.id}`);
+        router.push(`/my-coupons`);
       } catch (error) {
         console.error('Error approving PayPal order:', error);
         toast.error('Failed to approve PayPal order. Please try again.');

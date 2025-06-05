@@ -16,6 +16,8 @@ interface PerxCounterProps {
   className?: string;
   accentColor: string;
   onChange?: (value: number) => void;
+  disabled?: boolean;
+  value?: number;
 }
 
 export default function PerxCounter({
@@ -24,10 +26,13 @@ export default function PerxCounter({
   className,
   accentColor,
   onChange,
+  disabled,
+  value,
 }: PerxCounterProps) {
   return (
     <NumberField
       defaultValue={1}
+      value={value}
       minValue={1}
       maxValue={max}
       onChange={(value) => {
@@ -39,6 +44,7 @@ export default function PerxCounter({
           onChange(safeValue);
         }
       }}
+      isDisabled={disabled}
     >
       <div className="flex items-center ring-0 *:not-first:mt-2">
         {label && (

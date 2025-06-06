@@ -11,7 +11,7 @@ Perx is a web-based platform that empowers small and medium-sized enterprises (S
 
 ### 🛒 For Consumers
 
-* Browse coupons from verified partner merchants
+* Browse coupons from partner merchants
 * Purchase and redeem digital coupons
 * Earn loyalty points by:
 

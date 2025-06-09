@@ -1,11 +1,12 @@
 const CACHE_NAME = 'PERX_V1';
 const urlsToCache = [
   '/',
-  '/favicon.ico',
+  '/logo.svg',
+  'perx-icon.svg',
   '/manifest.json',
   '/manifest-merchant.json',
-  '/icons/icon-192x192.png',
-  '/icons/icon-512x512.png',
+  '/web-app-manifest-192x192.png',
+  '/web-app-manifest-512x512.png',
 ];
 
 // Install event: cache essential files

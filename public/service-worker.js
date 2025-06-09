@@ -2,7 +2,8 @@ const CACHE_NAME = 'PERX_V1';
 const urlsToCache = [
   '/',
   '/favicon.ico',
-  '/web.manifest',
+  '/manifest.json',
+  '/manifest-merchant.json',
   '/icons/icon-192x192.png',
   '/icons/icon-512x512.png',
 ];

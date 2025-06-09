@@ -1,4 +1,3 @@
-import type { Metadata } from 'next';
 import { Space_Grotesk, Manrope } from 'next/font/google';
 import './globals.css';
 import Head from 'next/head';
@@ -6,6 +5,8 @@ import NextTopLoader from 'nextjs-toploader';
 import { Toaster } from '@/components/ui/toaster';
 import { ServiceWorkerRegister } from '@/components/pwa/ServiceWorkerRegister';
 import { InstallPWAButton } from '@/components/pwa/Install';
+
+import type { Metadata } from 'next';
 
 const manrope = Manrope({
   variable: '--font-manrope',
@@ -23,7 +24,7 @@ export const metadata: Metadata = {
     default: 'Perx',
   },
   description: 'A coupon collection app',
-  manifest: '/web.manifest',
+  manifest: '/manifest.json',
   keywords: [
     'Perx',
     'Perx Merchant',

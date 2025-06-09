@@ -38,36 +38,37 @@ const ActiveCouponsTable: React.FC<CouponTableProps> = ({ coupons }) => {
         </thead>
         <tbody>
           {coupons.map((coupon, idx) => (
-            <Link
+            <tr
               key={coupon.id + idx}
-              href={{
-                pathname: '/merchant/view',
-                query: { coupon: coupon.id, merchant: coupon.merchant_id },
+              className="hover:bg-[color-mix(in srgb,var(--color-bg-perx-cloud) 70%, transparent]"
+              style={{
+                backgroundColor:
+                  idx % 2 == 0
+                    ? 'var(--color-perx-white)'
+                    : 'color-mix(in srgb, var(--color-perx-cloud) 30%, transparent)',
               }}
-              passHref
-              className="contents"
             >
-              <tr
-                className="hover:bg-[color-mix(in srgb,var(--color-bg-perx-cloud) 70%, transparent]"
-                style={{
-                  backgroundColor:
-                    idx % 2 == 0
-                      ? 'var(--color-perx-white)'
-                      : 'color-mix(in srgb, var(--color-perx-cloud) 30%, transparent)',
-                }}
-              >
-                <td className="p-3 font-sans text-sm">{coupon.title}</td>
-                <td className="p-3 font-sans text-sm">{coupon.category}</td>
-                <td className="p-2 text-center font-sans text-sm">
-                  {coupon.valid_to
-                    ? new Date(coupon.valid_to).toLocaleDateString()
-                    : 'N/A'}
-                </td>
-                <td className="p-3 text-right font-sans text-sm">
-                  {coupon.quantity}
-                </td>
-              </tr>
-            </Link>
+              <td className="p-3 font-sans text-sm">
+                <Link
+                  href={{
+                    pathname: '/merchant/view',
+                    query: { coupon: coupon.id, merchant: coupon.merchant_id },
+                  }}
+                  className="hover:text-perx-navy font-medium after:ml-1 hover:font-bold hover:after:transition-all hover:after:content-['>']"
+                >
+                  {coupon.title}
+                </Link>
+              </td>
+              <td className="p-3 font-sans text-sm">{coupon.category}</td>
+              <td className="p-2 text-center font-sans text-sm">
+                {coupon.valid_to
+                  ? new Date(coupon.valid_to).toLocaleDateString()
+                  : 'N/A'}
+              </td>
+              <td className="p-3 text-right font-sans text-sm">
+                {coupon.quantity}
+              </td>
+            </tr>
           ))}
         </tbody>
       </table>

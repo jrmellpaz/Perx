@@ -1,25 +1,23 @@
 import {
   Tickets,
   UsersRound,
-  ChartNoAxesCombined,
   Newspaper,
   Banknote,
   ChevronRight,
 } from 'lucide-react';
 import MerchantLineChart from '@/components/merchant/MerchantLineChart';
-import TodayDate from '@/components/ui/date';
 import ActiveCouponsTable from '@/components/ui/activetable';
-import TopCouponsRanking from '@/components/merchant/TopCouponsMonth';
 import {
   fetchMonthlyRevenue,
   fetchTotalCouponsSoldByMerchant,
   fetchTotalUniqueConsumersByMerchant,
 } from '@/actions/dashboard';
-import Link from 'next/link';
 import { fetchCouponsByMerchantId } from '@/actions/coupon';
 import { createClient } from '@/utils/supabase/server';
 
 import type { Metadata } from 'next';
+import { PerxLogoHeader } from '@/components/custom/PerxHeader';
+import { MerchantLogo } from '@/components/merchant/MerchantLogo';
 
 export const metadata: Metadata = {
   title: 'Dashboard',
@@ -45,40 +43,48 @@ export default async function DashboardPage() {
 
   return (
     // whole dashboard
-    <div className="">
-      {/* HEADER */}
-      <div className="flex w-full items-center justify-between px-4 py-2">
-        <h1 className="font-mono text-xl font-medium tracking-tighter">
-          Dashboard
-        </h1>
-        <DateToday />
-      </div>
-      {/* TOP */}
-      <div className="flex w-full flex-col md:flex-row">
-        {/* USER CARDS */}
-        <div className="grid grid-cols-1 gap-2 px-6 py-1 md:flex md:flex-row md:gap-6 lg:w-full">
-          {/* mr-6 ml-3 flex w-full flex-col gap-3  sm:flex-row  */}
-          <MonthlyRevenueCard />
-          <TotalCouponsSoldCard />
-          <TotalUniqueCustomersCard />
-          <MonthlyRecords />
+    <>
+      <PerxLogoHeader>
+        <MerchantLogo
+          logoClass="text-xl pb-1.5"
+          sublogoClass="text-md pb-0.5"
+        />
+      </PerxLogoHeader>
+      <div>
+        {/* HEADER */}
+        <div className="flex w-full items-center justify-between px-4 py-2">
+          <h1 className="font-mono text-xl font-medium tracking-tighter">
+            Dashboard
+          </h1>
+          <DateToday />
         </div>
-      </div>
-      {/* BODY */}
-      <div className="flex flex-col md:flex-row">
-        {/* LEFT */}
-        <div className="w-full">
-          {/* LINE CHART */}
-          <div className="justify-cente flex w-full items-center px-6 pt-2 pb-1.5">
-            <MerchantLineChart data={monthlyRevenue} />
-          </div>
-          {/* ACTIVE COUPONS TABLE */}
-          <div className="overflow-x-auto px-6 pt-1.5 pb-2">
-            <ActiveCouponsTable coupons={coupons} />
+        {/* TOP */}
+        <div className="flex w-full flex-col md:flex-row">
+          {/* USER CARDS */}
+          <div className="grid grid-cols-1 gap-2 px-6 py-1 md:flex md:flex-row md:gap-6 lg:w-full">
+            {/* mr-6 ml-3 flex w-full flex-col gap-3  sm:flex-row  */}
+            <MonthlyRevenueCard />
+            <TotalCouponsSoldCard />
+            <TotalUniqueCustomersCard />
+            <MonthlyRecords />
           </div>
         </div>
+        {/* BODY */}
+        <div className="flex flex-col md:flex-row">
+          {/* LEFT */}
+          <div className="w-full">
+            {/* LINE CHART */}
+            <div className="justify-cente flex w-full items-center px-6 pt-2 pb-1.5">
+              <MerchantLineChart data={monthlyRevenue} />
+            </div>
+            {/* ACTIVE COUPONS TABLE */}
+            <div className="overflow-x-auto px-6 pt-1.5 pb-2">
+              <ActiveCouponsTable coupons={coupons} />
+            </div>
+          </div>
+        </div>
       </div>
-    </div>
+    </>
   );
 }
 

@@ -1,0 +1,139 @@
+{
+  "name": "Perx Merchant",
+  "categories": [
+    "shopping",
+    "coupons",
+    "local-business",
+    "commerce",
+    "rewards",
+    "loyalty",
+    "merchant",
+    "business"
+  ],
+  "screenshots": [
+    {
+      "src":"/screenshots/merchant-0.png",
+      "type":"image/png",
+      "sizes": "1824x912",
+      "form_factor": "wide"
+    },
+    {
+      "src":"/screenshots/merchant-1.png",
+      "type":"image/png",
+      "sizes": "1082x2402",
+      "form_factor": "narrow"
+    },
+    {
+      "src":"/screenshots/merchant-2.png",
+      "type":"image/png",
+      "sizes": "1082x2402",
+      "form_factor": "narrow"
+    },
+    {
+      "src":"/screenshots/merchant-3.png",
+      "type":"image/png",
+      "sizes": "1082x2402",
+      "form_factor": "narrow"
+    },
+    {
+      "src":"/screenshots/merchant-4.png",
+      "type":"image/png",
+      "sizes": "1790x895",
+      "form_factor": "wide"
+    },
+    {
+      "src":"/screenshots/merchant-5.png",
+      "type":"image/png",
+      "sizes": "1814x907",
+      "form_factor": "wide"
+    }
+  ],
+  "id": "perx-merchant",
+  "start_url": "/merchant",
+  "description": "Perx Merchant is a web-based platform that empowers small and medium-sized enterprises (SMEs) to create, distribute, and manage digital coupons.",
+  "dir": "ltr",
+  "scope": "https://perx.vercel.app/merchant",
+  "shortcuts": [
+    {
+      "name": "Dashboard",
+      "url": "/merchant/dashboard",
+      "description": "Access your merchant dashboard to manage your store.",
+      "icons": [
+        {
+          "src": "/web-app-manifest-192x192.png",
+          "sizes": "192x192",
+          "type": "image/png",
+          "purpose": "maskable"
+        }
+      ]
+    },
+    {
+      "name": "Create coupon",
+      "url": "/merchant/create-coupon",
+      "description": "Create new digital coupons for your store.",
+      "icons": [
+        {
+          "src": "/web-app-manifest-192x192.png",
+          "sizes": "192x192",
+          "type": "image/png",
+          "purpose": "maskable"
+        }
+      ]
+    },
+    {
+      "name": "Scan QR code",
+      "url": "/merchant/scan-qr",
+      "description": "Scan customer QR codes to redeem coupons.",
+      "icons": [
+        {
+          "src": "/web-app-manifest-192x192.png",
+          "sizes": "192x192",
+          "type": "image/png",
+          "purpose": "maskable"
+        }
+      ]
+    },
+    {
+      "name": "Profile",
+      "url": "/merchant/profile",
+      "description": "Access and edit your profile.",
+      "icons": [
+        {
+          "src": "/web-app-manifest-192x192.png",
+          "sizes": "192x192",
+          "type": "image/png",
+          "purpose": "maskable"
+        }
+      ]
+    }
+  ],
+  "lang": "en",
+  "orientation": "natural",
+  "short_name": "Perx Merchant",
+  "icons": [
+    {
+      "src": "/web-app-manifest-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/web-app-manifest-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "theme_color": "#A50000",
+  "background_color": "#ffffff",
+  "display": "standalone",
+  "display_override": [
+    "window-controls-overlay"
+  ],
+  "protocol_handlers": [
+    {
+      "protocol": "web+perx",
+      "url": "/handle-protocol?url=%s"
+    }
+  ]
+}

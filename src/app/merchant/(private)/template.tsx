@@ -5,7 +5,6 @@ import { MerchantLogo } from '@/components/merchant/MerchantLogo';
 import { Button } from '@/components/ui/button';
 import {
   CircleUserRound,
-  Inbox,
   LayoutDashboard,
   LoaderCircle,
   ScanQrCode,

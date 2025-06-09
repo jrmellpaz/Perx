@@ -49,7 +49,7 @@
     }
   ],
   "id": "perx",
-  "start_url": "/",
+  "start_url": "/explore",
   "description": "Perx offers consumers a seamless way to discover deals, earn loyalty points, and get rewarded for shopping at their favorite local stores.",
   "dir": "ltr",
   "scope": "https://perx.vercel.app",

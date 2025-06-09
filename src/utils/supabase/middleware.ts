@@ -41,7 +41,7 @@ export async function updateSession(request: NextRequest) {
 
   const consumerPages = {
     auth: ['/login', '/register', '/recover-password'],
-    public: ['/explore', '/change-password', '/', '/merchant-profile'],
+    public: ['/explore', '/change-password', '/merchant-profile'],
     private: [
       '/my-coupons',
       '/profile/missions',
@@ -162,6 +162,12 @@ export async function updateSession(request: NextRequest) {
     if (request.nextUrl.pathname === '/merchant') {
       const url = request.nextUrl.clone();
       url.pathname = '/merchant/login';
+      return NextResponse.redirect(url);
+    }
+
+    if (request.nextUrl.pathname === '/') {
+      const url = request.nextUrl.clone();
+      url.pathname = '/explore';
       return NextResponse.redirect(url);
     }
   }

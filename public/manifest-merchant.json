@@ -14,37 +14,37 @@
     {
       "src":"/screenshots/merchant-0.png",
       "type":"image/png",
-      "sizes": "1824x912",
+      "sizes": "3647x1823",
       "form_factor": "wide"
     },
     {
       "src":"/screenshots/merchant-1.png",
       "type":"image/png",
-      "sizes": "3647x1823",
+      "sizes": "1082x2402",
       "form_factor": "narrow"
     },
     {
       "src":"/screenshots/merchant-2.png",
       "type":"image/png",
-      "sizes": "3647x1823",
+      "sizes": "1082x2402",
       "form_factor": "narrow"
     },
     {
       "src":"/screenshots/merchant-3.png",
       "type":"image/png",
-      "sizes": "3647x1823",
+      "sizes": "1082x2402",
       "form_factor": "narrow"
     },
     {
       "src":"/screenshots/merchant-4.png",
       "type":"image/png",
-      "sizes": "1790x895",
+      "sizes": "3647x1823",
       "form_factor": "wide"
     },
     {
       "src":"/screenshots/merchant-5.png",
       "type":"image/png",
-      "sizes": "1814x907",
+      "sizes": "3647x1823",
       "form_factor": "wide"
     }
   ],
@@ -115,7 +115,7 @@
       "src": "/web-app-manifest-192x192.png",
       "sizes": "192x192",
       "type": "image/png",
-      "purpose": "maskable"
+      "purpose": "any"
     },
     {
       "src": "/web-app-manifest-512x512.png",

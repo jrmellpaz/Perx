@@ -129,11 +129,5 @@
   "display": "standalone",
   "display_override": [
     "window-controls-overlay"
-  ],
-  "protocol_handlers": [
-    {
-      "protocol": "web+perx",
-      "url": "/handle-protocol?url=%s"
-    }
   ]
 }
